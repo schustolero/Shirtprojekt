@@ -1,0 +1,449 @@
+* {
+  box-sizing: border-box;
+}
+
+:root {
+  --accent: #635bff;
+  --border: #e7e7ea;
+  --muted: #808089;
+  --panel: #ffffff;
+  --bg: #f4f5f7;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: var(--bg);
+  color: #17171a;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 330px;
+  min-width: 330px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 100vh;
+}
+
+.brand-title {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.brand-subtitle {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.tool-section {
+  padding: 22px 0;
+  border-bottom: 1px solid #eeeeef;
+}
+
+.tool-section h3 {
+  margin: 0 0 13px;
+  font-size: 14px;
+}
+
+.shirt-colors {
+  display: grid;
+  grid-template-columns: repeat(4, 42px);
+  gap: 13px;
+}
+
+.shirt-color {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 1px #cfcfd5;
+  cursor: pointer;
+  transition: transform .15s ease, box-shadow .15s ease;
+}
+
+.shirt-color:hover {
+  transform: scale(1.08);
+}
+
+.shirt-color.active {
+  box-shadow: 0 0 0 3px var(--accent);
+}
+
+.white { background: #ffffff; }
+.black { background: #111111; }
+.blue { background: #1565c0; }
+.red { background: #d32f2f; }
+.yellow { background: #f5d328; }
+.green { background: #2e7d32; }
+.orange { background: #ef7d00; }
+.pink { background: #e83e8c; }
+
+.current-color {
+  margin: 12px 0 0;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.upload-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: 1px dashed #bcbcc4;
+  border-radius: 10px;
+  background: #fafafa;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.upload-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.upload-btn input {
+  display: none;
+}
+
+.hint {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 11px;
+  color: #9999a2;
+}
+
+.secondary-btn,
+.danger-btn {
+  width: 100%;
+  padding: 11px 12px;
+  border-radius: 9px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.secondary-btn {
+  border: 1px solid #ddddE3;
+  background: #f5f5f7;
+  color: #33333a;
+}
+
+.secondary-btn:hover {
+  background: #ececf0;
+}
+
+.danger-btn {
+  border: 1px solid #efd3d3;
+  background: #fff3f3;
+  color: #b42d2d;
+}
+
+.button-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.view-switch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 7px;
+  padding: 4px;
+  background: #f1f1f3;
+  border-radius: 10px;
+}
+
+.view-btn {
+  border: 0;
+  background: transparent;
+  border-radius: 7px;
+  padding: 10px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #777780;
+  cursor: pointer;
+}
+
+.view-btn.active {
+  background: #ffffff;
+  color: #151519;
+  box-shadow: 0 2px 7px rgba(0,0,0,.08);
+}
+
+.sidebar-bottom {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.designer-area {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.designer-header {
+  min-height: 92px;
+  padding: 20px 34px;
+  background: #fff;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.designer-header h1 {
+  margin: 0;
+  font-size: 21px;
+}
+
+.designer-header p {
+  margin: 5px 0 0;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.designer-status {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #f1f1f4;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.workspace {
+  flex: 1;
+  min-height: 690px;
+  padding: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at center, #ffffff 0%, #f7f7f9 48%, #ececf0 100%);
+}
+
+.mockup-stage {
+  position: relative;
+  width: 590px;
+  max-width: 75vw;
+  aspect-ratio: 0.86;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shirt-mockup {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  z-index: 2;
+
+  /* White background of the mockup becomes visually neutral.
+     Multiply helps the tint layer show through while keeping texture/shadows. */
+  mix-blend-mode: multiply;
+
+  pointer-events: none;
+  user-select: none;
+}
+
+.shirt-color-layer {
+  position: absolute;
+  left: 17%;
+  right: 17%;
+  top: 8%;
+  bottom: 7%;
+  background: #ffffff;
+  z-index: 1;
+  border-radius: 25%;
+  transition: background-color .2s ease;
+}
+
+.print-zone {
+  position: absolute;
+  width: 260px;
+  height: 330px;
+  left: 50%;
+  top: 47%;
+  transform: translate(-50%, -50%);
+  z-index: 3;
+  border: 2px dashed rgba(40,40,45,.24);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.print-zone.back {
+  top: 47%;
+  height: 350px;
+}
+
+.canvas-container {
+  width: 260px !important;
+  height: 330px !important;
+}
+
+.print-zone.back .canvas-container,
+.print-zone.back canvas {
+  height: 350px !important;
+}
+
+.designer-footer {
+  padding: 16px 22px;
+  background: #ffffff;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+@media (max-width: 900px) {
+  .app {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    min-width: 0;
+    max-height: none;
+  }
+
+  .workspace {
+    min-height: 560px;
+  }
+
+  .mockup-stage {
+    width: 460px;
+    max-width: 95vw;
+  }
+
+  .print-zone {
+    transform: translate(-50%, -50%) scale(.78);
+  }
+}
+
+/* Farbfix: keine rechteckige Farbebene mehr */
+.shirt-color-layer{display:none !important;}
+
+
+/* ===== V3 Zentrierungs-Fix ===== */
+/* Die komplette Shirt-Vorschau sitzt horizontal exakt in der Mitte. */
+.workspace,
+.designer-workspace,
+.preview-area,
+.mockup-area,
+.stage-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.mockup-stage,
+.stage {
+  position: relative;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  flex: 0 0 auto;
+}
+
+/* Shirt-Mockup immer mittig im Stage-Container. */
+.shirt-mockup,
+#shirtMockup,
+#shirt {
+  display: block;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  object-position: center center !important;
+}
+
+/* Mobile Ansicht wie im bestätigten Entwurf. */
+@media (max-width: 760px) {
+  .workspace,
+  .designer-workspace,
+  .preview-area,
+  .mockup-area,
+  .stage-wrapper {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+    overflow: hidden;
+  }
+
+  .mockup-stage,
+  .stage {
+    width: min(100%, 590px) !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    left: auto !important;
+    right: auto !important;
+  }
+
+  .shirt-mockup,
+  #shirtMockup,
+  #shirt {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+}
+
+
+/* ===== Neue Shirt-Vorlage + transparente Farbmaske ===== */
+.mockup-stage {
+  position: relative;
+}
+
+#shirtMockup,
+.shirt-mockup,
+#shirtColorLayer,
+.shirt-color-overlay {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+}
+
+#shirtMockup,
+.shirt-mockup {
+  z-index: 1;
+}
+
+#shirtColorLayer,
+.shirt-color-overlay {
+  z-index: 2;
+  display: block !important;
+  pointer-events: none;
+  opacity: 0;
+  mix-blend-mode: multiply;
+}
+
+.print-zone {
+  z-index: 3 !important;
+}
+
+@media (max-width:760px) {
+  #shirtMockup,
+  #shirtColorLayer {
+    margin: 0 auto !important;
+  }
+}

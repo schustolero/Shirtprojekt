@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>T-Shirt Designer V3</title>
+  <link rel="stylesheet" href="style.css">
+
+<style id="v3-centering-fix">
+@media (max-width:760px){
+  .workspace{display:flex!important;justify-content:center!important;width:100%!important;padding-left:0!important;padding-right:0!important;}
+  .mockup-stage{margin-left:auto!important;margin-right:auto!important;left:auto!important;right:auto!important;max-width:100%!important;}
+  #shirtMockup,.shirt-mockup{display:block!important;margin:0 auto!important;object-position:center center!important;}
+}
+</style>
+
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-title">ShirtDesigner</div>
+      <div class="brand-subtitle">Logo-Konfigurator</div>
+    </div>
+
+    <section class="tool-section">
+      <h3>T-Shirt Farbe</h3>
+
+      <div class="shirt-colors">
+        <button type="button" class="shirt-color white active" data-color="#ffffff" data-name="Weiß" aria-label="Weiß" title="Weiß"></button>
+        <button type="button" class="shirt-color black" data-color="#111111" data-name="Schwarz" aria-label="Schwarz" title="Schwarz"></button>
+        <button type="button" class="shirt-color blue" data-color="#1565c0" data-name="Blau" aria-label="Blau" title="Blau"></button>
+        <button type="button" class="shirt-color red" data-color="#d32f2f" data-name="Rot" aria-label="Rot" title="Rot"></button>
+        <button type="button" class="shirt-color yellow" data-color="#f5d328" data-name="Gelb" aria-label="Gelb" title="Gelb"></button>
+        <button type="button" class="shirt-color green" data-color="#2e7d32" data-name="Grün" aria-label="Grün" title="Grün"></button>
+        <button type="button" class="shirt-color orange" data-color="#ef7d00" data-name="Orange" aria-label="Orange" title="Orange"></button>
+        <button type="button" class="shirt-color pink" data-color="#e83e8c" data-name="Pink" aria-label="Pink" title="Pink"></button>
+      </div>
+
+      <p class="current-color">
+        Ausgewählt: <strong id="currentColorName">Weiß</strong>
+      </p>
+    </section>
+
+    <section class="tool-section">
+      <h3>Logo / Bild</h3>
+
+      <label class="upload-btn">
+        Logo hochladen
+        <input type="file" id="imageUpload" accept="image/png,image/jpeg,image/webp">
+      </label>
+
+      <p class="hint">PNG, JPG oder WEBP</p>
+    </section>
+
+    <section class="tool-section">
+      <h3>Ausgewähltes Logo</h3>
+
+      <button type="button" id="centerBtn" class="secondary-btn">
+        Mittig platzieren
+      </button>
+
+      <div class="button-grid">
+        <button type="button" id="duplicateBtn" class="secondary-btn">
+          Duplizieren
+        </button>
+
+        <button type="button" id="deleteBtn" class="danger-btn">
+          Löschen
+        </button>
+      </div>
+    </section>
+
+    <section class="tool-section">
+      <h3>Ansicht</h3>
+
+      <div class="view-switch">
+        <button type="button" class="view-btn active" data-view="front">
+          Vorderseite
+        </button>
+
+        <button type="button" class="view-btn" data-view="back">
+          Rückseite
+        </button>
+      </div>
+    </section>
+
+    <div class="sidebar-bottom">
+      <button type="button" id="resetBtn" class="secondary-btn">
+        Design zurücksetzen
+      </button>
+    </div>
+
+  </aside>
+
+
+  <main class="designer-area">
+
+    <header class="designer-header">
+      <div>
+        <h1>T-Shirt gestalten</h1>
+        <p>Logo hochladen, positionieren, skalieren und drehen.</p>
+      </div>
+
+      <div class="designer-status" id="designerStatus">
+        Vorderseite
+      </div>
+    </header>
+
+
+    <div class="workspace">
+
+      <div class="mockup-stage">
+
+        <img
+          id="shirtMockup"
+          class="shirt-mockup"
+          src="shirt-front-template.png"
+          alt="T-Shirt Vorderseite"
+        >
+        <img
+          id="shirtColorLayer"
+          class="shirt-color-overlay"
+          src="farbmaske-front.png"
+          alt=""
+          aria-hidden="true"
+        >
+
+        <div class="print-zone" id="printZone">
+          <canvas id="designCanvas" width="260" height="330"></canvas>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <footer class="designer-footer">
+      Das Logo wird automatisch im Druckbereich platziert. Ziehen = verschieben, Eckgriffe = skalieren, oberer Griff = drehen.
+    </footer>
+
+  </main>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+<script src="script.js"></script>
+
+</body>
+</html>
