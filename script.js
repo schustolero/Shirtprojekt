@@ -75,7 +75,8 @@ function switchView(view) {
 
   if (view === "front") {
     shirtMockup.src = "shirt-front-template.png";
-    shirtColorLayer.src = "farbmaske-front.png";
+    shirtColorLayer.style.webkitMaskImage = 'url("farbmaske-front.png")';
+    shirtColorLayer.style.maskImage = 'url("farbmaske-front.png")';
     shirtMockup.alt = "T-Shirt Vorderseite";
     designerStatus.textContent = "Vorderseite";
 
@@ -86,7 +87,8 @@ function switchView(view) {
 
   } else {
     shirtMockup.src = "shirt-back-template.png";
-    shirtColorLayer.src = "farbmaske-back.png";
+    shirtColorLayer.style.webkitMaskImage = 'url("farbmaske-back.png")';
+    shirtColorLayer.style.maskImage = 'url("farbmaske-back.png")';
     shirtMockup.alt = "T-Shirt Rückseite";
     designerStatus.textContent = "Rückseite";
 
@@ -107,50 +109,38 @@ viewButtons.forEach(function(button) {
 });
 
 
-function changeShirtColor(color, name, colorId) {
+function changeShirtColor(color, name, colorId, pattern) {
   currentShirtColor = color;
   currentShirtColorId = colorId || "weiss";
   currentColorName.textContent = name;
 
-  // Die weiße Shirt-Vorlage bleibt immer unverändert.
-  // Nur die vom Nutzer gelieferte transparente Maske wird eingefärbt.
   if (currentShirtColorId === "weiss") {
     shirtColorLayer.style.opacity = "0";
-    shirtColorLayer.style.filter = "none";
+    shirtColorLayer.style.background = "transparent";
   } else {
-    shirtColorLayer.style.opacity = "1";
+    // Farbfläche liegt als transparente Maske über dem weißen Shirt.
+    // Multiply lässt Falten, Nähte und Schatten der Vorlage sichtbar.
+    shirtColorLayer.style.opacity = currentShirtColorId === "black" ? "0.82" : "0.92";
 
-    const filters = {
-      schwarz: "brightness(0.13) saturate(0)",
-      blau: "brightness(0) saturate(100%) invert(32%) sepia(95%) saturate(1700%) hue-rotate(194deg) brightness(82%) contrast(102%)",
-      rot: "brightness(0) saturate(100%) invert(25%) sepia(96%) saturate(3230%) hue-rotate(351deg) brightness(87%) contrast(92%)",
-      gelb: "brightness(0) saturate(100%) invert(81%) sepia(83%) saturate(930%) hue-rotate(351deg) brightness(101%) contrast(92%)",
-      gruen: "brightness(0) saturate(100%) invert(38%) sepia(60%) saturate(870%) hue-rotate(82deg) brightness(83%) contrast(88%)",
-      orange: "brightness(0) saturate(100%) invert(53%) sepia(99%) saturate(2700%) hue-rotate(2deg) brightness(99%) contrast(101%)",
-      pink: "brightness(0) saturate(100%) invert(39%) sepia(92%) saturate(1670%) hue-rotate(303deg) brightness(96%) contrast(90%)"
-    };
-
-    shirtColorLayer.style.filter = filters[currentShirtColorId] || "none";
+    if (pattern === "heather") {
+      shirtColorLayer.style.background = `repeating-linear-gradient(15deg, ${color} 0 3px, color-mix(in srgb, ${color} 72%, white) 3px 4px, ${color} 4px 7px)`;
+    } else {
+      shirtColorLayer.style.background = color;
+    }
   }
 
   shirtColorButtons.forEach(function(button) {
-    button.classList.toggle(
-      "active",
-      button.dataset.color.toLowerCase() === color.toLowerCase()
-    );
+    button.classList.toggle("active", button.dataset.id === currentShirtColorId);
   });
 }
-
 
 shirtColorButtons.forEach(function(button) {
   button.addEventListener("click", function() {
     changeShirtColor(
       button.dataset.color,
       button.dataset.name,
-      button.dataset.name
-        .toLowerCase()
-        .replace("ü","ue")
-        .replace("ß","ss")
+      button.dataset.id,
+      button.dataset.pattern || ""
     );
   });
 });

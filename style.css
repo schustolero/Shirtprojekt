@@ -314,136 +314,172 @@ input {
 }
 
 @media (max-width: 900px) {
+  /* Mobile: Shirt preview first, controls directly underneath. */
   .app {
     flex-direction: column;
+    background: #ffffff;
   }
 
-  .sidebar {
-    width: 100%;
-    min-width: 0;
-    max-height: none;
+  /* Flatten the two desktop columns so their children can be reordered. */
+  .sidebar,
+  .designer-area {
+    display: contents;
+  }
+
+  .brand {
+    order: 1;
+    padding: 26px 26px 10px;
+    background: #ffffff;
   }
 
   .workspace {
-    min-height: 560px;
+    order: 2;
+    width: 100%;
+    min-height: 0;
+    height: 430px;
+    padding: 8px 12px 0;
+    background: #ffffff;
+    align-items: center;
+    justify-content: center;
   }
 
   .mockup-stage {
-    width: 460px;
-    max-width: 95vw;
+    width: min(430px, 100vw);
+    max-width: 100%;
+    height: 420px;
+    aspect-ratio: auto;
+    margin: 0 auto;
   }
 
   .print-zone {
-    transform: translate(-50%, -50%) scale(.78);
+    transform: translate(-50%, -50%) scale(.64);
+  }
+
+  .view-section {
+    order: 3;
+  }
+
+  .color-section {
+    order: 4;
+  }
+
+  .upload-section {
+    order: 5;
+  }
+
+  .logo-section {
+    order: 6;
+  }
+
+  .sidebar-bottom {
+    order: 7;
+    margin: 0;
+    padding: 20px 26px 28px;
+    background: #ffffff;
+  }
+
+  .tool-section {
+    width: 100%;
+    padding: 20px 26px;
+    background: #ffffff;
+  }
+
+  .shirt-colors {
+    grid-template-columns: repeat(4, 42px);
+    gap: 13px 16px;
+  }
+
+  .designer-header,
+  .designer-footer {
+    display: none;
   }
 }
 
-/* Farbfix: keine rechteckige Farbebene mehr */
-.shirt-color-layer{display:none !important;}
+/* Erweiterte Shirt-Farbpalette */
+.shirt-colors {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 12px;
+}
 
-
-/* ===== V3 Zentrierungs-Fix ===== */
-/* Die komplette Shirt-Vorschau sitzt horizontal exakt in der Mitte. */
-.workspace,
-.designer-workspace,
-.preview-area,
-.mockup-area,
-.stage-wrapper {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+.shirt-color {
   width: 100%;
-  box-sizing: border-box;
+  height: auto;
+  min-height: 58px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  box-shadow: none;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 5px;
+  text-align: left;
 }
 
-.mockup-stage,
-.stage {
-  position: relative;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  flex: 0 0 auto;
-}
+.shirt-color:hover { transform: none; }
+.shirt-color.active { box-shadow: none; }
 
-/* Shirt-Mockup immer mittig im Stage-Container. */
-.shirt-mockup,
-#shirtMockup,
-#shirt {
+.color-swatch {
   display: block;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  object-position: center center !important;
-}
-
-/* Mobile Ansicht wie im bestätigten Entwurf. */
-@media (max-width: 760px) {
-  .workspace,
-  .designer-workspace,
-  .preview-area,
-  .mockup-area,
-  .stage-wrapper {
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-    overflow: hidden;
-  }
-
-  .mockup-stage,
-  .stage {
-    width: min(100%, 590px) !important;
-    max-width: 100% !important;
-    margin: 0 auto !important;
-    left: auto !important;
-    right: auto !important;
-  }
-
-  .shirt-mockup,
-  #shirtMockup,
-  #shirt {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: auto !important;
-    object-fit: contain !important;
-  }
-}
-
-
-/* ===== Neue Shirt-Vorlage + transparente Farbmaske ===== */
-.mockup-stage {
+  height: 34px;
+  border: 1px solid #c9c9cf;
+  border-radius: 3px;
+  background: var(--swatch);
   position: relative;
 }
 
-#shirtMockup,
-.shirt-mockup,
-#shirtColorLayer,
-.shirt-color-overlay {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  object-fit: contain !important;
-  object-position: center center !important;
+.shirt-color[data-pattern="heather"] .color-swatch {
+  background:
+    repeating-linear-gradient(15deg,
+      var(--swatch) 0 3px,
+      rgba(255,255,255,.18) 3px 4px,
+      var(--swatch) 4px 7px);
 }
 
-#shirtMockup,
-.shirt-mockup {
-  z-index: 1;
+.shirt-color.active .color-swatch {
+  outline: 3px solid var(--accent);
+  outline-offset: 2px;
 }
 
-#shirtColorLayer,
+.color-label {
+  display: block;
+  font-size: 11px;
+  line-height: 1.15;
+  color: #707078;
+  font-weight: 600;
+}
+
 .shirt-color-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   z-index: 2;
-  display: block !important;
   pointer-events: none;
   opacity: 0;
+  background: transparent;
   mix-blend-mode: multiply;
+  -webkit-mask-image: url("farbmaske-front.png");
+  mask-image: url("farbmaske-front.png");
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  transition: background .18s ease, opacity .18s ease;
 }
 
-.print-zone {
-  z-index: 3 !important;
-}
+.shirt-mockup { z-index: 1; mix-blend-mode: normal; }
+.print-zone { z-index: 3; }
 
-@media (max-width:760px) {
-  #shirtMockup,
-  #shirtColorLayer {
-    margin: 0 auto !important;
+@media (max-width:760px){
+  .shirt-colors {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px 9px;
   }
+  .shirt-color { min-height: 55px; }
+  .color-swatch { height: 30px; }
+  .color-label { font-size: 10px; }
 }
