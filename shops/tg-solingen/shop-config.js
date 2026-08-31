@@ -12,7 +12,7 @@ window.SHOP_CONFIG = {
 
   shirtPrice: 15,
   currency: "EUR",
-  orderEmail: "textilien@proton.me",
+  orderEmail: "shirtzentrale@gmail.com",
   orderSubject: "Neue Tanzgruppe Klingenstadt Solingen T-Shirt Bestellung",
   customerExtraFieldLabel: "Mannschaft / Abteilung",
   customerExtraFieldName: "Mannschaft / Abteilung",
