@@ -11,10 +11,10 @@
   <main class="admin-shell">
     <header class="admin-header">
       <div class="brand-row">
-        <img id="adminLogo" src="shop-logo.jpg" alt="Shop Logo" class="admin-logo">
+        <div class="admin-mark" aria-hidden="true">SP</div>
         <div>
           <h1>Bestellungen</h1>
-          <p id="adminBrandTitle">Kundenname</p>
+          <p id="adminBrandTitle">Zentrale Shopverwaltung</p>
         </div>
       </div>
       <button id="logoutBtn" class="ghost-btn" type="button" hidden>Abmelden</button>
@@ -53,6 +53,10 @@
       </div>
 
       <div class="filters panel">
+        <label class="status-filter-field">
+          <span>Kunde / Verein</span>
+          <select id="customerFilter"><option value="Alle">Alle Kunden</option></select>
+        </label>
         <label class="search-field">
           <span>Suche</span>
           <input id="searchInput" type="search" placeholder="Bestellnummer, Name, Klasse …" autocomplete="off">
@@ -74,19 +78,11 @@
     </section>
   </main>
 
-  <script src="shop-config.js?v=24"></script>
-  <script>
-    (function(){
-      const c=window.SHOP_CONFIG||{};
-      if(c.brandTitle){document.title=c.brandTitle+" – Bestellungen";const t=document.getElementById("adminBrandTitle");if(t)t.textContent=c.brandTitle;}
-      const l=document.getElementById("adminLogo");if(l&&c.logoFile){l.src=c.logoFile;l.alt=c.brandTitle||"Shop Logo";}
-      if(c.accentColor)document.documentElement.style.setProperty("--accent",c.accentColor);
-    })();
-  </script>
+  <script src="/central-config.js?v=25"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="admin.js?v=24"></script>
+  <script src="/admin.js?v=25"></script>
 </body>
 </html>

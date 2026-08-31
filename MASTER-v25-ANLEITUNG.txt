@@ -1,0 +1,49 @@
+MASTER-v25 – ZENTRALES MEHRKUNDEN-SYSTEM
+=========================================
+
+ZIEL
+----
+Nur EIN Firebase-Projekt, EIN Admin-Konto, EIN GitHub-Secret und EIN Hosting-Workflow für alle Shops.
+
+NEUEN KUNDEN ANLEGEN (danach der normale Ablauf)
+--------------------------------------------------
+1. Ordner /shops/_template kopieren.
+2. Kopie z. B. /shops/verein-xyz nennen.
+3. Nur /shops/verein-xyz/shop-config.js anpassen:
+   - customerId
+   - customerName / Texte
+   - accentColor
+   - shirtPrice
+   - orderEmail
+   - orderPrefix
+   - Motive
+4. shop-logo.png und motiv-*.png ersetzen.
+5. In GitHub hochladen / committen.
+6. Fertig: der bestehende zentrale Workflow veröffentlicht automatisch.
+
+URL
+---
+Jeder Shop läuft unter demselben Hosting, z. B.:
+https://DEIN-PROJEKT.web.app/tg-solingen/
+https://DEIN-PROJEKT.web.app/verein-xyz/
+
+ADMIN
+-----
+https://DEIN-PROJEKT.web.app/admin.html
+Der Admin zeigt alle Bestellungen und besitzt zusätzlich einen Kunden-/Vereinsfilter.
+
+BESTELLUNGEN
+------------
+Alle Bestellungen liegen zentral in Firestore /orders.
+Jede Bestellung enthält customerId und customerName.
+Die Bestellnummer wird pro Kunde über /counters/{customerId} hochgezählt.
+
+EINMALIGE EINRICHTUNG FÜR V25
+------------------------------
+1. Ein neutrales zentrales Firebase-Projekt verwenden/erstellen (empfohlen: shirtprojekt-zentral).
+2. Hosting, Firestore und Authentication dort EINMAL aktivieren.
+3. Admin-Nutzer textilien@proton.me EINMAL anlegen.
+4. firestore.rules EINMAL veröffentlichen.
+5. In .github/workflows/firebase-hosting.yml einmal die projectId setzen.
+6. GitHub-Secret FIREBASE_SERVICE_ACCOUNT_CENTRAL EINMAL anlegen.
+Ab dann braucht kein neuer Kunde Firebase/Auth/Secret mehr.

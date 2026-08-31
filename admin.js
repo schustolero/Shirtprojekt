@@ -1,4 +1,6 @@
-const ADMIN_EMAIL = "textilien@proton.me";
+const CENTRAL = window.CENTRAL_CONFIG || {};
+const ADMIN_EMAIL = String(CENTRAL.adminEmail || "textilien@proton.me").toLowerCase();
+if (CENTRAL.adminTitle) document.title = CENTRAL.adminTitle;
 const auth = firebase.auth();
 const db = firebase.firestore();
 const loginCard = document.getElementById("loginCard");
@@ -15,6 +17,7 @@ const statRevenue = document.getElementById("statRevenue");
 const lastUpdate = document.getElementById("lastUpdate");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
+const customerFilter = document.getElementById("customerFilter");
 let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
@@ -30,7 +33,7 @@ async function loadOrders(){
   try{
     const snap = await db.collection("orders").orderBy("createdAt","desc").get();
     loadedOrders = snap.docs.map(doc => ({ id: doc.id, order: doc.data() }));
-    updateStats(loadedOrders);
+    refreshCustomerFilter();
     applyFilters();
     lastUpdate.textContent = `Aktualisiert: ${new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`;
   }catch(err){
@@ -55,21 +58,38 @@ function updateStats(entries){
 function searchableText(entry){
   const o = entry.order || {};
   return [
-    o.orderNumber, entry.id, o.name, o.customerClass, o.email, o.phone, o.status,
+    o.orderNumber, entry.id, o.customerId, o.customerName, o.name, o.customerClass, o.email, o.phone, o.status,
     ...(Array.isArray(o.items) ? o.items.flatMap(item => [item.size,item.shirtColor,item.motif,item.motifColor]) : [])
   ].filter(Boolean).join(" ").toLowerCase();
+}
+
+function refreshCustomerFilter(){
+  if(!customerFilter)return;
+  const previous=customerFilter.value||"Alle";
+  const customers=new Map();
+  loadedOrders.forEach(({order})=>{
+    const id=order.customerId||"ohne-kunde";
+    customers.set(id,order.customerName||id);
+  });
+  customerFilter.replaceChildren();
+  const all=document.createElement("option");all.value="Alle";all.textContent="Alle Kunden";customerFilter.appendChild(all);
+  [...customers.entries()].sort((x,y)=>x[1].localeCompare(y[1],"de")).forEach(([id,name])=>{const o=document.createElement("option");o.value=id;o.textContent=name;customerFilter.appendChild(o)});
+  customerFilter.value=[...customerFilter.options].some(o=>o.value===previous)?previous:"Alle";
 }
 
 function applyFilters(){
   const query = (searchInput.value || "").trim().toLowerCase();
   const selectedStatus = statusFilter.value || "Alle";
+  const selectedCustomer = customerFilter ? (customerFilter.value || "Alle") : "Alle";
   const filtered = loadedOrders.filter(entry => {
     const status = entry.order.status || "Neu";
     const statusMatch = selectedStatus === "Alle" || status === selectedStatus;
+    const customerMatch = selectedCustomer === "Alle" || (entry.order.customerId || "ohne-kunde") === selectedCustomer;
     const searchMatch = !query || searchableText(entry).includes(query);
-    return statusMatch && searchMatch;
+    return statusMatch && customerMatch && searchMatch;
   });
 
+  updateStats(filtered);
   ordersList.replaceChildren();
   filtered.forEach(entry => ordersList.appendChild(renderOrder(entry.id, entry.order)));
   ordersMessage.textContent = loadedOrders.length === 0 ? "Keine Bestellungen vorhanden." : "Keine passenden Bestellungen gefunden.";
@@ -81,8 +101,9 @@ function renderOrder(id,order){
   const top=document.createElement("div");top.className="order-top";
   const title=document.createElement("div");
   const number=document.createElement("div");number.className="order-number";number.textContent=text(order.orderNumber,id);
+  const customerTag=document.createElement("div");customerTag.className="order-customer";customerTag.textContent=text(order.customerName||order.customerId,"Unbekannter Kunde");
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
-  title.append(number,date);
+  title.append(number,customerTag,date);
   const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
   STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
   status.addEventListener("change",async()=>{
@@ -121,6 +142,7 @@ logoutBtn.addEventListener("click",()=>auth.signOut());
 refreshBtn.addEventListener("click",loadOrders);
 searchInput.addEventListener("input", applyFilters);
 statusFilter.addEventListener("change", applyFilters);
+if(customerFilter)customerFilter.addEventListener("change", applyFilters);
 
 auth.onAuthStateChanged(user=>{
   const admin = user && (user.email||"").toLowerCase()===ADMIN_EMAIL;

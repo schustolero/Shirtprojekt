@@ -1,11 +1,26 @@
 // Shop-/Vereinsbranding aus shop-config.js anwenden.
 const SHOP = window.SHOP_CONFIG || {};
+const FEATURES = Object.assign({
+  layout: "simple",
+  motifMode: "single",          // single | multiple | upload | mixed
+  allowCustomerUpload: false,
+  allowText: false,
+  allowMoveMotif: false,
+  allowResizeMotif: false,
+  allowRotateMotif: false,
+  allowBackDesign: true,
+  allowMotifColor: true,
+  autoSelectSingleMotif: true,
+  maxUploadMB: 8
+}, SHOP.features || {});
+
+function featureEnabled(name) { return FEATURES[name] !== false; }
 (function applyShopConfig() {
   const cfg = SHOP;
   if (cfg.pageTitle) document.title = cfg.pageTitle;
   const setText = (id, value) => {
     const el = document.getElementById(id);
-    if (el && value) el.textContent = value;
+    if (el && value !== undefined && value !== null) el.textContent = value;
   };
   setText("brandTitle", cfg.brandTitle);
   setText("brandSubtitle", cfg.brandSubtitle);
@@ -22,19 +37,68 @@ const SHOP = window.SHOP_CONFIG || {};
   const subject = document.getElementById("formSubject");
   if (subject && cfg.orderSubject) subject.value = cfg.orderSubject;
   const next = document.getElementById("formNext");
-  if (next && cfg.thankYouUrl) next.value = new URL(cfg.thankYouUrl, window.location.href).href;
+  if (next) next.value = new URL(`/danke.html?shop=${encodeURIComponent(cfg.customerId || window.SHOP_SLUG || "")}`, window.location.origin).href;
 
   if (cfg.logoFile) {
     const brand = document.querySelector(".brand");
     if (brand) {
       const img = document.createElement("img");
-      img.src = cfg.logoFile;
+      img.src = window.shopAssetUrl ? window.shopAssetUrl(cfg.logoFile) : cfg.logoFile;
       img.alt = cfg.brandTitle || "Shop Logo";
       img.className = "shop-brand-logo";
       img.style.height = `${Number(cfg.logoHeight) || 52}px`;
       img.onerror = () => img.remove();
       brand.prepend(img);
     }
+  }
+
+  document.body.dataset.shopLayout = FEATURES.layout || "simple";
+
+  const motifSection = document.querySelector(".motif-section");
+  const motifColorSection = document.querySelector(".motif-color-section");
+  const viewSection = document.querySelector(".view-section");
+  const motifHelp = document.querySelector(".motif-help");
+  const backButton = document.querySelector('.view-btn[data-view="back"]');
+
+  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
+  const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
+  if (motifSection) motifSection.hidden = !showPresetMotifs;
+  if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor;
+  if (backButton) backButton.hidden = !FEATURES.allowBackDesign;
+  if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
+  if (motifHelp) {
+    motifHelp.textContent = FEATURES.allowMoveMotif || FEATURES.allowResizeMotif
+      ? "Motiv auswählen und anschließend auf dem Shirt anpassen."
+      : "Motiv auswählen. Es wird automatisch fest platziert.";
+  }
+
+  const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
+
+  if (FEATURES.allowCustomerUpload) {
+    const uploadSection = document.createElement("section");
+    uploadSection.className = "tool-section customer-upload-section";
+    uploadSection.innerHTML = `
+      <h3>Eigenes Logo</h3>
+      <label class="upload-btn">Logo hochladen<input id="customerLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label>
+      <p class="hint">PNG, JPG, WEBP oder SVG · max. ${Number(FEATURES.maxUploadMB) || 8} MB</p>`;
+    insertAfter(motifSection || document.querySelector(".color-section"), uploadSection);
+  }
+
+  if (FEATURES.allowText) {
+    const textSection = document.createElement("section");
+    textSection.className = "tool-section text-section";
+    textSection.innerHTML = `
+      <h3>Eigener Text</h3>
+      <div class="feature-row"><input id="customTextInput" class="feature-input" type="text" maxlength="40" placeholder="Text eingeben"><button id="addTextBtn" type="button" class="secondary-btn compact-btn">Hinzufügen</button></div>`;
+    const anchor = document.querySelector(".customer-upload-section") || motifSection || document.querySelector(".color-section");
+    insertAfter(anchor, textSection);
+  }
+
+  const footer = document.querySelector(".designer-footer");
+  if (footer) {
+    footer.textContent = FEATURES.allowMoveMotif || FEATURES.allowResizeMotif
+      ? "Element auswählen und direkt auf dem Shirt positionieren."
+      : "Das gewählte Motiv wird automatisch auf dem Shirt platziert.";
   }
 
   const motifGrid = document.getElementById("motifGrid");
@@ -45,12 +109,12 @@ const SHOP = window.SHOP_CONFIG || {};
       btn.type = "button";
       btn.className = "motif-btn";
       btn.dataset.motif = motif.id;
-      btn.dataset.src = motif.file;
+      btn.dataset.src = window.shopAssetUrl ? window.shopAssetUrl(motif.file) : motif.file;
       btn.setAttribute("aria-label", `${motif.name || motif.id} Motiv`);
       const preview = document.createElement("span");
       preview.className = "motif-preview";
       const img = document.createElement("img");
-      img.src = motif.file;
+      img.src = window.shopAssetUrl ? window.shopAssetUrl(motif.file) : motif.file;
       img.alt = motif.name || motif.id;
       const label = document.createElement("span");
       label.textContent = motif.name || motif.id;
@@ -258,19 +322,24 @@ function applyFixedMotifLayout(image, motifId) {
   const maxWidth = canvas.width * layout.maxWidth;
   const maxHeight = canvas.height * layout.maxHeight;
   const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
+  const movable = !!FEATURES.allowMoveMotif;
+  const resizable = !!FEATURES.allowResizeMotif;
+  const rotatable = !!FEATURES.allowRotateMotif;
+  const editable = movable || resizable || rotatable;
   image.set({
     left: canvas.width * layout.left,
     top: canvas.height * layout.top,
     originX: "center", originY: "center",
     angle: 0,
     scaleX: scale, scaleY: scale,
-    selectable: false, evented: false,
-    hasControls: false, hasBorders: false,
-    lockMovementX: true, lockMovementY: true,
-    lockScalingX: true, lockScalingY: true,
-    lockRotation: true,
-    hoverCursor: "default"
+    selectable: editable, evented: editable,
+    hasControls: resizable || rotatable, hasBorders: editable,
+    lockMovementX: !movable, lockMovementY: !movable,
+    lockScalingX: !resizable, lockScalingY: !resizable,
+    lockRotation: !rotatable,
+    hoverCursor: editable ? "move" : "default"
   });
+  if (image.setControlsVisibility) image.setControlsVisibility({ mtr: rotatable });
   image.setCoords();
 }
 
@@ -322,7 +391,7 @@ async function recolorActiveMotif(color, label) {
     await new Promise(resolve => requestAnimationFrame(resolve));
   }
 
-  const object = canvas.getObjects().find(obj => obj && obj.motifSrc && obj.type === "image");
+  const object = canvas.getObjects().find(obj => obj && obj.motifSrc && obj.type === "image" && obj.motifKind !== "upload");
   if (!object) return;
 
   const oldWidth = object.getScaledWidth();
@@ -345,6 +414,64 @@ async function recolorActiveMotif(color, label) {
 motifColorButtons.forEach(button => button.addEventListener("click", () => {
   recolorActiveMotif(button.dataset.color, button.dataset.name);
 }));
+
+const customerLogoUpload = document.getElementById("customerLogoUpload");
+if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+  const maxBytes = (Number(FEATURES.maxUploadMB) || 8) * 1024 * 1024;
+  if (file.size > maxBytes) {
+    alert(`Die Datei ist zu groß. Maximal ${Number(FEATURES.maxUploadMB) || 8} MB.`);
+    event.target.value = "";
+    return;
+  }
+  if (!/^image\//.test(file.type)) { alert("Bitte eine Bilddatei auswählen."); return; }
+  const reader = new FileReader();
+  reader.onload = () => {
+    if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
+    fabric.Image.fromURL(reader.result, function(image) {
+      if (FEATURES.motifMode !== "mixed") canvas.clear();
+      const maxWidth = canvas.width * 0.72;
+      const maxHeight = canvas.height * 0.36;
+      const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
+      const movable = !!FEATURES.allowMoveMotif;
+      const resizable = !!FEATURES.allowResizeMotif;
+      const rotatable = !!FEATURES.allowRotateMotif;
+      image.set({
+        left: canvas.width / 2, top: canvas.height * 0.31, originX: "center", originY: "center",
+        scaleX: scale, scaleY: scale, motifId: "customer-upload", motifSrc: reader.result, motifName: file.name, motifKind: "upload",
+        selectable: movable || resizable || rotatable, evented: movable || resizable || rotatable,
+        hasControls: resizable || rotatable, hasBorders: movable || resizable || rotatable,
+        lockMovementX: !movable, lockMovementY: !movable, lockScalingX: !resizable, lockScalingY: !resizable, lockRotation: !rotatable
+      });
+      if (image.setControlsVisibility) image.setControlsVisibility({ mtr: rotatable });
+      canvas.add(image);
+      if (image.selectable) canvas.setActiveObject(image); else canvas.discardActiveObject();
+      canvas.requestRenderAll();
+      saveCurrentView();
+      motifButtons.forEach(btn => btn.classList.remove("active"));
+      event.target.dataset.selectedName = file.name;
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+const customTextInput = document.getElementById("customTextInput");
+const addTextBtn = document.getElementById("addTextBtn");
+if (addTextBtn && customTextInput) addTextBtn.addEventListener("click", function() {
+  const value = customTextInput.value.trim();
+  if (!value) return;
+  const text = new fabric.Textbox(value, {
+    left: canvas.width / 2, top: canvas.height * 0.56, originX: "center", originY: "center",
+    width: canvas.width * 0.7, textAlign: "center", fontSize: 28, fontWeight: 700, fill: currentMotifColor,
+    editable: true, selectable: true, motifKind: "text", motifName: value
+  });
+  canvas.add(text);
+  canvas.setActiveObject(text);
+  canvas.requestRenderAll();
+  saveCurrentView();
+  customTextInput.value = "";
+});
 
 resetBtn.addEventListener("click", function() {
   viewStates.front = null; viewStates.back = null;
@@ -394,8 +521,9 @@ const formOrderNumber = document.getElementById("formOrderNumber");
 const formTotalPrice = document.getElementById("formTotalPrice");
 
 const SHIRT_PRICE = Number(SHOP.shirtPrice) || 15;
-const ORDER_PREFIX = SHOP.orderPrefix || "SHOP-260901";
-const ORDER_COUNTER_DOC = SHOP.orderCounterDoc || "counters/orderCounter";
+const ORDER_PREFIX = SHOP.orderPrefix || String(SHOP.customerId || "SHOP").toUpperCase().replace(/[^A-Z0-9]+/g,"-").slice(0,12);
+const CUSTOMER_ID = SHOP.customerId || window.SHOP_SLUG || "unknown";
+const ORDER_COUNTER_DOC = `counters/${CUSTOMER_ID}`;
 let orderItems = [];
 let firestoreDb = null;
 
@@ -432,8 +560,12 @@ async function createCentralOrderNumber() {
 
 function getSelectedMotifName() {
   const active = document.querySelector(".motif-btn.active");
-  if (!active) return "Noch kein Motiv gewählt";
-  return active.textContent.replace(/\s+/g, " ").trim();
+  if (active) return active.textContent.replace(/\s+/g, " ").trim();
+  const uploaded = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
+  if (uploaded) return `Eigenes Logo (${uploaded.motifName || "Upload"})`;
+  const text = canvas.getObjects().find(obj => obj && obj.motifKind === "text");
+  if (text) return `Eigener Text: ${text.text || text.motifName || "Text"}`;
+  return "Noch kein Motiv gewählt";
 }
 
 function summaryRow(label, value) {
@@ -452,14 +584,15 @@ function getCurrentShirtSelection() {
   const quantity = Math.max(1, Math.min(99, Number(shirtQuantity.value) || 1));
   shirtQuantity.value = quantity;
   const activeMotif = document.querySelector(".motif-btn.active");
+  const hasCustomDesign = canvas.getObjects().some(obj => obj && (obj.motifKind === "upload" || obj.motifKind === "text"));
 
   if (!size) {
     orderMessage.textContent = "Bitte zuerst eine Größe auswählen.";
     shirtSize.focus();
     return null;
   }
-  if (!activeMotif) {
-    orderMessage.textContent = "Bitte zuerst ein Motiv auswählen.";
+  if (!activeMotif && !hasCustomDesign) {
+    orderMessage.textContent = FEATURES.allowCustomerUpload ? "Bitte zuerst ein Motiv auswählen oder eigenes Logo hochladen." : "Bitte zuerst ein Motiv auswählen.";
     return null;
   }
 
@@ -616,6 +749,9 @@ if (orderForm) {
       const phone = document.getElementById("customerPhone").value.trim();
       const orderPayload = {
         orderNumber,
+        customerId: CUSTOMER_ID,
+        customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
+        sourcePath: window.location.pathname,
         name,
         customerClass,
         email,
@@ -639,8 +775,10 @@ if (orderForm) {
       await getFirestoreDb().collection("orders").doc(orderNumber).set(orderPayload);
 
       try {
-        sessionStorage.setItem(SHOP.confirmationStorageKey || "shirtOrderConfirmation", JSON.stringify({
+        sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify({
           orderNumber,
+          customerId: CUSTOMER_ID,
+          customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
           name,
           customerClass,
           email,
@@ -666,3 +804,7 @@ if (orderForm) {
 // Startzustand
 changeShirtColor("#ffffff", "White", "weiss", "");
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
+if (FEATURES.autoSelectSingleMotif && motifButtons.length === 1 && FEATURES.motifMode === "single") {
+  const only = motifButtons[0];
+  addSelectedMotif(only.dataset.motif, only.dataset.src);
+}

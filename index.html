@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="style.css?v=16">
+  <link rel="stylesheet" href="/style.css?v=25.1">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -285,12 +285,19 @@
   </div>
 </div>
 
-<script src="shop-config.js?v=24"></script>
+<script src="/central-config.js?v=25.1"></script>
+<script src="/shop-loader.js?v=25.1"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="script.js?v=24"></script>
+<script>
+  loadShopConfig(function(){
+    const app=document.createElement("script");
+    app.src="/script.js?v=25.1";
+    document.body.appendChild(app);
+  });
+</script>
 
 </body>
 </html>

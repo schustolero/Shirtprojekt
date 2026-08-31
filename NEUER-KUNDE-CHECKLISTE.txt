@@ -1,0 +1,14 @@
+NEUER KUNDE – 5 SCHRITTE
+========================
+1. /shops/_template kopieren und Ordner nach customerId benennen.
+2. shop-config.js anpassen.
+3. Logo einsetzen.
+4. Motive einsetzen.
+5. Commit/Upload – automatische Veröffentlichung startet.
+
+Keine neue Firebase-App.
+Keine neue Firestore-Datenbank.
+Keine neuen Regeln.
+Kein neues Admin-Konto.
+Kein neuer Service-Account.
+Kein neues GitHub-Secret.

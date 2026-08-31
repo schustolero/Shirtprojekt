@@ -1,0 +1,92 @@
+SHIRTPROJEKT MASTER-v25.1 – FLEXIBLE KUNDENSHOPS
+=================================================
+
+ZIEL
+----
+Ein zentrales System (Firebase, Admin, Bestellungen), aber jeder Kunde kann ein anderes
+Shop-Verhalten und Layout bekommen. Neue Kunden benötigen nur einen eigenen Ordner unter /shops/.
+
+NEUER KUNDE – KURZABLAUF
+------------------------
+1. Ordner /shops/_template kopieren und z. B. in /shops/verein-xyz umbenennen.
+2. In shop-config.js Name, Farbe, Preis, E-Mail und Funktionen einstellen.
+3. shop-logo.png und die gewünschten Motivdateien ersetzen/hinzufügen.
+4. Änderungen veröffentlichen.
+5. Shop aufrufen: /?shop=verein-xyz (oder später über eine eigene Shop-URL).
+
+FUNKTIONEN PRO KUNDE
+--------------------
+In shop-config.js gibt es jetzt den Block "features".
+
+layout
+  simple   = klassischer, ruhiger Shop
+  compact  = schmalere Bedienleiste / kompakter
+  designer = stärkerer Designer-Look mit sichtbarer Druckzone
+
+motifMode
+  single   = ein vorgegebenes Motiv (ideal für Vereine mit nur einem Logo)
+  multiple = mehrere vorgegebene Motive zur Auswahl
+  upload   = nur Kunden-Upload, keine vorgegebenen Motive
+  mixed    = vorgegebene Motive + Kunden-Upload
+
+allowCustomerUpload
+  true  = Kunde darf eigenes PNG/JPG/WEBP/SVG hochladen
+  false = kein eigener Upload
+
+allowText
+  true  = eigener Text kann hinzugefügt werden
+  false = keine Textfunktion
+
+allowMoveMotif / allowResizeMotif / allowRotateMotif
+  Legt fest, ob Motive/Uploads verschoben, skaliert oder gedreht werden dürfen.
+
+allowBackDesign
+  true  = Vorder- und Rückseite verfügbar
+  false = nur Vorderseite
+
+allowMotifColor
+  true  = Motivfarb-Auswahl wird angezeigt
+  false = Motivfarben bleiben wie in der Datei
+
+autoSelectSingleMotif
+  true = bei genau einem Motiv wird dieses automatisch eingesetzt
+
+maxUploadMB
+  Maximale Dateigröße für Kunden-Uploads.
+
+TYPISCHE SHOP-TYPEN
+-------------------
+A) VEREIN – NUR EIN LOGO
+  motifMode: "single"
+  allowCustomerUpload: false
+  allowMoveMotif: false
+  allowResizeMotif: false
+  allowRotateMotif: false
+  autoSelectSingleMotif: true
+
+B) VEREIN – MEHRERE MOTIVE
+  motifMode: "multiple"
+  motifs: mehrere Einträge
+  allowCustomerUpload: false
+
+C) FIRMA – EIGENES LOGO HOCHLADEN
+  motifMode: "upload"
+  allowCustomerUpload: true
+  allowMoveMotif: true
+  allowResizeMotif: true
+  allowRotateMotif: false oder true
+  allowMotifColor: false
+
+D) FREIER DESIGNER
+  layout: "designer"
+  motifMode: "mixed"
+  allowCustomerUpload: true
+  allowText: true
+  allowMoveMotif: true
+  allowResizeMotif: true
+  allowRotateMotif: true
+
+TG SOLINGEN
+-----------
+TG Solingen ist als Beispiel für Typ A bereits enthalten: ein festes Vereinslogo,
+kein Kunden-Upload und automatische Platzierung.

@@ -1,0 +1,62 @@
+SHOP-CONFIG – SCHNELLE FEATURE-BEISPIELE
+========================================
+
+1) Nur ein festes Vereinslogo
+features: {
+  layout: "simple",
+  motifMode: "single",
+  allowCustomerUpload: false,
+  allowText: false,
+  allowMoveMotif: false,
+  allowResizeMotif: false,
+  allowRotateMotif: false,
+  allowBackDesign: true,
+  allowMotifColor: true,
+  autoSelectSingleMotif: true,
+  maxUploadMB: 8
+}
+
+2) Mehrere Vereinsmotive, Kunde darf nur auswählen
+features: {
+  layout: "simple",
+  motifMode: "multiple",
+  allowCustomerUpload: false,
+  allowText: false,
+  allowMoveMotif: false,
+  allowResizeMotif: false,
+  allowRotateMotif: false,
+  allowBackDesign: true,
+  allowMotifColor: true,
+  autoSelectSingleMotif: false,
+  maxUploadMB: 8
+}
+
+3) Kunde lädt eigenes Logo hoch und darf es positionieren
+features: {
+  layout: "designer",
+  motifMode: "upload",
+  allowCustomerUpload: true,
+  allowText: false,
+  allowMoveMotif: true,
+  allowResizeMotif: true,
+  allowRotateMotif: true,
+  allowBackDesign: true,
+  allowMotifColor: false,
+  autoSelectSingleMotif: false,
+  maxUploadMB: 8
+}
+
+4) Freier Designer: Vorlagen + Upload + Text
+features: {
+  layout: "designer",
+  motifMode: "mixed",
+  allowCustomerUpload: true,
+  allowText: true,
+  allowMoveMotif: true,
+  allowResizeMotif: true,
+  allowRotateMotif: true,
+  allowBackDesign: true,
+  allowMotifColor: true,
+  autoSelectSingleMotif: false,
+  maxUploadMB: 8
+}

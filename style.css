@@ -839,3 +839,34 @@ input {
 }
 
 .order-price-info{margin:0 0 12px;color:var(--muted);font-size:12px}.order-price-info strong{color:var(--text)}
+
+/* ==========================================================
+   MASTER-v25.1 – optionale Shop-Funktionen / Layouts
+   ========================================================== */
+[hidden] { display: none !important; }
+
+.customer-upload-section .upload-btn { margin-top: 2px; }
+.feature-row { display: grid; grid-template-columns: 1fr auto; gap: 8px; align-items: center; }
+.feature-input {
+  width: 100%; min-width: 0; padding: 10px 11px; border: 1px solid #d9d9df;
+  border-radius: 9px; background: #fff; color: #202026;
+}
+.feature-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; border-color: transparent; }
+.compact-btn { width: auto; white-space: nowrap; padding-inline: 12px; }
+
+body[data-shop-layout="compact"] .sidebar { width: 290px; min-width: 290px; padding: 22px; }
+body[data-shop-layout="compact"] .tool-section { padding: 16px 0; }
+body[data-shop-layout="compact"] .motif-colors { max-height: 360px; }
+
+body[data-shop-layout="designer"] .sidebar { width: 370px; min-width: 370px; }
+body[data-shop-layout="designer"] .workspace { background: radial-gradient(circle at center, #fff 0%, #f5f6f8 44%, #e7e9ed 100%); }
+body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.12); outline-offset: 5px; }
+
+@media (max-width: 900px) {
+  .customer-upload-section { order: 5; }
+  .text-section { order: 6; }
+  .motif-section { order: 7; }
+  .motif-color-section { order: 8; }
+  .order-section { order: 9; }
+  .sidebar-bottom { order: 10; }
+}
