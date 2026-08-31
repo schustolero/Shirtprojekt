@@ -148,6 +148,13 @@ const currentColorName = document.getElementById("currentColorName");
 const currentMotifColorName = document.getElementById("currentMotifColorName");
 const designerStatus = document.getElementById("designerStatus");
 const printZone = document.getElementById("printZone");
+const workspace = document.querySelector(".workspace");
+const dualWorkspace = document.getElementById("dualWorkspace");
+const viewSection = document.querySelector(".view-section");
+const dualFrontShirt = document.getElementById("dualFrontShirt");
+const dualBackShirt = document.getElementById("dualBackShirt");
+const dualFrontMotif = document.getElementById("dualFrontMotif");
+const dualBackMotif = document.getElementById("dualBackMotif");
 
 let currentView = "front";
 let currentShirtColor = "#ffffff";
@@ -188,15 +195,10 @@ function getBaseImage(view) {
   });
 }
 
-async function renderShirt() {
-  const viewAtStart = currentView;
+async function renderShirtImage(view) {
   try {
-    const base = await getBaseImage(viewAtStart);
-    if (viewAtStart !== currentView) return;
-    if (currentShirtColorId === "weiss") {
-      shirtMockup.src = getBaseSrc(currentView);
-      return;
-    }
+    const base = await getBaseImage(view);
+    if (currentShirtColorId === "weiss") return getBaseSrc(view);
     const c = document.createElement("canvas");
     c.width = base.naturalWidth || base.width;
     c.height = base.naturalHeight || base.height;
@@ -219,11 +221,76 @@ async function renderShirt() {
       ctx.globalAlpha = 1;
     }
     ctx.globalCompositeOperation = "source-over";
-    shirtMockup.src = c.toDataURL("image/png");
+    return c.toDataURL("image/png");
   } catch (err) {
     console.error("Shirt rendering failed", err);
-    shirtMockup.src = getBaseSrc(currentView);
+    return getBaseSrc(view);
   }
+}
+
+async function renderShirt() {
+  const viewAtStart = currentView;
+  const src = await renderShirtImage(viewAtStart);
+  if (viewAtStart !== currentView) return;
+  shirtMockup.src = src;
+  if (FEATURES.previewMode === "dual") renderDualPreview();
+}
+
+function getConfiguredMotif(view) {
+  const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
+  if (!cfg || !cfg.enabled) return null;
+  const motif = (SHOP.motifs || []).find(m => m.id === cfg.motifId) || (SHOP.motifs || [])[0];
+  if (!motif) return null;
+  return { cfg, motif };
+}
+
+function applyDualMotifLayout(img, view, cfg) {
+  if (!img || !cfg) return;
+  const size = cfg.size || "medium";
+  const widths = { small: 24, medium: 52, large: 78 };
+  const maxHeights = { small: 20, medium: 38, large: 58 };
+  const top = Math.max(10, Math.min(70, Number(cfg.topPct) || (view === "front" ? 24 : 36)));
+  let left = 50;
+  if (view === "front" && (cfg.position || "center") === "left-chest") {
+    const side = Math.max(15, Math.min(50, Number(cfg.sidePct) || 32));
+    left = 100 - side;
+  }
+  img.style.left = `${left}%`;
+  img.style.top = `${top}%`;
+  img.style.maxWidth = `${widths[size] || widths.medium}%`;
+  img.style.maxHeight = `${maxHeights[size] || maxHeights.medium}%`;
+}
+
+async function renderDualMotif(view, img) {
+  if (!img) return;
+  const entry = getConfiguredMotif(view);
+  if (!entry) { img.hidden = true; img.removeAttribute("src"); return; }
+  try {
+    const src = window.shopAssetUrl ? window.shopAssetUrl(entry.motif.file) : entry.motif.file;
+    img.src = await recolorMotifSource(src, currentMotifColor);
+    img.hidden = false;
+    applyDualMotifLayout(img, view, entry.cfg);
+  } catch (err) {
+    console.error(`Doppelansicht-Motiv ${view} konnte nicht geladen werden`, err);
+    img.hidden = true;
+  }
+}
+
+async function renderDualPreview() {
+  if (FEATURES.previewMode !== "dual" || !dualWorkspace) return;
+  const [frontSrc, backSrc] = await Promise.all([renderShirtImage("front"), renderShirtImage("back")]);
+  if (dualFrontShirt) dualFrontShirt.src = frontSrc;
+  if (dualBackShirt) dualBackShirt.src = backSrc;
+  await Promise.all([renderDualMotif("front", dualFrontMotif), renderDualMotif("back", dualBackMotif)]);
+}
+
+function applyPreviewMode() {
+  const dual = FEATURES.previewMode === "dual";
+  if (workspace) workspace.hidden = dual;
+  if (dualWorkspace) dualWorkspace.hidden = !dual;
+  if (viewSection) viewSection.hidden = dual;
+  if (designerStatus) designerStatus.textContent = dual ? "Vorder- & Rückseite" : (currentView === "back" ? "Rückseite" : "Vorderseite");
+  if (dual) renderDualPreview();
 }
 
 function getActiveObject() { return canvas.getActiveObject(); }
@@ -272,6 +339,7 @@ function changeShirtColor(color, name, colorId, pattern) {
   currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
   renderShirt();
+  if (FEATURES.previewMode === "dual") renderDualPreview();
 }
 
 shirtColorButtons.forEach(button => button.addEventListener("click", () => {
@@ -421,6 +489,7 @@ async function recolorActiveMotif(color, label) {
   currentMotifColorLabel = label;
   currentMotifColorName.textContent = label;
   updateActiveMotifColorButton(color, label);
+  if (FEATURES.previewMode === "dual") await renderDualPreview();
 
   // Die Motive sind absichtlich nicht auswählbar. Daher direkt das feste Motiv einfärben.
   if (currentView !== "front") {
@@ -881,5 +950,8 @@ async function initializeFixedPrints() {
     if (btn) await addMotifToView("back", btn.dataset.motif, btn.dataset.src, false);
   }
   if (currentView !== "front") switchView("front");
+  applyPreviewMode();
+  if (FEATURES.previewMode === "dual") await renderDualPreview();
 }
+applyPreviewMode();
 initializeFixedPrints();

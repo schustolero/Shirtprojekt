@@ -1,0 +1,4 @@
+Master v27.6 – Doppelansicht
+
+Im Admin unter Shops verwalten > Darstellung > Shop-Vorschau kann zwischen Einzelansicht mit Umschalter und Doppelansicht Front + Rücken gewählt werden.
+Die Doppelansicht ist als eigener Layout-Modus aufgebaut und verändert die Einzelansicht nicht.

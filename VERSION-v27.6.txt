@@ -1,0 +1,6 @@
+Master v27.6
+- Einzelansicht mit Umschalter bleibt erhalten.
+- Neue stabile Doppelansicht mit zwei getrennten Vorschau-Karten.
+- Desktop: Vorderseite links, Rückseite rechts.
+- Mobil: untereinander.
+- Admin: Shop-Vorschau Einzel/Doppel.

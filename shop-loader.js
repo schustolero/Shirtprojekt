@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=27.5`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=27.6`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -32,12 +32,24 @@
         const snap = await firebase.firestore().collection("shops").doc(slug).get();
         if (snap.exists) {
           const data = snap.data() || {};
-          if (data.active === false) {
+          const seed = (central.seedShops && central.seedShops[slug]) || {};
+          const merged = {
+            ...seed,
+            ...data,
+            features: { ...(seed.features || {}), ...(data.features || {}) },
+            fixedPrint: {
+              ...(seed.fixedPrint || {}),
+              ...(data.fixedPrint || {}),
+              front: { ...((seed.fixedPrint || {}).front || {}), ...((data.fixedPrint || {}).front || {}) },
+              back: { ...((seed.fixedPrint || {}).back || {}), ...((data.fixedPrint || {}).back || {}) }
+            }
+          };
+          if (merged.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;
           }
-          window.SHOP_CONFIG = data;
-          callback && callback(data);
+          window.SHOP_CONFIG = merged;
+          callback && callback(merged);
           return;
         }
       }

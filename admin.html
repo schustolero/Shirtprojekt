@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=27.5">
+  <link rel="stylesheet" href="admin.css?v=27.6">
 </head>
 <body>
   <main class="admin-shell">
@@ -71,6 +71,7 @@
               <div class="form-section"><h3>Darstellung</h3><div class="form-grid">
                 <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
                 <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
                 <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
                 <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
               </div></div>
@@ -118,11 +119,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=27.5"></script>
+  <script src="/central-config.js?v=27.6"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=27.5"></script>
+  <script src="/admin.js?v=27.6"></script>
 </body>
 </html>
