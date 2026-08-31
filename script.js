@@ -332,7 +332,11 @@ function getFixedPrintLayout(motifId) {
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
   if (cfg && cfg.enabled) {
     const key = `${currentView}:${cfg.position || "center"}:${cfg.size || "medium"}`;
-    if (FIXED_MOTIF_LAYOUTS[key]) return FIXED_MOTIF_LAYOUTS[key];
+    if (FIXED_MOTIF_LAYOUTS[key]) {
+      const base = FIXED_MOTIF_LAYOUTS[key];
+      const topPct = Number(cfg.topPct);
+      return Number.isFinite(topPct) ? { ...base, top: Math.max(0.10, Math.min(0.70, topPct / 100)) } : base;
+    }
   }
   return FIXED_MOTIF_LAYOUTS.default;
 }

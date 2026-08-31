@@ -1,0 +1,3 @@
+Master v27.2
+- Höhensteuerung für festen Vorder- und Rückendruck im Admin
+- TG Solingen vorne/hinten höher voreingestellt

@@ -87,10 +87,12 @@
                 <label><span>Vorne Motiv</span><select id="fixedFrontMotif"></select></label>
                 <label><span>Vorne Position</span><select id="fixedFrontPosition"><option value="left-chest">Linke Herzseite</option><option value="center">Mittig</option></select></label>
                 <label><span>Vorne Größe</span><select id="fixedFrontSize"><option value="small">Klein</option><option value="medium">Mittel</option><option value="large">Groß</option></select></label>
+                <label><span>Vorne Höhe – Abstand oben (%)</span><input id="fixedFrontTop" type="number" min="10" max="70" step="1" value="24"><small>Kleinerer Wert = höher.</small></label>
                 <label class="check-row wide"><input id="fixedBackEnabled" type="checkbox"><span>Rückendruck fest aktiv</span></label>
                 <label><span>Hinten Motiv</span><select id="fixedBackMotif"></select></label>
                 <label><span>Hinten Position</span><select id="fixedBackPosition"><option value="center">Mittig</option></select></label>
                 <label><span>Hinten Größe</span><select id="fixedBackSize"><option value="small">Klein</option><option value="medium">Mittel</option><option value="large">Groß</option></select></label>
+                <label><span>Hinten Höhe – Abstand oben (%)</span><input id="fixedBackTop" type="number" min="10" max="70" step="1" value="36"><small>Kleinerer Wert = höher.</small></label>
               </div></div>
 
               <div class="form-section"><h3>Funktionen</h3><div class="feature-grid">
@@ -120,6 +122,6 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=27.1"></script>
+  <script src="/admin.js?v=27.2"></script>
 </body>
 </html>
