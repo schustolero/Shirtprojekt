@@ -14,6 +14,7 @@ const FEATURES = Object.assign({
   showMotifPicker: true,
   showMotifColorPicker: true,
   autoSelectSingleMotif: true,
+  showResetButton: true,
   maxUploadMB: 8
 }, SHOP.features || {});
 
@@ -63,6 +64,7 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
   const viewSection = document.querySelector(".view-section");
   const motifHelp = document.querySelector(".motif-help");
   const backButton = document.querySelector('.view-btn[data-view="back"]');
+  const resetSection = document.querySelector('.sidebar-bottom');
 
   const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
@@ -71,6 +73,7 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
   if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
   if (backButton) backButton.hidden = !FEATURES.allowBackDesign;
   if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
+  if (resetSection && FEATURES.showResetButton === false) resetSection.remove();
   if (motifHelp) {
     motifHelp.textContent = FEATURES.allowMoveMotif || FEATURES.allowResizeMotif
       ? "Motiv auswählen und anschließend auf dem Shirt anpassen."
@@ -251,16 +254,19 @@ function applyDualMotifLayout(img, view, cfg) {
   const widths = { small: 18, medium: 36, large: 54 };
   const maxHeights = { small: 16, medium: 30, large: 46 };
   const top = Math.max(12, Math.min(66, Number(cfg.topPct) || (view === "front" ? 22 : 31)));
+  const shiftX = Number(cfg.shiftXPct) || 0;
+  const scaleFactor = Math.max(0.4, Math.min(1.6, (Number(cfg.scalePct) || 100) / 100));
   let left = 50;
   if (view === "front" && (cfg.position || "center") === "left-chest") {
     // wearer-left = rechts aus Betrachtersicht. Bestehender Admin-Wert bleibt nutzbar.
     const side = Math.max(15, Math.min(50, Number(cfg.sidePct) || 32));
     left = 100 - side;
   }
+  left = Math.max(8, Math.min(92, left + shiftX));
   img.style.left = `${left}%`;
   img.style.top = `${top}%`;
-  img.style.maxWidth = `${widths[size] || widths.medium}%`;
-  img.style.maxHeight = `${maxHeights[size] || maxHeights.medium}%`;
+  img.style.maxWidth = `${(widths[size] || widths.medium) * scaleFactor}%`;
+  img.style.maxHeight = `${(maxHeights[size] || maxHeights.medium) * scaleFactor}%`;
 }
 
 async function getDualBaseImage() {
@@ -458,12 +464,17 @@ function getFixedPrintLayout(motifId) {
       const base = FIXED_MOTIF_LAYOUTS[key];
       const topPct = Number(cfg.topPct);
       const sidePct = Number(cfg.sidePct);
+      const shiftX = Number(cfg.shiftXPct) || 0;
+      const scaleFactor = Math.max(0.4, Math.min(1.6, (Number(cfg.scalePct) || 100) / 100));
       const layout = Number.isFinite(topPct) ? { ...base, top: Math.max(0.10, Math.min(0.70, topPct / 100)) } : { ...base };
       if (currentView === "front" && (cfg.position || "center") === "left-chest" && Number.isFinite(sidePct)) {
         // Wearer's left chest is displayed on the right side of the shirt preview.
         // sidePct is the distance from the outer side: smaller = further outward, larger = toward center.
         layout.left = 1 - Math.max(0.15, Math.min(0.50, sidePct / 100));
       }
+      layout.left = Math.max(0.10, Math.min(0.90, layout.left + (shiftX / 100)));
+      layout.maxWidth = layout.maxWidth * scaleFactor;
+      layout.maxHeight = layout.maxHeight * scaleFactor;
       return layout;
     }
   }
@@ -633,7 +644,7 @@ if (addTextBtn && customTextInput) addTextBtn.addEventListener("click", function
   customTextInput.value = "";
 });
 
-resetBtn.addEventListener("click", function() {
+if (resetBtn) resetBtn.addEventListener("click", function() {
   viewStates.front = null; viewStates.back = null;
   canvas.clear(); canvas.backgroundColor = "transparent";
   currentView = "front";
