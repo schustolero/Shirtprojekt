@@ -1,0 +1,11 @@
+MASTER-v27.5
+===============
+
+Stabile Einzelansicht mit Vorder-/Rückseiten-Umschalter.
+
+- Doppelansicht aus v27.4 wieder entfernt.
+- Vorderseite und Rückseite verwenden dieselbe feste Vorschaugröße.
+- Fabric-Arbeitsfläche auf beiden Seiten identisch: 260 x 340 px.
+- Beim Umschalten springt die Shirt-Vorschau nicht mehr.
+- TG Solingen behält feste Farben und getrennte Front-/Rückdruck-Positionen.
+- Front-Seitenabstand und Höhenwerte bleiben im Admin steuerbar.

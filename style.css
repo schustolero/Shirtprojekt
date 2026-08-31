@@ -279,7 +279,7 @@ input {
 .print-zone {
   position: absolute;
   width: 260px;
-  height: 330px;
+  height: 340px;
   left: 50%;
   top: 47%;
   transform: translate(-50%, -50%);
@@ -291,17 +291,17 @@ input {
 
 .print-zone.back {
   top: 47%;
-  height: 350px;
+  height: 340px;
 }
 
 .canvas-container {
   width: 260px !important;
-  height: 330px !important;
+  height: 340px !important;
 }
 
 .print-zone.back .canvas-container,
 .print-zone.back canvas {
-  height: 350px !important;
+  height: 340px !important;
 }
 
 .designer-footer {
@@ -899,20 +899,24 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   max-height: 320px !important;
 }
 
-/* v27.4: optionale Doppelansicht Vorder-/Rückseite */
-.dual-preview{width:min(1180px,100%);display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center;justify-items:center}
-.dual-preview[hidden]{display:none!important}
-.dual-preview-card{width:100%;min-width:0;text-align:center}
-.dual-label{font-size:13px;font-weight:700;margin-bottom:8px;color:#555}
-.dual-shirt-stage{position:relative;width:min(500px,100%);margin:0 auto;aspect-ratio:.86;display:flex;align-items:center;justify-content:center}
-.dual-shirt{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;pointer-events:none}
-.dual-design{position:absolute;left:50%;top:47%;width:44.1%;height:48%;transform:translate(-50%,-50%);object-fit:contain;pointer-events:none}
-.dual-design-back{height:51%}
-body[data-preview-mode="dual"] .designer-status{display:none}
-@media (max-width:900px){
-  .dual-preview{grid-template-columns:1fr;gap:8px;width:100%}
-  .dual-shirt-stage{width:min(390px,100%);height:380px;aspect-ratio:auto}
-  .dual-preview-card{padding:0 8px}
-  .dual-label{margin:0 0 2px}
-  body[data-preview-mode="dual"] .workspace{height:auto;min-height:780px;align-items:flex-start;padding-top:8px}
+
+/* v27.5: stabile Einzelansicht mit Umschalter.
+   Vorder- und Rückseite benutzen exakt dieselbe Vorschaufläche,
+   damit beim Wechsel weder Shirt noch Layout springen. */
+.mockup-stage {
+  width: min(590px, 75vw);
+  aspect-ratio: 0.86;
+}
+.print-zone,
+.print-zone.back {
+  width: 260px;
+  height: 340px;
+  top: 47%;
+}
+.canvas-container,
+.print-zone canvas,
+.print-zone.back .canvas-container,
+.print-zone.back canvas {
+  width: 260px !important;
+  height: 340px !important;
 }

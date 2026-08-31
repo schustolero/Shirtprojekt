@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=27`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=27.5`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);

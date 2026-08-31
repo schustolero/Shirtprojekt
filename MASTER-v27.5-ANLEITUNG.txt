@@ -1,0 +1,15 @@
+MASTER-v27.5 – UPDATE
+======================
+
+Kompletten Inhalt in das GitHub-Repository Shirtprojekt hochladen und vorhandene Dateien ersetzen.
+Danach den automatischen GitHub-Actions-Deploy abwarten.
+
+TG Solingen testen:
+https://shirtprojekt-zentral.web.app/?shop=tg-solingen
+
+Sollzustand:
+- Umschalter Vorderseite / Rückseite sichtbar
+- exakt gleich große Shirt-Vorschau auf beiden Seiten
+- kein Springen beim Umschalten
+- Vorderdruck klein links auf Brusthöhe
+- Rückendruck groß mittig

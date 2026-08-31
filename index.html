@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=27.1">
+  <link rel="stylesheet" href="/style.css?v=27.5">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -215,24 +215,7 @@
 
     <div class="workspace">
 
-      <div id="dualPreview" class="dual-preview" hidden>
-        <div class="dual-preview-card">
-          <div class="dual-label">Vorderseite</div>
-          <div class="dual-shirt-stage">
-            <img id="dualFrontShirt" class="dual-shirt" alt="T-Shirt Vorderseite">
-            <img id="dualFrontDesign" class="dual-design" alt="Vorderdruck">
-          </div>
-        </div>
-        <div class="dual-preview-card">
-          <div class="dual-label">Rückseite</div>
-          <div class="dual-shirt-stage">
-            <img id="dualBackShirt" class="dual-shirt" alt="T-Shirt Rückseite">
-            <img id="dualBackDesign" class="dual-design dual-design-back" alt="Rückendruck">
-          </div>
-        </div>
-      </div>
-
-      <div class="mockup-stage" id="singlePreview">
+      <div class="mockup-stage">
 
         <img
           id="shirtMockup"
@@ -302,16 +285,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=27.1"></script>
+<script src="/central-config.js?v=27.5"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=27.2"></script>
+<script src="/shop-loader.js?v=27.5"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=27.2";
+    app.src="/script.js?v=27.5";
     document.body.appendChild(app);
   });
 </script>
