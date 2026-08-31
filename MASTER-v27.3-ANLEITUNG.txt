@@ -1,0 +1,8 @@
+MASTER-v27.3
+
+Neu im Adminbereich unter Fester Druck vorne / hinten:
+- Vorne Höhe – Abstand oben (%)
+- Vorne Abstand zur Seite (%)
+- Hinten Höhe – Abstand oben (%)
+
+Kleinerer Seitenabstand = Motiv weiter außen. Größerer Seitenabstand = Motiv weiter Richtung Mitte.

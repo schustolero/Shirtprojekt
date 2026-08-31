@@ -335,7 +335,14 @@ function getFixedPrintLayout(motifId) {
     if (FIXED_MOTIF_LAYOUTS[key]) {
       const base = FIXED_MOTIF_LAYOUTS[key];
       const topPct = Number(cfg.topPct);
-      return Number.isFinite(topPct) ? { ...base, top: Math.max(0.10, Math.min(0.70, topPct / 100)) } : base;
+      const sidePct = Number(cfg.sidePct);
+      const layout = Number.isFinite(topPct) ? { ...base, top: Math.max(0.10, Math.min(0.70, topPct / 100)) } : { ...base };
+      if (currentView === "front" && (cfg.position || "center") === "left-chest" && Number.isFinite(sidePct)) {
+        // Wearer's left chest is displayed on the right side of the shirt preview.
+        // sidePct is the distance from the outer side: smaller = further outward, larger = toward center.
+        layout.left = 1 - Math.max(0.15, Math.min(0.50, sidePct / 100));
+      }
+      return layout;
     }
   }
   return FIXED_MOTIF_LAYOUTS.default;

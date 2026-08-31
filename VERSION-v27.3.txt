@@ -1,0 +1,3 @@
+MASTER-v27.3
+- Admin: Vorderdruck horizontal per Abstand zur Seite (%) steuerbar.
+- TG Solingen: Rückmotiv standardmäßig etwas tiefer, damit es nicht abgeschnitten wird.
