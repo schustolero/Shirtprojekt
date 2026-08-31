@@ -154,6 +154,10 @@ const printZone = document.getElementById("printZone");
 const workspace = document.querySelector(".workspace");
 const dualWorkspace = document.getElementById("dualWorkspace");
 const viewSection = document.querySelector(".view-section");
+const productSection = document.getElementById("productSection");
+const productSwitch = document.getElementById("productSwitch");
+const currentProductPrice = document.getElementById("currentProductPrice");
+const dualCompositeStage = document.querySelector(".dual-composite-stage");
 const dualCompositeShirt = document.getElementById("dualCompositeShirt");
 const dualFrontMotif = document.getElementById("dualFrontMotif");
 const dualBackMotif = document.getElementById("dualBackMotif");
@@ -169,6 +173,44 @@ const viewStates = { front: null, back: null };
 const baseImages = { front: null, back: null };
 let dualBaseImage = null;
 const motifSourceCache = new Map();
+const PRODUCTS = Array.isArray(SHOP.products) && SHOP.products.length ? SHOP.products : [{
+  id: "tshirt", name: "T-Shirt", price: Number(SHOP.shirtPrice) || 15,
+  frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png"
+}];
+let currentProductId = PRODUCTS[0].id;
+function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
+function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
+
+function renderProductSelector() {
+  if (!productSection || !productSwitch) return;
+  productSection.hidden = PRODUCTS.length <= 1;
+  productSwitch.replaceChildren();
+  PRODUCTS.forEach(product => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "product-btn";
+    btn.dataset.product = product.id;
+    btn.textContent = product.name || product.id;
+    btn.classList.toggle("active", product.id === currentProductId);
+    btn.addEventListener("click", async () => {
+      if (product.id === currentProductId) return;
+      currentProductId = product.id;
+      dualBaseImage = null;
+      document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
+      updateProductPriceLabel();
+      await renderShirt();
+      if (FEATURES.previewMode === "dual") await renderDualPreview();
+    });
+    productSwitch.appendChild(btn);
+  });
+  updateProductPriceLabel();
+}
+
+function updateProductPriceLabel() {
+  if (!currentProductPrice) return;
+  const product = getCurrentProduct();
+  currentProductPrice.textContent = `${formatEuro(getCurrentUnitPrice())} pro ${product.name || "Shirt"}`;
+}
 
 function enhanceMotifColorCards() {
   // Pantone-/Zusatztexte bewusst ausgeblendet.
@@ -183,16 +225,19 @@ function updateActiveMotifColorButton(color, label) {
 }
 
 enhanceMotifColorCards();
+renderProductSelector();
 
 function getBaseSrc(view) {
-  return view === "back" ? "shirt-back-template.png" : "shirt-front-template.png";
+  const product = getCurrentProduct();
+  return view === "back" ? (product.backTemplate || "shirt-back-template.png") : (product.frontTemplate || "shirt-front-template.png");
 }
 
 function getBaseImage(view) {
   return new Promise((resolve, reject) => {
-    if (baseImages[view] && baseImages[view].complete) return resolve(baseImages[view]);
+    const key = `${currentProductId}:${view}`;
+    if (baseImages[key] && baseImages[key].complete) return resolve(baseImages[key]);
     const img = new Image();
-    img.onload = () => { baseImages[view] = img; resolve(img); };
+    img.onload = () => { baseImages[key] = img; resolve(img); };
     img.onerror = reject;
     img.src = getBaseSrc(view);
   });
@@ -249,24 +294,38 @@ function getConfiguredMotif(view) {
 
 function applyDualMotifLayout(img, view, cfg) {
   if (!img || !cfg) return;
-  const size = cfg.size || "medium";
-  // Werte beziehen sich jeweils nur auf eine Shirt-Hälfte des kombinierten Mockups.
-  const widths = { small: 18, medium: 36, large: 54 };
-  const maxHeights = { small: 16, medium: 30, large: 46 };
-  const top = Math.max(12, Math.min(66, Number(cfg.topPct) || (view === "front" ? 22 : 31)));
+
+  // v28: Einzel- und Doppelansicht benutzen jetzt dieselbe physische
+  // Druckposition. Die Einzelansicht arbeitet innerhalb der 260x340
+  // Print-Zone; hier wird dieselbe Position auf die komplette Shirt-Hälfte
+  // umgerechnet. Dadurch springt das Motiv beim Wechsel der Ansicht nicht mehr.
+  const key = `${view}:${cfg.position || "center"}:${cfg.size || "medium"}`;
+  const base = { ...(FIXED_MOTIF_LAYOUTS[key] || FIXED_MOTIF_LAYOUTS.default) };
+  const topPct = Number(cfg.topPct);
+  const sidePct = Number(cfg.sidePct);
   const shiftX = Number(cfg.shiftXPct) || 0;
   const scaleFactor = Math.max(0.4, Math.min(1.6, (Number(cfg.scalePct) || 100) / 100));
-  let left = 50;
-  if (view === "front" && (cfg.position || "center") === "left-chest") {
-    // wearer-left = rechts aus Betrachtersicht. Bestehender Admin-Wert bleibt nutzbar.
-    const side = Math.max(15, Math.min(50, Number(cfg.sidePct) || 32));
-    left = 100 - side;
+
+  if (Number.isFinite(topPct)) base.top = Math.max(0.10, Math.min(0.70, topPct / 100));
+  if (view === "front" && (cfg.position || "center") === "left-chest" && Number.isFinite(sidePct)) {
+    base.left = 1 - Math.max(0.15, Math.min(0.50, sidePct / 100));
   }
-  left = Math.max(8, Math.min(92, left + shiftX));
+  base.left = Math.max(0.10, Math.min(0.90, base.left + shiftX / 100));
+  base.maxWidth *= scaleFactor;
+  base.maxHeight *= scaleFactor;
+
+  // Print-Zone im Verhältnis zur kompletten Mockup-Fläche (Desktop-Referenz).
+  // Diese Werte bleiben auch responsiv proportional stabil.
+  const zone = { left: 0.28, top: 0.222, width: 0.44, height: 0.496 };
+  const left = (zone.left + zone.width * base.left) * 100;
+  const top = (zone.top + zone.height * base.top) * 100;
+  const maxWidth = zone.width * base.maxWidth * 100;
+  const maxHeight = zone.height * base.maxHeight * 100;
+
   img.style.left = `${left}%`;
   img.style.top = `${top}%`;
-  img.style.maxWidth = `${(widths[size] || widths.medium) * scaleFactor}%`;
-  img.style.maxHeight = `${(maxHeights[size] || maxHeights.medium) * scaleFactor}%`;
+  img.style.maxWidth = `${maxWidth}%`;
+  img.style.maxHeight = `${maxHeight}%`;
 }
 
 async function getDualBaseImage() {
@@ -330,6 +389,10 @@ async function renderDualMotif(view, img) {
 
 async function renderDualPreview() {
   if (FEATURES.previewMode !== "dual" || !dualWorkspace) return;
+  const base = await getDualBaseImage();
+  if (dualCompositeStage && base && base.width && base.height) {
+    dualCompositeStage.style.aspectRatio = `${base.width} / ${base.height}`;
+  }
   if (dualCompositeShirt) {
     dualCompositeShirt.hidden = false;
     dualCompositeShirt.src = await renderDualShirtImage();
@@ -772,8 +835,12 @@ function getCurrentShirtSelection() {
   const fixedPrintParts = [];
   if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
   if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
+  const product = getCurrentProduct();
   return {
     id: Date.now() + Math.random(),
+    productId: product.id,
+    productName: product.name || "T-Shirt",
+    unitPrice: getCurrentUnitPrice(),
     shirtColor: currentColorName.textContent || "White",
     motif: getSelectedMotifName(),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
@@ -786,7 +853,7 @@ function getCurrentShirtSelection() {
 function renderCart() {
   const total = orderItems.reduce((sum, item) => sum + item.quantity, 0);
   cartBox.hidden = orderItems.length === 0;
-  cartCount.textContent = `${total} ${total === 1 ? "Shirt" : "Shirts"}`;
+  cartCount.textContent = `${total} ${total === 1 ? "Textil" : "Textilien"}`;
   cartItems.replaceChildren();
 
   orderItems.forEach((item, index) => {
@@ -796,7 +863,7 @@ function renderCart() {
     const info = document.createElement("div");
     info.className = "cart-item-info";
     const title = document.createElement("strong");
-    title.textContent = `${item.quantity}× ${item.size} · ${item.shirtColor} · ${formatEuro(item.quantity * SHIRT_PRICE)}`;
+    title.textContent = `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`;
     const meta = document.createElement("span");
     meta.textContent = `${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
     info.append(title, meta);
@@ -824,6 +891,7 @@ function addCurrentShirtToOrder() {
 
   // Gleiche Kombinationen werden automatisch zusammengefasst.
   const existing = orderItems.find(entry =>
+    entry.productId === item.productId &&
     entry.shirtColor === item.shirtColor &&
     entry.motif === item.motif &&
     entry.motifColor === item.motifColor &&
@@ -834,13 +902,13 @@ function addCurrentShirtToOrder() {
   else orderItems.push(item);
 
   renderCart();
-  orderMessage.textContent = "Shirt wurde zur Bestellung hinzugefügt. Du kannst jetzt Farbe, Motiv oder Größe ändern und ein weiteres Shirt hinzufügen.";
+  orderMessage.textContent = `${item.productName || "Textil"} wurde zur Bestellung hinzugefügt.`;
   orderMessage.classList.add("success");
 }
 
 function orderItemsAsText() {
   return orderItems.map((item, i) =>
-    `${i + 1}. ${item.quantity}x | Größe ${item.size} | Shirt: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * SHIRT_PRICE)}`
+    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
   ).join("\n");
 }
 
@@ -853,14 +921,14 @@ function openOrderSummary() {
   }
 
   const total = orderItems.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = total * SHIRT_PRICE;
+  const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
   orderSummary.replaceChildren();
 
   orderSummary.appendChild(summaryRow("Bestellnummer", "wird beim Absenden vergeben"));
   orderItems.forEach((item, i) => {
     orderSummary.appendChild(summaryRow(
-      `Shirt ${i + 1}`,
-      `${item.quantity}× ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * SHIRT_PRICE)}`
+      `Position ${i + 1}`,
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
@@ -915,7 +983,7 @@ if (orderForm) {
 
     try {
       const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
-      const totalPrice = totalQuantity * SHIRT_PRICE;
+      const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
       const orderNumber = createOrderNumber();
 
       formOrderItems.value = orderItemsAsText();
@@ -934,18 +1002,21 @@ if (orderForm) {
         email,
         phone,
         totalQuantity,
-        unitPrice: SHIRT_PRICE,
+        unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
         status: "Neu",
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         items: orderItems.map(item => ({
+          productId: item.productId || "tshirt",
+          productName: item.productName || "T-Shirt",
+          unitPrice: Number(item.unitPrice) || SHIRT_PRICE,
           shirtColor: item.shirtColor,
           motif: item.motif,
           motifColor: item.motifColor,
           printLayout: item.printLayout || "",
           size: item.size,
           quantity: item.quantity,
-          linePrice: item.quantity * SHIRT_PRICE
+          linePrice: item.quantity * (Number(item.unitPrice) || SHIRT_PRICE)
         }))
       };
 
@@ -961,7 +1032,7 @@ if (orderForm) {
           customerClass,
           email,
           totalQuantity,
-          unitPrice: SHIRT_PRICE,
+          unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
           totalPrice,
           items: orderPayload.items
         }));

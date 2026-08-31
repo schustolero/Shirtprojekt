@@ -997,3 +997,24 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   .dual-composite-shell { width: 820px; min-width: 820px; }
 }
 
+
+/* v28: Auswahl zwischen mehreren Textilien */
+.product-switch {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+.product-btn {
+  border: 1px solid #dcdce3;
+  background: #f7f7f9;
+  border-radius: 9px;
+  padding: 10px 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+}
+.product-btn.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
+  background: #fff;
+}

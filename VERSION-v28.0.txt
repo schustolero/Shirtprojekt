@@ -1,0 +1,10 @@
+MASTER-v28.0
+
+- TG Solingen: T-Shirt und Polo-Shirt auswählbar
+- Polo Vorder-/Rückseite aus dem bereitgestellten Polo-Mockup
+- Einzel- und Doppelansicht verwenden dieselbe Druckpositionslogik
+- Vorderdruck kleiner
+- Rückdruck horizontal nachzentriert
+- Design-zurücksetzen bei TG Solingen entfernt
+- Bestellungen speichern Artikeltyp und Einzelpreis je Position
+- Cache-Version 28.0

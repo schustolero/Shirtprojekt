@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=27.8">
+  <link rel="stylesheet" href="/style.css?v=28.0">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -161,9 +161,14 @@
       </div>
     </section>
 
+    <section class="tool-section product-section" id="productSection" hidden>
+      <h3>Textil</h3>
+      <div class="product-switch" id="productSwitch"></div>
+    </section>
+
     <section class="tool-section order-section">
       <h3>Größe & Menge</h3>
-      <p class="order-price-info"><strong>15,00 € pro Shirt</strong> · alle Größen und Motive</p>
+      <p class="order-price-info"><strong id="currentProductPrice">15,00 € pro Shirt</strong> · alle Größen und Motive</p>
       <div class="order-fields">
         <label class="order-field">
           <span>Größe</span>
@@ -301,16 +306,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=27.8"></script>
+<script src="/central-config.js?v=28.0"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=27.8"></script>
+<script src="/shop-loader.js?v=28.0"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=27.8";
+    app.src="/script.js?v=28.0";
     document.body.appendChild(app);
   });
 </script>
