@@ -1,0 +1,6 @@
+MASTER-v25.3
+- TG Solingen Bestell-E-Mail: shirtzentrale@gmail.com
+- Zentrale Standard-Mailadresse: shirtzentrale@gmail.com
+- Cache-Busting fuer script.js, shop-loader.js und Shop-Konfigurationen
+- Firebase Hosting Header gegen veraltete JS/Config-Dateien
+- Lokale Bestellnummer ohne Firestore-Counter

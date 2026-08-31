@@ -36,13 +36,13 @@ BESTELLUNGEN
 ------------
 Alle Bestellungen liegen zentral in Firestore /orders.
 Jede Bestellung enthält customerId und customerName.
-Die Bestellnummer wird pro Kunde über /counters/{customerId} hochgezählt.
+Die Bestellnummer wird lokal aus Kundenpräfix, Datum/Uhrzeit und einer Zufallskennung erzeugt. Ein öffentlich schreibbarer Firestore-Counter ist nicht nötig.
 
 EINMALIGE EINRICHTUNG FÜR V25
 ------------------------------
 1. Ein neutrales zentrales Firebase-Projekt verwenden/erstellen (empfohlen: shirtprojekt-zentral).
 2. Hosting, Firestore und Authentication dort EINMAL aktivieren.
-3. Admin-Nutzer textilien@proton.me EINMAL anlegen.
+3. Admin-Nutzer shirtzentrale@gmail.com EINMAL anlegen.
 4. firestore.rules EINMAL veröffentlichen.
 5. In .github/workflows/firebase-hosting.yml einmal die projectId setzen.
 6. GitHub-Secret FIREBASE_SERVICE_ACCOUNT_CENTRAL EINMAL anlegen.

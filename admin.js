@@ -1,5 +1,5 @@
 const CENTRAL = window.CENTRAL_CONFIG || {};
-const ADMIN_EMAIL = String(CENTRAL.adminEmail || "textilien@proton.me").toLowerCase();
+const ADMIN_EMAIL = String(CENTRAL.adminEmail || "shirtzentrale@gmail.com").toLowerCase();
 if (CENTRAL.adminTitle) document.title = CENTRAL.adminTitle;
 const auth = firebase.auth();
 const db = firebase.firestore();

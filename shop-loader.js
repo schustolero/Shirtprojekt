@@ -18,7 +18,7 @@
 
   window.loadShopConfig = function(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=25.1`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=25.3`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
