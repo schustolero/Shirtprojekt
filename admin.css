@@ -8,3 +8,8 @@
 .admin-mark{width:58px;height:58px;border-radius:14px;background:#111;color:#fff;display:grid;place-items:center;font-weight:900;font-size:18px;letter-spacing:.04em}
 .order-customer{display:inline-block;margin-top:5px;padding:4px 8px;border-radius:999px;background:#f0f0f2;font-size:11px;font-weight:700;color:#555}
 @media(max-width:700px){.filters{grid-template-columns:1fr!important}}
+
+/* v25.4: Bestellschein-Aktionen */
+.order-actions{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.print-order-btn{white-space:nowrap}
+@media(max-width:650px){.order-actions{width:100%}.order-actions .status-select,.order-actions .print-order-btn{flex:1 1 150px}}

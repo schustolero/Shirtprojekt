@@ -1,0 +1,7 @@
+Master v25.4
+- Bestellschein mit Vereinslogo und Vereinsname auf der Danke-Seite
+- Druck/PDF-Funktion auf der Danke-Seite
+- Bestellschein direkt aus dem zentralen Adminbereich druckbar
+- Logo wird automatisch aus /shops/<customerId>/shop-logo.png geladen
+- T-Shirt-Farben und Motivfarben kompakter: 3 Spalten pro Reihe
+- kleinere Farbfelder und Schriften

@@ -870,3 +870,31 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   .order-section { order: 9; }
   .sidebar-bottom { order: 10; }
 }
+
+/* v25.4: kompaktere Farbauswahl – 3 Spalten pro Reihe */
+.shirt-colors,
+.motif-colors {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 7px !important;
+}
+.shirt-color {
+  min-height: 43px !important;
+  gap: 3px !important;
+}
+.shirt-color .color-swatch,
+.motif-color-swatch {
+  height: 22px !important;
+}
+.shirt-color .color-label,
+.motif-color-label {
+  font-size: 9px !important;
+  line-height: 1.05 !important;
+}
+.motif-color {
+  padding: 5px !important;
+  gap: 3px !important;
+  border-radius: 7px !important;
+}
+.motif-colors {
+  max-height: 320px !important;
+}

@@ -12,7 +12,7 @@
     .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
     .card{width:min(620px,100%);background:#fff;border-radius:22px;padding:30px;box-shadow:0 18px 55px rgba(0,0,0,.09)}
     .brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-    .brand img{width:68px;height:68px;object-fit:contain}
+    .brand img{width:88px;height:88px;object-fit:contain}
     .brand strong{display:block;font-size:20px}.brand span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
     .check{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#eaf7ef;color:#18794e;font-size:34px;font-weight:900;margin-bottom:18px}
     h1{margin:0 0 10px;font-size:30px;line-height:1.1}p{line-height:1.55}.lead{margin:0 0 22px;color:var(--muted)}
@@ -20,8 +20,9 @@
     .row{display:flex;justify-content:space-between;gap:18px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.row:last-child{border-bottom:0}.row span{color:var(--muted)}.row strong{text-align:right}
     .items{display:grid;gap:9px;margin-top:12px}.item{padding:11px;border-radius:10px;background:#f5f5f7;font-size:12px;line-height:1.45}.item strong{display:block;margin-bottom:2px}
     .mailnote{font-size:13px;color:var(--muted);margin:18px 0}
-    .btn{display:block;width:100%;padding:13px 16px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;text-align:center;font-weight:800}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.btn{display:block;width:100%;padding:13px 16px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;text-align:center;font-weight:800;border:0;font:inherit;cursor:pointer}.btn.secondary{background:#f0f0f2;color:#202024}
     @media(max-width:600px){.page{padding:14px;align-items:flex-start}.card{margin-top:24px;padding:22px;border-radius:18px}h1{font-size:25px}.brand img{width:58px;height:58px}.row{font-size:12px}}
+  @media print{body{background:#fff}.page{padding:0;display:block}.card{box-shadow:none;border-radius:0;width:100%;padding:12mm}.check,.lead,.mailnote,.actions{display:none}.brand{border-bottom:2px solid #222;padding-bottom:14px}.summary{border-color:#bbb}}
   </style>
 </head>
 <body>
@@ -32,19 +33,19 @@
         <div><strong id="thanksBrand">Kundenname</strong><span id="thanksSubtitle">T-Shirt Konfigurator</span></div>
       </div>
       <div class="check" aria-hidden="true">✓</div>
-      <h1>Bestellung erfolgreich gesendet</h1>
-      <p class="lead">Vielen Dank. Deine Bestellung wurde übermittelt. Wir melden uns, falls noch Rückfragen bestehen.</p>
+      <h1>Bestellschein</h1>
+      <p class="lead">Deine Bestellung wurde erfolgreich übermittelt. Dies ist dein Bestellschein.</p>
       <div id="confirmationSummary" class="summary" hidden>
-        <h2>Deine Bestellung</h2>
+        <h2>Bestelldaten</h2>
         <div id="customerRows"></div>
         <div id="confirmationItems" class="items"></div>
       </div>
       <p class="mailnote">Die Bestellung wurde an <strong id="thanksEmail">shirtzentrale@gmail.com</strong> gesendet.</p>
-      <a class="btn" id="newOrderLink" href="/">Neue Bestellung erstellen</a>
+      <div class="actions"><button class="btn" type="button" onclick="window.print()">Bestellschein drucken / PDF</button><a class="btn secondary" id="newOrderLink" href="/">Neue Bestellung</a></div>
     </section>
   </main>
-  <script src="/central-config.js?v=25"></script>
-  <script src="/shop-loader.js?v=25"></script>
+  <script src="/central-config.js?v=25.4"></script>
+  <script src="/shop-loader.js?v=25.4"></script>
   <script>
     loadShopConfig(function(cfg){
       if(cfg.pageTitle)document.title="Bestellung bestätigt – "+(cfg.customerName||cfg.brandTitle||cfg.customerId||"");
