@@ -1,0 +1,8 @@
+MASTER v28.2
+
+- Einheitliche Druckpositionswerte fuer Einzel- und Doppelansicht
+- Positionen werden pro Textil getrennt gespeichert (T-Shirt / Polo)
+- Admin: X, Y und Motivgroesse fuer Vorder- und Rueckseite
+- Rueckendruck kann horizontal exakt zentriert / verschoben werden
+- TG Solingen: Frontlogo wieder groesser
+- T-Shirt und Polo bleiben aktiv

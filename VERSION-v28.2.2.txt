@@ -1,0 +1,6 @@
+MASTER v28.2.2
+- Admin-Shopverwaltung kompakter gestaltet
+- Auf großen Displays 3-spaltige Formulare
+- Engere Abstände und kleinere Eingabefelder
+- Funktionsschalter in 4 Spalten
+- Cache-Version des Admin-CSS/JS aktualisiert

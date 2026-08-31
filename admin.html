@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=27.7">
+  <link rel="stylesheet" href="admin.css?v=28.2.2">
 </head>
 <body>
   <main class="admin-shell">
@@ -83,6 +83,25 @@
                 <label><span>Feste Motivfarbe – Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
               </div></div>
 
+              <div class="form-section"><h3>Position & Größe – direkt einstellbar</h3><p class="section-note">Hier stellst du die Druckposition direkt ein. Die Werte werden gespeichert und gelten identisch für Einzel- und Doppelansicht. X = links/rechts, Y = höher/tiefer, Größe = Motivbreite.</p>
+                <h4>T-Shirt</h4><div class="form-grid">
+                  <label><span>Vorne X (%)</span><input id="tshirtFrontX" type="number" min="10" max="90" step="0.5" value="68"></label>
+                  <label><span>Vorne Y (%)</span><input id="tshirtFrontY" type="number" min="10" max="70" step="0.5" value="20"></label>
+                  <label><span>Vorne Größe (%)</span><input id="tshirtFrontW" type="number" min="8" max="70" step="0.5" value="20"></label>
+                  <label><span>Hinten X (%)</span><input id="tshirtBackX" type="number" min="10" max="90" step="0.5" value="50"><small>50 = exakt mittig.</small></label>
+                  <label><span>Hinten Y (%)</span><input id="tshirtBackY" type="number" min="10" max="70" step="0.5" value="36"></label>
+                  <label><span>Hinten Größe (%)</span><input id="tshirtBackW" type="number" min="10" max="80" step="0.5" value="50"></label>
+                </div>
+                <h4>Polo-Shirt</h4><div class="form-grid">
+                  <label><span>Vorne X (%)</span><input id="poloFrontX" type="number" min="10" max="90" step="0.5" value="68"></label>
+                  <label><span>Vorne Y (%)</span><input id="poloFrontY" type="number" min="10" max="70" step="0.5" value="22"></label>
+                  <label><span>Vorne Größe (%)</span><input id="poloFrontW" type="number" min="8" max="70" step="0.5" value="20"></label>
+                  <label><span>Hinten X (%)</span><input id="poloBackX" type="number" min="10" max="90" step="0.5" value="50"><small>50 = exakt mittig.</small></label>
+                  <label><span>Hinten Y (%)</span><input id="poloBackY" type="number" min="10" max="70" step="0.5" value="36"></label>
+                  <label><span>Hinten Größe (%)</span><input id="poloBackW" type="number" min="10" max="80" step="0.5" value="50"></label>
+                </div>
+              </div></div>
+
               <div class="form-section"><h3>Fester Druck vorne / hinten</h3><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid">
                 <label class="check-row wide"><input id="fixedFrontEnabled" type="checkbox"><span>Vorderdruck fest aktiv</span></label>
                 <label><span>Vorne Motiv</span><select id="fixedFrontMotif"></select></label>
@@ -119,11 +138,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=27.7"></script>
+  <script src="/central-config.js?v=28.2.2"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=27.7"></script>
+  <script src="/admin.js?v=28.2.2"></script>
 </body>
 </html>

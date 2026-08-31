@@ -198,6 +198,9 @@ function renderProductSelector() {
       dualBaseImage = null;
       document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
       updateProductPriceLabel();
+      canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
+      canvas.requestRenderAll();
+      saveCurrentView();
       await renderShirt();
       if (FEATURES.previewMode === "dual") await renderDualPreview();
     });
@@ -292,40 +295,46 @@ function getConfiguredMotif(view) {
   return { cfg, motif };
 }
 
+function getUnifiedPrintLayout(view, cfg) {
+  const product = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][view];
+  if (product) {
+    return {
+      xPct: Math.max(8, Math.min(92, Number(product.xPct) || 50)),
+      yPct: Math.max(10, Math.min(70, Number(product.yPct) || (view === "front" ? 20 : 36))),
+      widthPct: Math.max(8, Math.min(80, Number(product.widthPct) || (view === "front" ? 22 : 50)))
+    };
+  }
+  const size = cfg?.size || "medium";
+  const widths = { small: 22, medium: 50, large: 70 };
+  const scaleFactor = Math.max(0.4, Math.min(1.6, (Number(cfg?.scalePct) || 100) / 100));
+  let xPct = 50 + (Number(cfg?.shiftXPct) || 0);
+  if (view === "front" && (cfg?.position || "center") === "left-chest") {
+    const side = Math.max(15, Math.min(50, Number(cfg?.sidePct) || 32));
+    xPct = 100 - side;
+  }
+  return {
+    xPct: Math.max(8, Math.min(92, xPct)),
+    yPct: Math.max(10, Math.min(70, Number(cfg?.topPct) || (view === "front" ? 20 : 36))),
+    widthPct: Math.max(8, Math.min(80, (widths[size] || widths.medium) * scaleFactor))
+  };
+}
+
 function applyDualMotifLayout(img, view, cfg) {
   if (!img || !cfg) return;
+  const layout = getUnifiedPrintLayout(view, cfg);
 
-  // v28: Einzel- und Doppelansicht benutzen jetzt dieselbe physische
-  // Druckposition. Die Einzelansicht arbeitet innerhalb der 260x340
-  // Print-Zone; hier wird dieselbe Position auf die komplette Shirt-Hälfte
-  // umgerechnet. Dadurch springt das Motiv beim Wechsel der Ansicht nicht mehr.
-  const key = `${view}:${cfg.position || "center"}:${cfg.size || "medium"}`;
-  const base = { ...(FIXED_MOTIF_LAYOUTS[key] || FIXED_MOTIF_LAYOUTS.default) };
-  const topPct = Number(cfg.topPct);
-  const sidePct = Number(cfg.sidePct);
-  const shiftX = Number(cfg.shiftXPct) || 0;
-  const scaleFactor = Math.max(0.4, Math.min(1.6, (Number(cfg.scalePct) || 100) / 100));
-
-  if (Number.isFinite(topPct)) base.top = Math.max(0.10, Math.min(0.70, topPct / 100));
-  if (view === "front" && (cfg.position || "center") === "left-chest" && Number.isFinite(sidePct)) {
-    base.left = 1 - Math.max(0.15, Math.min(0.50, sidePct / 100));
-  }
-  base.left = Math.max(0.10, Math.min(0.90, base.left + shiftX / 100));
-  base.maxWidth *= scaleFactor;
-  base.maxHeight *= scaleFactor;
-
-  // Print-Zone im Verhältnis zur kompletten Mockup-Fläche (Desktop-Referenz).
-  // Diese Werte bleiben auch responsiv proportional stabil.
+  // Dieselben X/Y/Größe-Werte wie in der Einzelansicht werden in die
+  // reale Druckzone der jeweiligen Shirt-Hälfte übertragen.
   const zone = { left: 0.28, top: 0.222, width: 0.44, height: 0.496 };
-  const left = (zone.left + zone.width * base.left) * 100;
-  const top = (zone.top + zone.height * base.top) * 100;
-  const maxWidth = zone.width * base.maxWidth * 100;
-  const maxHeight = zone.height * base.maxHeight * 100;
+  const left = (zone.left + zone.width * (layout.xPct / 100)) * 100;
+  const top = (zone.top + zone.height * (layout.yPct / 100)) * 100;
+  const width = zone.width * (layout.widthPct / 100) * 100;
 
   img.style.left = `${left}%`;
   img.style.top = `${top}%`;
-  img.style.maxWidth = `${maxWidth}%`;
-  img.style.maxHeight = `${maxHeight}%`;
+  img.style.width = `${width}%`;
+  img.style.maxWidth = `${width}%`;
+  img.style.maxHeight = `${zone.height * 62}%`;
 }
 
 async function getDualBaseImage() {
@@ -522,24 +531,13 @@ const FIXED_MOTIF_LAYOUTS = {
 function getFixedPrintLayout(motifId) {
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
   if (cfg && cfg.enabled) {
-    const key = `${currentView}:${cfg.position || "center"}:${cfg.size || "medium"}`;
-    if (FIXED_MOTIF_LAYOUTS[key]) {
-      const base = FIXED_MOTIF_LAYOUTS[key];
-      const topPct = Number(cfg.topPct);
-      const sidePct = Number(cfg.sidePct);
-      const shiftX = Number(cfg.shiftXPct) || 0;
-      const scaleFactor = Math.max(0.4, Math.min(1.6, (Number(cfg.scalePct) || 100) / 100));
-      const layout = Number.isFinite(topPct) ? { ...base, top: Math.max(0.10, Math.min(0.70, topPct / 100)) } : { ...base };
-      if (currentView === "front" && (cfg.position || "center") === "left-chest" && Number.isFinite(sidePct)) {
-        // Wearer's left chest is displayed on the right side of the shirt preview.
-        // sidePct is the distance from the outer side: smaller = further outward, larger = toward center.
-        layout.left = 1 - Math.max(0.15, Math.min(0.50, sidePct / 100));
-      }
-      layout.left = Math.max(0.10, Math.min(0.90, layout.left + (shiftX / 100)));
-      layout.maxWidth = layout.maxWidth * scaleFactor;
-      layout.maxHeight = layout.maxHeight * scaleFactor;
-      return layout;
-    }
+    const unified = getUnifiedPrintLayout(currentView, cfg);
+    return {
+      left: unified.xPct / 100,
+      top: unified.yPct / 100,
+      maxWidth: unified.widthPct / 100,
+      maxHeight: Math.min(0.62, (unified.widthPct / 100) * 0.86)
+    };
   }
   return FIXED_MOTIF_LAYOUTS.default;
 }

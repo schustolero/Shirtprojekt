@@ -1,0 +1,4 @@
+MASTER v28.2.1
+- Admin-Cache-Version korrigiert
+- X/Y/Größe-Bereich nach oben verschoben und deutlicher benannt
+- Shop-Skripte auf Cache-Version 28.2.1 gesetzt

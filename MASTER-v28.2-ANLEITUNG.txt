@@ -1,0 +1,17 @@
+MASTER v28.2
+
+Shopverwaltung > TG Solingen > Feinposition pro Textil
+
+T-Shirt:
+- Vorne X / Y / Groesse
+- Hinten X / Y / Groesse
+
+Polo-Shirt:
+- Vorne X / Y / Groesse
+- Hinten X / Y / Groesse
+
+X = horizontale Position. 50 = exakt mittig.
+Y = vertikale Position. Kleiner = hoeher.
+Groesse = Motivbreite in Prozent.
+
+Die gespeicherten Werte gelten identisch fuer Einzel- und Doppelansicht.

@@ -18,3 +18,135 @@
 .admin-tabs{display:flex;gap:8px;padding:8px;margin-bottom:18px}.tab-btn{border:0;background:transparent;border-radius:10px;padding:11px 16px;font-weight:800;cursor:pointer}.tab-btn.active{background:#111;color:#fff}.shop-admin-grid{display:grid;grid-template-columns:320px 1fr;gap:18px}.shop-list-panel,.shop-editor-panel{min-width:0}.panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.panel-head.compact{align-items:center}.panel-head h2,.panel-head h3{margin:0}.panel-head p{margin:4px 0 0;color:#6b7280}.small{padding:9px 12px}.shop-list{display:grid;gap:8px;margin-top:16px}.shop-list button{width:100%;text-align:left;border:1px solid #e5e7eb;background:#fff;border-radius:12px;padding:12px;cursor:pointer}.shop-list button.active{border-color:#111;box-shadow:0 0 0 2px #111 inset}.shop-list strong,.shop-list span{display:block}.shop-list span{font-size:12px;color:#6b7280;margin-top:3px}.editor-actions{display:flex;gap:8px;align-items:center}.link-btn{text-decoration:none;display:inline-flex;align-items:center}.shop-form{margin-top:18px}.form-section{border-top:1px solid #eceff3;padding:20px 0}.form-section:first-child{border-top:0}.form-section h3{margin:0 0 12px}.section-note{color:#6b7280;font-size:13px;margin:-6px 0 12px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.form-grid label,.asset-controls{display:grid;gap:6px}.form-grid label span,.asset-controls p{font-size:12px;color:#60646c}.form-grid input,.form-grid select,.motif-name{width:100%;border:1px solid #d8dce2;border-radius:9px;padding:10px;background:#fff}.form-grid input[type=color]{height:42px;padding:3px}.wide{grid-column:1/-1}.check-row{display:flex!important;align-items:center;gap:9px}.check-row input{width:auto}.feature-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}.feature-grid label{display:flex;align-items:center;gap:8px;border:1px solid #e6e8ec;border-radius:10px;padding:10px;font-size:13px}.asset-row{display:grid;grid-template-columns:130px 1fr;gap:16px;align-items:center}.asset-preview{height:110px;border:1px dashed #cfd4dc;border-radius:12px;display:grid;place-items:center;overflow:hidden;background:#fafafa}.asset-preview img{max-width:100%;max-height:100%;object-fit:contain}.motifs-editor{display:grid;gap:10px}.motif-edit-row{display:grid;grid-template-columns:90px 1fr auto;gap:12px;align-items:center;border:1px solid #e5e7eb;border-radius:12px;padding:10px}.motif-edit-row img{width:82px;height:72px;object-fit:contain;background:#fafafa;border-radius:8px}.motif-fields{display:grid;gap:7px}.motif-fields input[type=file]{font-size:12px}.danger-btn{border:1px solid #fecaca;background:#fff;color:#b91c1c;border-radius:9px;padding:9px 11px;cursor:pointer}.message-ok{color:#15803d}.message-error{color:#b91c1c}
 @media(max-width:900px){.shop-admin-grid{grid-template-columns:1fr}.shop-list{grid-template-columns:repeat(2,minmax(0,1fr))}.feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.form-grid,.feature-grid{grid-template-columns:1fr}.wide{grid-column:auto}.shop-list{grid-template-columns:1fr}.panel-head{flex-direction:column}.editor-actions{width:100%}.editor-actions>*{flex:1;justify-content:center}.motif-edit-row{grid-template-columns:70px 1fr}.motif-edit-row img{width:64px;height:60px}.motif-edit-row .danger-btn{grid-column:1/-1}.asset-row{grid-template-columns:1fr}.asset-preview{height:150px}}
+
+
+/* MASTER-v28.2.2 – kompakter Adminbereich */
+@media (min-width: 1050px) {
+  .admin-shell{
+    width:min(1320px,calc(100% - 24px));
+    margin:14px auto 36px;
+  }
+  .shop-admin-grid{
+    grid-template-columns:260px minmax(0,1fr);
+    gap:12px;
+  }
+  .form-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+  }
+  .feature-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr));
+  }
+}
+
+.admin-header{margin-bottom:12px}
+.admin-tabs{margin-bottom:12px;padding:5px}
+.tab-btn{padding:8px 13px}
+
+.shop-list-panel,.shop-editor-panel{
+  padding:13px 15px;
+  border-radius:14px;
+}
+.panel-head{gap:9px}
+.panel-head h2{font-size:19px}
+.panel-head h3{font-size:15px}
+.panel-head p{font-size:12px;line-height:1.25}
+
+.shop-list{gap:5px;margin-top:10px}
+.shop-list button{
+  border-radius:9px;
+  padding:8px 9px;
+}
+.shop-list span{font-size:11px;margin-top:1px}
+
+.shop-form{margin-top:8px}
+.form-section{padding:11px 0}
+.form-section h3{
+  margin:0 0 7px;
+  font-size:15px;
+}
+.form-section h4{
+  margin:8px 0 5px;
+  font-size:13px;
+}
+.section-note{
+  font-size:11px;
+  line-height:1.3;
+  margin:-3px 0 7px;
+}
+
+.form-grid{gap:7px 9px}
+.form-grid label,.asset-controls{gap:3px}
+.shop-form label{margin:0}
+.form-grid label span,.asset-controls p{
+  font-size:11px;
+  margin:0;
+}
+.form-grid small{
+  font-size:10px;
+  line-height:1.15;
+  color:#777b83;
+}
+.form-grid input,.form-grid select,.motif-name{
+  min-height:35px;
+  padding:7px 9px;
+  border-radius:7px;
+  font-size:13px;
+}
+.form-grid input[type=color]{
+  height:35px;
+  min-height:35px;
+  padding:2px;
+}
+.check-row{gap:6px;min-height:29px}
+.check-row span{font-size:12px!important}
+
+.feature-grid{gap:5px}
+.feature-grid label{
+  gap:6px;
+  border-radius:7px;
+  padding:7px 8px;
+  font-size:11px;
+  min-height:34px;
+}
+
+.editor-actions{gap:5px}
+.editor-actions .primary-btn,
+.editor-actions .ghost-btn,
+.ghost-btn.small,
+.primary-btn.small{
+  padding:8px 11px;
+  border-radius:8px;
+  font-size:12px;
+}
+
+.asset-row{
+  grid-template-columns:90px 1fr;
+  gap:10px;
+}
+.asset-preview{
+  height:76px;
+  border-radius:9px;
+}
+.motifs-editor{gap:6px}
+.motif-edit-row{
+  grid-template-columns:64px 1fr auto;
+  gap:8px;
+  padding:7px;
+  border-radius:9px;
+}
+.motif-edit-row img{
+  width:58px;
+  height:52px;
+  border-radius:6px;
+}
+.motif-fields{gap:4px}
+
+/* breite Textfelder kompakt, ohne unnötig hohe Abstände */
+.shop-editor-panel .wide{margin:0}
+
+/* Mobile bleibt gut bedienbar */
+@media(max-width:1049px){
+  .shop-list-panel,.shop-editor-panel{padding:12px}
+  .form-section{padding:14px 0}
+  .form-grid{gap:9px}
+}
