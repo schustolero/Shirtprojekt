@@ -263,35 +263,47 @@ function applyDualMotifLayout(img, view, cfg) {
   img.style.maxHeight = `${maxHeights[size] || maxHeights.medium}%`;
 }
 
-function getDualBaseImage() {
-  return new Promise((resolve, reject) => {
-    if (dualBaseImage && dualBaseImage.complete) return resolve(dualBaseImage);
-    const img = new Image();
-    img.onload = () => { dualBaseImage = img; resolve(img); };
-    img.onerror = reject;
-    img.src = "shirt-dual.png";
-  });
+async function getDualBaseImage() {
+  // v27.8: Die Doppelansicht wird aus den seit langem bewährten
+  // Front-/Back-Templates zusammengesetzt. Dadurch braucht der Live-Shop
+  // KEINE zusätzliche shirt-dual.png-Datei mehr.
+  if (dualBaseImage) return dualBaseImage;
+  const [front, back] = await Promise.all([getBaseImage("front"), getBaseImage("back")]);
+  const c = document.createElement("canvas");
+  const w = Math.max(front.naturalWidth || front.width, back.naturalWidth || back.width);
+  const h = Math.max(front.naturalHeight || front.height, back.naturalHeight || back.height);
+  c.width = w * 2;
+  c.height = h;
+  const ctx = c.getContext("2d");
+  ctx.clearRect(0, 0, c.width, c.height);
+  ctx.drawImage(front, 0, 0, w, h);
+  ctx.drawImage(back, w, 0, w, h);
+  dualBaseImage = c;
+  return c;
 }
 
 async function renderDualShirtImage() {
   try {
     const base = await getDualBaseImage();
-    if (currentShirtColorId === "weiss") return "shirt-dual.png";
     const c = document.createElement("canvas");
-    c.width = base.naturalWidth || base.width;
-    c.height = base.naturalHeight || base.height;
+    c.width = base.width;
+    c.height = base.height;
     const ctx = c.getContext("2d");
     ctx.drawImage(base, 0, 0, c.width, c.height);
-    ctx.globalCompositeOperation = "multiply";
-    ctx.fillStyle = currentShirtColorId === "black" ? "#3a3a3d" : currentShirtColor;
-    ctx.fillRect(0, 0, c.width, c.height);
-    ctx.globalCompositeOperation = "destination-in";
-    ctx.drawImage(base, 0, 0, c.width, c.height);
-    ctx.globalCompositeOperation = "source-over";
+
+    if (currentShirtColorId !== "weiss") {
+      ctx.globalCompositeOperation = "multiply";
+      ctx.fillStyle = currentShirtColorId === "black" ? "#3a3a3d" : currentShirtColor;
+      ctx.fillRect(0, 0, c.width, c.height);
+      ctx.globalCompositeOperation = "destination-in";
+      ctx.drawImage(base, 0, 0, c.width, c.height);
+      ctx.globalCompositeOperation = "source-over";
+    }
     return c.toDataURL("image/png");
   } catch (err) {
     console.error("Doppelansicht-Shirt konnte nicht gerendert werden", err);
-    return "shirt-dual.png";
+    // Bewusster sichtbarer Fallback statt leerer Fläche.
+    return getBaseSrc("front");
   }
 }
 

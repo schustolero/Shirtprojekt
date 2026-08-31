@@ -1,0 +1,8 @@
+MASTER-v27.8
+
+Doppelansicht repariert:
+- keine Abhängigkeit mehr von shirt-dual.png im Live-Hosting
+- Front + Rücken werden direkt aus shirt-front-template.png und shirt-back-template.png zusammengesetzt
+- TG Solingen nutzt Doppelansicht auch im Dateifallback
+- sichtbarer Fallback statt leerer Vorschau
+- Cache-Version 27.8

@@ -1,0 +1,5 @@
+MASTER-v27.8 – stabilisierte Doppelansicht
+
+Kompletten Inhalt in Shirtprojekt hochladen und vorhandene Dateien ersetzen.
+Die Doppelansicht benötigt keine neue separate shirt-dual.png mehr.
+TG Solingen: ?shop=tg-solingen
