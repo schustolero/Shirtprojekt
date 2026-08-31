@@ -1,3 +1,6 @@
+MASTER v26 – zentraler Mehrkunden-Shirtshop mit 3 Shop-Typen.
+Siehe MASTER-v26-ANLEITUNG.txt.
+
 Shirtprojekt MASTER-v25.1
 =========================
 Zentrales Mehrkunden-System mit individuell konfigurierbaren Shop-Funktionen.

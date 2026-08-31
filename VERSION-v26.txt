@@ -1,0 +1,3 @@
+MASTER v26
+Drei Shop-Typen: Simple, Motive, Designer.
+Zentrales Firebase-Backend bleibt bestehen.

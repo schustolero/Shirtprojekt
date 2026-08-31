@@ -1,0 +1,33 @@
+MASTER v26 – 3 SHOP-TYPEN
+
+1) SIMPLE
+Vorlage: shops/_simple/
+- ein festes Motiv/Logo
+- kein Kunden-Upload
+- kein Text
+- Motiv gesperrt
+
+2) MOTIVE
+Vorlage: shops/_motifs/
+- mehrere vorgegebene Motive
+- Kunde wählt genau ein Motiv
+- kein eigener Upload
+- Motiv gesperrt
+
+3) DESIGNER
+Vorlage: shops/_designer/
+- eigener Logo-Upload
+- Text erlaubt
+- Motiv verschieben, skalieren und drehen
+- optional vorhandene Motive + Upload
+
+NEUER KUNDE
+- passenden Vorlagenordner kopieren
+- Ordner z. B. shops/verein-xyz nennen
+- shop-config.js: Name, Farbe, Preis, E-Mail, Prefix ändern
+- shop-logo und Motive austauschen
+- Commit -> zentraler Firebase-Deploy automatisch
+
+Beispiele:
+?shop=tg-solingen = Simple
+?shop=hansa = Motive
