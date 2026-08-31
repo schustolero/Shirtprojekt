@@ -1,0 +1,2 @@
+Master v27.6.1
+Reparatur der Doppelansicht: feste sichtbare Front-/Rueckseiten-Karten, stabiler Moduswechsel, gleiche Vorschaugroessen.

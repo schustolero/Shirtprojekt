@@ -279,18 +279,31 @@ async function renderDualMotif(view, img) {
 async function renderDualPreview() {
   if (FEATURES.previewMode !== "dual" || !dualWorkspace) return;
   const [frontSrc, backSrc] = await Promise.all([renderShirtImage("front"), renderShirtImage("back")]);
-  if (dualFrontShirt) dualFrontShirt.src = frontSrc;
-  if (dualBackShirt) dualBackShirt.src = backSrc;
+  if (dualFrontShirt) {
+    dualFrontShirt.hidden = false;
+    dualFrontShirt.src = frontSrc || getBaseSrc("front");
+  }
+  if (dualBackShirt) {
+    dualBackShirt.hidden = false;
+    dualBackShirt.src = backSrc || getBaseSrc("back");
+  }
   await Promise.all([renderDualMotif("front", dualFrontMotif), renderDualMotif("back", dualBackMotif)]);
 }
 
 function applyPreviewMode() {
   const dual = FEATURES.previewMode === "dual";
+  const designerArea = document.querySelector(".designer-area");
+  if (designerArea) designerArea.classList.toggle("is-dual", dual);
   if (workspace) workspace.hidden = dual;
-  if (dualWorkspace) dualWorkspace.hidden = !dual;
+  if (dualWorkspace) {
+    dualWorkspace.hidden = !dual;
+    dualWorkspace.style.display = dual ? "grid" : "none";
+  }
   if (viewSection) viewSection.hidden = dual;
   if (designerStatus) designerStatus.textContent = dual ? "Vorder- & Rückseite" : (currentView === "back" ? "Rückseite" : "Vorderseite");
-  if (dual) renderDualPreview();
+  if (dual) {
+    requestAnimationFrame(() => renderDualPreview());
+  }
 }
 
 function getActiveObject() { return canvas.getActiveObject(); }

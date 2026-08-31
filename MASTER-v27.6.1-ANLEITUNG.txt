@@ -1,0 +1,6 @@
+MASTER v27.6.1
+
+Bugfix fuer die Doppelansicht.
+- Einzelansicht bleibt erhalten.
+- Doppelansicht rendert Vorder- und Rueckseite in getrennten festen Karten.
+- Desktop nebeneinander, mobil untereinander.
