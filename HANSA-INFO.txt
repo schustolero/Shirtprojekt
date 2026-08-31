@@ -1,0 +1,12 @@
+Hansa Berufskolleg – ShirtDesigner v2
+
+Änderungen:
+- Nur zwei feste Hansa-Motive auswählbar
+- Kein eigener Datei-Upload
+- Motiv wird standardmäßig mittig auf der Vorderseite platziert
+- Rückseite startet leer
+- Komplette bereitgestellte Motivfarbpalette eingebaut
+- Shirtfarbe und Motivfarbe sind getrennte Funktionen
+- Automatischer Firebase/GitHub-Workflow bleibt kompatibel
+
+V6: Beide Motive haben feste, motivspezifische Positionen und Groessen und sind vollstaendig gesperrt.
