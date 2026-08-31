@@ -1,0 +1,5 @@
+MASTER v28.1
+- TG Solingen: Polo-Auswahl zentral verfügbar
+- Reset-Button zentral deaktiviert
+- Rückendruck korrigiert (nicht abgeschnitten)
+- Frontmotiv kleiner
