@@ -1,20 +1,21 @@
-KUNDEN-/VEREINSVORLAGE
-========================
+KUNDEN-/VEREINSVORLAGE – MASTER-v24
+===================================
 
-Diese Version basiert auf der gesicherten MASTER-Version.
+Für einen neuen Shop/Verein im Normalfall nur:
+1. Master-v24 kopieren.
+2. shop-config.js anpassen.
+3. shop-logo.jpg ersetzen (oder logoFile in shop-config.js ändern).
+4. Motivbilder ersetzen und in motifs[] eintragen.
+5. Eigenes Firebase-Projekt + GitHub-Workflow konfigurieren.
 
-Für einen neuen Shop/Verein musst du im Normalfall nur shop-config.js ändern:
-- pageTitle
-- brandTitle
-- brandSubtitle
-- accentColor
-- logoFile
+Zentral konfigurierbar in shop-config.js:
+- Kunden-ID und Shoptexte
+- Akzentfarbe und Logo
+- Shirtpreis und Währung
+- Bestell-E-Mail und Betreff
+- Danke-Seite
+- Zusatzfeld (z.B. Team, Klasse, Abteilung)
+- Bestellnummer-Präfix
+- Motive
 
-Optionales Logo:
-1. Logo als PNG in den gleichen Ordner legen, z.B. shop-logo.png
-2. In shop-config.js setzen:
-   logoFile: "shop-logo.png"
-
-Wichtig:
-- script.js, style.css und die Shirt-Dateien nicht kundenspezifisch verändern, solange es nicht nötig ist.
-- Für jeden Kunden einen eigenen GitHub-Ordner/Repo bzw. später eine zentrale Mandantenlösung verwenden.
+Technikdateien script.js/style.css möglichst nicht kundenspezifisch ändern.

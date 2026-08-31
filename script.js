@@ -1,6 +1,7 @@
 // Shop-/Vereinsbranding aus shop-config.js anwenden.
+const SHOP = window.SHOP_CONFIG || {};
 (function applyShopConfig() {
-  const cfg = window.SHOP_CONFIG || {};
+  const cfg = SHOP;
   if (cfg.pageTitle) document.title = cfg.pageTitle;
   const setText = (id, value) => {
     const el = document.getElementById(id);
@@ -10,7 +11,19 @@
   setText("brandSubtitle", cfg.brandSubtitle);
   setText("designerHeading", cfg.designerHeading);
   setText("designerIntro", cfg.designerIntro);
+  setText("customerExtraFieldLabel", `${cfg.customerExtraFieldLabel || "Team / Abteilung"} *`);
+  setText("orderEmailDisplay", cfg.orderEmail);
   if (cfg.accentColor) document.documentElement.style.setProperty("--accent", cfg.accentColor);
+
+  const extraField = document.getElementById("customerClass");
+  if (extraField && cfg.customerExtraFieldName) extraField.name = cfg.customerExtraFieldName;
+  const orderForm = document.getElementById("orderForm");
+  if (orderForm && cfg.orderEmail) orderForm.action = `https://formsubmit.co/${encodeURIComponent(cfg.orderEmail)}`;
+  const subject = document.getElementById("formSubject");
+  if (subject && cfg.orderSubject) subject.value = cfg.orderSubject;
+  const next = document.getElementById("formNext");
+  if (next && cfg.thankYouUrl) next.value = new URL(cfg.thankYouUrl, window.location.href).href;
+
   if (cfg.logoFile) {
     const brand = document.querySelector(".brand");
     if (brand) {
@@ -22,6 +35,29 @@
       img.onerror = () => img.remove();
       brand.prepend(img);
     }
+  }
+
+  const motifGrid = document.getElementById("motifGrid");
+  if (motifGrid && Array.isArray(cfg.motifs)) {
+    cfg.motifs.forEach((motif) => {
+      if (!motif || !motif.id || !motif.file) return;
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "motif-btn";
+      btn.dataset.motif = motif.id;
+      btn.dataset.src = motif.file;
+      btn.setAttribute("aria-label", `${motif.name || motif.id} Motiv`);
+      const preview = document.createElement("span");
+      preview.className = "motif-preview";
+      const img = document.createElement("img");
+      img.src = motif.file;
+      img.alt = motif.name || motif.id;
+      const label = document.createElement("span");
+      label.textContent = motif.name || motif.id;
+      preview.appendChild(img);
+      btn.append(preview, label);
+      motifGrid.appendChild(btn);
+    });
   }
 })();
 
@@ -357,14 +393,14 @@ const sendOrderMessage = document.getElementById("sendOrderMessage");
 const formOrderNumber = document.getElementById("formOrderNumber");
 const formTotalPrice = document.getElementById("formTotalPrice");
 
-const SHIRT_PRICE = 15;
-const ORDER_PREFIX = "HBK-260901";
-const ORDER_COUNTER_DOC = "counters/orderCounter";
+const SHIRT_PRICE = Number(SHOP.shirtPrice) || 15;
+const ORDER_PREFIX = SHOP.orderPrefix || "SHOP-260901";
+const ORDER_COUNTER_DOC = SHOP.orderCounterDoc || "counters/orderCounter";
 let orderItems = [];
 let firestoreDb = null;
 
 function formatEuro(value) {
-  return new Intl.NumberFormat("de-DE", { style: "currency", currency: "EUR" }).format(value);
+  return new Intl.NumberFormat("de-DE", { style: "currency", currency: SHOP.currency || "EUR" }).format(value);
 }
 
 function getFirestoreDb() {
@@ -557,7 +593,7 @@ if (orderForm) {
       return;
     }
     if (!name || !customerClass || !email) {
-      sendOrderMessage.textContent = "Bitte Name, Klasse/Abteilung und E-Mail vollständig ausfüllen.";
+      sendOrderMessage.textContent = `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"} und E-Mail vollständig ausfüllen.`;
       return;
     }
 
@@ -603,7 +639,7 @@ if (orderForm) {
       await getFirestoreDb().collection("orders").doc(orderNumber).set(orderPayload);
 
       try {
-        sessionStorage.setItem("hansaOrderConfirmation", JSON.stringify({
+        sessionStorage.setItem(SHOP.confirmationStorageKey || "shirtOrderConfirmation", JSON.stringify({
           orderNumber,
           name,
           customerClass,

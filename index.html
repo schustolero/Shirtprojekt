@@ -72,16 +72,7 @@
     <section class="tool-section motif-section">
       <h3>Motive</h3>
       <p class="motif-help">Bitte ein Motiv auswählen. Es wird automatisch fest auf der Vorderseite platziert.</p>
-      <div class="motif-grid">
-        <button type="button" class="motif-btn" data-motif="script" data-src="motiv-hansa-script.png" aria-label="Hansa Script Motiv">
-          <span class="motif-preview"><img src="motiv-hansa-script.png" alt="Hansa Script"></span>
-          <span>Hansa Script</span>
-        </button>
-        <button type="button" class="motif-btn" data-motif="college" data-src="motiv-hansa-college.png" aria-label="Hansa College Motiv">
-          <span class="motif-preview"><img src="motiv-hansa-college.png" alt="Hansa College"></span>
-          <span>Hansa College</span>
-        </button>
-      </div>
+      <div class="motif-grid" id="motifGrid"></div>
     </section>
 
     <section class="tool-section motif-color-section">
@@ -259,10 +250,10 @@
     <div id="orderSummary" class="order-summary"></div>
 
     <form id="orderForm" class="contact-form" action="https://formsubmit.co/textilien@proton.me" method="POST">
-      <input type="hidden" name="_subject" value="Neue Hansa Berufskolleg T-Shirt Bestellung">
+      <input type="hidden" name="_subject" id="formSubject" value="Neue T-Shirt Bestellung">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_template" value="table">
-      <input type="hidden" name="_next" value="https://hansa-berufskolleg.web.app/danke.html">
+      <input type="hidden" name="_next" id="formNext" value="./danke.html">
       <input type="hidden" name="Bestellung" id="formOrderItems">
       <input type="hidden" name="Gesamtmenge" id="formTotalQuantity">
       <input type="hidden" name="Bestellnummer" id="formOrderNumber">
@@ -273,8 +264,8 @@
         <input type="text" name="Name" id="customerName" required autocomplete="name">
       </label>
       <label class="contact-field">
-        <span>Klasse / Abteilung *</span>
-        <input type="text" name="Klasse / Abteilung" id="customerClass" required>
+        <span id="customerExtraFieldLabel">Team / Abteilung *</span>
+        <input type="text" name="Team / Abteilung" id="customerClass" required>
       </label>
       <label class="contact-field">
         <span>E-Mail *</span>
@@ -285,7 +276,7 @@
         <input type="tel" name="Telefon" id="customerPhone" autocomplete="tel">
       </label>
 
-      <p class="order-modal-note">Die Bestellung wird an <strong>textilien@proton.me</strong> gesendet.</p>
+      <p class="order-modal-note">Die Bestellung wird an <strong id="orderEmailDisplay">textilien@proton.me</strong> gesendet.</p>
       <button type="submit" class="primary-btn" id="sendOrderBtn">Bestellung absenden</button>
       <p id="sendOrderMessage" class="send-order-message" aria-live="polite"></p>
     </form>
@@ -294,12 +285,12 @@
   </div>
 </div>
 
-<script src="shop-config.js?v=hansa21"></script>
+<script src="shop-config.js?v=24"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="script.js?v=21"></script>
+<script src="script.js?v=24"></script>
 
 </body>
 </html>

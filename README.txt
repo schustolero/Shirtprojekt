@@ -1,47 +1,27 @@
-T-SHIRT DESIGNER V3
+SHIRTDESIGNER MASTER-v24
+========================
 
-Diese Version enthält bewusst KEINE Text- oder Schriftfunktionen.
+Universelle Ausgangsversion für neue Vereine und Kunden.
 
-Enthalten:
-- echtes T-Shirt-Mockup Vorderseite
-- echtes T-Shirt-Mockup Rückseite
-- Umschaltung Vorderseite / Rückseite
-- separater Fabric.js-Zustand für beide Seiten
-- Logo-/Bild-Upload
-- automatische Platzierung mittig im Druckbereich
-- Verschieben
-- Skalieren
-- Drehen
-- Zentrieren
-- Duplizieren
-- Löschen
-- 8 feste T-Shirt-Farben:
-  Weiß
-  Schwarz
-  Blau
-  Rot
-  Gelb
-  Grün
-  Orange
-  Pink
-- Zurücksetzen
+FUNKTIONEN
+- Vorder- und Rückansicht
+- T-Shirt-Farbauswahl inkl. Heather-Farben
+- feste Motivauswahl aus shop-config.js
+- separate Motivfarbe
+- feste Motivpositionierung im Druckbereich
+- Größen-/Mengenauswahl und Warenkorb
+- Preisberechnung
+- zentrale Bestellnummer über Firestore
+- Bestellung in Firestore
+- E-Mail-Versand über FormSubmit
+- Danke-Seite
+- Admin-Bereich für Bestellungen
+- responsive/mobile Darstellung
 
-DATEIEN:
-index.html
-style.css
-script.js
-shirt-front.png
-shirt-back.png
+KUNDENWECHSEL
+Alle üblichen Kundendaten stehen zentral in shop-config.js.
+Zusätzlich müssen Logo/Motive und das jeweilige Firebase-/GitHub-Deployment eingerichtet werden.
+Siehe MASTER-v24-ANLEITUNG.txt.
 
-START:
-1. ZIP-Datei entpacken.
-2. index.html öffnen.
-3. Internetverbindung wird für Fabric.js benötigt.
-
-Empfehlung:
-Mit Visual Studio Code + Live Server starten.
-
-HINWEIS:
-Die T-Shirt-Farbe wird in dieser Version als Farbebene unter dem weißen Mockup simuliert.
-Dadurch bleiben Schatten/Falten des Mockups sichtbar. Für eine spätere Produktionsversion
-kann die Maskierung der Shirtfläche noch pixelgenauer aufgebaut werden.
+WICHTIG
+MASTER-v24 immer kopieren und die Kopie für den jeweiligen Kunden verwenden.
