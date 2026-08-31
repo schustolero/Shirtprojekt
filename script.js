@@ -10,6 +10,9 @@ const FEATURES = Object.assign({
   allowRotateMotif: false,
   allowBackDesign: true,
   allowMotifColor: true,
+  showShirtColorPicker: true,
+  showMotifPicker: true,
+  showMotifColorPicker: true,
   autoSelectSingleMotif: true,
   maxUploadMB: 8
 }, SHOP.features || {});
@@ -54,6 +57,7 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
 
   document.body.dataset.shopLayout = FEATURES.layout || "simple";
 
+  const shirtColorSection = document.querySelector(".color-section");
   const motifSection = document.querySelector(".motif-section");
   const motifColorSection = document.querySelector(".motif-color-section");
   const viewSection = document.querySelector(".view-section");
@@ -62,8 +66,9 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
 
   const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
-  if (motifSection) motifSection.hidden = !showPresetMotifs;
-  if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor;
+  if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
+  if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
+  if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
   if (backButton) backButton.hidden = !FEATURES.allowBackDesign;
   if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
   if (motifHelp) {
@@ -803,8 +808,26 @@ if (orderForm) {
 }
 
 
-// Startzustand
-changeShirtColor("#ffffff", "White", "weiss", "");
+// Startzustand. Feste Shopfarben haben Vorrang vor der allgemeinen Auswahl.
+const FIXED_SHIRT = SHOP.fixedShirtColor || null;
+const FIXED_MOTIF = SHOP.fixedMotifColor || null;
+
+if (FIXED_SHIRT && FIXED_SHIRT.color) {
+  changeShirtColor(
+    FIXED_SHIRT.color,
+    FIXED_SHIRT.name || "Festfarbe",
+    FIXED_SHIRT.id || "fixed-shirt-color",
+    FIXED_SHIRT.pattern || ""
+  );
+} else {
+  changeShirtColor("#ffffff", "White", "weiss", "");
+}
+
+if (FIXED_MOTIF && FIXED_MOTIF.color) {
+  currentMotifColor = FIXED_MOTIF.color;
+  currentMotifColorLabel = FIXED_MOTIF.name || "Festfarbe";
+  currentMotifColorName.textContent = currentMotifColorLabel;
+}
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
 if (FEATURES.autoSelectSingleMotif && motifButtons.length === 1 && FEATURES.motifMode === "single") {
   const only = motifButtons[0];
