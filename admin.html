@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.2.3">
+  <link rel="stylesheet" href="admin.css?v=28.2.4">
 </head>
 <body>
   <main class="admin-shell">
@@ -68,7 +68,7 @@
                 <label class="check-row wide"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
               </div></div>
 
-              <div class="form-section"><h3>Darstellung</h3><div class="form-grid">
+              <div class="form-section display-section"><h3>Darstellung</h3><div class="form-grid display-grid">
                 <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
                 <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
                 <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
@@ -82,6 +82,28 @@
                 <label><span>Feste Motivfarbe – Name</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
                 <label><span>Feste Motivfarbe – Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
               </div></div>
+
+              <div class="form-section position-editor-section"><h3>Motiv direkt positionieren</h3><p class="section-note">Motiv im Shirt mit der Maus ziehen. Größe über den Regler ändern. Danach oben auf <strong>Speichern</strong> klicken.</p>
+                <div class="position-editor-toolbar">
+                  <label><span>Textil</span><select id="positionProduct"><option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option></select></label>
+                  <label><span>Seite</span><select id="positionSide"><option value="front">Vorderseite</option><option value="back">Rückseite</option></select></label>
+                  <label class="position-size-control"><span>Motivgröße <strong id="positionSizeValue">28%</strong></span><input id="positionSize" type="range" min="8" max="80" step="0.5" value="28"></label>
+                </div>
+                <div class="position-editor-layout">
+                  <div class="position-stage" id="positionStage">
+                    <img id="positionShirt" class="position-shirt" src="shirt-front-template.png" alt="Shirt Vorschau">
+                    <div class="position-print-zone" id="positionPrintZone">
+                      <img id="positionMotif" class="position-motif" alt="Motiv – zum Verschieben ziehen">
+                    </div>
+                  </div>
+                  <div class="position-readout">
+                    <div><span>X</span><strong id="positionXValue">68%</strong></div>
+                    <div><span>Y</span><strong id="positionYValue">20%</strong></div>
+                    <div><span>Größe</span><strong id="positionWValue">28%</strong></div>
+                    <p>Das Fadenkreuz des Motivs entspricht der gespeicherten Position. Einzel- und Doppelansicht nutzen dieselben Werte.</p>
+                  </div>
+                </div>
+              </div>
 
               <div class="form-section"><h3>Position & Größe – direkt einstellbar</h3><p class="section-note">Hier stellst du die Druckposition direkt ein. Die Werte werden gespeichert und gelten identisch für Einzel- und Doppelansicht. X = links/rechts, Y = höher/tiefer, Größe = Motivbreite.</p>
                 <h4>T-Shirt</h4><div class="form-grid">
@@ -138,11 +160,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.2.3"></script>
+  <script src="/central-config.js?v=28.2.5"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.2.3"></script>
+  <script src="/admin.js?v=28.2.5"></script>
 </body>
 </html>

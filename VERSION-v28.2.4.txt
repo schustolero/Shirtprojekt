@@ -1,0 +1,6 @@
+MASTER v28.2.4
+- Motiv im Admin direkt per Drag & Drop positionierbar
+- Größe per Slider
+- getrennt für T-Shirt/Polo und Vorder-/Rückseite
+- X/Y/Größe werden in productPrint gespeichert
+- Einzel- und Doppelansicht verwenden dieselben gespeicherten Werte

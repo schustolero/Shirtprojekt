@@ -1,0 +1,6 @@
+MASTER v28.2.5
+- Adminbereich Darstellung kompakter
+- Akzentfarbe als kleines Farbfeld
+- Logo-Höhe und Shop-Vorschau in derselben Zeile
+- Überschrift und Hinweistext kompakter angeordnet
+- Cache-Version aktualisiert

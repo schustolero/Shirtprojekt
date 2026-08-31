@@ -199,6 +199,17 @@ const addMotifBtn = document.getElementById("addMotifBtn");
 const logoUpload = document.getElementById("logoUpload");
 const logoPreview = document.getElementById("logoPreview");
 const removeLogoBtn = document.getElementById("removeLogoBtn");
+const positionProduct = document.getElementById("positionProduct");
+const positionSide = document.getElementById("positionSide");
+const positionSize = document.getElementById("positionSize");
+const positionSizeValue = document.getElementById("positionSizeValue");
+const positionStage = document.getElementById("positionStage");
+const positionPrintZone = document.getElementById("positionPrintZone");
+const positionShirt = document.getElementById("positionShirt");
+const positionMotif = document.getElementById("positionMotif");
+const positionXValue = document.getElementById("positionXValue");
+const positionYValue = document.getElementById("positionYValue");
+const positionWValue = document.getElementById("positionWValue");
 
 let shopConfigs = new Map();
 let selectedShopId = "";
@@ -222,6 +233,87 @@ const shopFields = {
   poloBackX: document.getElementById("poloBackX"), poloBackY: document.getElementById("poloBackY"), poloBackW: document.getElementById("poloBackW")
 };
 
+function getPositionFieldSet(product, side){
+  const key = `${product}${side === "front" ? "Front" : "Back"}`;
+  return {
+    x: shopFields[`${key}X`],
+    y: shopFields[`${key}Y`],
+    w: shopFields[`${key}W`]
+  };
+}
+function selectedPositionMotif(){
+  const side = positionSide?.value || "front";
+  const select = side === "front" ? shopFields.fixedFrontMotif : shopFields.fixedBackMotif;
+  const id = select?.value || workingMotifs[0]?.id;
+  return workingMotifs.find(m => m.id === id) || workingMotifs[0] || null;
+}
+function refreshPositionEditor(){
+  if(!positionStage || !positionMotif || !positionShirt) return;
+  const product = positionProduct.value || "tshirt";
+  const side = positionSide.value || "front";
+  const fields = getPositionFieldSet(product, side);
+  const x = Number(fields.x?.value || (side === "front" ? 68 : 50));
+  const y = Number(fields.y?.value || (side === "front" ? 20 : 36));
+  const w = Number(fields.w?.value || (side === "front" ? 28 : 50));
+  positionShirt.src = product === "polo"
+    ? (side === "front" ? "polo-front-template.png" : "polo-back-template.png")
+    : (side === "front" ? "shirt-front-template.png" : "shirt-back-template.png");
+  const motif = selectedPositionMotif();
+  if(motif?.file){
+    positionMotif.src = safeAssetUrl(motif.file, shopFields.id.value || selectedShopId || "_simple");
+    positionMotif.hidden = false;
+  } else {
+    positionMotif.hidden = true;
+    positionMotif.removeAttribute("src");
+  }
+  positionMotif.style.left = `${x}%`;
+  positionMotif.style.top = `${y}%`;
+  positionMotif.style.width = `${w}%`;
+  positionSize.value = String(w);
+  positionSizeValue.textContent = `${w}%`;
+  positionXValue.textContent = `${x}%`;
+  positionYValue.textContent = `${y}%`;
+  positionWValue.textContent = `${w}%`;
+}
+function writePositionValues(x, y, w){
+  const fields = getPositionFieldSet(positionProduct.value || "tshirt", positionSide.value || "front");
+  if(Number.isFinite(x)) fields.x.value = String(Math.round(x * 2) / 2);
+  if(Number.isFinite(y)) fields.y.value = String(Math.round(y * 2) / 2);
+  if(Number.isFinite(w)) fields.w.value = String(Math.round(w * 2) / 2);
+  refreshPositionEditor();
+  setShopState("Position geändert – oben Speichern klicken.");
+}
+function bindPositionEditor(){
+  if(!positionStage || !positionMotif || !positionPrintZone) return;
+  [positionProduct, positionSide].forEach(el => el?.addEventListener("change", refreshPositionEditor));
+  positionSize?.addEventListener("input", () => writePositionValues(NaN, NaN, Number(positionSize.value)));
+  [shopFields.fixedFrontMotif, shopFields.fixedBackMotif].forEach(el => el?.addEventListener("change", refreshPositionEditor));
+  Object.values(shopFields).forEach(el => {
+    if(el && /^(tshirt|polo)(Front|Back)(X|Y|W)$/.test(Object.keys(shopFields).find(k => shopFields[k] === el) || "")){
+      el.addEventListener("input", refreshPositionEditor);
+    }
+  });
+  let dragging = false;
+  const move = (ev) => {
+    if(!dragging) return;
+    const r = positionPrintZone.getBoundingClientRect();
+    const point = ev.touches?.[0] || ev;
+    let x = ((point.clientX - r.left) / r.width) * 100;
+    let y = ((point.clientY - r.top) / r.height) * 100;
+    x = Math.max(8, Math.min(92, x));
+    y = Math.max(6, Math.min(78, y));
+    writePositionValues(x, y, NaN);
+    ev.preventDefault();
+  };
+  positionMotif.addEventListener("pointerdown", ev => {
+    dragging = true;
+    positionMotif.setPointerCapture?.(ev.pointerId);
+    ev.preventDefault();
+  });
+  positionMotif.addEventListener("pointermove", move);
+  positionMotif.addEventListener("pointerup", ev => { dragging = false; positionMotif.releasePointerCapture?.(ev.pointerId); });
+  positionMotif.addEventListener("pointercancel", () => { dragging = false; });
+}
 function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
@@ -287,7 +379,7 @@ function selectShop(id){
   shopFields.tshirtBackX.value=Number(tshirt.back?.xPct ?? 50); shopFields.tshirtBackY.value=Number(tshirt.back?.yPct ?? fp.back?.topPct ?? 36); shopFields.tshirtBackW.value=Number(tshirt.back?.widthPct ?? 50);
   shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
-  updateLogoPreview(); renderMotifsEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState("Bereit zum Bearbeiten."); renderShopList();
+  updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState("Bereit zum Bearbeiten."); renderShopList();
 }
 
 function typePreset(type){
@@ -295,6 +387,7 @@ function typePreset(type){
   shopFields.showMotifs.checked=motifs||designer; shopFields.allowUpload.checked=designer; shopFields.allowText.checked=designer; shopFields.allowMove.checked=designer; shopFields.allowResize.checked=designer; shopFields.allowRotate.checked=designer; shopFields.showShirtColors.checked=true; shopFields.showMotifColors.checked=true; shopFields.allowBack.checked=true;
 }
 shopFields.type.addEventListener("change",()=>typePreset(shopFields.type.value));
+bindPositionEditor();
 
 function updateLogoPreview(){
   const slug=shopFields.id.value||selectedShopId||"_simple"; const src=safeAssetUrl(workingLogo,slug); logoPreview.src=src||""; logoPreview.style.display=src?"block":"none";
@@ -336,6 +429,7 @@ function renderMotifsEditor(){
   });
   if(!workingMotifs.length){const p=document.createElement("p");p.className="section-note";p.textContent="Noch keine Motive vorhanden.";motifsEditor.appendChild(p)}
   refreshFixedPrintMotifOptions(shopFields.fixedFrontMotif?.value||"",shopFields.fixedBackMotif?.value||"");
+  refreshPositionEditor();
 }
 addMotifBtn.addEventListener("click",()=>{ if(workingMotifs.length>=4){alert("Für die direkte Firebase-Verwaltung sind maximal 4 Motive vorgesehen.");return;} const n=workingMotifs.length+1;workingMotifs.push({id:`motiv${n}`,name:`Motiv ${n}`,file:""});renderMotifsEditor();setShopState("Neues Motiv angelegt – Bild auswählen und speichern.") });
 
@@ -343,7 +437,7 @@ newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal={}; workingMotifs=[{id:"motiv1",name:"Motiv 1",file:""}]; workingLogo=""; shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent="Neuen Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=15; shopFields.prefix.value=""; shopFields.email.value=CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true; shopFields.accent.value="#111111"; shopFields.logoHeight.value=90; shopFields.previewMode.value="single"; shopFields.heading.value="Shirt gestalten"; shopFields.intro.value=""; shopFields.fixedShirtName.value=""; shopFields.fixedMotifName.value=""; refreshFixedPrintMotifOptions("motiv1","motiv1"); shopFields.fixedFrontEnabled.checked=false; shopFields.fixedFrontPosition.value="left-chest"; shopFields.fixedFrontSize.value="small"; shopFields.fixedFrontTop.value=24; shopFields.fixedFrontSide.value=32; shopFields.fixedBackEnabled.checked=false; shopFields.fixedBackPosition.value="center"; shopFields.fixedBackSize.value="large";
   shopFields.tshirtFrontX.value=68; shopFields.tshirtFrontY.value=20; shopFields.tshirtFrontW.value=28; shopFields.tshirtBackX.value=50; shopFields.tshirtBackY.value=36; shopFields.tshirtBackW.value=50;
-  shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
+  shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
 });
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
 
