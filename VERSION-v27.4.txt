@@ -1,0 +1,5 @@
+MASTER v27.4
+- Doppelansicht pro Shop: Vorderseite links, Rückseite rechts
+- Admin-Schalter Einzelansicht / Doppelansicht
+- Mobil automatisch untereinander
+- TG Solingen standardmäßig Doppelansicht

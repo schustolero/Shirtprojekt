@@ -1,0 +1,5 @@
+MASTER-v27.4
+
+Neu: Im Admin unter Darstellung kann die Shop-Ansicht auf Einzelansicht oder Doppelansicht gestellt werden.
+Doppelansicht zeigt auf Desktop Vorderseite links und Rückseite rechts; mobil untereinander.
+TG Solingen ist als Doppelansicht vorkonfiguriert.

@@ -215,7 +215,24 @@
 
     <div class="workspace">
 
-      <div class="mockup-stage">
+      <div id="dualPreview" class="dual-preview" hidden>
+        <div class="dual-preview-card">
+          <div class="dual-label">Vorderseite</div>
+          <div class="dual-shirt-stage">
+            <img id="dualFrontShirt" class="dual-shirt" alt="T-Shirt Vorderseite">
+            <img id="dualFrontDesign" class="dual-design" alt="Vorderdruck">
+          </div>
+        </div>
+        <div class="dual-preview-card">
+          <div class="dual-label">Rückseite</div>
+          <div class="dual-shirt-stage">
+            <img id="dualBackShirt" class="dual-shirt" alt="T-Shirt Rückseite">
+            <img id="dualBackDesign" class="dual-design dual-design-back" alt="Rückendruck">
+          </div>
+        </div>
+      </div>
+
+      <div class="mockup-stage" id="singlePreview">
 
         <img
           id="shirtMockup"

@@ -6,7 +6,7 @@ window.CENTRAL_CONFIG = {
   orderEmail: "shirtzentrale@gmail.com",
   seedShops: {
     "tg-solingen": {
-      customerId:"tg-solingen", customerName:"Tanzgruppe Klingenstadt Solingen",
+      customerId:"tg-solingen", customerName:"Tanzgruppe Klingenstadt Solingen", previewMode:"dual",
       pageTitle:"Tanzgruppe Klingenstadt Solingen – T-Shirt Bestellung", brandTitle:"", brandSubtitle:"T-Shirt Bestellung",
       designerHeading:"Dein TG Solingen Shirt", designerIntro:"Royal Blue Shirt mit Vereinslogo in Medium Yellow – einfach Größe und Menge auswählen.",
       accentColor:"#f0df00", logoFile:"shop-logo.png", logoHeight:105, shirtPrice:15, currency:"EUR",

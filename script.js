@@ -148,6 +148,21 @@ const currentColorName = document.getElementById("currentColorName");
 const currentMotifColorName = document.getElementById("currentMotifColorName");
 const designerStatus = document.getElementById("designerStatus");
 const printZone = document.getElementById("printZone");
+const dualPreview = document.getElementById("dualPreview");
+const singlePreview = document.getElementById("singlePreview");
+const dualFrontShirt = document.getElementById("dualFrontShirt");
+const dualBackShirt = document.getElementById("dualBackShirt");
+const dualFrontDesign = document.getElementById("dualFrontDesign");
+const dualBackDesign = document.getElementById("dualBackDesign");
+const PREVIEW_MODE = SHOP.previewMode || "single";
+document.body.dataset.previewMode = PREVIEW_MODE;
+if (PREVIEW_MODE === "dual") {
+  if (dualPreview) dualPreview.hidden = false;
+  if (singlePreview) singlePreview.hidden = true;
+  const vs = document.querySelector(".view-section"); if (vs) vs.hidden = true;
+  const status = document.getElementById("designerStatus"); if (status) status.textContent = "Vorder- & Rückseite";
+}
+
 
 let currentView = "front";
 let currentShirtColor = "#ffffff";
@@ -186,6 +201,45 @@ function getBaseImage(view) {
     img.onerror = reject;
     img.src = getBaseSrc(view);
   });
+}
+
+async function renderShirtForView(view) {
+  const base = await getBaseImage(view);
+  if (currentShirtColorId === "weiss") return getBaseSrc(view);
+  const c = document.createElement("canvas");
+  c.width = base.naturalWidth || base.width; c.height = base.naturalHeight || base.height;
+  const ctx = c.getContext("2d"); ctx.drawImage(base,0,0,c.width,c.height);
+  ctx.globalCompositeOperation = "multiply";
+  ctx.fillStyle = currentShirtColorId === "black" ? "#3a3a3d" : currentShirtColor;
+  ctx.fillRect(0,0,c.width,c.height);
+  ctx.globalCompositeOperation = "destination-in"; ctx.drawImage(base,0,0,c.width,c.height);
+  if (currentPattern === "heather") {
+    ctx.globalCompositeOperation="source-atop"; ctx.globalAlpha=.10; ctx.strokeStyle="#fff";
+    ctx.lineWidth=Math.max(1,Math.round(c.width/900)); const step=Math.max(7,Math.round(c.width/130));
+    for(let x=-c.height;x<c.width+c.height;x+=step){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x+c.height,c.height);ctx.stroke()}
+    ctx.globalAlpha=1;
+  }
+  ctx.globalCompositeOperation="source-over"; return c.toDataURL("image/png");
+}
+
+function renderDesignState(view) {
+  return new Promise(resolve => {
+    const state=viewStates[view]; if(!state){resolve("");return;}
+    const h=view==="back"?350:330;
+    const el=document.createElement("canvas"); el.width=260; el.height=h;
+    const sc=new fabric.StaticCanvas(el,{width:260,height:h,backgroundColor:"transparent"});
+    sc.loadFromJSON(state,()=>{sc.renderAll(); const url=sc.toDataURL({format:"png",multiplier:2}); sc.dispose(); resolve(url)});
+  });
+}
+
+async function updateDualPreview(){
+  if(PREVIEW_MODE!=="dual"||!dualPreview)return;
+  try{
+    const [fs,bs,fd,bd]=await Promise.all([renderShirtForView("front"),renderShirtForView("back"),renderDesignState("front"),renderDesignState("back")]);
+    if(dualFrontShirt) dualFrontShirt.src=fs; if(dualBackShirt) dualBackShirt.src=bs;
+    if(dualFrontDesign){dualFrontDesign.src=fd;dualFrontDesign.style.display=fd?"block":"none"}
+    if(dualBackDesign){dualBackDesign.src=bd;dualBackDesign.style.display=bd?"block":"none"}
+  }catch(e){console.warn("Doppelansicht konnte nicht aktualisiert werden",e)}
 }
 
 async function renderShirt() {
@@ -272,6 +326,7 @@ function changeShirtColor(color, name, colorId, pattern) {
   currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
   renderShirt();
+  updateDualPreview();
 }
 
 shirtColorButtons.forEach(button => button.addEventListener("click", () => {
@@ -398,6 +453,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
         image.setCoords();
         canvas.requestRenderAll();
         viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel"]);
+        updateDualPreview();
         if (markActive && view === "front") motifButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.motif === motifId));
         resolve();
       }, { crossOrigin: "anonymous" });
@@ -881,5 +937,6 @@ async function initializeFixedPrints() {
     if (btn) await addMotifToView("back", btn.dataset.motif, btn.dataset.src, false);
   }
   if (currentView !== "front") switchView("front");
+  await updateDualPreview();
 }
 initializeFixedPrints();
