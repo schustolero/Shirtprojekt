@@ -5,7 +5,7 @@
 // ============================================================
 
 window.CENTRAL_CONFIG = {
-  adminEmail: "textilien@proton.me",
+  adminEmail: "shirtzentrale@gmail.com",
   adminTitle: "Shirtprojekt – Bestellungen",
   defaultShop: "_template"
 };

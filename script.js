@@ -523,7 +523,6 @@ const formTotalPrice = document.getElementById("formTotalPrice");
 const SHIRT_PRICE = Number(SHOP.shirtPrice) || 15;
 const ORDER_PREFIX = SHOP.orderPrefix || String(SHOP.customerId || "SHOP").toUpperCase().replace(/[^A-Z0-9]+/g,"-").slice(0,12);
 const CUSTOMER_ID = SHOP.customerId || window.SHOP_SLUG || "unknown";
-const ORDER_COUNTER_DOC = `counters/${CUSTOMER_ID}`;
 let orderItems = [];
 let firestoreDb = null;
 
@@ -540,22 +539,25 @@ function getFirestoreDb() {
   return firestoreDb;
 }
 
-async function createCentralOrderNumber() {
-  const db = getFirestoreDb();
-  const ref = db.doc(ORDER_COUNTER_DOC);
+function createOrderNumber() {
+  const now = new Date();
+  const yy = String(now.getFullYear()).slice(-2);
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const hh = String(now.getHours()).padStart(2, "0");
+  const mi = String(now.getMinutes()).padStart(2, "0");
+  const ss = String(now.getSeconds()).padStart(2, "0");
 
-  return db.runTransaction(async transaction => {
-    const snapshot = await transaction.get(ref);
-    let nextNumber = 100;
+  let randomPart;
+  if (window.crypto && window.crypto.getRandomValues) {
+    const values = new Uint32Array(1);
+    window.crypto.getRandomValues(values);
+    randomPart = String(values[0] % 10000).padStart(4, "0");
+  } else {
+    randomPart = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+  }
 
-    if (snapshot.exists) {
-      const stored = Number(snapshot.data().nextNumber);
-      if (Number.isInteger(stored) && stored >= 100) nextNumber = stored;
-    }
-
-    transaction.set(ref, { nextNumber: nextNumber + 1 });
-    return `${ORDER_PREFIX}-${String(nextNumber).padStart(3, "0")}`;
-  });
+  return `${ORDER_PREFIX}-${yy}${mm}${dd}-${hh}${mi}${ss}-${randomPart}`;
 }
 
 function getSelectedMotifName() {
@@ -733,13 +735,13 @@ if (orderForm) {
     if (!orderForm.reportValidity()) return;
 
     if (sendOrderBtn) sendOrderBtn.disabled = true;
-    sendOrderMessage.textContent = "Bestellnummer wird vergeben …";
+    sendOrderMessage.textContent = "Bestellung wird vorbereitet …";
     sendOrderMessage.classList.add("success");
 
     try {
       const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = totalQuantity * SHIRT_PRICE;
-      const orderNumber = await createCentralOrderNumber();
+      const orderNumber = createOrderNumber();
 
       formOrderItems.value = orderItemsAsText();
       formTotalQuantity.value = String(totalQuantity);
@@ -792,9 +794,9 @@ if (orderForm) {
       sendOrderMessage.textContent = `Bestellnummer ${orderNumber} vergeben. Bestellung wird gesendet …`;
       orderForm.submit();
     } catch (error) {
-      console.error("Bestellnummer konnte nicht vergeben werden:", error);
+      console.error("Bestellung konnte nicht gespeichert werden:", error);
       sendOrderMessage.classList.remove("success");
-      sendOrderMessage.textContent = "Die Bestellnummer konnte nicht vergeben werden. Bitte kurz erneut versuchen.";
+      sendOrderMessage.textContent = "Die Bestellung konnte nicht gespeichert werden. Bitte kurz erneut versuchen.";
       if (sendOrderBtn) sendOrderBtn.disabled = false;
     }
   });
