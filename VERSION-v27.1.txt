@@ -1,0 +1,3 @@
+Master v27.1
+- Fester Front- und Rückendruck pro Shop im Admin steuerbar
+- TG Solingen: vorne linke Herzseite klein, hinten mittig groß

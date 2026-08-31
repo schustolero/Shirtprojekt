@@ -1,0 +1,1 @@
+Master v27.1: Im Admin unter Shops kann für Vorder- und Rückseite ein festes Motiv, Position und Größe gewählt werden. Änderungen werden in Firestore gespeichert und sind sofort live.

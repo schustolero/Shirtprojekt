@@ -318,12 +318,27 @@ async function recolorMotifSource(src, color) {
 }
 
 const FIXED_MOTIF_LAYOUTS = {
-  college: { left: 0.50, top: 0.31, maxWidth: 0.72, maxHeight: 0.36 },
-  script:  { left: 0.50, top: 0.31, maxWidth: 0.72, maxHeight: 0.36 }
+  default: { left: 0.50, top: 0.31, maxWidth: 0.72, maxHeight: 0.36 },
+  "front:left-chest:small": { left: 0.68, top: 0.24, maxWidth: 0.22, maxHeight: 0.18 },
+  "front:center:small": { left: 0.50, top: 0.26, maxWidth: 0.28, maxHeight: 0.20 },
+  "front:center:medium": { left: 0.50, top: 0.31, maxWidth: 0.50, maxHeight: 0.32 },
+  "front:center:large": { left: 0.50, top: 0.34, maxWidth: 0.72, maxHeight: 0.46 },
+  "back:center:small": { left: 0.50, top: 0.27, maxWidth: 0.30, maxHeight: 0.22 },
+  "back:center:medium": { left: 0.50, top: 0.32, maxWidth: 0.52, maxHeight: 0.38 },
+  "back:center:large": { left: 0.50, top: 0.36, maxWidth: 0.78, maxHeight: 0.58 }
 };
 
+function getFixedPrintLayout(motifId) {
+  const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
+  if (cfg && cfg.enabled) {
+    const key = `${currentView}:${cfg.position || "center"}:${cfg.size || "medium"}`;
+    if (FIXED_MOTIF_LAYOUTS[key]) return FIXED_MOTIF_LAYOUTS[key];
+  }
+  return FIXED_MOTIF_LAYOUTS.default;
+}
+
 function applyFixedMotifLayout(image, motifId) {
-  const layout = FIXED_MOTIF_LAYOUTS[motifId] || FIXED_MOTIF_LAYOUTS.college;
+  const layout = getFixedPrintLayout(motifId);
   const maxWidth = canvas.width * layout.maxWidth;
   const maxHeight = canvas.height * layout.maxHeight;
   const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
@@ -357,27 +372,33 @@ function configureFabricImage(image, motifId, motifSrc) {
   });
 }
 
-async function addSelectedMotif(motifId, motifSrc) {
-  if (currentView !== "front") switchView("front");
-  // Give loadView() a moment when switching from the back.
+async function addMotifToView(view, motifId, motifSrc, markActive = true) {
+  if (currentView !== view) switchView(view);
   await new Promise(resolve => requestAnimationFrame(resolve));
   try {
     const dataUrl = await recolorMotifSource(motifSrc, currentMotifColor);
     canvas.clear();
     canvas.backgroundColor = "transparent";
-    fabric.Image.fromURL(dataUrl, function(image) {
-      configureFabricImage(image, motifId, motifSrc);
-      canvas.add(image);
-      canvas.discardActiveObject();
-      image.setCoords();
-      canvas.requestRenderAll();
-      viewStates.front = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel"]);
-      motifButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.motif === motifId));
-    }, { crossOrigin: "anonymous" });
+    await new Promise((resolve) => {
+      fabric.Image.fromURL(dataUrl, function(image) {
+        configureFabricImage(image, motifId, motifSrc);
+        canvas.add(image);
+        canvas.discardActiveObject();
+        image.setCoords();
+        canvas.requestRenderAll();
+        viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel"]);
+        if (markActive && view === "front") motifButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.motif === motifId));
+        resolve();
+      }, { crossOrigin: "anonymous" });
+    });
   } catch (err) {
     console.error("Motiv konnte nicht geladen werden", err);
     alert("Das Motiv konnte nicht geladen werden. Bitte Seite neu laden.");
   }
+}
+
+async function addSelectedMotif(motifId, motifSrc) {
+  return addMotifToView("front", motifId, motifSrc, true);
 }
 
 motifButtons.forEach(button => button.addEventListener("click", () => {
@@ -603,11 +624,15 @@ function getCurrentShirtSelection() {
     return null;
   }
 
+  const fixedPrintParts = [];
+  if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
+  if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
   return {
     id: Date.now() + Math.random(),
     shirtColor: currentColorName.textContent || "White",
     motif: getSelectedMotifName(),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
+    printLayout: fixedPrintParts.join(" · "),
     size,
     quantity
   };
@@ -628,7 +653,7 @@ function renderCart() {
     const title = document.createElement("strong");
     title.textContent = `${item.quantity}× ${item.size} · ${item.shirtColor} · ${formatEuro(item.quantity * SHIRT_PRICE)}`;
     const meta = document.createElement("span");
-    meta.textContent = `${item.motif} · ${item.motifColor}`;
+    meta.textContent = `${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
     info.append(title, meta);
 
     const remove = document.createElement("button");
@@ -670,7 +695,7 @@ function addCurrentShirtToOrder() {
 
 function orderItemsAsText() {
   return orderItems.map((item, i) =>
-    `${i + 1}. ${item.quantity}x | Größe ${item.size} | Shirt: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor} | Preis: ${formatEuro(item.quantity * SHIRT_PRICE)}`
+    `${i + 1}. ${item.quantity}x | Größe ${item.size} | Shirt: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * SHIRT_PRICE)}`
   ).join("\n");
 }
 
@@ -690,7 +715,7 @@ function openOrderSummary() {
   orderItems.forEach((item, i) => {
     orderSummary.appendChild(summaryRow(
       `Shirt ${i + 1}`,
-      `${item.quantity}× ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor} · ${formatEuro(item.quantity * SHIRT_PRICE)}`
+      `${item.quantity}× ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * SHIRT_PRICE)}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
@@ -772,6 +797,7 @@ if (orderForm) {
           shirtColor: item.shirtColor,
           motif: item.motif,
           motifColor: item.motifColor,
+          printLayout: item.printLayout || "",
           size: item.size,
           quantity: item.quantity,
           linePrice: item.quantity * SHIRT_PRICE
@@ -829,7 +855,20 @@ if (FIXED_MOTIF && FIXED_MOTIF.color) {
   currentMotifColorName.textContent = currentMotifColorLabel;
 }
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
-if (FEATURES.autoSelectSingleMotif && motifButtons.length === 1 && FEATURES.motifMode === "single") {
-  const only = motifButtons[0];
-  addSelectedMotif(only.dataset.motif, only.dataset.src);
+async function initializeFixedPrints() {
+  const fixed = SHOP.fixedPrint || {};
+  const motifById = (id) => Array.from(motifButtons).find(btn => btn.dataset.motif === id) || motifButtons[0];
+  if (fixed.front?.enabled) {
+    const btn = motifById(fixed.front.motifId);
+    if (btn) await addMotifToView("front", btn.dataset.motif, btn.dataset.src, true);
+  } else if (FEATURES.autoSelectSingleMotif && motifButtons.length === 1 && FEATURES.motifMode === "single") {
+    const only = motifButtons[0];
+    await addSelectedMotif(only.dataset.motif, only.dataset.src);
+  }
+  if (fixed.back?.enabled) {
+    const btn = motifById(fixed.back.motifId);
+    if (btn) await addMotifToView("back", btn.dataset.motif, btn.dataset.src, false);
+  }
+  if (currentView !== "front") switchView("front");
 }
+initializeFixedPrints();
