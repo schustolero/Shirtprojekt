@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=27.6.1">
+  <link rel="stylesheet" href="/style.css?v=27.7">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -234,24 +234,19 @@
     </div>
 
     <div class="dual-workspace" id="dualWorkspace" hidden>
-      <section class="dual-preview-card">
-        <div class="dual-preview-title">Vorderseite</div>
-        <div class="dual-mockup-stage">
-          <img id="dualFrontShirt" class="dual-shirt-mockup" src="shirt-front-template.png" alt="T-Shirt Vorderseite">
-          <div class="dual-print-zone" aria-hidden="true">
+      <div class="dual-composite-shell">
+        <div class="dual-label dual-label-front">Vorderseite</div>
+        <div class="dual-label dual-label-back">Rückseite</div>
+        <div class="dual-composite-stage">
+          <img id="dualCompositeShirt" class="dual-composite-shirt" src="shirt-dual.png" alt="T-Shirt Vorder- und Rückseite">
+          <div class="dual-half dual-half-front" aria-hidden="true">
             <img id="dualFrontMotif" class="dual-motif" alt="Vorderdruck">
           </div>
-        </div>
-      </section>
-      <section class="dual-preview-card">
-        <div class="dual-preview-title">Rückseite</div>
-        <div class="dual-mockup-stage">
-          <img id="dualBackShirt" class="dual-shirt-mockup" src="shirt-back-template.png" alt="T-Shirt Rückseite">
-          <div class="dual-print-zone" aria-hidden="true">
+          <div class="dual-half dual-half-back" aria-hidden="true">
             <img id="dualBackMotif" class="dual-motif" alt="Rückendruck">
           </div>
         </div>
-      </section>
+      </div>
     </div>
 
 
@@ -306,16 +301,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=27.6.1"></script>
+<script src="/central-config.js?v=27.7"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=27.6.1"></script>
+<script src="/shop-loader.js?v=27.7"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=27.6.1";
+    app.src="/script.js?v=27.7";
     document.body.appendChild(app);
   });
 </script>

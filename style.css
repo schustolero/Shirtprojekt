@@ -922,77 +922,59 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
 }
 
 
-/* v27.6.1: reparierte Doppelansicht.
-   Der Modus ist komplett von der Einzelansicht getrennt und hat feste,
-   sichtbare Vorschauflächen. */
+/* v27.7: robuste Doppelansicht auf Basis eines einzigen Front-/Back-Mockups. */
 .dual-workspace[hidden] { display: none !important; }
 .designer-area.is-dual .workspace { display: none !important; }
-.designer-area.is-dual .dual-workspace { display: grid !important; }
+.designer-area.is-dual .dual-workspace { display: flex !important; }
 .dual-workspace {
   flex: 1 1 auto;
   width: 100%;
-  min-height: 680px;
-  padding: 24px 28px;
+  min-height: 640px;
+  padding: 20px 26px 26px;
   box-sizing: border-box;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 24px;
   align-items: center;
-  background: radial-gradient(circle at center, #ffffff 0%, #f7f7f9 48%, #ececf0 100%);
+  justify-content: center;
+  background: radial-gradient(circle at center, #fff 0%, #f7f7f9 50%, #ececf0 100%);
 }
-.dual-preview-card {
-  min-width: 0;
-  height: 620px;
-  background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 14px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0,0,0,.04);
+.dual-composite-shell {
+  width: min(1180px, 100%);
+  margin: 0 auto;
 }
-.dual-preview-title {
-  flex: 0 0 auto;
+.dual-label {
+  display: inline-block;
+  width: 49.5%;
   text-align: center;
   font-size: 13px;
   font-weight: 800;
-  margin: 2px 0 8px;
   color: #35353a;
+  margin-bottom: 8px;
 }
-.dual-mockup-stage {
+.dual-composite-stage {
   position: relative;
-  flex: 1 1 auto;
   width: 100%;
-  min-height: 0;
-  max-width: 500px;
-  margin: 0 auto;
-  overflow: hidden;
+  aspect-ratio: 2048 / 1219;
+  overflow: visible;
 }
-.dual-shirt-mockup {
+.dual-composite-shirt {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
   object-fit: contain;
-  display: block !important;
-  opacity: 1 !important;
-  visibility: visible !important;
+  display: block;
   pointer-events: none;
   user-select: none;
 }
-.dual-print-zone {
+.dual-half {
   position: absolute;
-  width: 44%;
-  height: 58%;
-  left: 50%;
-  top: 47%;
-  transform: translate(-50%, -50%);
+  top: 0;
+  width: 50%;
+  height: 100%;
   overflow: hidden;
   pointer-events: none;
 }
+.dual-half-front { left: 0; }
+.dual-half-back { right: 0; }
 .dual-motif {
   position: absolute;
   transform: translate(-50%, -50%);
@@ -1003,16 +985,15 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   pointer-events: none;
 }
 @media (max-width: 900px) {
-  .designer-area.is-dual .dual-workspace { display: grid !important; }
+  .designer-area.is-dual .dual-workspace { display: flex !important; }
   .dual-workspace {
     order: 2;
     width: 100%;
     min-height: 0;
-    grid-template-columns: 1fr;
-    padding: 10px 12px 14px;
-    gap: 12px;
-    background: #ffffff;
+    padding: 12px 8px 18px;
+    background: #fff;
+    overflow-x: auto;
   }
-  .dual-preview-card { height: 470px; padding: 10px; }
-  .dual-mockup-stage { max-width: 390px; }
+  .dual-composite-shell { width: 820px; min-width: 820px; }
 }
+

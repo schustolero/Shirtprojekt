@@ -151,8 +151,7 @@ const printZone = document.getElementById("printZone");
 const workspace = document.querySelector(".workspace");
 const dualWorkspace = document.getElementById("dualWorkspace");
 const viewSection = document.querySelector(".view-section");
-const dualFrontShirt = document.getElementById("dualFrontShirt");
-const dualBackShirt = document.getElementById("dualBackShirt");
+const dualCompositeShirt = document.getElementById("dualCompositeShirt");
 const dualFrontMotif = document.getElementById("dualFrontMotif");
 const dualBackMotif = document.getElementById("dualBackMotif");
 
@@ -165,6 +164,7 @@ let currentMotifColorLabel = "Black";
 
 const viewStates = { front: null, back: null };
 const baseImages = { front: null, back: null };
+let dualBaseImage = null;
 const motifSourceCache = new Map();
 
 function enhanceMotifColorCards() {
@@ -247,11 +247,13 @@ function getConfiguredMotif(view) {
 function applyDualMotifLayout(img, view, cfg) {
   if (!img || !cfg) return;
   const size = cfg.size || "medium";
-  const widths = { small: 24, medium: 52, large: 78 };
-  const maxHeights = { small: 20, medium: 38, large: 58 };
-  const top = Math.max(10, Math.min(70, Number(cfg.topPct) || (view === "front" ? 24 : 36)));
+  // Werte beziehen sich jeweils nur auf eine Shirt-Hälfte des kombinierten Mockups.
+  const widths = { small: 18, medium: 36, large: 54 };
+  const maxHeights = { small: 16, medium: 30, large: 46 };
+  const top = Math.max(12, Math.min(66, Number(cfg.topPct) || (view === "front" ? 22 : 31)));
   let left = 50;
   if (view === "front" && (cfg.position || "center") === "left-chest") {
+    // wearer-left = rechts aus Betrachtersicht. Bestehender Admin-Wert bleibt nutzbar.
     const side = Math.max(15, Math.min(50, Number(cfg.sidePct) || 32));
     left = 100 - side;
   }
@@ -259,6 +261,38 @@ function applyDualMotifLayout(img, view, cfg) {
   img.style.top = `${top}%`;
   img.style.maxWidth = `${widths[size] || widths.medium}%`;
   img.style.maxHeight = `${maxHeights[size] || maxHeights.medium}%`;
+}
+
+function getDualBaseImage() {
+  return new Promise((resolve, reject) => {
+    if (dualBaseImage && dualBaseImage.complete) return resolve(dualBaseImage);
+    const img = new Image();
+    img.onload = () => { dualBaseImage = img; resolve(img); };
+    img.onerror = reject;
+    img.src = "shirt-dual.png";
+  });
+}
+
+async function renderDualShirtImage() {
+  try {
+    const base = await getDualBaseImage();
+    if (currentShirtColorId === "weiss") return "shirt-dual.png";
+    const c = document.createElement("canvas");
+    c.width = base.naturalWidth || base.width;
+    c.height = base.naturalHeight || base.height;
+    const ctx = c.getContext("2d");
+    ctx.drawImage(base, 0, 0, c.width, c.height);
+    ctx.globalCompositeOperation = "multiply";
+    ctx.fillStyle = currentShirtColorId === "black" ? "#3a3a3d" : currentShirtColor;
+    ctx.fillRect(0, 0, c.width, c.height);
+    ctx.globalCompositeOperation = "destination-in";
+    ctx.drawImage(base, 0, 0, c.width, c.height);
+    ctx.globalCompositeOperation = "source-over";
+    return c.toDataURL("image/png");
+  } catch (err) {
+    console.error("Doppelansicht-Shirt konnte nicht gerendert werden", err);
+    return "shirt-dual.png";
+  }
 }
 
 async function renderDualMotif(view, img) {
@@ -278,14 +312,9 @@ async function renderDualMotif(view, img) {
 
 async function renderDualPreview() {
   if (FEATURES.previewMode !== "dual" || !dualWorkspace) return;
-  const [frontSrc, backSrc] = await Promise.all([renderShirtImage("front"), renderShirtImage("back")]);
-  if (dualFrontShirt) {
-    dualFrontShirt.hidden = false;
-    dualFrontShirt.src = frontSrc || getBaseSrc("front");
-  }
-  if (dualBackShirt) {
-    dualBackShirt.hidden = false;
-    dualBackShirt.src = backSrc || getBaseSrc("back");
+  if (dualCompositeShirt) {
+    dualCompositeShirt.hidden = false;
+    dualCompositeShirt.src = await renderDualShirtImage();
   }
   await Promise.all([renderDualMotif("front", dualFrontMotif), renderDualMotif("back", dualBackMotif)]);
 }

@@ -1,0 +1,5 @@
+MASTER v27.7 – stabile Doppelansicht
+
+Die Doppelansicht basiert jetzt auf shirt-dual.png (Vorderseite links, Rückseite rechts).
+Dadurch gibt es keine zwei getrennten Shirt-Renderer mehr, die verschwinden oder unterschiedlich skalieren können.
+Motiv vorne und hinten werden getrennt über die jeweilige Hälfte gelegt und bleiben im Admin positionierbar.
