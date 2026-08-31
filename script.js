@@ -133,9 +133,16 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
   }
 })();
 
+// v28.2.3: Die sichtbare Druckzone bekommt zusätzliche Reserve NUR nach oben.
+// Dadurch können große Motive höher positioniert werden, ohne am Canvas-Rand abgeschnitten zu werden.
+const PRINT_BASE_WIDTH = 260;
+const PRINT_BASE_HEIGHT = 340;
+const PRINT_HEADROOM = 90;
+const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM;
+
 const canvas = new fabric.Canvas("designCanvas", {
-  width: 260,
-  height: 340,
+  width: PRINT_BASE_WIDTH,
+  height: PRINT_CANVAS_HEIGHT,
   backgroundColor: "transparent",
   selection: true,
   preserveObjectStacking: true
@@ -451,12 +458,12 @@ function switchView(view) {
     shirtMockup.alt = "T-Shirt Vorderseite";
     designerStatus.textContent = "Vorderseite";
     printZone.classList.remove("back");
-    canvas.setHeight(340); canvas.setWidth(260);
+    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_BASE_WIDTH);
   } else {
     shirtMockup.alt = "T-Shirt Rückseite";
     designerStatus.textContent = "Rückseite";
     printZone.classList.add("back");
-    canvas.setHeight(340); canvas.setWidth(260);
+    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_BASE_WIDTH);
   }
   renderShirt();
   loadView(view);
@@ -544,16 +551,18 @@ function getFixedPrintLayout(motifId) {
 
 function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
-  const maxWidth = canvas.width * layout.maxWidth;
-  const maxHeight = canvas.height * layout.maxHeight;
+  const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
+  const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
   const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
   const movable = !!FEATURES.allowMoveMotif;
   const resizable = !!FEATURES.allowResizeMotif;
   const rotatable = !!FEATURES.allowRotateMotif;
   const editable = movable || resizable || rotatable;
   image.set({
-    left: canvas.width * layout.left,
-    top: canvas.height * layout.top,
+    left: PRINT_BASE_WIDTH * layout.left,
+    // Y-Werte bleiben auf die bisherige 340px-Druckzone bezogen.
+    // PRINT_HEADROOM liegt unsichtbar darüber und verhindert Clipping.
+    top: PRINT_HEADROOM + (PRINT_BASE_HEIGHT * layout.top),
     originX: "center", originY: "center",
     angle: 0,
     scaleX: scale, scaleY: scale,
@@ -711,7 +720,7 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   currentView = "front";
   designerStatus.textContent = "Vorderseite";
   printZone.classList.remove("back");
-  canvas.setWidth(260); canvas.setHeight(340);
+  canvas.setWidth(PRINT_BASE_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
   viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === "front"));
   motifButtons.forEach(button => button.classList.remove("active"));
   changeShirtColor("#ffffff", "White", "weiss", "");

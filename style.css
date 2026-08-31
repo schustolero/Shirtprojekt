@@ -1018,3 +1018,20 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 28%, transparent);
   background: #fff;
 }
+
+/* v28.2.3 – mehr Druckfläche oberhalb des Shirts, ohne die bisherigen X/Y-Werte zu verschieben.
+   Alt: 340px hoch. Neu: +90px Headroom ausschließlich nach oben. */
+.print-zone,
+.print-zone.back {
+  width: 260px;
+  height: 430px;
+  top: calc(47% - 45px);
+  overflow: hidden;
+}
+.canvas-container,
+.print-zone canvas,
+.print-zone.back .canvas-container,
+.print-zone.back canvas {
+  width: 260px !important;
+  height: 430px !important;
+}

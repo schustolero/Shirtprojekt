@@ -1,0 +1,5 @@
+MASTER v28.2.3
+- Druck-/Canvas-Fläche um 90 px nach oben erweitert
+- Bestehende X/Y/Größe-Werte bleiben visuell an derselben Position
+- Große/höher platzierte Motive werden oben nicht mehr am Fabric-Canvas abgeschnitten
+- TG-Solingen Standardwerte bleiben in productPrint hinterlegt
