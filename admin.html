@@ -4,85 +4,111 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
-  <title>Bestellungen</title>
-  <link rel="stylesheet" href="admin.css?v=26">
+  <title>Shirtprojekt – Zentrale</title>
+  <link rel="stylesheet" href="admin.css?v=27">
 </head>
 <body>
   <main class="admin-shell">
     <header class="admin-header">
-      <div class="brand-row">
-        <div class="admin-mark" aria-hidden="true">SP</div>
-        <div>
-          <h1>Bestellungen</h1>
-          <p id="adminBrandTitle">Zentrale Shopverwaltung</p>
-        </div>
-      </div>
+      <div class="brand-row"><div class="admin-mark" aria-hidden="true">SP</div><div><h1>Shirtprojekt</h1><p>Zentrale Verwaltung</p></div></div>
       <button id="logoutBtn" class="ghost-btn" type="button" hidden>Abmelden</button>
     </header>
 
     <section id="loginCard" class="panel login-card">
       <h2>Admin-Login</h2>
-      <p>Melde dich mit dem in Firebase angelegten Admin-Konto an.</p>
+      <p>Melde dich mit deinem zentralen Firebase-Admin-Konto an.</p>
       <form id="loginForm">
-        <label>
-          <span>E-Mail</span>
-          <input id="adminEmail" type="email" value="shirtzentrale@gmail.com" required autocomplete="username">
-        </label>
-        <label>
-          <span>Passwort</span>
-          <input id="adminPassword" type="password" required autocomplete="current-password">
-        </label>
+        <label><span>E-Mail</span><input id="adminEmail" type="email" value="shirtzentrale@gmail.com" required autocomplete="username"></label>
+        <label><span>Passwort</span><input id="adminPassword" type="password" required autocomplete="current-password"></label>
         <button class="primary-btn" type="submit">Anmelden</button>
         <p id="loginMessage" class="message" aria-live="polite"></p>
       </form>
     </section>
 
     <section id="dashboard" hidden>
-      <div class="stats-grid">
-        <article class="stat-card"><span>Bestellungen</span><strong id="statOrders">0</strong></article>
-        <article class="stat-card"><span>Shirts</span><strong id="statShirts">0</strong></article>
-        <article class="stat-card"><span>Umsatz</span><strong id="statRevenue">0,00 €</strong></article>
-      </div>
+      <nav class="admin-tabs panel" aria-label="Adminbereiche">
+        <button type="button" class="tab-btn active" data-tab="orders">Bestellungen</button>
+        <button type="button" class="tab-btn" data-tab="shops">Shops verwalten</button>
+      </nav>
 
-      <div class="toolbar panel">
-        <div>
-          <h2>Bestellübersicht</h2>
-          <p id="lastUpdate">Noch nicht geladen</p>
+      <section id="ordersTab" class="tab-panel">
+        <div class="stats-grid">
+          <article class="stat-card"><span>Bestellungen</span><strong id="statOrders">0</strong></article>
+          <article class="stat-card"><span>Shirts</span><strong id="statShirts">0</strong></article>
+          <article class="stat-card"><span>Umsatz</span><strong id="statRevenue">0,00 €</strong></article>
         </div>
-        <button id="refreshBtn" class="ghost-btn" type="button">Aktualisieren</button>
-      </div>
+        <div class="toolbar panel"><div><h2>Bestellübersicht</h2><p id="lastUpdate">Noch nicht geladen</p></div><button id="refreshBtn" class="ghost-btn" type="button">Aktualisieren</button></div>
+        <div class="filters panel">
+          <label class="status-filter-field"><span>Kunde / Verein</span><select id="customerFilter"><option value="Alle">Alle Kunden</option></select></label>
+          <label class="search-field"><span>Suche</span><input id="searchInput" type="search" placeholder="Bestellnummer, Name, Klasse …" autocomplete="off"></label>
+          <label class="status-filter-field"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option></select></label>
+        </div>
+        <div id="ordersList" class="orders-list"></div>
+        <p id="ordersMessage" class="empty-message" hidden>Keine Bestellungen vorhanden.</p>
+      </section>
 
-      <div class="filters panel">
-        <label class="status-filter-field">
-          <span>Kunde / Verein</span>
-          <select id="customerFilter"><option value="Alle">Alle Kunden</option></select>
-        </label>
-        <label class="search-field">
-          <span>Suche</span>
-          <input id="searchInput" type="search" placeholder="Bestellnummer, Name, Klasse …" autocomplete="off">
-        </label>
-        <label class="status-filter-field">
-          <span>Status</span>
-          <select id="statusFilter">
-            <option value="Alle">Alle</option>
-            <option value="Neu">Neu</option>
-            <option value="In Bearbeitung">In Bearbeitung</option>
-            <option value="Fertig">Fertig</option>
-            <option value="Abgeholt">Abgeholt</option>
-          </select>
-        </label>
-      </div>
+      <section id="shopsTab" class="tab-panel" hidden>
+        <div class="shop-admin-grid">
+          <aside class="panel shop-list-panel">
+            <div class="panel-head"><div><h2>Shops</h2><p>Änderungen sind nach Speichern sofort live.</p></div><button id="newShopBtn" class="primary-btn small" type="button">+ Neuer Shop</button></div>
+            <div id="shopList" class="shop-list"></div>
+          </aside>
 
-      <div id="ordersList" class="orders-list"></div>
-      <p id="ordersMessage" class="empty-message" hidden>Keine Bestellungen vorhanden.</p>
+          <section class="panel shop-editor-panel">
+            <div class="panel-head"><div><h2 id="shopEditorTitle">Shop auswählen</h2><p id="shopSaveState">Noch keine Änderungen.</p></div><div class="editor-actions"><a id="previewShopBtn" class="ghost-btn link-btn" href="#" target="_blank" hidden>Vorschau</a><button id="saveShopBtn" class="primary-btn" type="button" disabled>Speichern</button></div></div>
+
+            <form id="shopForm" class="shop-form" hidden>
+              <div class="form-section"><h3>Grunddaten</h3><div class="form-grid">
+                <label><span>Shop-ID</span><input id="shopId" type="text" required placeholder="z. B. tg-solingen"></label>
+                <label><span>Shop-Typ</span><select id="shopType"><option value="simple">Simple</option><option value="motifs">Motiv</option><option value="designer">Designer</option></select></label>
+                <label class="wide"><span>Name</span><input id="shopName" type="text" required></label>
+                <label><span>Preis pro Shirt (€)</span><input id="shopPrice" type="number" min="0" step="0.01" value="15"></label>
+                <label><span>Bestellpräfix</span><input id="shopPrefix" type="text" maxlength="8" placeholder="TG"></label>
+                <label class="wide"><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
+                <label class="check-row wide"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
+              </div></div>
+
+              <div class="form-section"><h3>Darstellung</h3><div class="form-grid">
+                <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
+                <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
+                <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
+              </div></div>
+
+              <div class="form-section"><h3>Feste Farben</h3><p class="section-note">Optional. Für TG Solingen z. B. Royal Blue + Medium Yellow.</p><div class="form-grid">
+                <label><span>Feste Shirtfarbe – Name</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
+                <label><span>Feste Shirtfarbe – Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
+                <label><span>Feste Motivfarbe – Name</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
+                <label><span>Feste Motivfarbe – Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
+              </div></div>
+
+              <div class="form-section"><h3>Funktionen</h3><div class="feature-grid">
+                <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben anzeigen</span></label>
+                <label><input id="showMotifs" type="checkbox"><span>Motivauswahl anzeigen</span></label>
+                <label><input id="showMotifColors" type="checkbox"><span>Motivfarben anzeigen</span></label>
+                <label><input id="allowUpload" type="checkbox"><span>Kunden-Upload erlauben</span></label>
+                <label><input id="allowText" type="checkbox"><span>Text erlauben</span></label>
+                <label><input id="allowBack" type="checkbox"><span>Rückseite erlauben</span></label>
+                <label><input id="allowMove" type="checkbox"><span>Motiv verschieben</span></label>
+                <label><input id="allowResize" type="checkbox"><span>Motiv skalieren</span></label>
+                <label><input id="allowRotate" type="checkbox"><span>Motiv drehen</span></label>
+              </div></div>
+
+              <div class="form-section"><h3>Logo</h3><div class="asset-row"><div class="asset-preview"><img id="logoPreview" alt="Logo Vorschau"></div><div class="asset-controls"><input id="logoUpload" type="file" accept="image/*"><button id="removeLogoBtn" class="ghost-btn" type="button">Logo zurücksetzen</button><p>Kleine Bilder werden automatisch komprimiert und direkt in Firebase gespeichert.</p></div></div></div>
+
+              <div class="form-section"><div class="panel-head compact"><div><h3>Motive</h3><p class="section-note">Name und Bild können direkt hier geändert werden.</p></div><button id="addMotifBtn" class="ghost-btn" type="button">+ Motiv</button></div><div id="motifsEditor" class="motifs-editor"></div></div>
+            </form>
+          </section>
+        </div>
+      </section>
     </section>
   </main>
 
-  <script src="/central-config.js?v=26"></script>
+  <script src="/central-config.js?v=27"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=26"></script>
+  <script src="/admin.js?v=27"></script>
 </body>
 </html>

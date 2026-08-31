@@ -1,0 +1,38 @@
+MASTER-v27 – SHOPVERWALTUNG IM ADMIN
+====================================
+
+Ziel:
+Shop-Einstellungen künftig direkt im Admin ändern – ohne GitHub und ohne neuen Deploy.
+
+Nach dem einmaligen Update:
+1. /admin.html öffnen
+2. anmelden
+3. "Shops verwalten" öffnen
+4. Kunde auswählen
+5. Einstellungen ändern
+6. Speichern
+
+Sofort änderbar:
+- Simple / Motiv / Designer
+- Shopname
+- Preis
+- Bestell-E-Mail
+- Shop aktiv / deaktiviert
+- Akzentfarbe
+- feste Shirtfarbe
+- feste Motivfarbe
+- Farbauswahlen anzeigen / ausblenden
+- Motivauswahl anzeigen / ausblenden
+- Kunden-Upload, Text, Rückseite, Verschieben, Skalieren, Drehen
+- Logo
+- bis zu 4 Motive
+
+Technik:
+- Gespeicherte Shopdaten liegen in Firestore /shops/{shopId}
+- Der öffentliche Shop lädt zuerst Firestore.
+- Falls dort noch kein Dokument existiert, wird weiterhin shops/<id>/shop-config.js geladen.
+- Damit gehen bestehende Shops beim Umstieg nicht verloren.
+
+WICHTIG EINMALIG:
+Nach Upload von v27 die neue firestore.rules in Firebase > Firestore > Regeln veröffentlichen.
+Danach sind normale Shopänderungen im Admin ohne GitHub möglich.

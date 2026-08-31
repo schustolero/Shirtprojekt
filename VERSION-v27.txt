@@ -1,0 +1,10 @@
+MASTER-v27
+===========
+Zentrale Shopverwaltung im Adminbereich.
+
+Neu:
+- Shop-Einstellungen werden in Firestore unter /shops gespeichert.
+- Änderungen im Admin sind sofort live, ohne GitHub-Deploy.
+- Simple / Motive / Designer pro Kunde umstellbar.
+- Preis, Farben, Features, Texte, Logo und Motive zentral editierbar.
+- Bestehende Dateikonfigurationen bleiben als Fallback erhalten.

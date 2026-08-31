@@ -2,20 +2,24 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
+    function isAdmin() {
+      return request.auth != null && request.auth.token.email == "shirtzentrale@gmail.com";
+    }
 
-    // Kunden dürfen ausschließlich neue Bestellungen anlegen.
-    // Jede Bestellung muss eindeutig einem Shop zugeordnet sein.
     match /orders/{orderId} {
       allow create: if request.resource.data.customerId is string
                     && request.resource.data.customerId.size() > 0
                     && request.resource.data.orderNumber == orderId;
-
-      // Zentraler Admin darf Bestellungen lesen, bearbeiten und löschen.
-      allow read, update, delete: if request.auth != null
-        && request.auth.token.email == "shirtzentrale@gmail.com";
+      allow read, update, delete: if isAdmin();
     }
 
-    // Alles andere bleibt gesperrt. Es gibt keinen öffentlich schreibbaren Counter mehr.
+    // Shopkonfigurationen sind öffentlich lesbar, damit die Shops ohne Login laden.
+    // Nur der zentrale Admin darf sie erstellen oder ändern.
+    match /shops/{shopId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
