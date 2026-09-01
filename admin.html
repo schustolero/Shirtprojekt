@@ -67,20 +67,11 @@
                 <label class="wide"><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
                 <label class="check-row wide"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
               </div></div>
-
-              <div class="form-section display-section"><h3>Darstellung</h3><div class="form-grid display-grid">
-                <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
-                <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
-                <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
-                <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
-                <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
-              </div></div>
-
-              <div class="form-section compact-colors-section"><h3>Feste Farben</h3><p class="section-note">Optional. Für TG Solingen z. B. Royal Blue + Medium Yellow.</p><div class="form-grid">
-                <label><span>Feste Shirtfarbe – Name</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
-                <label><span>Feste Shirtfarbe – Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
-                <label><span>Feste Motivfarbe – Name</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
-                <label><span>Feste Motivfarbe – Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
+              <div class="form-section compact-colors-section"><h3>Farben</h3><div class="form-grid compact-color-row">
+                <label><span>Shirt</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
+                <label><span>Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
+                <label><span>Motiv</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
+                <label><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
               </div></div>
 
               <div class="form-section position-editor-section"><h3>Motiv direkt positionieren</h3><p class="section-note">Motiv im Shirt mit der Maus ziehen. Größe über den Regler ändern. Danach direkt auf <strong>Position speichern</strong> klicken.</p>
@@ -125,7 +116,15 @@
                 </div>
               </div></div>
 
-              <details class="form-section compact-accordion fixed-print-accordion"><summary><span>Fester Druck vorne / hinten</span><small>Motivzuordnung</small></summary><div class="accordion-body"><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid fixed-print-grid">
+              <div class="accordion-grid">
+<details class="form-section compact-accordion display-accordion"><summary><span>Darstellung & Texte</span><small>optional</small></summary><div class="accordion-body"><div class="form-grid display-grid">
+                <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
+                <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
+                <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
+                <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
+              </div></div></details>
+<details class="form-section compact-accordion fixed-print-accordion"><summary><span>Fester Druck vorne / hinten</span><small>Motivzuordnung</small></summary><div class="accordion-body"><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid fixed-print-grid">
                 <label class="check-row wide"><input id="fixedFrontEnabled" type="checkbox"><span>Vorderdruck fest aktiv</span></label>
                 <label><span>Vorne Motiv</span><select id="fixedFrontMotif"></select></label>
                 <label><span>Vorne Position</span><select id="fixedFrontPosition"><option value="left-chest">Linke Herzseite</option><option value="center">Mittig</option></select></label>
@@ -225,18 +224,20 @@
                 <summary><span>Motive</span><small>Bearbeiten / hinzufügen</small></summary>
                 <div class="accordion-body"><div class="panel-head compact accordion-panel-head"><p class="section-note">Name und Bild direkt ändern.</p><button id="addMotifBtn" class="ghost-btn small" type="button">+ Motiv</button></div><div id="motifsEditor" class="motifs-editor compact-motifs-editor"></div></div>
               </details>
-            </form>
+            
+</div>
+</form>
           </section>
         </div>
       </section>
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.3.0"></script>
+  <script src="/central-config.js?v=28.3.1"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.3.0"></script>
+  <script src="/admin.js?v=28.3.1"></script>
 </body>
 </html>

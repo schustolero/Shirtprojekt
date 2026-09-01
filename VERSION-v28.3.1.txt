@@ -1,0 +1,2 @@
+MASTER v28.3.1
+Minimal-Admin: Darstellung eingeklappt, Farben kompakt, Akkordeons zweispaltig, Positionierer in gespeicherter Shirtfarbe.

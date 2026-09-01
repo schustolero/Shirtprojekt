@@ -321,6 +321,10 @@ function stagePctToStoredY(stagePct){
   return ((stageY * POSITION_STAGE_HEIGHT / 100) - POSITION_HEADROOM) / POSITION_BASE_HEIGHT * 100;
 }
 
+const positionShirtPreviewCache = new Map();
+function loadPositionImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
+async function coloredPositionShirt(src,color){const key=`${src}|${color}`;if(positionShirtPreviewCache.has(key))return positionShirtPreviewCache.get(key);try{const img=await loadPositionImage(src);const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;const ctx=c.getContext("2d");ctx.drawImage(img,0,0,c.width,c.height);if(color&&String(color).toLowerCase()!=="#ffffff"){ctx.globalCompositeOperation="multiply";ctx.fillStyle=color;ctx.fillRect(0,0,c.width,c.height);ctx.globalCompositeOperation="destination-in";ctx.drawImage(img,0,0,c.width,c.height);ctx.globalCompositeOperation="source-over";}const out=c.toDataURL("image/png");positionShirtPreviewCache.set(key,out);return out;}catch(e){return src;}}
+
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
   const product = positionProduct.value || "tshirt";
@@ -329,9 +333,10 @@ function refreshPositionEditor(){
   const x = Number(fields.x?.value || (side === "front" ? 68 : 50));
   const y = Number(fields.y?.value || (side === "front" ? 20 : 36));
   const w = Number(fields.w?.value || (side === "front" ? 28 : 50));
-  positionShirt.src = product === "polo"
+  const shirtSrc = product === "polo"
     ? (side === "front" ? "polo-front-template.png" : "polo-back-template.png")
     : (side === "front" ? "shirt-front-template.png" : "shirt-back-template.png");
+  coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => { positionShirt.src = src; });
   const motif = selectedPositionMotif();
   if(motif?.file){
     positionMotif.src = safeAssetUrl(motif.file, shopFields.id.value || selectedShopId || "_simple");
@@ -360,6 +365,7 @@ function writePositionValues(x, y, w){
 function bindPositionEditor(){
   if(!positionStage || !positionMotif || !positionPrintZone) return;
   [positionProduct, positionSide].forEach(el => el?.addEventListener("change", refreshPositionEditor));
+  shopFields.fixedShirtHex?.addEventListener("input", refreshPositionEditor);
   positionSize?.addEventListener("input", () => writePositionValues(NaN, NaN, Number(positionSize.value)));
   [shopFields.fixedFrontMotif, shopFields.fixedBackMotif].forEach(el => el?.addEventListener("change", refreshPositionEditor));
   Object.values(shopFields).forEach(el => {
