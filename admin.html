@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.2.9">
+  <link rel="stylesheet" href="admin.css?v=28.3.0">
 </head>
 <body>
   <main class="admin-shell">
@@ -106,7 +106,7 @@
                 </div>
               </div>
 
-              <div class="form-section position-values-section"><h3>Position & Größe – direkt einstellbar</h3><p class="section-note">Hier stellst du die Druckposition direkt ein. Die Werte werden gespeichert und gelten identisch für Einzel- und Doppelansicht. X = links/rechts, Y = höher/tiefer, Größe = Motivbreite.</p>
+              <div class="form-section position-values-section technical-position-values" aria-hidden="true"><h3>Position & Größe – direkt einstellbar</h3><p class="section-note">Hier stellst du die Druckposition direkt ein. Die Werte werden gespeichert und gelten identisch für Einzel- und Doppelansicht. X = links/rechts, Y = höher/tiefer, Größe = Motivbreite.</p>
                 <h4>T-Shirt</h4><div class="form-grid">
                   <label><span>Vorne X (%)</span><input id="tshirtFrontX" type="number" min="10" max="90" step="0.5" value="68"></label>
                   <label><span>Vorne Y (%)</span><input id="tshirtFrontY" type="number" min="10" max="70" step="0.5" value="20"></label>
@@ -125,7 +125,7 @@
                 </div>
               </div></div>
 
-              <div class="form-section"><h3>Fester Druck vorne / hinten</h3><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid">
+              <details class="form-section compact-accordion fixed-print-accordion"><summary><span>Fester Druck vorne / hinten</span><small>Motivzuordnung</small></summary><div class="accordion-body"><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid fixed-print-grid">
                 <label class="check-row wide"><input id="fixedFrontEnabled" type="checkbox"><span>Vorderdruck fest aktiv</span></label>
                 <label><span>Vorne Motiv</span><select id="fixedFrontMotif"></select></label>
                 <label><span>Vorne Position</span><select id="fixedFrontPosition"><option value="left-chest">Linke Herzseite</option><option value="center">Mittig</option></select></label>
@@ -137,7 +137,7 @@
                 <label><span>Hinten Position</span><select id="fixedBackPosition"><option value="center">Mittig</option></select></label>
                 <label><span>Hinten Größe</span><select id="fixedBackSize"><option value="small">Klein</option><option value="medium">Mittel</option><option value="large">Groß</option></select></label>
                 <label><span>Hinten Höhe – Abstand oben (%)</span><input id="fixedBackTop" type="number" min="10" max="70" step="1" value="36"><small>Kleinerer Wert = höher.</small></label>
-              </div></div>
+              </div></div></details>
 
 
               <details class="form-section compact-accordion print-data-accordion">
@@ -232,11 +232,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.2.9"></script>
+  <script src="/central-config.js?v=28.3.0"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.2.9"></script>
+  <script src="/admin.js?v=28.3.0"></script>
 </body>
 </html>

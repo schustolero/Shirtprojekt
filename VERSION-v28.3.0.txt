@@ -1,0 +1,5 @@
+MASTER v28.3.0
+- Manuelle X/Y/Größe-Felder aus sichtbarem Admin entfernt, technisch weiterhin vorhanden
+- Fester Druck vorne/hinten als kompakter Akkordeonbereich
+- Positionsvorschau verkleinert
+- Druckdaten bleiben als eigener Akkordeonbereich
