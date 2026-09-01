@@ -284,3 +284,262 @@
     grid-column:1 / -1 !important;
   }
 }
+
+
+/* MASTER v28.2.6 – Positionseditor 1:1 zur Live-Seite */
+.position-save-btn{
+  grid-column:1/-1;
+  width:100%;
+  margin-top:2px;
+  min-height:38px;
+}
+.position-readout p{grid-column:1/-1}
+
+
+/* MASTER v28.2.7 – noch kompaktere Shopverwaltung */
+.compact-colors-section,
+.position-editor-section,
+.position-values-section{
+  padding-top:8px;
+  padding-bottom:8px;
+}
+.compact-colors-section h3,
+.position-editor-section h3,
+.position-values-section h3{
+  margin-bottom:6px;
+}
+.compact-colors-section .section-note,
+.position-editor-section .section-note,
+.position-values-section .section-note{
+  margin:-2px 0 6px;
+}
+
+.compact-colors-section .form-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:6px 8px;
+  align-items:end;
+}
+.compact-colors-section label{gap:2px!important}
+.compact-colors-section label span{
+  font-size:10.5px!important;
+  margin-bottom:1px!important;
+}
+.compact-colors-section input{
+  min-height:32px!important;
+  height:32px;
+  padding:5px 8px!important;
+  font-size:12px!important;
+}
+.compact-colors-section input[type="color"]{
+  padding:2px!important;
+  min-height:32px!important;
+  height:32px!important;
+}
+
+.position-editor-toolbar{
+  grid-template-columns:110px 130px minmax(170px,1fr);
+  gap:7px;
+  margin-bottom:8px;
+}
+.position-editor-toolbar label span{font-size:10.5px}
+.position-size-control input{height:32px}
+.position-editor-layout{
+  grid-template-columns:minmax(300px,500px) 185px;
+  gap:10px;
+  align-items:start;
+}
+.position-stage{
+  width:min(500px,100%);
+  border-radius:10px;
+}
+.position-readout{
+  grid-template-columns:repeat(3,1fr);
+  gap:6px;
+  align-self:start;
+}
+.position-readout>div{
+  padding:6px;
+  border-radius:8px;
+}
+.position-readout span{font-size:9.5px}
+.position-readout strong{font-size:15px}
+.position-readout p{
+  font-size:9.5px;
+  margin:0;
+}
+.position-save-btn{
+  min-height:34px;
+  padding:8px 10px!important;
+  font-size:12px!important;
+}
+
+.position-values-section h4{
+  margin:6px 0 4px;
+  font-size:12px;
+}
+.position-values-section .form-grid{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:6px 8px;
+}
+.position-values-section .form-grid label{gap:2px!important}
+.position-values-section .form-grid label span{
+  font-size:10.5px!important;
+  margin-bottom:1px!important;
+}
+.position-values-section .form-grid input{
+  min-height:32px!important;
+  height:32px;
+  padding:5px 8px!important;
+  font-size:12px!important;
+}
+.position-values-section .form-grid small{
+  margin-top:1px;
+  font-size:9.5px!important;
+  line-height:1.2;
+}
+
+@media(max-width:900px){
+  .compact-colors-section .form-grid{grid-template-columns:1fr 1fr}
+  .position-editor-toolbar{grid-template-columns:1fr 1fr}
+  .position-size-control{grid-column:1/-1}
+  .position-editor-layout{grid-template-columns:1fr}
+  .position-stage{max-width:460px;margin:0 auto}
+  .position-values-section .form-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .compact-colors-section .form-grid,
+  .position-values-section .form-grid{grid-template-columns:1fr}
+  .position-readout{grid-template-columns:1fr 1fr 1fr}
+}
+
+
+/* MASTER v28.2.8 – Akkordeons + kompaktere untere Bereiche */
+.compact-accordion{
+  padding:0!important;
+  border-top:1px solid #eceff3;
+}
+.compact-accordion summary{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  min-height:38px;
+  padding:8px 2px;
+  cursor:pointer;
+  user-select:none;
+  font-weight:800;
+  font-size:14px;
+}
+.compact-accordion summary::-webkit-details-marker{display:none}
+.compact-accordion summary::after{
+  content:"＋";
+  font-size:16px;
+  line-height:1;
+  color:#73777f;
+  font-weight:500;
+}
+.compact-accordion[open] summary::after{content:"−"}
+.compact-accordion summary small{
+  margin-left:auto;
+  font-size:10px;
+  font-weight:600;
+  color:#8a8f98;
+}
+.accordion-body{
+  padding:0 0 9px;
+}
+.compact-feature-grid{
+  grid-template-columns:repeat(5,minmax(0,1fr))!important;
+  gap:5px!important;
+}
+.compact-feature-grid label{
+  min-height:30px!important;
+  padding:5px 7px!important;
+  border-radius:6px!important;
+  font-size:10.5px!important;
+}
+.compact-feature-grid input{width:auto}
+
+.compact-logo-body .asset-row{
+  grid-template-columns:64px minmax(0,1fr);
+  gap:8px;
+}
+.compact-logo-body .asset-preview{
+  width:64px;
+  height:54px;
+  border-radius:7px;
+}
+.compact-logo-body .asset-controls{
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:5px 8px;
+}
+.compact-logo-body .asset-controls input{
+  min-height:31px;
+  font-size:10px;
+  padding:4px!important;
+}
+.compact-logo-body .asset-controls .ghost-btn{
+  padding:7px 9px;
+  font-size:10.5px;
+}
+.compact-logo-body .asset-controls p{
+  grid-column:1/-1;
+  margin:0;
+  font-size:9.5px;
+}
+
+.accordion-panel-head{
+  margin-bottom:5px;
+  align-items:center!important;
+}
+.accordion-panel-head .section-note{margin:0!important}
+.compact-motifs-editor{gap:5px!important}
+.compact-motifs-editor .motif-edit-row{
+  grid-template-columns:52px minmax(0,1fr) auto;
+  gap:6px;
+  padding:5px;
+  border-radius:7px;
+}
+.compact-motifs-editor .motif-edit-row img{
+  width:48px;
+  height:42px;
+  border-radius:5px;
+}
+.compact-motifs-editor .motif-fields{gap:3px}
+.compact-motifs-editor .motif-name{
+  min-height:30px!important;
+  padding:5px 7px!important;
+  font-size:11px!important;
+}
+.compact-motifs-editor input[type=file]{font-size:9.5px!important}
+.compact-motifs-editor .danger-btn{
+  padding:6px 8px;
+  font-size:10px;
+}
+
+@media(max-width:900px){
+  .compact-feature-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:620px){
+  .compact-accordion summary{min-height:36px;font-size:13px}
+  .compact-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .compact-logo-body .asset-row{grid-template-columns:54px minmax(0,1fr)}
+  .compact-logo-body .asset-preview{width:54px;height:48px}
+  .compact-motifs-editor .motif-edit-row{grid-template-columns:46px minmax(0,1fr)}
+  .compact-motifs-editor .motif-edit-row img{width:42px;height:38px}
+  .compact-motifs-editor .motif-edit-row .danger-btn{grid-column:1/-1}
+}
+
+/* MASTER v28.2.9 – Druckdaten */
+.print-data-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.print-data-card{border:1px solid #e6e8ec;border-radius:9px;padding:8px;background:#fbfbfc}
+.print-data-card h4{margin:0 0 6px;font-size:12px}
+.print-data-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px 6px}
+.print-data-fields label{display:grid;gap:2px;margin:0}
+.print-data-fields label span{font-size:9.5px;color:#656a73;font-weight:700}
+.print-data-fields input,.print-data-fields select{min-height:30px;height:30px;padding:4px 6px;border-radius:6px;font-size:11px}
+.print-data-fields .wide{grid-column:1/-1}
+@media(max-width:900px){.print-data-grid{grid-template-columns:1fr}.print-data-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.print-data-fields{grid-template-columns:1fr 1fr}.print-data-fields .wide{grid-column:1/-1}}

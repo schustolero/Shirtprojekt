@@ -1,0 +1,9 @@
+MASTER v28.2.9
+
+Neu:
+- Aufklappbarer Adminbereich "Druckdaten"
+- Druckdaten getrennt für T-Shirt/Polo und Vorder-/Rückseite
+- Druckverfahren, Breite, Höhe, Abstand Kragen, Abstand Seite, Farbcode, Produktionsdatei/Link, Produktionshinweis
+- Druckdaten werden in der Shop-Konfiguration in Firestore gespeichert
+- Neue Bestellungen übernehmen einen Snapshot der Druckdaten
+- Bestellschein zeigt vorhandene Druck-/Produktionsdaten automatisch an

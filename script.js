@@ -1012,6 +1012,7 @@ if (orderForm) {
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
         status: "Neu",
+        printData: SHOP.printData || {},
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         items: orderItems.map(item => ({
           productId: item.productId || "tshirt",

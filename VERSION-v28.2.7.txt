@@ -1,0 +1,9 @@
+MASTER v28.2.6
+- Admin-Positionsvorschau nutzt exakt dieselbe Y-Geometrie wie der Live-Shop
+- 90px Headroom der erweiterten Druckfläche wird im Admin korrekt berücksichtigt
+- Dragging rechnet die Vorschauposition zurück in die gespeicherten X/Y-Werte
+- Button Position speichern direkt unter der Motivvorschau
+- Bestehende gespeicherte Positionen bleiben kompatibel
+
+
+Kompakterer Adminbereich: Feste Farben, Motiv-Positionierung und direkte Positionsfelder weiter verdichtet.

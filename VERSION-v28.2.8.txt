@@ -1,0 +1,5 @@
+MASTER v28.2.8
+- Funktionen, Logo und Motive als aufklappbare Bereiche
+- Bereiche standardmäßig geschlossen
+- Funktionsschalter, Logo-Upload und Motivzeilen nochmals kompakter
+- Mobile Scrollstrecke deutlich reduziert

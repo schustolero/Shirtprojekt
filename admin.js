@@ -110,6 +110,22 @@ function printOrderSlip(order){
     const linePrice = item.linePrice ?? (qty*(Number(order.unitPrice)||15));
     return `<tr><td>${index+1}</td><td>${htmlEscape(item.size)}</td><td>${htmlEscape(item.shirtColor)}</td><td>${htmlEscape(item.motif)}</td><td>${htmlEscape(item.motifColor)}</td><td>${qty}</td><td>${htmlEscape(euro(linePrice))}</td></tr>`;
   }).join("");
+
+  const usedProducts = new Set((Array.isArray(order.items)?order.items:[]).map(item=>item.productId||"tshirt"));
+  const printData = order.printData || {};
+  const printRows = [];
+  const addPrintRow=(product,label,side,sideLabel)=>{
+    if(!usedProducts.has(product)) return;
+    const d=printData?.[product]?.[side]||{};
+    const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
+    if(!has) return;
+    const size=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"-";
+    const pos=[d.collarCm!==null&&d.collarCm!==undefined&&d.collarCm!==""?`${d.collarCm} cm Kragen`:"",d.sideCm!==null&&d.sideCm!==undefined&&d.sideCm!==""?`${d.sideCm} cm Seite`:""].filter(Boolean).join(" · ")||"-";
+    printRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td><td>${htmlEscape(pos)}</td><td>${htmlEscape(d.colorCode||"-")}</td><td>${htmlEscape(d.productionFile||"-")}</td><td>${htmlEscape(d.note||"-")}</td></tr>`);
+  };
+  addPrintRow("tshirt","T-Shirt","front","Vorne"); addPrintRow("tshirt","T-Shirt","back","Hinten");
+  addPrintRow("polo","Polo-Shirt","front","Vorne"); addPrintRow("polo","Polo-Shirt","back","Hinten");
+  const printSection = printRows.length ? `<div class="section"><h2>Druckdaten / Produktion</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Format</th><th>Position</th><th>Farbe</th><th>Datei</th><th>Hinweis</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
   const w = window.open("", "_blank", "width=900,height=900");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
@@ -117,6 +133,7 @@ function printOrderSlip(order){
   </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div><div class="number"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
   <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Klasse / Abteilung</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
   <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Größe</th><th>Shirtfarbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Shirts</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
+  ${printSection}
   <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
@@ -210,6 +227,7 @@ const positionMotif = document.getElementById("positionMotif");
 const positionXValue = document.getElementById("positionXValue");
 const positionYValue = document.getElementById("positionYValue");
 const positionWValue = document.getElementById("positionWValue");
+const savePositionBtn = document.getElementById("savePositionBtn");
 
 let shopConfigs = new Map();
 let selectedShopId = "";
@@ -233,6 +251,47 @@ const shopFields = {
   poloBackX: document.getElementById("poloBackX"), poloBackY: document.getElementById("poloBackY"), poloBackW: document.getElementById("poloBackW")
 };
 
+const printDataFields = {
+  tshirt: {
+    front: {method:"pdTshirtFrontMethod",width:"pdTshirtFrontWidth",height:"pdTshirtFrontHeight",collar:"pdTshirtFrontCollar",side:"pdTshirtFrontSide",color:"pdTshirtFrontColor",file:"pdTshirtFrontFile",note:"pdTshirtFrontNote"},
+    back: {method:"pdTshirtBackMethod",width:"pdTshirtBackWidth",height:"pdTshirtBackHeight",collar:"pdTshirtBackCollar",side:"pdTshirtBackSide",color:"pdTshirtBackColor",file:"pdTshirtBackFile",note:"pdTshirtBackNote"}
+  },
+  polo: {
+    front: {method:"pdPoloFrontMethod",width:"pdPoloFrontWidth",height:"pdPoloFrontHeight",collar:"pdPoloFrontCollar",side:"pdPoloFrontSide",color:"pdPoloFrontColor",file:"pdPoloFrontFile",note:"pdPoloFrontNote"},
+    back: {method:"pdPoloBackMethod",width:"pdPoloBackWidth",height:"pdPoloBackHeight",collar:"pdPoloBackCollar",side:"pdPoloBackSide",color:"pdPoloBackColor",file:"pdPoloBackFile",note:"pdPoloBackNote"}
+  }
+};
+Object.values(printDataFields).forEach(product=>Object.values(product).forEach(side=>Object.keys(side).forEach(k=>side[k]=document.getElementById(side[k]))));
+
+function fillPrintData(cfg){
+  const data=cfg.printData||{};
+  for(const product of ["tshirt","polo"]){
+    for(const side of ["front","back"]){
+      const src=data[product]?.[side]||{}; const f=printDataFields[product][side];
+      f.method.value=src.method||"DTF";
+      f.width.value=src.widthCm ?? ""; f.height.value=src.heightCm ?? "";
+      f.collar.value=src.collarCm ?? ""; f.side.value=src.sideCm ?? "";
+      f.color.value=src.colorCode||cfg.fixedMotifColor?.color||"";
+      f.file.value=src.productionFile||""; f.note.value=src.note||"";
+    }
+  }
+}
+function collectPrintData(){
+  const out={tshirt:{},polo:{}};
+  for(const product of ["tshirt","polo"]){
+    for(const side of ["front","back"]){
+      const f=printDataFields[product][side];
+      const num=(el)=>el.value===""?null:Number(el.value);
+      out[product][side]={
+        method:f.method.value||"DTF",
+        widthCm:num(f.width),heightCm:num(f.height),collarCm:num(f.collar),sideCm:num(f.side),
+        colorCode:f.color.value.trim(),productionFile:f.file.value.trim(),note:f.note.value.trim()
+      };
+    }
+  }
+  return out;
+}
+
 function getPositionFieldSet(product, side){
   const key = `${product}${side === "front" ? "Front" : "Back"}`;
   return {
@@ -247,6 +306,21 @@ function selectedPositionMotif(){
   const id = select?.value || workingMotifs[0]?.id;
   return workingMotifs.find(m => m.id === id) || workingMotifs[0] || null;
 }
+// Die Live-Seite nutzt seit v28.2.3 eine 430px hohe Druckfläche mit 90px Headroom oben.
+// Gespeicherte Y-Werte bleiben aber bewusst auf die ursprünglichen 340px bezogen.
+// Diese beiden Funktionen sorgen dafür, dass Admin-Vorschau und Live-Shop 1:1 übereinstimmen.
+const POSITION_BASE_HEIGHT = 340;
+const POSITION_HEADROOM = 90;
+const POSITION_STAGE_HEIGHT = POSITION_BASE_HEIGHT + POSITION_HEADROOM;
+function storedYToStagePct(yPct){
+  const y = Math.max(0, Math.min(100, Number(yPct) || 0));
+  return ((POSITION_HEADROOM + POSITION_BASE_HEIGHT * (y / 100)) / POSITION_STAGE_HEIGHT) * 100;
+}
+function stagePctToStoredY(stagePct){
+  const stageY = Math.max(0, Math.min(100, Number(stagePct) || 0));
+  return ((stageY * POSITION_STAGE_HEIGHT / 100) - POSITION_HEADROOM) / POSITION_BASE_HEIGHT * 100;
+}
+
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
   const product = positionProduct.value || "tshirt";
@@ -267,7 +341,7 @@ function refreshPositionEditor(){
     positionMotif.removeAttribute("src");
   }
   positionMotif.style.left = `${x}%`;
-  positionMotif.style.top = `${y}%`;
+  positionMotif.style.top = `${storedYToStagePct(y)}%`;
   positionMotif.style.width = `${w}%`;
   positionSize.value = String(w);
   positionSizeValue.textContent = `${w}%`;
@@ -299,7 +373,8 @@ function bindPositionEditor(){
     const r = positionPrintZone.getBoundingClientRect();
     const point = ev.touches?.[0] || ev;
     let x = ((point.clientX - r.left) / r.width) * 100;
-    let y = ((point.clientY - r.top) / r.height) * 100;
+    const stageY = ((point.clientY - r.top) / r.height) * 100;
+    let y = stagePctToStoredY(stageY);
     x = Math.max(8, Math.min(92, x));
     y = Math.max(6, Math.min(78, y));
     writePositionValues(x, y, NaN);
@@ -313,6 +388,9 @@ function bindPositionEditor(){
   positionMotif.addEventListener("pointermove", move);
   positionMotif.addEventListener("pointerup", ev => { dragging = false; positionMotif.releasePointerCapture?.(ev.pointerId); });
   positionMotif.addEventListener("pointercancel", () => { dragging = false; });
+  savePositionBtn?.addEventListener("click", () => {
+    saveShopBtn?.click();
+  });
 }
 function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
@@ -379,6 +457,7 @@ function selectShop(id){
   shopFields.tshirtBackX.value=Number(tshirt.back?.xPct ?? 50); shopFields.tshirtBackY.value=Number(tshirt.back?.yPct ?? fp.back?.topPct ?? 36); shopFields.tshirtBackW.value=Number(tshirt.back?.widthPct ?? 50);
   shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
+  fillPrintData(cfg);
   updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState("Bereit zum Bearbeiten."); renderShopList();
 }
 
@@ -437,7 +516,7 @@ newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal={}; workingMotifs=[{id:"motiv1",name:"Motiv 1",file:""}]; workingLogo=""; shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent="Neuen Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=15; shopFields.prefix.value=""; shopFields.email.value=CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true; shopFields.accent.value="#111111"; shopFields.logoHeight.value=90; shopFields.previewMode.value="single"; shopFields.heading.value="Shirt gestalten"; shopFields.intro.value=""; shopFields.fixedShirtName.value=""; shopFields.fixedMotifName.value=""; refreshFixedPrintMotifOptions("motiv1","motiv1"); shopFields.fixedFrontEnabled.checked=false; shopFields.fixedFrontPosition.value="left-chest"; shopFields.fixedFrontSize.value="small"; shopFields.fixedFrontTop.value=24; shopFields.fixedFrontSide.value=32; shopFields.fixedBackEnabled.checked=false; shopFields.fixedBackPosition.value="center"; shopFields.fixedBackSize.value="large";
   shopFields.tshirtFrontX.value=68; shopFields.tshirtFrontY.value=20; shopFields.tshirtFrontW.value=28; shopFields.tshirtBackX.value=50; shopFields.tshirtBackY.value=36; shopFields.tshirtBackW.value=50;
-  shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
+  shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; fillPrintData({}); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
 });
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
 
@@ -458,6 +537,7 @@ function buildShopConfig(){
     tshirt:{front:{xPct:clamp(shopFields.tshirtFrontX.value,10,90,68),yPct:clamp(shopFields.tshirtFrontY.value,10,70,20),widthPct:clamp(shopFields.tshirtFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.tshirtBackX.value,10,90,50),yPct:clamp(shopFields.tshirtBackY.value,10,70,36),widthPct:clamp(shopFields.tshirtBackW.value,10,80,50)}},
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}}
   };
+  cfg.printData=collectPrintData();
   if(cfg.fixedPrint.back.enabled) cfg.features.allowBackDesign=true;
   return cfg;
 }
