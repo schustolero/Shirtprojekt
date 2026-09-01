@@ -1,0 +1,3 @@
+MASTER v28.3.2
+- Cache-Fix fuer Admin-CSS
+- Neue kompakte Kachelansicht wird garantiert geladen
