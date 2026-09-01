@@ -228,6 +228,7 @@ const positionXValue = document.getElementById("positionXValue");
 const positionYValue = document.getElementById("positionYValue");
 const positionWValue = document.getElementById("positionWValue");
 const savePositionBtn = document.getElementById("savePositionBtn");
+const designerFeatureTools = document.getElementById("designerFeatureTools");
 
 let shopConfigs = new Map();
 let selectedShopId = "";
@@ -464,12 +465,18 @@ function selectShop(id){
   shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
   fillPrintData(cfg);
+  updateFeatureVisibility(cfg.shopType||"simple");
   updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState("Bereit zum Bearbeiten."); renderShopList();
+}
+
+function updateFeatureVisibility(type){
+  if(designerFeatureTools) designerFeatureTools.hidden = type !== "designer";
 }
 
 function typePreset(type){
   const designer=type==="designer", motifs=type==="motifs";
   shopFields.showMotifs.checked=motifs||designer; shopFields.allowUpload.checked=designer; shopFields.allowText.checked=designer; shopFields.allowMove.checked=designer; shopFields.allowResize.checked=designer; shopFields.allowRotate.checked=designer; shopFields.showShirtColors.checked=true; shopFields.showMotifColors.checked=true; shopFields.allowBack.checked=true;
+  updateFeatureVisibility(type);
 }
 shopFields.type.addEventListener("change",()=>typePreset(shopFields.type.value));
 bindPositionEditor();

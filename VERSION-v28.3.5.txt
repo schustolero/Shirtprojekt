@@ -1,0 +1,6 @@
+MASTER v28.3.5
+- Shop-Logo direkt in Grunddaten verschoben
+- Logo-Bereich unten entfernt
+- Funktionen nach Shop-Typ aufgeräumt; Designer-Werkzeuge nur im Designer-Shop sichtbar
+- Produktionsdaten verständlicher beschriftet und mit 3-Schritte-Hilfe ergänzt
+- Produktionsdaten bleiben pro T-Shirt/Polo und Vorder-/Rückseite gespeichert und erscheinen auf neuen Bestellscheinen

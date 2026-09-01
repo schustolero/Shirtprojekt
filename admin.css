@@ -756,3 +756,81 @@
   .embedded-display-section .display-grid label:nth-child(4),
   .embedded-display-section .display-grid label:nth-child(5){grid-column:1/-1 !important}
 }
+
+
+/* MASTER v28.3.5 – Shop-Logo in Grunddaten + klare Funktionen/Produktionsdaten */
+.shop-logo-inline{
+  display:grid;
+  grid-template-columns:54px minmax(0,1fr) 92px;
+  gap:8px;
+  align-items:center;
+  margin-top:2px;
+  padding:7px 8px;
+  border:1px solid #e5e8ed;
+  border-radius:9px;
+  background:#fafbfc;
+}
+.shop-logo-mini-preview{
+  width:54px;height:46px;
+  display:grid;place-items:center;
+  border:1px dashed #d3d7de;
+  border-radius:7px;
+  background:#fff;
+  overflow:hidden;
+}
+.shop-logo-mini-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.shop-logo-inline-controls{
+  min-width:0;
+  display:grid;
+  grid-template-columns:auto minmax(120px,1fr) auto;
+  gap:6px;
+  align-items:center;
+}
+.shop-logo-inline-controls>strong{font-size:11px;white-space:nowrap}
+.shop-logo-file{margin:0!important;display:block!important}
+.shop-logo-file span{display:none!important}
+.shop-logo-file input{height:30px!important;min-height:30px!important;padding:4px 6px!important;font-size:10px!important}
+.shop-logo-reset{padding:6px 8px!important;font-size:10px!important;white-space:nowrap}
+.shop-logo-height{margin:0!important;gap:2px!important}
+.shop-logo-height span{font-size:9.5px!important}
+.shop-logo-height input{height:30px!important;min-height:30px!important;padding:4px 6px!important;font-size:11px!important}
+
+.functions-accordion .core-features{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+.designer-feature-tools{margin-top:7px;padding-top:7px;border-top:1px solid #eceef2}
+.designer-feature-title{display:block;margin-bottom:5px;font-size:9px;font-weight:800;color:#777b83;text-transform:uppercase;letter-spacing:.04em}
+.designer-feature-tools .feature-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+
+.production-help{
+  display:grid;
+  gap:2px;
+  margin:0 0 7px;
+  padding:7px 8px;
+  border-radius:8px;
+  background:#f7f8fa;
+  border:1px solid #eaecf0;
+  font-size:9.5px;
+  line-height:1.25;
+  color:#656a73;
+}
+.production-help strong{color:#202227;font-size:10.5px}
+.print-data-card h4{margin-bottom:5px!important}
+.print-data-fields label span{font-size:9px!important}
+.print-data-fields input,.print-data-fields select{height:28px!important;min-height:28px!important;padding:3px 5px!important;font-size:10px!important}
+
+/* Darstellung ist nach dem Umzug der Logo-Höhe noch flacher */
+.embedded-display-section .display-grid{grid-template-columns:64px minmax(180px,1fr)!important}
+.embedded-display-section .display-grid label:nth-child(3){grid-column:1/-1!important}
+.embedded-display-section .display-grid label:nth-child(4){grid-column:1/-1!important}
+
+@media(max-width:760px){
+  .shop-logo-inline{grid-template-columns:48px 1fr 76px}
+  .shop-logo-inline-controls{grid-template-columns:1fr auto}
+  .shop-logo-inline-controls>strong{grid-column:1/-1}
+  .functions-accordion .core-features{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:480px){
+  .shop-logo-inline{grid-template-columns:46px 1fr}
+  .shop-logo-height{grid-column:2}
+  .shop-logo-inline-controls{grid-template-columns:1fr}
+  .shop-logo-reset{justify-self:start}
+}

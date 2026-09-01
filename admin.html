@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.3.4">
+  <link rel="stylesheet" href="admin.css?v=28.3.5">
 </head>
 <body>
   <main class="admin-shell">
@@ -68,6 +68,15 @@
                 <label><span>Bestellpräfix</span><input id="shopPrefix" type="text" maxlength="8" placeholder="TG"></label>
                 <label class="wide"><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
                 <label class="check-row wide"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
+                <div class="shop-logo-inline wide">
+                  <div class="shop-logo-mini-preview"><img id="logoPreview" alt="Shop-Logo Vorschau"></div>
+                  <div class="shop-logo-inline-controls">
+                    <strong>Shop-Logo</strong>
+                    <label class="shop-logo-file"><span>Logo ersetzen</span><input id="logoUpload" type="file" accept="image/*"></label>
+                    <button id="removeLogoBtn" class="ghost-btn shop-logo-reset" type="button">Zurücksetzen</button>
+                  </div>
+                  <label class="shop-logo-height"><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                </div>
               </div></div>
     <div class="form-section compact-colors-section"><h3>Farben</h3><div class="form-grid compact-color-row">
                 <label><span>Shirt</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
@@ -77,7 +86,6 @@
               </div></div>
 <div class="form-section embedded-display-section"><h3>Darstellung & Texte</h3><div class="form-grid display-grid">
                 <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
-                <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
                 <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
                 <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
                 <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
@@ -146,20 +154,24 @@
 
 
               <details class="form-section compact-accordion print-data-accordion">
-                <summary><span>Druckdaten</span><small>Produktion</small></summary>
+                <summary><span>Produktionsdaten</span><small>Druck & Fertigung</small></summary>
                 <div class="accordion-body">
-                  <p class="section-note">Produktionsdaten getrennt für T-Shirt/Polo und Vorder-/Rückseite hinterlegen.</p>
+                  <div class="production-help">
+                    <strong>So nutzt du die Produktionsdaten</strong>
+                    <span>1. Motiv oben positionieren → 2. echte Druckmaße in cm eintragen → 3. Speichern.</span>
+                    <span>Bei neuen Bestellungen werden diese Angaben automatisch auf dem Bestellschein ausgegeben.</span>
+                  </div>
                   <div class="print-data-grid">
                     <section class="print-data-card" data-print-key="tshirtFront">
                       <h4>T-Shirt · vorne</h4>
                       <div class="print-data-fields">
                         <label><span>Verfahren</span><select id="pdTshirtFrontMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Breite cm</span><input id="pdTshirtFrontWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Höhe cm</span><input id="pdTshirtFrontHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Kragen cm</span><input id="pdTshirtFrontCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Seite cm</span><input id="pdTshirtFrontSide" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdTshirtFrontWidth" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtFrontHeight" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Kragen (cm)</span><input id="pdTshirtFrontCollar" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Seite (cm)</span><input id="pdTshirtFrontSide" type="number" min="0" step="0.1"></label>
                         <label><span>Farbcode</span><input id="pdTshirtFrontColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Datei / Link</span><input id="pdTshirtFrontFile" type="text" placeholder="z. B. tg-front.pdf oder Drive-Link"></label>
+                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdTshirtFrontFile" type="text" placeholder="z. B. tg-front.pdf oder Drive-Link"></label>
                         <label class="wide"><span>Produktionshinweis</span><input id="pdTshirtFrontNote" type="text" placeholder="z. B. linke Brust"></label>
                       </div>
                     </section>
@@ -167,12 +179,12 @@
                       <h4>T-Shirt · hinten</h4>
                       <div class="print-data-fields">
                         <label><span>Verfahren</span><select id="pdTshirtBackMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Breite cm</span><input id="pdTshirtBackWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Höhe cm</span><input id="pdTshirtBackHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Kragen cm</span><input id="pdTshirtBackCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Seite cm</span><input id="pdTshirtBackSide" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdTshirtBackWidth" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtBackHeight" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Kragen (cm)</span><input id="pdTshirtBackCollar" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Seite (cm)</span><input id="pdTshirtBackSide" type="number" min="0" step="0.1"></label>
                         <label><span>Farbcode</span><input id="pdTshirtBackColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Datei / Link</span><input id="pdTshirtBackFile" type="text" placeholder="z. B. tg-back.pdf oder Drive-Link"></label>
+                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdTshirtBackFile" type="text" placeholder="z. B. tg-back.pdf oder Drive-Link"></label>
                         <label class="wide"><span>Produktionshinweis</span><input id="pdTshirtBackNote" type="text" placeholder="z. B. mittig Rücken"></label>
                       </div>
                     </section>
@@ -180,12 +192,12 @@
                       <h4>Polo · vorne</h4>
                       <div class="print-data-fields">
                         <label><span>Verfahren</span><select id="pdPoloFrontMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Breite cm</span><input id="pdPoloFrontWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Höhe cm</span><input id="pdPoloFrontHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Kragen cm</span><input id="pdPoloFrontCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Seite cm</span><input id="pdPoloFrontSide" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdPoloFrontWidth" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdPoloFrontHeight" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Kragen (cm)</span><input id="pdPoloFrontCollar" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Seite (cm)</span><input id="pdPoloFrontSide" type="number" min="0" step="0.1"></label>
                         <label><span>Farbcode</span><input id="pdPoloFrontColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Datei / Link</span><input id="pdPoloFrontFile" type="text" placeholder="z. B. polo-front.pdf"></label>
+                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdPoloFrontFile" type="text" placeholder="z. B. polo-front.pdf"></label>
                         <label class="wide"><span>Produktionshinweis</span><input id="pdPoloFrontNote" type="text"></label>
                       </div>
                     </section>
@@ -193,37 +205,39 @@
                       <h4>Polo · hinten</h4>
                       <div class="print-data-fields">
                         <label><span>Verfahren</span><select id="pdPoloBackMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Breite cm</span><input id="pdPoloBackWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Höhe cm</span><input id="pdPoloBackHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Kragen cm</span><input id="pdPoloBackCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Seite cm</span><input id="pdPoloBackSide" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdPoloBackWidth" type="number" min="0" step="0.1"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdPoloBackHeight" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Kragen (cm)</span><input id="pdPoloBackCollar" type="number" min="0" step="0.1"></label>
+                        <label><span>Abstand Seite (cm)</span><input id="pdPoloBackSide" type="number" min="0" step="0.1"></label>
                         <label><span>Farbcode</span><input id="pdPoloBackColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Datei / Link</span><input id="pdPoloBackFile" type="text" placeholder="z. B. polo-back.pdf"></label>
+                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdPoloBackFile" type="text" placeholder="z. B. polo-back.pdf"></label>
                         <label class="wide"><span>Produktionshinweis</span><input id="pdPoloBackNote" type="text"></label>
                       </div>
                     </section>
                   </div>
                 </div>
               </details>
-
-              <details class="form-section compact-accordion">
-                <summary><span>Funktionen</span><small>9 Schalter</small></summary>
-                <div class="accordion-body"><div class="feature-grid compact-feature-grid">
-                  <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben</span></label>
-                  <label><input id="showMotifs" type="checkbox"><span>Motivauswahl</span></label>
-                  <label><input id="showMotifColors" type="checkbox"><span>Motivfarben</span></label>
-                  <label><input id="allowUpload" type="checkbox"><span>Kunden-Upload</span></label>
-                  <label><input id="allowText" type="checkbox"><span>Text</span></label>
-                  <label><input id="allowBack" type="checkbox"><span>Rückseite</span></label>
-                  <label><input id="allowMove" type="checkbox"><span>Verschieben</span></label>
-                  <label><input id="allowResize" type="checkbox"><span>Skalieren</span></label>
-                  <label><input id="allowRotate" type="checkbox"><span>Drehen</span></label>
-                </div></div>
-              </details>
-
-              <details class="form-section compact-accordion">
-                <summary><span>Logo</span><small>Upload & Höhe</small></summary>
-                <div class="accordion-body compact-logo-body"><div class="asset-row"><div class="asset-preview"><img id="logoPreview" alt="Logo Vorschau"></div><div class="asset-controls"><input id="logoUpload" type="file" accept="image/*"><button id="removeLogoBtn" class="ghost-btn" type="button">Logo zurücksetzen</button><p>Wird direkt in Firebase gespeichert.</p></div></div></div>
+              <details class="form-section compact-accordion functions-accordion">
+                <summary><span>Funktionen</span><small>Shop-Optionen</small></summary>
+                <div class="accordion-body">
+                  <div class="feature-grid compact-feature-grid core-features">
+                    <label><input id="allowBack" type="checkbox"><span>Rückseite</span></label>
+                    <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben</span></label>
+                    <label><input id="showMotifs" type="checkbox"><span>Motivauswahl</span></label>
+                    <label><input id="showMotifColors" type="checkbox"><span>Motivfarben</span></label>
+                    <label><input id="allowUpload" type="checkbox"><span>Kunden-Upload</span></label>
+                    <label><input id="allowText" type="checkbox"><span>Eigener Text</span></label>
+                  </div>
+                  <div id="designerFeatureTools" class="designer-feature-tools" hidden>
+                    <span class="designer-feature-title">Nur Designer-Shop</span>
+                    <div class="feature-grid compact-feature-grid">
+                      <label><input id="allowMove" type="checkbox"><span>Verschieben</span></label>
+                      <label><input id="allowResize" type="checkbox"><span>Skalieren</span></label>
+                      <label><input id="allowRotate" type="checkbox"><span>Drehen</span></label>
+                    </div>
+                  </div>
+                  <div id="hiddenDesignerFeatureInputs" hidden></div>
+                </div>
               </details>
 
               <details class="form-section compact-accordion">
@@ -239,11 +253,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.3.4"></script>
+  <script src="/central-config.js?v=28.3.5"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.3.4"></script>
+  <script src="/admin.js?v=28.3.5"></script>
 </body>
 </html>
