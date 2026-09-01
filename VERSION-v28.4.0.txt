@@ -1,0 +1,7 @@
+MASTER v28.4.0
+- Admin optisch am bevorzugten Referenzdesign ausgerichtet
+- Dunkle linke Navigation mit Shop-Auswahl
+- Klare Karten: Grunddaten, Darstellung, Feste Farben, Funktionen, Shop-Logo, Motive, Fester Druck, Produktionsdaten
+- Motive/Druckbereich als kompakte Tabelle mit Bearbeiten-Funktion
+- Funktionen als echte Toggle-Schalter
+- Bestehende Firebase-/Shop-Logik und Feld-IDs beibehalten

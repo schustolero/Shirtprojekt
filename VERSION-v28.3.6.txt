@@ -1,0 +1,6 @@
+MASTER v28.3.6
+- Grunddaten unverändert
+- Neuer Reiterbereich: Motiv / Produktionsdaten / Funktionen / Weitere Einstellungen
+- Immer nur ein Bereich sichtbar
+- Fester Druck in Motiv integriert
+- Motivverwaltung in Weitere Einstellungen

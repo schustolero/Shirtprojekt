@@ -354,6 +354,7 @@ function refreshPositionEditor(){
   positionXValue.textContent = `${x}%`;
   positionYValue.textContent = `${y}%`;
   positionWValue.textContent = `${w}%`;
+  window.updateV284PrintTable?.();
 }
 function writePositionValues(x, y, w){
   const fields = getPositionFieldSet(positionProduct.value || "tshirt", positionSide.value || "front");
@@ -430,11 +431,12 @@ async function loadShopConfigs(){
 function renderShopList(){
   shopList.replaceChildren();
   [...shopConfigs.entries()].sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de")).forEach(([id,cfg])=>{
-    const btn=document.createElement("button"); btn.type="button"; btn.classList.toggle("active",id===selectedShopId);
+    const btn=document.createElement("button"); btn.type="button"; btn.dataset.shopId=id; btn.classList.toggle("active",id===selectedShopId);
     const strong=document.createElement("strong"); strong.textContent=cfg.customerName||id;
     const span=document.createElement("span"); span.textContent=`${id} · ${cfg.shopType||"simple"}${cfg.active===false?" · deaktiviert":""}`;
     btn.append(strong,span); btn.addEventListener("click",()=>selectShop(id)); shopList.appendChild(btn);
   });
+  window.refreshV284ShopSelect?.();
 }
 
 function featureValue(cfg,key,defaultValue=false){ return cfg.features && cfg.features[key] !== undefined ? !!cfg.features[key] : defaultValue; }
@@ -564,3 +566,249 @@ saveShopBtn.addEventListener("click",async()=>{
   }catch(err){ console.error(err); setShopState(err.message||"Speichern fehlgeschlagen.","error"); alert(err.message||"Shop konnte nicht gespeichert werden."); }
   finally{ saveShopBtn.disabled=false; }
 });
+
+
+// MASTER v28.3.6 – kompakte Unter-Navigation für Shop-Einstellungen
+(function initShopSubTabs(){
+  const form = document.getElementById("shopForm");
+  if(!form || document.getElementById("shopSubTabs")) return;
+
+  const fixedPrint = form.querySelector(".fixed-print-accordion");
+  const production = form.querySelector(".print-data-accordion");
+  const functions = form.querySelector(".functions-accordion");
+  const motifDetails = [...form.querySelectorAll("details.compact-accordion")].find(el =>
+    el !== fixedPrint && el !== production && el !== functions && el.querySelector("#motifsEditor")
+  );
+  if(!fixedPrint || !production || !functions || !motifDetails) return;
+
+  const nav = document.createElement("div");
+  nav.id = "shopSubTabs";
+  nav.className = "shop-subtabs";
+  nav.innerHTML = `
+    <button type="button" class="shop-subtab active" data-panel="motif">Motiv</button>
+    <button type="button" class="shop-subtab" data-panel="production">Produktionsdaten</button>
+    <button type="button" class="shop-subtab" data-panel="functions">Funktionen</button>
+    <button type="button" class="shop-subtab" data-panel="more">Weitere Einstellungen</button>`;
+
+  const panels = document.createElement("div");
+  panels.className = "shop-subtab-panels";
+  panels.innerHTML = `
+    <section class="shop-subpanel active" data-panel="motif"></section>
+    <section class="shop-subpanel" data-panel="production" hidden></section>
+    <section class="shop-subpanel" data-panel="functions" hidden></section>
+    <section class="shop-subpanel" data-panel="more" hidden></section>`;
+
+  fixedPrint.parentNode.insertBefore(nav, fixedPrint);
+  nav.after(panels);
+
+  const motifPanel = panels.querySelector('[data-panel="motif"]');
+  const productionPanel = panels.querySelector('[data-panel="production"]');
+  const functionsPanel = panels.querySelector('[data-panel="functions"]');
+  const morePanel = panels.querySelector('[data-panel="more"]');
+
+  // Details-Elemente bleiben technisch erhalten; innerhalb der Reiter werden sie immer offen gezeigt.
+  [fixedPrint, production, functions, motifDetails].forEach(el => {
+    el.open = true;
+    el.classList.add("subtab-section");
+  });
+  motifPanel.appendChild(fixedPrint);
+  productionPanel.appendChild(production);
+  functionsPanel.appendChild(functions);
+  morePanel.appendChild(motifDetails);
+
+  const setPanel = name => {
+    nav.querySelectorAll(".shop-subtab").forEach(btn => btn.classList.toggle("active", btn.dataset.panel === name));
+    panels.querySelectorAll(".shop-subpanel").forEach(panel => {
+      const active = panel.dataset.panel === name;
+      panel.hidden = !active;
+      panel.classList.toggle("active", active);
+    });
+  };
+  nav.addEventListener("click", e => {
+    const btn = e.target.closest(".shop-subtab");
+    if(btn) setPanel(btn.dataset.panel);
+  });
+})();
+
+
+// ============================================================
+// MASTER v28.4.0 – Adminlayout nach Referenzdesign
+// ============================================================
+(function initV284ReferenceLayout(){
+  if(document.getElementById("v284Sidebar")) return;
+  document.body.classList.add("v284-admin");
+
+  const shell = document.querySelector(".admin-shell");
+  const dashboardEl = document.getElementById("dashboard");
+  const originalLogout = document.getElementById("logoutBtn");
+  const originalNewShop = document.getElementById("newShopBtn");
+  const list = document.getElementById("shopList");
+  const shopListPanel = document.querySelector(".shop-list-panel");
+  const editorPanel = document.querySelector(".shop-editor-panel");
+
+  const sidebar=document.createElement("aside");
+  sidebar.id="v284Sidebar";
+  sidebar.className="v284-sidebar";
+  sidebar.hidden=true;
+  sidebar.innerHTML=`
+    <div class="v284-brand">
+      <div class="v284-brand-mark">⌁</div>
+      <div><strong>ShirtProjekt</strong><span>Admin</span></div>
+    </div>
+    <label class="v284-shop-select-wrap"><span>Shop</span><select id="v284ShopSelect"><option>Shop wählen</option></select></label>
+    <nav class="v284-nav" aria-label="Admin Navigation">
+      <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
+      <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
+      <button type="button" data-jump="motif"><span>✥</span>Motive / Logos</button>
+      <button type="button" data-jump="production"><span>▤</span>Produktionsdaten</button>
+      <button type="button" data-jump="functions"><span>◉</span>Funktionen</button>
+    </nav>
+    <div class="v284-side-bottom">
+      <button type="button" id="v284NewShop">＋ Neuer Shop</button>
+      <button type="button" id="v284Logout">↪ Abmelden</button>
+    </div>`;
+  document.body.insertBefore(sidebar,shell);
+
+  const shopSelect=sidebar.querySelector("#v284ShopSelect");
+  window.refreshV284ShopSelect=function(){
+    if(!shopSelect || !list) return;
+    const current=selectedShopId || "";
+    const opts=[...list.querySelectorAll("button[data-shop-id]")];
+    shopSelect.replaceChildren();
+    opts.forEach(btn=>{
+      const op=document.createElement("option");
+      op.value=btn.dataset.shopId;
+      op.textContent=btn.querySelector("strong")?.textContent || btn.dataset.shopId;
+      op.selected=op.value===current;
+      shopSelect.appendChild(op);
+    });
+  };
+  const listObserver=new MutationObserver(()=>window.refreshV284ShopSelect?.());
+  if(list) listObserver.observe(list,{childList:true,subtree:true});
+  shopSelect.addEventListener("change",()=>{
+    const btn=list?.querySelector(`button[data-shop-id="${CSS.escape(shopSelect.value)}"]`);
+    btn?.click();
+  });
+
+  sidebar.querySelector("#v284NewShop").addEventListener("click",()=>originalNewShop?.click());
+  sidebar.querySelector("#v284Logout").addEventListener("click",()=>originalLogout?.click());
+
+  function setNavActive(name){
+    sidebar.querySelectorAll(".v284-nav button").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.main===name || (name==="shops" && btn.dataset.jump===undefined && btn.dataset.main==="shops"));
+    });
+  }
+  function openCard(key){
+    switchAdminTab("shops");
+    setNavActive("shops");
+    const card=document.querySelector(`.v284-card[data-card="${key}"]`);
+    if(card){ card.open=true; card.scrollIntoView({behavior:"smooth",block:"start"}); }
+  }
+  sidebar.querySelectorAll(".v284-nav button").forEach(btn=>btn.addEventListener("click",()=>{
+    if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
+    else if(btn.dataset.jump) openCard(btn.dataset.jump);
+  }));
+
+  const dashObserver=new MutationObserver(()=>{
+    sidebar.hidden=dashboardEl.hidden;
+    if(!dashboardEl.hidden){
+      setNavActive(ordersTab.hidden?"shops":"orders");
+      window.refreshV284ShopSelect?.();
+    }
+  });
+  dashObserver.observe(dashboardEl,{attributes:true,attributeFilter:["hidden"]});
+
+  // Referenz-Layout für die Shop-Einstellungen aufbauen, ohne Feld-IDs zu ändern.
+  const form=document.getElementById("shopForm");
+  if(!form || !editorPanel) return;
+  if(shopListPanel) shopListPanel.classList.add("v284-hidden-shop-list");
+  document.querySelector(".admin-tabs")?.classList.add("v284-hide-top-tabs");
+  document.querySelector(".admin-header")?.classList.add("v284-hide-old-header");
+
+  const topSettings=form.querySelector(".top-settings-column");
+  const topPosition=form.querySelector(".top-position-column");
+  const grund=topSettings?.querySelector(".form-section:not(.compact-colors-section):not(.embedded-display-section)");
+  const colors=topSettings?.querySelector(".compact-colors-section");
+  const display=topSettings?.querySelector(".embedded-display-section");
+  const logo=grund?.querySelector(".shop-logo-inline");
+  const position=topPosition?.querySelector(".position-editor-section");
+  const technical=topPosition?.querySelector(".technical-position-values");
+  const fixed=form.querySelector(".fixed-print-accordion");
+  const production=form.querySelector(".print-data-accordion");
+  const functions=form.querySelector(".functions-accordion");
+  const motifDetails=[...form.querySelectorAll("details.compact-accordion")].find(el=>el!==fixed&&el!==production&&el!==functions&&el.querySelector("#motifsEditor"));
+
+  const stack=document.createElement("div");
+  stack.className="v284-card-stack";
+
+  function card(title,key,content,open=true,subtitle=""){
+    const d=document.createElement("details");
+    d.className="v284-card";
+    d.dataset.card=key;
+    d.open=open;
+    const summary=document.createElement("summary");
+    summary.innerHTML=`<span class="v284-card-title">${title}</span>${subtitle?`<small>${subtitle}</small>`:""}<b>⌃</b>`;
+    const body=document.createElement("div"); body.className="v284-card-body";
+    if(content) body.appendChild(content);
+    d.append(summary,body); stack.appendChild(d); return d;
+  }
+
+  if(logo) logo.remove();
+  if(grund){ grund.classList.add("v284-inner-section"); card("Grunddaten","basic",grund,true); }
+  if(display){ display.classList.add("v284-inner-section"); card("Darstellung","display",display,true); }
+  if(colors){ colors.classList.add("v284-inner-section"); card("Feste Farben","colors",colors,true); }
+  if(functions){ const body=functions.querySelector(".accordion-body")||functions; card("Funktionen","functions",body,true); }
+  if(logo){ card("Shop-Logo","logo",logo,true); }
+
+  // Motiv-/Druckbereich: kompakte Übersicht + vorhandenen visuellen Editor.
+  if(position){
+    const wrap=document.createElement("div"); wrap.className="v284-motif-wrap";
+    const table=document.createElement("div"); table.id="v284PrintTable"; table.className="v284-print-table";
+    wrap.append(table,position);
+    if(motifDetails){
+      const mb=motifDetails.querySelector(".accordion-body");
+      if(mb){ const manage=document.createElement("details"); manage.className="v284-inline-manage"; manage.innerHTML="<summary>Motivdateien verwalten</summary>"; manage.appendChild(mb); wrap.appendChild(manage); }
+    }
+    card("Motive (Druckbereich)","motif",wrap,true);
+  }
+  if(fixed){ const body=fixed.querySelector(".accordion-body")||fixed; card("Fester Druck (vorne / hinten)","fixed",body,true); }
+  if(production){ const body=production.querySelector(".accordion-body")||production; card("Produktionsdaten","production",body,false); }
+  if(technical){ technical.hidden=true; form.appendChild(technical); }
+
+  // Alte Zwischen-Navigation/Wrapper entfernen, nachdem Inhalte umgezogen wurden.
+  form.querySelector("#shopSubTabs")?.remove();
+  form.querySelector(".shop-subtab-panels")?.remove();
+  form.querySelector(".top-editor-grid")?.remove();
+  form.querySelector(".accordion-grid")?.remove();
+  form.appendChild(stack);
+
+  // Motivübersicht wie im Referenzbild.
+  window.updateV284PrintTable=function(){
+    const table=document.getElementById("v284PrintTable"); if(!table) return;
+    const motif=workingMotifs?.[0];
+    const motifSrc=motif?.file?safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||"_simple"):"";
+    const rows=[
+      ["tshirt","front","T-Shirt","Vorderseite",shopFields.tshirtFrontX,shopFields.tshirtFrontY,shopFields.tshirtFrontW],
+      ["tshirt","back","T-Shirt","Rückseite",shopFields.tshirtBackX,shopFields.tshirtBackY,shopFields.tshirtBackW],
+      ["polo","front","Polo","Vorderseite",shopFields.poloFrontX,shopFields.poloFrontY,shopFields.poloFrontW],
+      ["polo","back","Polo","Rückseite",shopFields.poloBackX,shopFields.poloBackY,shopFields.poloBackW]
+    ];
+    table.innerHTML=`<div class="v284-tr v284-th"><span>Textil</span><span>Seite</span><span>Motiv</span><span>X</span><span>Y</span><span>Größe</span><span>Aktion</span></div>`+
+      rows.map(([p,s,pn,sn,x,y,w])=>`<div class="v284-tr"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:"–"}</span><span>${x?.value||"–"}%</span><span>${y?.value||"–"}%</span><span>${w?.value||"–"}%</span><span><button type="button" class="v284-edit-print" data-product="${p}" data-side="${s}">Bearbeiten</button></span></div>`).join("");
+    table.querySelectorAll(".v284-edit-print").forEach(btn=>btn.addEventListener("click",()=>{
+      positionProduct.value=btn.dataset.product;
+      positionSide.value=btn.dataset.side;
+      refreshPositionEditor();
+      position.scrollIntoView({behavior:"smooth",block:"center"});
+    }));
+  };
+  window.updateV284PrintTable();
+
+  // Buttons/Status im Kopf wie im Referenzdesign beschriften.
+  editorPanel.classList.add("v284-editor-panel");
+  const panelHead=editorPanel.querySelector(":scope > .panel-head");
+  panelHead?.classList.add("v284-editor-head");
+  if(panelHead){
+    const h=panelHead.querySelector("h2"); if(h) h.insertAdjacentHTML("beforebegin",'<span class="v284-kicker">Shop Einstellungen</span>');
+  }
+})();
