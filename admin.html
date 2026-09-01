@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.3.2">
+  <link rel="stylesheet" href="admin.css?v=28.3.3">
 </head>
 <body>
   <main class="admin-shell">
@@ -58,7 +58,9 @@
             <div class="panel-head"><div><h2 id="shopEditorTitle">Shop auswählen</h2><p id="shopSaveState">Noch keine Änderungen.</p></div><div class="editor-actions"><a id="previewShopBtn" class="ghost-btn link-btn" href="#" target="_blank" hidden>Vorschau</a><button id="saveShopBtn" class="primary-btn" type="button" disabled>Speichern</button></div></div>
 
             <form id="shopForm" class="shop-form" hidden>
-              <div class="form-section"><h3>Grunddaten</h3><div class="form-grid">
+              <div class="top-editor-grid">
+  <div class="top-settings-column">
+    <div class="form-section"><h3>Grunddaten</h3><div class="form-grid">
                 <label><span>Shop-ID</span><input id="shopId" type="text" required placeholder="z. B. tg-solingen"></label>
                 <label><span>Shop-Typ</span><select id="shopType"><option value="simple">Simple</option><option value="motifs">Motiv</option><option value="designer">Designer</option></select></label>
                 <label class="wide"><span>Name</span><input id="shopName" type="text" required></label>
@@ -67,14 +69,15 @@
                 <label class="wide"><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
                 <label class="check-row wide"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
               </div></div>
-              <div class="form-section compact-colors-section"><h3>Farben</h3><div class="form-grid compact-color-row">
+    <div class="form-section compact-colors-section"><h3>Farben</h3><div class="form-grid compact-color-row">
                 <label><span>Shirt</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
                 <label><span>Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
                 <label><span>Motiv</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
                 <label><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
               </div></div>
-
-              <div class="form-section position-editor-section"><h3>Motiv direkt positionieren</h3><p class="section-note">Motiv im Shirt mit der Maus ziehen. Größe über den Regler ändern. Danach direkt auf <strong>Position speichern</strong> klicken.</p>
+  </div>
+  <div class="top-position-column">
+    <div class="form-section position-editor-section"><h3>Motiv direkt positionieren</h3><p class="section-note">Motiv im Shirt mit der Maus ziehen. Größe über den Regler ändern. Danach direkt auf <strong>Position speichern</strong> klicken.</p>
                 <div class="position-editor-toolbar">
                   <label><span>Textil</span><select id="positionProduct"><option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option></select></label>
                   <label><span>Seite</span><select id="positionSide"><option value="front">Vorderseite</option><option value="back">Rückseite</option></select></label>
@@ -96,6 +99,8 @@
                   </div>
                 </div>
               </div>
+  </div>
+</div>
 
               <div class="form-section position-values-section technical-position-values" aria-hidden="true"><h3>Position & Größe – direkt einstellbar</h3><p class="section-note">Hier stellst du die Druckposition direkt ein. Die Werte werden gespeichert und gelten identisch für Einzel- und Doppelansicht. X = links/rechts, Y = höher/tiefer, Größe = Motivbreite.</p>
                 <h4>T-Shirt</h4><div class="form-grid">
@@ -233,11 +238,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.3.2"></script>
+  <script src="/central-config.js?v=28.3.3"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.3.2"></script>
+  <script src="/admin.js?v=28.3.3"></script>
 </body>
 </html>

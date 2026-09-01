@@ -1,0 +1,5 @@
+MASTER v28.3.3
+- Grunddaten links, Motivpositionierung rechts
+- Farbfelder auf kleine Chips reduziert
+- Positionierer kompakter
+- Aufklappbare Kacheln auf breiten Displays bis zu 3 nebeneinander

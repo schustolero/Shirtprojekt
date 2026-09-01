@@ -603,3 +603,119 @@
 .display-accordion input[type="color"]{width:42px!important}
 @media(max-width:760px){.accordion-grid{grid-template-columns:1fr}.compact-color-row{grid-template-columns:1fr 42px 1fr 42px!important}.position-editor-layout{grid-template-columns:1fr!important}.position-stage{max-width:420px!important;margin:0 auto}.position-readout{grid-template-columns:repeat(3,1fr)!important}}
 @media(max-width:480px){.compact-color-row{grid-template-columns:minmax(90px,1fr) 38px minmax(90px,1fr) 38px!important}.position-editor-toolbar{grid-template-columns:1fr 1fr!important}.position-size-control{grid-column:1/-1!important}}
+
+/* MASTER v28.3.3 – Grunddaten + Positionierer nebeneinander */
+.top-editor-grid{
+  display:grid;
+  grid-template-columns:minmax(360px,.92fr) minmax(430px,1.08fr);
+  gap:14px;
+  align-items:start;
+  margin-top:4px;
+}
+.top-settings-column,
+.top-position-column{min-width:0}
+.top-settings-column .form-section:first-child,
+.top-position-column .form-section:first-child{border-top:0}
+.top-settings-column .form-section{padding:8px 0!important}
+.top-position-column .position-editor-section{padding:8px 0!important}
+
+/* Grunddaten deutlich dichter */
+.top-settings-column .form-grid{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:5px 7px!important;
+}
+.top-settings-column .form-grid label{gap:2px!important}
+.top-settings-column .form-grid label span{font-size:9.5px!important}
+.top-settings-column .form-grid input,
+.top-settings-column .form-grid select{
+  height:30px!important;
+  min-height:30px!important;
+  padding:4px 7px!important;
+  font-size:11px!important;
+}
+.top-settings-column .check-row{min-height:24px!important}
+
+/* Farben nur noch als schmale Chips */
+.top-settings-column .compact-colors-section{
+  border-top:1px solid #eceef2!important;
+  padding:6px 0 0!important;
+}
+.top-settings-column .compact-colors-section h3{
+  display:inline-block;
+  width:48px;
+  margin:0!important;
+  vertical-align:middle;
+  font-size:10px!important;
+}
+.top-settings-column .compact-color-row{
+  display:inline-grid!important;
+  width:calc(100% - 54px);
+  grid-template-columns:minmax(90px,1fr) 30px minmax(90px,1fr) 30px!important;
+  gap:4px!important;
+  vertical-align:middle;
+}
+.top-settings-column .compact-color-row label span{display:none!important}
+.top-settings-column .compact-color-row input[type="text"]{
+  height:27px!important;
+  min-height:27px!important;
+  padding:3px 6px!important;
+  font-size:10px!important;
+}
+.top-settings-column .compact-color-row input[type="color"]{
+  width:30px!important;
+  height:27px!important;
+  min-height:27px!important;
+  padding:1px!important;
+  border-radius:5px!important;
+}
+
+/* Positionierer kompakt in rechter Spalte */
+.top-position-column .position-editor-section h3{font-size:13px!important}
+.top-position-column .position-editor-section>.section-note{display:none}
+.top-position-column .position-editor-toolbar{
+  grid-template-columns:90px 105px minmax(130px,1fr)!important;
+  gap:5px!important;
+  margin-bottom:5px!important;
+}
+.top-position-column .position-editor-toolbar label span{font-size:9px!important}
+.top-position-column .position-editor-toolbar select{
+  height:29px!important;
+  min-height:29px!important;
+  font-size:10px!important;
+}
+.top-position-column .position-editor-layout{
+  grid-template-columns:minmax(260px,360px) 135px!important;
+  gap:7px!important;
+  align-items:start!important;
+}
+.top-position-column .position-stage{
+  width:min(360px,100%)!important;
+  max-height:400px;
+}
+.top-position-column .position-readout{gap:3px!important}
+.top-position-column .position-readout>div{padding:3px!important}
+.top-position-column .position-readout span{font-size:8px!important}
+.top-position-column .position-readout strong{font-size:12px!important}
+.top-position-column .position-readout p{display:none!important}
+.top-position-column .position-save-btn{
+  min-height:29px!important;
+  padding:5px 7px!important;
+  font-size:10px!important;
+}
+
+/* Optionale Kacheln direkt darunter, 3 pro Reihe bei viel Platz */
+@media(min-width:1200px){
+  .accordion-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+
+@media(max-width:1100px){
+  .top-editor-grid{grid-template-columns:1fr}
+  .top-position-column .position-editor-layout{grid-template-columns:minmax(280px,420px) 150px!important}
+  .top-position-column .position-stage{width:min(420px,100%)!important}
+}
+@media(max-width:620px){
+  .top-settings-column .compact-colors-section h3{display:block;width:auto;margin-bottom:3px!important}
+  .top-settings-column .compact-color-row{display:grid!important;width:100%;grid-template-columns:1fr 28px 1fr 28px!important}
+  .top-position-column .position-editor-layout{grid-template-columns:1fr!important}
+  .top-position-column .position-stage{max-width:380px!important;margin:0 auto}
+}
