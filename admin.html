@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.3.3">
+  <link rel="stylesheet" href="admin.css?v=28.3.4">
 </head>
 <body>
   <main class="admin-shell">
@@ -75,6 +75,13 @@
                 <label><span>Motiv</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
                 <label><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
               </div></div>
+<div class="form-section embedded-display-section"><h3>Darstellung & Texte</h3><div class="form-grid display-grid">
+                <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
+                <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
+                <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
+                <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
+              </div></div>
   </div>
   <div class="top-position-column">
     <div class="form-section position-editor-section"><h3>Motiv direkt positionieren</h3><p class="section-note">Motiv im Shirt mit der Maus ziehen. Größe über den Regler ändern. Danach direkt auf <strong>Position speichern</strong> klicken.</p>
@@ -122,13 +129,7 @@
               </div></div>
 
               <div class="accordion-grid">
-<details class="form-section compact-accordion display-accordion"><summary><span>Darstellung & Texte</span><small>optional</small></summary><div class="accordion-body"><div class="form-grid display-grid">
-                <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
-                <label><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
-                <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
-                <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
-                <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
-              </div></div></details>
+
 <details class="form-section compact-accordion fixed-print-accordion"><summary><span>Fester Druck vorne / hinten</span><small>Motivzuordnung</small></summary><div class="accordion-body"><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid fixed-print-grid">
                 <label class="check-row wide"><input id="fixedFrontEnabled" type="checkbox"><span>Vorderdruck fest aktiv</span></label>
                 <label><span>Vorne Motiv</span><select id="fixedFrontMotif"></select></label>
@@ -238,11 +239,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.3.3"></script>
+  <script src="/central-config.js?v=28.3.4"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.3.3"></script>
+  <script src="/admin.js?v=28.3.4"></script>
 </body>
 </html>

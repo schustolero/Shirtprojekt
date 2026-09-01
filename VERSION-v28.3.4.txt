@@ -1,0 +1,4 @@
+MASTER v28.3.4
+- Darstellung & Texte direkt unter Grunddaten integriert
+- Darstellung weiter komprimiert
+- separate Darstellung-Kachel entfernt
