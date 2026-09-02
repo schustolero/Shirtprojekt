@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.4.4">
+  <link rel="stylesheet" href="admin.css?v=28.4.5">
 </head>
 <body>
   <main class="admin-shell">
@@ -165,87 +165,56 @@
                 <summary><span>Produktionsdaten</span><small>Druck & Fertigung</small></summary>
                 <div class="accordion-body">
                   <div class="production-help">
-                    <strong>So nutzt du die Produktionsdaten</strong>
-                    <span>1. Motiv oben positionieren → 2. echte Druckmaße in cm eintragen → 3. Speichern.</span>
-                    <span>Bei neuen Bestellungen werden diese Angaben automatisch auf dem Bestellschein ausgegeben.</span>
+                    <strong>Produktionsdaten – bewusst einfach</strong>
+                    <span>Nur Druckverfahren sowie Breite und Höhe des Drucks eintragen.</span>
                   </div>
                   <div class="print-data-grid">
                     <section class="print-data-card" data-print-key="tshirtFront">
                       <h4>T-Shirt · vorne</h4>
-                      <div class="print-data-fields">
-                        <label><span>Verfahren</span><select id="pdTshirtFrontMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdTshirtFrontWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtFrontHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Kragen (cm)</span><input id="pdTshirtFrontCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Seite (cm)</span><input id="pdTshirtFrontSide" type="number" min="0" step="0.1"></label>
-                        <label><span>Farbcode</span><input id="pdTshirtFrontColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdTshirtFrontFile" type="text" placeholder="z. B. tg-front.pdf oder Drive-Link"></label>
-                        <label class="wide"><span>Produktionshinweis</span><input id="pdTshirtFrontNote" type="text" placeholder="z. B. linke Brust"></label>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdTshirtFrontMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdTshirtFrontWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtFrontHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
                       </div>
                     </section>
                     <section class="print-data-card" data-print-key="tshirtBack">
                       <h4>T-Shirt · hinten</h4>
-                      <div class="print-data-fields">
-                        <label><span>Verfahren</span><select id="pdTshirtBackMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdTshirtBackWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtBackHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Kragen (cm)</span><input id="pdTshirtBackCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Seite (cm)</span><input id="pdTshirtBackSide" type="number" min="0" step="0.1"></label>
-                        <label><span>Farbcode</span><input id="pdTshirtBackColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdTshirtBackFile" type="text" placeholder="z. B. tg-back.pdf oder Drive-Link"></label>
-                        <label class="wide"><span>Produktionshinweis</span><input id="pdTshirtBackNote" type="text" placeholder="z. B. mittig Rücken"></label>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdTshirtBackMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdTshirtBackWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtBackHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
                       </div>
                     </section>
                     <section class="print-data-card" data-print-key="poloFront">
                       <h4>Polo · vorne</h4>
-                      <div class="print-data-fields">
-                        <label><span>Verfahren</span><select id="pdPoloFrontMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdPoloFrontWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdPoloFrontHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Kragen (cm)</span><input id="pdPoloFrontCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Seite (cm)</span><input id="pdPoloFrontSide" type="number" min="0" step="0.1"></label>
-                        <label><span>Farbcode</span><input id="pdPoloFrontColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdPoloFrontFile" type="text" placeholder="z. B. polo-front.pdf"></label>
-                        <label class="wide"><span>Produktionshinweis</span><input id="pdPoloFrontNote" type="text"></label>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdPoloFrontMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdPoloFrontWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdPoloFrontHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
                       </div>
                     </section>
                     <section class="print-data-card" data-print-key="poloBack">
                       <h4>Polo · hinten</h4>
-                      <div class="print-data-fields">
-                        <label><span>Verfahren</span><select id="pdPoloBackMethod"><option value="DTF">DTF</option><option value="Flex">Flex</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdPoloBackWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdPoloBackHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Kragen (cm)</span><input id="pdPoloBackCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Seite (cm)</span><input id="pdPoloBackSide" type="number" min="0" step="0.1"></label>
-                        <label><span>Farbcode</span><input id="pdPoloBackColor" type="text" placeholder="#F6C951"></label>
-                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdPoloBackFile" type="text" placeholder="z. B. polo-back.pdf"></label>
-                        <label class="wide"><span>Produktionshinweis</span><input id="pdPoloBackNote" type="text"></label>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdPoloBackMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdPoloBackWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdPoloBackHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
                       </div>
                     </section>
                     <section class="print-data-card" data-print-key="hoodieFront">
                       <h4>Hoodie · vorne</h4>
-                      <div class="print-data-fields">
-                        <label><span>Verfahren</span><select id="pdHoodieFrontMethod"><option value="Flex">Flex</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdHoodieFrontWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdHoodieFrontHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Kragen (cm)</span><input id="pdHoodieFrontCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Seite (cm)</span><input id="pdHoodieFrontSide" type="number" min="0" step="0.1"></label>
-                        <label><span>Farbcode</span><input id="pdHoodieFrontColor" type="text" placeholder="P.S. Film Yellow"></label>
-                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdHoodieFrontFile" type="text" placeholder="z. B. hoodie-front.pdf"></label>
-                        <label class="wide"><span>Produktionshinweis</span><input id="pdHoodieFrontNote" type="text"></label>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdHoodieFrontMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdHoodieFrontWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdHoodieFrontHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
                       </div>
                     </section>
                     <section class="print-data-card" data-print-key="hoodieBack">
                       <h4>Hoodie · hinten</h4>
-                      <div class="print-data-fields">
-                        <label><span>Verfahren</span><select id="pdHoodieBackMethod"><option value="Flex">Flex</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdHoodieBackWidth" type="number" min="0" step="0.1"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdHoodieBackHeight" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Kragen (cm)</span><input id="pdHoodieBackCollar" type="number" min="0" step="0.1"></label>
-                        <label><span>Abstand Seite (cm)</span><input id="pdHoodieBackSide" type="number" min="0" step="0.1"></label>
-                        <label><span>Farbcode</span><input id="pdHoodieBackColor" type="text" placeholder="P.S. Film Yellow"></label>
-                        <label class="wide"><span>Produktionsdatei / Link</span><input id="pdHoodieBackFile" type="text" placeholder="z. B. hoodie-back.pdf"></label>
-                        <label class="wide"><span>Produktionshinweis</span><input id="pdHoodieBackNote" type="text"></label>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdHoodieBackMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdHoodieBackWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdHoodieBackHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
                       </div>
                     </section>
                   </div>
@@ -287,11 +256,11 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.4.4"></script>
+  <script src="/central-config.js?v=28.4.5"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.4.4"></script>
+  <script src="/admin.js?v=28.4.5"></script>
 </body>
 </html>

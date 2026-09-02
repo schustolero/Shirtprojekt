@@ -120,12 +120,11 @@ function printOrderSlip(order){
     const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
     if(!has) return;
     const size=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"-";
-    const pos=[d.collarCm!==null&&d.collarCm!==undefined&&d.collarCm!==""?`${d.collarCm} cm Kragen`:"",d.sideCm!==null&&d.sideCm!==undefined&&d.sideCm!==""?`${d.sideCm} cm Seite`:""].filter(Boolean).join(" · ")||"-";
-    printRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td><td>${htmlEscape(pos)}</td><td>${htmlEscape(d.colorCode||"-")}</td><td>${htmlEscape(d.productionFile||"-")}</td><td>${htmlEscape(d.note||"-")}</td></tr>`);
+    printRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td></tr>`);
   };
   addPrintRow("tshirt","T-Shirt","front","Vorne"); addPrintRow("tshirt","T-Shirt","back","Hinten");
   addPrintRow("polo","Polo-Shirt","front","Vorne"); addPrintRow("polo","Polo-Shirt","back","Hinten"); addPrintRow("hoodie","Hoodie","front","Vorne"); addPrintRow("hoodie","Hoodie","back","Hinten");
-  const printSection = printRows.length ? `<div class="section"><h2>Druckdaten / Produktion</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Format</th><th>Position</th><th>Farbe</th><th>Datei</th><th>Hinweis</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
+  const printSection = printRows.length ? `<div class="section"><h2>Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
   const w = window.open("", "_blank", "width=900,height=900");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
@@ -139,12 +138,6 @@ function printOrderSlip(order){
 }
 
 
-function productionFileHtml(value){
-  const raw=String(value||"").trim();
-  if(!raw) return "–";
-  if(/^https?:\/\//i.test(raw)) return `<a href="${htmlEscape(raw)}" target="_blank" rel="noopener">Datei öffnen</a>`;
-  return htmlEscape(raw);
-}
 
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
@@ -165,11 +158,7 @@ function printProductionSlip(order){
     const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
     if(!has) return;
     const format=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"–";
-    const pos=[
-      d.collarCm!==null&&d.collarCm!==undefined&&d.collarCm!==""?`${d.collarCm} cm unter Kragen`:"",
-      d.sideCm!==null&&d.sideCm!==undefined&&d.sideCm!==""?`${d.sideCm} cm Seitenabstand`:""
-    ].filter(Boolean).join(" · ")||"–";
-    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(format)}</td><td>${htmlEscape(pos)}</td><td>${htmlEscape(d.colorCode||"-")}</td><td>${productionFileHtml(d.productionFile)}</td><td>${htmlEscape(d.note||"-")}</td><td class="check">□</td></tr>`);
+    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(format)}</td><td class="check">□</td></tr>`);
   };
   addSpec("tshirt","T-Shirt","front","Vorne");
   addSpec("tshirt","T-Shirt","back","Hinten");
@@ -179,7 +168,7 @@ function printProductionSlip(order){
   addSpec("hoodie","Hoodie","back","Hinten");
 
   const specs = specRows.length
-    ? `<section><h2>Druck- & Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Format</th><th>Position</th><th>Farbe</th><th>Datei</th><th>Hinweis</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
+    ? `<section><h2>Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
     : `<section><div class="warning">Für diese Bestellung sind noch keine Produktionsdaten hinterlegt.</div></section>`;
 
   const w=window.open("","_blank","width=1000,height=900");
@@ -190,7 +179,7 @@ function printProductionSlip(order){
   <section><h2>Auftrag</h2><div class="info"><div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="box"><span>Abteilung / Klasse</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="box"><span>Gesamtmenge</span><strong>${htmlEscape(order.totalQuantity||0)} Teile</strong></div></div></section>
   <section><h2>Artikel</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Menge</th><th>Farbe</th><th>Motiv</th><th>Druckfarbe</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table></section>
   ${specs}
-  <section><h2>Produktions-Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Druckdatei geprüft</div><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></section>
+  <section><h2>Produktions-Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Druckmaß geprüft</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></section>
   <section><h2>Notizen / Besonderheiten</h2><div class="notes"></div></section>
   <div class="footer"><span>${htmlEscape(customerName)}</span><span>Produktionsschein · ${htmlEscape(order.orderNumber||"")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
@@ -315,30 +304,32 @@ const shopFields = {
 
 const printDataFields = {
   tshirt: {
-    front: {method:"pdTshirtFrontMethod",width:"pdTshirtFrontWidth",height:"pdTshirtFrontHeight",collar:"pdTshirtFrontCollar",side:"pdTshirtFrontSide",color:"pdTshirtFrontColor",file:"pdTshirtFrontFile",note:"pdTshirtFrontNote"},
-    back: {method:"pdTshirtBackMethod",width:"pdTshirtBackWidth",height:"pdTshirtBackHeight",collar:"pdTshirtBackCollar",side:"pdTshirtBackSide",color:"pdTshirtBackColor",file:"pdTshirtBackFile",note:"pdTshirtBackNote"}
+    front: {method:"pdTshirtFrontMethod",width:"pdTshirtFrontWidth",height:"pdTshirtFrontHeight"},
+    back: {method:"pdTshirtBackMethod",width:"pdTshirtBackWidth",height:"pdTshirtBackHeight"}
   },
   polo: {
-    front: {method:"pdPoloFrontMethod",width:"pdPoloFrontWidth",height:"pdPoloFrontHeight",collar:"pdPoloFrontCollar",side:"pdPoloFrontSide",color:"pdPoloFrontColor",file:"pdPoloFrontFile",note:"pdPoloFrontNote"},
-    back: {method:"pdPoloBackMethod",width:"pdPoloBackWidth",height:"pdPoloBackHeight",collar:"pdPoloBackCollar",side:"pdPoloBackSide",color:"pdPoloBackColor",file:"pdPoloBackFile",note:"pdPoloBackNote"}
+    front: {method:"pdPoloFrontMethod",width:"pdPoloFrontWidth",height:"pdPoloFrontHeight"},
+    back: {method:"pdPoloBackMethod",width:"pdPoloBackWidth",height:"pdPoloBackHeight"}
   },
   hoodie: {
-    front: {method:"pdHoodieFrontMethod",width:"pdHoodieFrontWidth",height:"pdHoodieFrontHeight",collar:"pdHoodieFrontCollar",side:"pdHoodieFrontSide",color:"pdHoodieFrontColor",file:"pdHoodieFrontFile",note:"pdHoodieFrontNote"},
-    back: {method:"pdHoodieBackMethod",width:"pdHoodieBackWidth",height:"pdHoodieBackHeight",collar:"pdHoodieBackCollar",side:"pdHoodieBackSide",color:"pdHoodieBackColor",file:"pdHoodieBackFile",note:"pdHoodieBackNote"}
+    front: {method:"pdHoodieFrontMethod",width:"pdHoodieFrontWidth",height:"pdHoodieFrontHeight"},
+    back: {method:"pdHoodieBackMethod",width:"pdHoodieBackWidth",height:"pdHoodieBackHeight"}
   }
 };
 Object.values(printDataFields).forEach(product=>Object.values(product).forEach(side=>Object.keys(side).forEach(k=>side[k]=document.getElementById(side[k]))));
 
+function normalizePrintMethod(value){
+  const method=String(value||"").trim();
+  return method === "Flex" ? "Flexdruck" : (method || "Flexdruck");
+}
 function fillPrintData(cfg){
   const data=cfg.printData||{};
   for(const product of ["tshirt","polo","hoodie"]){
     for(const side of ["front","back"]){
       const src=data[product]?.[side]||{}; const f=printDataFields[product][side];
-      f.method.value=src.method||"DTF";
-      f.width.value=src.widthCm ?? ""; f.height.value=src.heightCm ?? "";
-      f.collar.value=src.collarCm ?? ""; f.side.value=src.sideCm ?? "";
-      f.color.value=src.colorCode||cfg.fixedMotifColor?.color||"";
-      f.file.value=src.productionFile||""; f.note.value=src.note||"";
+      f.method.value=normalizePrintMethod(src.method);
+      f.width.value=src.widthCm ?? "";
+      f.height.value=src.heightCm ?? "";
     }
   }
 }
@@ -349,9 +340,9 @@ function collectPrintData(){
       const f=printDataFields[product][side];
       const num=(el)=>el.value===""?null:Number(el.value);
       out[product][side]={
-        method:f.method.value||"DTF",
-        widthCm:num(f.width),heightCm:num(f.height),collarCm:num(f.collar),sideCm:num(f.side),
-        colorCode:f.color.value.trim(),productionFile:f.file.value.trim(),note:f.note.value.trim()
+        method:normalizePrintMethod(f.method.value),
+        widthCm:num(f.width),
+        heightCm:num(f.height)
       };
     }
   }

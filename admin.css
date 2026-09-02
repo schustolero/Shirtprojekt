@@ -1074,3 +1074,7 @@ body.v284-admin #ordersTab .stat-card,body.v284-admin #ordersTab .panel,body.v28
 /* v28.4.2 Produktionsschein */
 .production-order-btn{white-space:nowrap}
 @media(max-width:650px){.order-actions .production-order-btn{flex:1 1 160px}}
+
+/* v28.4.5 – reduzierte Produktionsdaten */
+.simplified-print-data-fields{grid-template-columns:1.25fr 1fr 1fr!important;}
+@media(max-width:720px){.simplified-print-data-fields{grid-template-columns:1fr!important;}}
