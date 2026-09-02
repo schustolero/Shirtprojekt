@@ -1,0 +1,8 @@
+MASTER v28.4.3
+- Hoodie als drittes Textil ergänzt
+- Hoodie Vorder-/Rückseiten-Mockup aus Nutzerbild
+- Hoodie im Kunden-Shop auswählbar
+- Hoodie im Admin-Positionierer auswählbar
+- Hoodie X/Y/Größe speicherbar
+- Hoodie Produktionsdaten und Produktionsschein unterstützt
+- Preis zunächst 15,00 EUR wie T-Shirt/Polo

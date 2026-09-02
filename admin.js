@@ -124,7 +124,7 @@ function printOrderSlip(order){
     printRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td><td>${htmlEscape(pos)}</td><td>${htmlEscape(d.colorCode||"-")}</td><td>${htmlEscape(d.productionFile||"-")}</td><td>${htmlEscape(d.note||"-")}</td></tr>`);
   };
   addPrintRow("tshirt","T-Shirt","front","Vorne"); addPrintRow("tshirt","T-Shirt","back","Hinten");
-  addPrintRow("polo","Polo-Shirt","front","Vorne"); addPrintRow("polo","Polo-Shirt","back","Hinten");
+  addPrintRow("polo","Polo-Shirt","front","Vorne"); addPrintRow("polo","Polo-Shirt","back","Hinten"); addPrintRow("hoodie","Hoodie","front","Vorne"); addPrintRow("hoodie","Hoodie","back","Hinten");
   const printSection = printRows.length ? `<div class="section"><h2>Druckdaten / Produktion</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Format</th><th>Position</th><th>Farbe</th><th>Datei</th><th>Hinweis</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
   const w = window.open("", "_blank", "width=900,height=900");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
@@ -135,6 +135,64 @@ function printOrderSlip(order){
   <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Größe</th><th>Shirtfarbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Shirts</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
   ${printSection}
   <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+  w.document.close();
+}
+
+
+function productionFileHtml(value){
+  const raw=String(value||"").trim();
+  if(!raw) return "–";
+  if(/^https?:\/\//i.test(raw)) return `<a href="${htmlEscape(raw)}" target="_blank" rel="noopener">Datei öffnen</a>`;
+  return htmlEscape(raw);
+}
+
+function printProductionSlip(order){
+  const customerId = order.customerId || "_template";
+  const customerName = order.customerName || customerId || "Shirtprojekt";
+  const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
+  const items = Array.isArray(order.items) ? order.items : [];
+  const itemRows = items.map((item,index)=>{
+    const qty=Number(item.quantity)||1;
+    return `<tr><td>${index+1}</td><td>${htmlEscape(item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt"))}</td><td>${htmlEscape(item.size||"-")}</td><td>${qty}</td><td>${htmlEscape(item.shirtColor||"-")}</td><td>${htmlEscape(item.motif||"-")}</td><td>${htmlEscape(item.motifColor||"-")}</td><td class="check">□</td></tr>`;
+  }).join("");
+
+  const usedProducts = new Set(items.map(item=>item.productId||"tshirt"));
+  const printData = order.printData || {};
+  const specRows=[];
+  const addSpec=(product,label,side,sideLabel)=>{
+    if(!usedProducts.has(product)) return;
+    const d=printData?.[product]?.[side]||{};
+    const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
+    if(!has) return;
+    const format=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"–";
+    const pos=[
+      d.collarCm!==null&&d.collarCm!==undefined&&d.collarCm!==""?`${d.collarCm} cm unter Kragen`:"",
+      d.sideCm!==null&&d.sideCm!==undefined&&d.sideCm!==""?`${d.sideCm} cm Seitenabstand`:""
+    ].filter(Boolean).join(" · ")||"–";
+    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(format)}</td><td>${htmlEscape(pos)}</td><td>${htmlEscape(d.colorCode||"-")}</td><td>${productionFileHtml(d.productionFile)}</td><td>${htmlEscape(d.note||"-")}</td><td class="check">□</td></tr>`);
+  };
+  addSpec("tshirt","T-Shirt","front","Vorne");
+  addSpec("tshirt","T-Shirt","back","Hinten");
+  addSpec("polo","Polo-Shirt","front","Vorne");
+  addSpec("polo","Polo-Shirt","back","Hinten");
+  addSpec("hoodie","Hoodie","front","Vorne");
+  addSpec("hoodie","Hoodie","back","Hinten");
+
+  const specs = specRows.length
+    ? `<section><h2>Druck- & Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Format</th><th>Position</th><th>Farbe</th><th>Datei</th><th>Hinweis</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
+    : `<section><div class="warning">Für diese Bestellung sind noch keine Produktionsdaten hinterlegt.</div></section>`;
+
+  const w=window.open("","_blank","width=1000,height=900");
+  if(!w){alert("Bitte Pop-ups für den Produktionsschein erlauben.");return;}
+  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Produktionsschein ${htmlEscape(order.orderNumber||"")}</title><style>
+  *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#151515;margin:0;background:#fff}.sheet{width:195mm;max-width:100%;margin:0 auto;padding:11mm}.head{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:3px solid #111;padding-bottom:10px}.brand{display:flex;align-items:center;gap:13px}.brand img{width:68px;height:68px;object-fit:contain}.brand h1{margin:0;font-size:19px}.brand p{margin:3px 0 0;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.08em}.meta{text-align:right}.meta strong{display:block;font-size:20px}.meta span{font-size:11px;color:#666}section{margin-top:16px}h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 7px}.info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.box{border:1px solid #ddd;border-radius:7px;padding:7px}.box span{display:block;color:#777;font-size:9px;text-transform:uppercase}.box strong{display:block;margin-top:2px;font-size:12px}table{width:100%;border-collapse:collapse;font-size:9.5px}th,td{border:1px solid #ccc;padding:6px;vertical-align:top}th{background:#f3f3f3;text-align:left}.check{text-align:center;font-size:16px;width:28px}.warning{padding:10px;border:1px solid #e0a400;background:#fff8d8;border-radius:7px;font-size:11px}.checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.task{border:1px solid #bbb;border-radius:7px;padding:10px;font-size:11px}.task b{font-size:17px;margin-right:5px}.notes{height:62px;border:1px solid #bbb;border-radius:7px}.footer{margin-top:18px;display:flex;justify-content:space-between;border-top:1px solid #ddd;padding-top:8px;font-size:9px;color:#777}.actions{display:flex;gap:8px;width:195mm;max-width:calc(100% - 20px);margin:14px auto}button{border:0;border-radius:7px;padding:10px 14px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}a{color:#111}@media print{.actions{display:none}.sheet{padding:6mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
+  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
+  <section><h2>Auftrag</h2><div class="info"><div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="box"><span>Abteilung / Klasse</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="box"><span>Gesamtmenge</span><strong>${htmlEscape(order.totalQuantity||0)} Teile</strong></div></div></section>
+  <section><h2>Artikel</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Menge</th><th>Farbe</th><th>Motiv</th><th>Druckfarbe</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table></section>
+  ${specs}
+  <section><h2>Produktions-Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Druckdatei geprüft</div><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></section>
+  <section><h2>Notizen / Besonderheiten</h2><div class="notes"></div></section>
+  <div class="footer"><span>${htmlEscape(customerName)}</span><span>Produktionsschein · ${htmlEscape(order.orderNumber||"")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
 
@@ -163,7 +221,8 @@ function renderOrder(id,order){
   });
   const actions=document.createElement("div");actions.className="order-actions";
   const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",()=>printOrderSlip(order));
-  actions.append(status,printBtn);
+  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",()=>printProductionSlip(order));
+  actions.append(status,printBtn,productionBtn);
   top.append(title,actions);card.appendChild(top);
 
   const customer=document.createElement("div");customer.className="customer-grid";
@@ -249,7 +308,9 @@ const shopFields = {
   tshirtFrontX: document.getElementById("tshirtFrontX"), tshirtFrontY: document.getElementById("tshirtFrontY"), tshirtFrontW: document.getElementById("tshirtFrontW"),
   tshirtBackX: document.getElementById("tshirtBackX"), tshirtBackY: document.getElementById("tshirtBackY"), tshirtBackW: document.getElementById("tshirtBackW"),
   poloFrontX: document.getElementById("poloFrontX"), poloFrontY: document.getElementById("poloFrontY"), poloFrontW: document.getElementById("poloFrontW"),
-  poloBackX: document.getElementById("poloBackX"), poloBackY: document.getElementById("poloBackY"), poloBackW: document.getElementById("poloBackW")
+  poloBackX: document.getElementById("poloBackX"), poloBackY: document.getElementById("poloBackY"), poloBackW: document.getElementById("poloBackW"),
+  hoodieFrontX: document.getElementById("hoodieFrontX"), hoodieFrontY: document.getElementById("hoodieFrontY"), hoodieFrontW: document.getElementById("hoodieFrontW"),
+  hoodieBackX: document.getElementById("hoodieBackX"), hoodieBackY: document.getElementById("hoodieBackY"), hoodieBackW: document.getElementById("hoodieBackW")
 };
 
 const printDataFields = {
@@ -260,13 +321,17 @@ const printDataFields = {
   polo: {
     front: {method:"pdPoloFrontMethod",width:"pdPoloFrontWidth",height:"pdPoloFrontHeight",collar:"pdPoloFrontCollar",side:"pdPoloFrontSide",color:"pdPoloFrontColor",file:"pdPoloFrontFile",note:"pdPoloFrontNote"},
     back: {method:"pdPoloBackMethod",width:"pdPoloBackWidth",height:"pdPoloBackHeight",collar:"pdPoloBackCollar",side:"pdPoloBackSide",color:"pdPoloBackColor",file:"pdPoloBackFile",note:"pdPoloBackNote"}
+  },
+  hoodie: {
+    front: {method:"pdHoodieFrontMethod",width:"pdHoodieFrontWidth",height:"pdHoodieFrontHeight",collar:"pdHoodieFrontCollar",side:"pdHoodieFrontSide",color:"pdHoodieFrontColor",file:"pdHoodieFrontFile",note:"pdHoodieFrontNote"},
+    back: {method:"pdHoodieBackMethod",width:"pdHoodieBackWidth",height:"pdHoodieBackHeight",collar:"pdHoodieBackCollar",side:"pdHoodieBackSide",color:"pdHoodieBackColor",file:"pdHoodieBackFile",note:"pdHoodieBackNote"}
   }
 };
 Object.values(printDataFields).forEach(product=>Object.values(product).forEach(side=>Object.keys(side).forEach(k=>side[k]=document.getElementById(side[k]))));
 
 function fillPrintData(cfg){
   const data=cfg.printData||{};
-  for(const product of ["tshirt","polo"]){
+  for(const product of ["tshirt","polo","hoodie"]){
     for(const side of ["front","back"]){
       const src=data[product]?.[side]||{}; const f=printDataFields[product][side];
       f.method.value=src.method||"DTF";
@@ -278,8 +343,8 @@ function fillPrintData(cfg){
   }
 }
 function collectPrintData(){
-  const out={tshirt:{},polo:{}};
-  for(const product of ["tshirt","polo"]){
+  const out={tshirt:{},polo:{},hoodie:{}};
+  for(const product of ["tshirt","polo","hoodie"]){
     for(const side of ["front","back"]){
       const f=printDataFields[product][side];
       const num=(el)=>el.value===""?null:Number(el.value);
@@ -336,7 +401,9 @@ function refreshPositionEditor(){
   const w = Number(fields.w?.value || (side === "front" ? 28 : 50));
   const shirtSrc = product === "polo"
     ? (side === "front" ? "polo-front-template.png" : "polo-back-template.png")
-    : (side === "front" ? "shirt-front-template.png" : "shirt-back-template.png");
+    : product === "hoodie"
+      ? (side === "front" ? "hoodie-front-template.png" : "hoodie-back-template.png")
+      : (side === "front" ? "shirt-front-template.png" : "shirt-back-template.png");
   coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => { positionShirt.src = src; });
   const motif = selectedPositionMotif();
   if(motif?.file){
@@ -371,7 +438,7 @@ function bindPositionEditor(){
   positionSize?.addEventListener("input", () => writePositionValues(NaN, NaN, Number(positionSize.value)));
   [shopFields.fixedFrontMotif, shopFields.fixedBackMotif].forEach(el => el?.addEventListener("change", refreshPositionEditor));
   Object.values(shopFields).forEach(el => {
-    if(el && /^(tshirt|polo)(Front|Back)(X|Y|W)$/.test(Object.keys(shopFields).find(k => shopFields[k] === el) || "")){
+    if(el && /^(tshirt|polo|hoodie)(Front|Back)(X|Y|W)$/.test(Object.keys(shopFields).find(k => shopFields[k] === el) || "")){
       el.addEventListener("input", refreshPositionEditor);
     }
   });
@@ -461,11 +528,13 @@ function selectShop(id){
   shopFields.fixedFrontEnabled.checked=!!fp.front?.enabled; shopFields.fixedFrontPosition.value=fp.front?.position||"left-chest"; shopFields.fixedFrontSize.value=fp.front?.size||"small"; shopFields.fixedFrontTop.value=Number(fp.front?.topPct ?? 24); shopFields.fixedFrontSide.value=Number(fp.front?.sidePct ?? 32);
   shopFields.fixedBackEnabled.checked=!!fp.back?.enabled; shopFields.fixedBackPosition.value=fp.back?.position||"center"; shopFields.fixedBackSize.value=fp.back?.size||"large"; shopFields.fixedBackTop.value=Number(fp.back?.topPct ?? 36);
   const pp=cfg.productPrint||{};
-  const tshirt=pp.tshirt||{}; const polo=pp.polo||{};
+  const tshirt=pp.tshirt||{}; const polo=pp.polo||{}; const hoodie=pp.hoodie||{};
   shopFields.tshirtFrontX.value=Number(tshirt.front?.xPct ?? 68); shopFields.tshirtFrontY.value=Number(tshirt.front?.yPct ?? fp.front?.topPct ?? 20); shopFields.tshirtFrontW.value=Number(tshirt.front?.widthPct ?? 28);
   shopFields.tshirtBackX.value=Number(tshirt.back?.xPct ?? 50); shopFields.tshirtBackY.value=Number(tshirt.back?.yPct ?? fp.back?.topPct ?? 36); shopFields.tshirtBackW.value=Number(tshirt.back?.widthPct ?? 50);
   shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
+  shopFields.hoodieFrontX.value=Number(hoodie.front?.xPct ?? 68); shopFields.hoodieFrontY.value=Number(hoodie.front?.yPct ?? 22); shopFields.hoodieFrontW.value=Number(hoodie.front?.widthPct ?? 28);
+  shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); shopFields.hoodieBackW.value=Number(hoodie.back?.widthPct ?? 50);
   fillPrintData(cfg);
   updateFeatureVisibility(cfg.shopType||"simple");
   updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState("Bereit zum Bearbeiten."); renderShopList();
@@ -531,7 +600,7 @@ newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal={}; workingMotifs=[{id:"motiv1",name:"Motiv 1",file:""}]; workingLogo=""; shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent="Neuen Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=15; shopFields.prefix.value=""; shopFields.email.value=CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true; shopFields.accent.value="#111111"; shopFields.logoHeight.value=90; shopFields.previewMode.value="single"; shopFields.heading.value="Shirt gestalten"; shopFields.intro.value=""; shopFields.fixedShirtName.value=""; shopFields.fixedMotifName.value=""; refreshFixedPrintMotifOptions("motiv1","motiv1"); shopFields.fixedFrontEnabled.checked=false; shopFields.fixedFrontPosition.value="left-chest"; shopFields.fixedFrontSize.value="small"; shopFields.fixedFrontTop.value=24; shopFields.fixedFrontSide.value=32; shopFields.fixedBackEnabled.checked=false; shopFields.fixedBackPosition.value="center"; shopFields.fixedBackSize.value="large";
   shopFields.tshirtFrontX.value=68; shopFields.tshirtFrontY.value=20; shopFields.tshirtFrontW.value=28; shopFields.tshirtBackX.value=50; shopFields.tshirtBackY.value=36; shopFields.tshirtBackW.value=50;
-  shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; fillPrintData({}); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
+  shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; shopFields.hoodieFrontX.value=68; shopFields.hoodieFrontY.value=22; shopFields.hoodieFrontW.value=28; shopFields.hoodieBackX.value=50; shopFields.hoodieBackY.value=34; shopFields.hoodieBackW.value=50; fillPrintData({}); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
 });
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
 
@@ -550,9 +619,19 @@ function buildShopConfig(){
   cfg.productPrint={
     ...(old.productPrint||{}),
     tshirt:{front:{xPct:clamp(shopFields.tshirtFrontX.value,10,90,68),yPct:clamp(shopFields.tshirtFrontY.value,10,70,20),widthPct:clamp(shopFields.tshirtFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.tshirtBackX.value,10,90,50),yPct:clamp(shopFields.tshirtBackY.value,10,70,36),widthPct:clamp(shopFields.tshirtBackW.value,10,80,50)}},
-    polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}}
+    polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}},
+    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,80,50)}}
   };
   cfg.printData=collectPrintData();
+  if(id === "tg-solingen") {
+    const oldProducts = Array.isArray(old.products) ? old.products : [];
+    const byId = Object.fromEntries(oldProducts.map(p => [p.id, p]));
+    cfg.products = [
+      {...(byId.tshirt||{}),id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
+      {...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
+      {...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
+    ];
+  }
   if(cfg.fixedPrint.back.enabled) cfg.features.allowBackDesign=true;
   return cfg;
 }
@@ -653,7 +732,8 @@ saveShopBtn.addEventListener("click",async()=>{
   sidebar.innerHTML=`
     <div class="v284-brand">
       <div class="v284-brand-mark">⌁</div>
-      <div><strong>ShirtProjekt</strong><span>Admin</span></div>
+      <div class="v284-brand-copy"><strong>ShirtProjekt</strong><span>Admin</span></div>
+      <button type="button" id="v284MobileMenu" class="v284-mobile-menu" aria-label="Admin-Menü öffnen" aria-expanded="false">☰</button>
     </div>
     <label class="v284-shop-select-wrap"><span>Shop</span><select id="v284ShopSelect"><option>Shop wählen</option></select></label>
     <nav class="v284-nav" aria-label="Admin Navigation">
@@ -692,6 +772,12 @@ saveShopBtn.addEventListener("click",async()=>{
 
   sidebar.querySelector("#v284NewShop").addEventListener("click",()=>originalNewShop?.click());
   sidebar.querySelector("#v284Logout").addEventListener("click",()=>originalLogout?.click());
+  const mobileMenuBtn=sidebar.querySelector("#v284MobileMenu");
+  mobileMenuBtn?.addEventListener("click",()=>{
+    const open=sidebar.classList.toggle("mobile-menu-open");
+    mobileMenuBtn.setAttribute("aria-expanded",String(open));
+    mobileMenuBtn.textContent=open?"×":"☰";
+  });
 
   function setNavActive(name){
     sidebar.querySelectorAll(".v284-nav button").forEach(btn=>{
@@ -707,6 +793,10 @@ saveShopBtn.addEventListener("click",async()=>{
   sidebar.querySelectorAll(".v284-nav button").forEach(btn=>btn.addEventListener("click",()=>{
     if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
     else if(btn.dataset.jump) openCard(btn.dataset.jump);
+    if(window.matchMedia("(max-width:720px)").matches){
+      sidebar.classList.remove("mobile-menu-open");
+      if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+    }
   }));
 
   const dashObserver=new MutationObserver(()=>{
@@ -745,7 +835,8 @@ saveShopBtn.addEventListener("click",async()=>{
     const d=document.createElement("details");
     d.className="v284-card";
     d.dataset.card=key;
-    d.open=open;
+    const mobile=window.matchMedia("(max-width:720px)").matches;
+    d.open=mobile ? (key === "motif") : open;
     const summary=document.createElement("summary");
     summary.innerHTML=`<span class="v284-card-title">${title}</span>${subtitle?`<small>${subtitle}</small>`:""}<b>⌃</b>`;
     const body=document.createElement("div"); body.className="v284-card-body";
@@ -791,7 +882,9 @@ saveShopBtn.addEventListener("click",async()=>{
       ["tshirt","front","T-Shirt","Vorderseite",shopFields.tshirtFrontX,shopFields.tshirtFrontY,shopFields.tshirtFrontW],
       ["tshirt","back","T-Shirt","Rückseite",shopFields.tshirtBackX,shopFields.tshirtBackY,shopFields.tshirtBackW],
       ["polo","front","Polo","Vorderseite",shopFields.poloFrontX,shopFields.poloFrontY,shopFields.poloFrontW],
-      ["polo","back","Polo","Rückseite",shopFields.poloBackX,shopFields.poloBackY,shopFields.poloBackW]
+      ["polo","back","Polo","Rückseite",shopFields.poloBackX,shopFields.poloBackY,shopFields.poloBackW],
+      ["hoodie","front","Hoodie","Vorderseite",shopFields.hoodieFrontX,shopFields.hoodieFrontY,shopFields.hoodieFrontW],
+      ["hoodie","back","Hoodie","Rückseite",shopFields.hoodieBackX,shopFields.hoodieBackY,shopFields.hoodieBackW]
     ];
     table.innerHTML=`<div class="v284-tr v284-th"><span>Textil</span><span>Seite</span><span>Motiv</span><span>X</span><span>Y</span><span>Größe</span><span>Aktion</span></div>`+
       rows.map(([p,s,pn,sn,x,y,w])=>`<div class="v284-tr"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:"–"}</span><span>${x?.value||"–"}%</span><span>${y?.value||"–"}%</span><span>${w?.value||"–"}%</span><span><button type="button" class="v284-edit-print" data-product="${p}" data-side="${s}">Bearbeiten</button></span></div>`).join("");

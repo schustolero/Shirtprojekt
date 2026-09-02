@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=28.2.3`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=28.4.4`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -33,10 +33,27 @@
         if (snap.exists) {
           const data = snap.data() || {};
           const seed = (central.seedShops && central.seedShops[slug]) || {};
+          const seedProducts = Array.isArray(seed.products) ? seed.products : [];
+          const dataProducts = Array.isArray(data.products) ? data.products : [];
+          const productMap = new Map(seedProducts.map(p => [p.id, {...p}]));
+          dataProducts.forEach(p => productMap.set(p.id, {...(productMap.get(p.id)||{}), ...p}));
           const merged = {
             ...seed,
             ...data,
+            products: [...productMap.values()],
             features: { ...(seed.features || {}), ...(data.features || {}) },
+            productPrint: {
+              ...(seed.productPrint || {}), ...(data.productPrint || {}),
+              tshirt: { ...((seed.productPrint||{}).tshirt||{}), ...((data.productPrint||{}).tshirt||{}) },
+              polo: { ...((seed.productPrint||{}).polo||{}), ...((data.productPrint||{}).polo||{}) },
+              hoodie: { ...((seed.productPrint||{}).hoodie||{}), ...((data.productPrint||{}).hoodie||{}) }
+            },
+            printData: {
+              ...(seed.printData || {}), ...(data.printData || {}),
+              tshirt: { ...((seed.printData||{}).tshirt||{}), ...((data.printData||{}).tshirt||{}) },
+              polo: { ...((seed.printData||{}).polo||{}), ...((data.printData||{}).polo||{}) },
+              hoodie: { ...((seed.printData||{}).hoodie||{}), ...((data.printData||{}).hoodie||{}) }
+            },
             fixedPrint: {
               ...(seed.fixedPrint || {}),
               ...(data.fixedPrint || {}),
@@ -44,6 +61,20 @@
               back: { ...((seed.fixedPrint || {}).back || {}), ...((data.fixedPrint || {}).back || {}) }
             }
           };
+          // TG Solingen: feste Artikelnummern sowie aktuelle VK-/EK-Preise.
+          // Diese Werte haben bewusst Vorrang vor älteren Firestore-Produktpreisen.
+          if (slug === "tg-solingen") {
+            const commercial = {
+              tshirt: { articleNo: "F140", price: 15, purchasePrice: 2.60 },
+              polo: { articleNo: "F502", price: 25, purchasePrice: 5.61 },
+              hoodie: { articleNo: "F421", price: 30, purchasePrice: 9.90 }
+            };
+            merged.products = (merged.products || []).map(product => ({
+              ...product,
+              ...(commercial[product.id] || {})
+            }));
+          }
+
           if (merged.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;

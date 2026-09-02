@@ -1,0 +1,8 @@
+MASTER v28.4.1
+- Mobile Admin Header stark verkleinert
+- Navigation mobil über Menübutton
+- Grunddaten mobil standardmäßig geschlossen
+- Motiv/Druckbereich mobil direkt nach Grunddaten und standardmäßig geöffnet
+- Vorschau/Speichern als kompakte sticky Aktionsleiste
+- Mobile Felder und Karten weiter verdichtet
+- Desktop-Layout bleibt unverändert

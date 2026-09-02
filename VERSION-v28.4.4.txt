@@ -1,0 +1,6 @@
+MASTER v28.4.4
+TG Solingen Produktpreise aktualisiert:
+T-Shirt F140: VK 15,00 EUR / EK 2,60 EUR
+Polo-Shirt F502: VK 25,00 EUR / EK 5,61 EUR
+Hoodie F421: VK 30,00 EUR / EK 9,90 EUR
+Artikelnummer und EK werden bei neuen Bestellungen mitgespeichert.

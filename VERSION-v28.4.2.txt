@@ -1,0 +1,5 @@
+MASTER v28.4.2
+- Eigener Produktionsschein pro Bestellung
+- Produktionsdaten als Druck-/Fertigungstabelle
+- Produktions-Checkliste und Notizfeld
+- Produktionsdatei wird bei Links klickbar ausgegeben
