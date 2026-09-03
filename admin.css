@@ -1791,7 +1791,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 /* build v28.6.9 */
 
 
-/* v28.7.3 – Motiv/Druckbereich wie Referenz: Motivkopf + Produktkarten mit Vorschau */
+/* v28.7.0 – Motiv/Druckbereich wie Referenz: Motivkopf + Produktkarten mit Vorschau */
 .v2853-print-card .v2853-card-body{padding:16px!important}
 .v2853-print-card .v2855-motif-intro{margin-bottom:12px!important}
 .v2870-shared-motif{
@@ -1865,4 +1865,4 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2870-size-summary .v2864-size-info{width:100%!important;justify-content:space-between!important}
   .v2870-size-summary .v2864-size-info span{min-width:0!important;flex:1!important;padding:6px 10px!important}
 }
-/* build v28.7.3 */
+/* build v28.7.0 */
