@@ -895,8 +895,28 @@ saveShopBtn.addEventListener("click",async()=>{
       ["hoodie","front","Hoodie","Vorderseite",shopFields.hoodieFrontX,shopFields.hoodieFrontY,shopFields.hoodieFrontW],
       ["hoodie","back","Hoodie","Rückseite",shopFields.hoodieBackX,shopFields.hoodieBackY,shopFields.hoodieBackW]
     ];
-    table.innerHTML=`<div class="v284-tr v284-th v284-simple-print-row"><span>Textil</span><span>Seite</span><span>Motiv</span><span>Aktion</span></div>`+
-      rows.map(([p,s,pn,sn])=>`<div class="v284-tr v284-simple-print-row"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:"–"}</span><span><button type="button" class="v284-edit-print" data-product="${p}" data-side="${s}">Positionieren</button></span></div>`).join("");
+    const sizeLabel=(p,s,w)=>{
+      const n=Number(w?.value||0);
+      if(p==="hoodie"&&s==="front") return n<33?"small":n<40?"medium":"large";
+      if(p==="hoodie"&&s==="back") return n<42?"small":n<50?"medium":"large";
+      if(s==="front") return n<24?"small":n<33?"medium":"large";
+      return n<44?"small":n<56?"medium":"large";
+    };
+    const sizeValue=(p,s,label)=>{
+      if(p==="hoodie"&&s==="front") return label==="small"?30:label==="medium"?36:42;
+      if(p==="hoodie"&&s==="back") return label==="small"?38:label==="medium"?46:54;
+      if(s==="front") return label==="small"?20:label==="medium"?28:36;
+      return label==="small"?38:label==="medium"?50:60;
+    };
+    table.innerHTML=`<div class="v284-tr v284-th v284-simple-print-row v2852-print-row"><span>Textil</span><span>Seite</span><span>Motiv</span><span>Größe</span><span>Aktion</span></div>`+
+      rows.map(([p,s,pn,sn,x,y,w])=>`<div class="v284-tr v284-simple-print-row v2852-print-row"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:"–"}</span><span><select class="v2852-size-select" data-product="${p}" data-side="${s}" aria-label="Motivgröße ${pn} ${sn}"><option value="small" ${sizeLabel(p,s,w)==="small"?"selected":""}>Klein</option><option value="medium" ${sizeLabel(p,s,w)==="medium"?"selected":""}>Mittel</option><option value="large" ${sizeLabel(p,s,w)==="large"?"selected":""}>Groß</option></select></span><span><button type="button" class="v284-edit-print" data-product="${p}" data-side="${s}">Positionieren</button></span></div>`).join("");
+    table.querySelectorAll(".v2852-size-select").forEach(sel=>sel.addEventListener("change",()=>{
+      const row=rows.find(r=>r[0]===sel.dataset.product&&r[1]===sel.dataset.side);
+      if(!row) return;
+      row[6].value=String(sizeValue(sel.dataset.product,sel.dataset.side,sel.value));
+      if(positionProduct.value===sel.dataset.product&&positionSide.value===sel.dataset.side) refreshPositionEditor();
+      setShopState("Motivgröße geändert – bitte speichern.");
+    }));
     table.querySelectorAll(".v284-edit-print").forEach(btn=>btn.addEventListener("click",()=>{
       positionProduct.value=btn.dataset.product;
       positionSide.value=btn.dataset.side;

@@ -1233,7 +1233,7 @@ body.v284-admin{background:var(--vA-bg);padding-left:236px;color:var(--vA-ink)}
  .v2850-design-grid .display-grid label:nth-child(3),.v2850-design-grid .display-grid label.wide{grid-column:1/-1!important}
 }
 
-/* v28.5.1 – Motivgröße ohne technische Prozentwerte */
+/* v28.5.2 – Motivgröße ohne technische Prozentwerte */
 .position-size-control{display:grid!important;gap:4px!important;min-width:180px}
 .position-size-control input[type="range"]{width:100%;accent-color:#f2bf12;cursor:pointer}
 .size-scale{display:flex;justify-content:space-between;color:#777;font-size:9px;font-weight:700;margin-top:-1px}
@@ -1245,4 +1245,17 @@ body.v284-admin{background:var(--vA-bg);padding-left:236px;color:var(--vA-ink)}
   .position-size-control{grid-column:1/-1;min-width:0}
   .position-readout-clean{display:block!important}
   .position-readout-clean p{margin-top:7px!important}
+}
+
+
+/* v28.5.2 – Motivgröße direkt in der Übersicht, ohne Prozentwerte */
+.v2852-print-row{grid-template-columns:1fr 1fr 1.35fr .9fr 1fr!important;align-items:center}
+.v2852-size-select{width:100%;min-width:94px;border:1px solid #dfe3e8;border-radius:9px;background:#fff;padding:8px 30px 8px 10px;font:inherit;font-weight:700;color:#20242a}
+.v2852-size-select:focus{outline:2px solid rgba(242,191,18,.22);border-color:#f2bf12}
+@media(max-width:720px){
+ .v2852-print-row{grid-template-columns:1fr 1fr!important;gap:8px 10px;padding:12px!important}
+ .v2852-print-row.v284-th{display:none!important}
+ .v2852-print-row>span:nth-child(3),.v2852-print-row>span:nth-child(4),.v2852-print-row>span:nth-child(5){grid-column:auto}
+ .v2852-print-row>span:nth-child(3){display:flex;align-items:center;min-height:44px}
+ .v2852-size-select,.v284-edit-print{width:100%!important}
 }
