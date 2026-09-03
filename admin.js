@@ -1125,23 +1125,10 @@ saveShopBtn.addEventListener("click",async()=>{
 
   // Funktionen mit echten Toggle-Switches.
   if(functionCard){
-    const functions=makeCard('Funktionen','v2853-functions-card v2871-functions-card');
+    const functions=makeCard('Funktionen','v2853-functions-card');
     const fb=functionCard.querySelector('.v284-card-body');
     if(fb) while(fb.firstChild) functions.body.appendChild(fb.firstChild);
     bottom.appendChild(functions.card);
-
-    // v28.7.1 – Funktionsschalter als klare ON/OFF-Toggles darstellen.
-    functions.body.querySelectorAll('.feature-grid label').forEach(label=>{
-      const checkbox=label.querySelector('input[type="checkbox"]');
-      if(!checkbox || label.querySelector('.v2871-switch-state')) return;
-      label.classList.add('v2871-switch-row');
-      const state=document.createElement('span');
-      state.className='v2871-switch-state';
-      const refresh=()=>{ state.textContent=checkbox.checked?'ON':'OFF'; state.dataset.state=checkbox.checked?'on':'off'; };
-      refresh();
-      checkbox.addEventListener('change',refresh);
-      label.appendChild(state);
-    });
   }
 
   // Fester Druck bleibt vorhanden, aber kompakt und weiter unten.
@@ -1151,11 +1138,6 @@ saveShopBtn.addEventListener("click",async()=>{
     if(xb) while(xb.firstChild) fixed.body.appendChild(xb.firstChild);
     bottom.appendChild(fixed.card);
   }
-
-
-  // v28.7.1 – Produktionsdaten sind bereits im Motiv/Druckbereich integriert.
-  // Separate Navigation/Karten daher entfernen, die Felder selbst bleiben erhalten.
-  document.querySelectorAll('.v284-nav [data-jump="production"], .v2853-production-card, .v284-card[data-card="production"]').forEach(el=>el.remove());
 
   // Alte Karten entfernen; alle benötigten Felder wurden mit ihren IDs umgezogen.
   stack.remove();
@@ -1274,5 +1256,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.7.1');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.7.2');
 })();

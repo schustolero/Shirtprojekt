@@ -1867,16 +1867,15 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 }
 /* build v28.7.0 */
 
-/* v28.7.1 – Funktionsbereich: stilvolle ON/OFF-Schalter */
-.v2871-functions-card .v2853-card-body{padding:14px!important}
-.v2871-functions-card .feature-grid,.v2871-functions-card .compact-feature-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
-.v2871-functions-card .v2871-switch-row{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto!important;align-items:center!important;gap:10px!important;min-height:50px!important;padding:9px 11px!important;border:1px solid #e5e9ef!important;border-radius:12px!important;background:#fbfcfe!important;box-shadow:0 1px 2px rgba(15,23,42,.025)!important}
-.v2871-functions-card .v2871-switch-row>span:not(.v2871-switch-state){grid-column:1!important;font-size:11.5px!important;font-weight:750!important;color:#303844!important}
-.v2871-functions-card .v2871-switch-row input[type=checkbox]{grid-column:2!important;width:44px!important;height:24px!important;margin:0!important;background:#d8dde4!important}
-.v2871-functions-card .v2871-switch-row input[type=checkbox]:checked{background:#f5bf00!important}
-.v2871-functions-card .v2871-switch-state{grid-column:3!important;min-width:30px!important;font-size:9.5px!important;font-weight:900!important;letter-spacing:.04em!important;color:#98a0aa!important;text-align:right!important}
-.v2871-functions-card .v2871-switch-state[data-state="on"]{color:#8a6b00!important}
-.v2871-functions-card .v2871-switch-row:has(input:checked){background:#fffdf5!important;border-color:#eadb9d!important}
-.v284-nav [data-jump="production"],.v2853-production-card,.v284-card[data-card="production"]{display:none!important}
-@media(max-width:720px){.v2871-functions-card .feature-grid,.v2871-functions-card .compact-feature-grid{grid-template-columns:1fr!important}}
-/* build v28.7.1 */
+
+/* v28.7.2 – sichere ON/OFF-Darstellung ohne DOM-Umbau */
+.v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.v2853-functions-card .feature-grid label{position:relative!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;min-height:48px!important;padding:9px 11px!important;border:1px solid #e5e9ef!important;border-radius:12px!important;background:#fbfcfe!important}
+.v2853-functions-card .feature-grid label>span{font-weight:750!important;color:#303844!important}
+.v2853-functions-card .feature-grid label::after{content:'OFF';font-size:9.5px!important;font-weight:900!important;letter-spacing:.04em!important;color:#98a0aa!important}
+.v2853-functions-card .feature-grid label:has(input:checked){background:#fffdf5!important;border-color:#eadb9d!important}
+.v2853-functions-card .feature-grid label:has(input:checked)::after{content:'ON';color:#8a6b00!important}
+.v2853-functions-card .feature-grid input[type=checkbox]{width:42px!important;height:23px!important;margin:0!important}
+.v284-nav [data-jump="production"]{display:none!important}
+@media(max-width:720px){.v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{grid-template-columns:1fr!important}}
+/* build v28.7.2 */
