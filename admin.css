@@ -1638,7 +1638,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 
 /* build v28.6.2 */
 
-/* v28.6.3 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
+/* v28.6.4 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
 .v2863-shared-motif{align-items:stretch;gap:14px}
 .v2863-motif-meta{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
 .v2863-shirt-bg{
@@ -1676,4 +1676,37 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2853-print-card .global-print-data-grid{grid-template-columns:1fr}
   .v2853-print-card .simplified-print-data-fields{grid-template-columns:1fr 1fr}
   .v2853-print-card .simplified-print-data-fields label:first-child{grid-column:1/-1}
+}
+
+
+/* v28.6.4 – Druckgröße direkt beim Download + Selects vollständig lesbar */
+.v2864-size-info{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  min-height:30px;
+  padding:5px 9px;
+  border:1px solid #d7dde5;
+  border-radius:8px;
+  background:#f7f9fc;
+  color:#3b4552;
+  font-size:10px;
+  line-height:1.2;
+  white-space:nowrap;
+}
+.v2864-size-info span{color:#3b4552!important;font-size:10px!important}
+.v2864-size-info b{font-weight:800;color:#202733}
+.v2862-side-row .v2856-size-select{
+  min-height:40px!important;
+  height:40px!important;
+  padding:7px 34px 7px 12px!important;
+  line-height:24px!important;
+  font-size:12px!important;
+  font-weight:700!important;
+  overflow:visible!important;
+  appearance:auto!important;
+}
+@media(max-width:760px){
+  .v2864-size-info{width:100%;justify-content:space-between;white-space:normal}
+  .v2862-side-row .v2856-size-select{min-height:42px!important;height:42px!important;line-height:26px!important}
 }
