@@ -1585,7 +1585,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2861-motif-preview img{max-width:52px!important;max-height:32px!important}
 }
 
-/* v28.6.7 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
+/* v28.6.8 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
 .v2862-shared-motif{
   display:flex;
   align-items:center;
@@ -1636,9 +1636,9 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2862-side-row .v284-edit-print{width:100%}
 }
 
-/* build v28.6.7 */
+/* build v28.6.8 */
 
-/* v28.6.7 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
+/* v28.6.8 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
 .v2863-shared-motif{align-items:stretch;gap:14px}
 .v2863-motif-meta{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
 .v2863-shirt-bg{
@@ -1679,7 +1679,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 }
 
 
-/* v28.6.7 – Druckgröße direkt beim Download + Selects vollständig lesbar */
+/* v28.6.8 – Druckgröße direkt beim Download + Selects vollständig lesbar */
 .v2864-size-info{
   display:inline-flex;
   align-items:center;
@@ -1711,10 +1711,10 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2862-side-row .v2856-size-select{min-height:42px!important;height:42px!important;line-height:26px!important}
 }
 
-/* v28.6.7 – redundante Legacy-Bereiche bleiben technisch vorhanden, aber unsichtbar */
+/* v28.6.8 – redundante Legacy-Bereiche bleiben technisch vorhanden, aber unsichtbar */
 .fixed-print-accordion[hidden], .legacy-motifs-accordion[hidden]{display:none!important;}
 
-/* v28.6.7 – Motiv/Druckbereich kompakter */
+/* v28.6.8 – Motiv/Druckbereich kompakter */
 .v2862-product-groups{gap:6px!important}
 .v2862-product-group{border-radius:10px!important}
 .v2862-product-head{padding:6px 10px!important;min-height:30px!important}
@@ -1747,4 +1747,32 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2862-side-row>span{grid-column:auto!important}
   .v2862-side-row .v284-edit-print{width:auto!important}
   .v2862-side-row .v2856-size-select{min-height:34px!important;height:34px!important;line-height:22px!important}
+}
+
+/* v28.6.8 – Motiv/Druckbereich wirklich schmaler, ohne große Leerräume */
+.v2853-print-card .v2862-shared-motif,
+.v2853-print-card .v2862-product-groups,
+.v2853-print-card .v2855-production-divider{
+  max-width:620px!important;
+}
+.v2853-print-card .v2862-product-groups{margin-right:auto!important}
+.v2853-print-card .v2862-side-row{
+  grid-template-columns:96px 128px 92px!important;
+  justify-content:start!important;
+  column-gap:8px!important;
+  padding:5px 10px!important;
+}
+.v2853-print-card .v2862-side-row .v2856-size-select{width:128px!important}
+.v2853-print-card .v2862-side-row .v284-edit-print{width:92px!important}
+.v2853-print-card .v2862-product-head{max-width:100%!important}
+@media(max-width:760px){
+  .v2853-print-card .v2862-shared-motif,
+  .v2853-print-card .v2862-product-groups,
+  .v2853-print-card .v2855-production-divider{max-width:none!important;width:100%!important}
+  .v2853-print-card .v2862-side-row{
+    grid-template-columns:82px minmax(104px,1fr) auto!important;
+    column-gap:6px!important;
+  }
+  .v2853-print-card .v2862-side-row .v2856-size-select{width:100%!important}
+  .v2853-print-card .v2862-side-row .v284-edit-print{width:auto!important}
 }
