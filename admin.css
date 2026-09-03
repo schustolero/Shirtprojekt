@@ -1584,3 +1584,56 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2861-motif-preview{width:60px;height:42px;padding:4px 6px}
   .v2861-motif-preview img{max-width:52px!important;max-height:32px!important}
 }
+
+/* v28.6.2 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
+.v2862-shared-motif{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  padding:10px 12px;
+  margin-bottom:12px;
+  border:1px solid #e0e4ea;
+  border-radius:11px;
+  background:#fff;
+}
+.v2862-shared-motif>div{display:flex;flex-direction:column;gap:2px;min-width:0}
+.v2862-shared-motif strong{font-size:12px;color:#202733}
+.v2862-shared-motif span:not(.v2861-motif-preview){font-size:10px;color:#7b8490}
+.v2862-product-groups{display:grid;gap:10px}
+.v2862-product-group{
+  border:1px solid #dde2e8;
+  border-radius:12px;
+  overflow:hidden;
+}
+.v2862-product-tshirt{background:#f7f9fc;border-color:#dfe6ef}
+.v2862-product-polo{background:#fbf9f2;border-color:#e8e1c8}
+.v2862-product-hoodie{background:#f5f9f7;border-color:#d9e8df}
+.v2862-product-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  padding:9px 12px;
+  border-bottom:1px solid rgba(120,130,145,.16);
+}
+.v2862-product-head strong{font-size:12px;color:#222a34}
+.v2862-product-head span{font-size:10px;color:#7b8490}
+.v2862-side-row{
+  display:grid;
+  grid-template-columns:minmax(100px,1fr) minmax(120px,160px) auto;
+  align-items:center;
+  gap:10px;
+  padding:8px 12px;
+}
+.v2862-side-row+.v2862-side-row{border-top:1px solid rgba(120,130,145,.12)}
+.v2862-side-row>span{font-size:11px;font-weight:700;color:#3b4450}
+.v2862-side-row select{width:100%}
+@media(max-width:760px){
+  .v2862-shared-motif{padding:9px 10px}
+  .v2862-side-row{grid-template-columns:1fr 1fr;gap:8px}
+  .v2862-side-row>span{grid-column:1/-1}
+  .v2862-side-row .v284-edit-print{width:100%}
+}
+
+/* build v28.6.2 */
