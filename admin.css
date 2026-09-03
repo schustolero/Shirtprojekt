@@ -1778,7 +1778,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 }
 
 
-/* v28.6.9 – Farben in Darstellung integriert */
+/* v28.7.4 – Farben in Darstellung integriert */
 .v2869-appearance-colors .v284-card-body{display:grid!important;gap:12px!important}
 .v2869-inline-colors{margin:0!important;padding:10px 0 0!important;border-top:1px solid #e8ebef!important;background:transparent!important;box-shadow:none!important}
 .v2869-inline-colors .compact-color-row{display:grid!important;grid-template-columns:minmax(110px,1fr) 42px minmax(110px,1fr) 42px 56px!important;gap:8px!important;align-items:end!important}
@@ -1788,4 +1788,9 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 .v2869-inline-colors input[type=color]{width:40px!important;height:34px!important;min-height:34px!important;padding:2px!important;border-radius:7px!important}
 .v2853-colors-card{display:none!important}
 @media(max-width:760px){.v2869-inline-colors .compact-color-row{grid-template-columns:1fr 40px 1fr 40px!important}.v2869-inline-colors .v2850-accent{grid-column:1/-1!important;max-width:56px!important}}
-/* build v28.6.9 */
+/* build v28.7.4 */
+\n/* v28.7.4 SAFE CATCH-UP: only visual function status, no product/motif DOM changes */
+.v2853-functions-card .feature-grid label,.v2853-functions-card .compact-feature-grid label{position:relative!important;padding-right:72px!important}
+.v2853-functions-card .feature-grid label::after,.v2853-functions-card .compact-feature-grid label::after{content:"OFF";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:900;letter-spacing:.08em;color:#8a9099;pointer-events:none}
+.v2853-functions-card .feature-grid label:has(input[type="checkbox"]:checked)::after,.v2853-functions-card .compact-feature-grid label:has(input[type="checkbox"]:checked)::after{content:"ON";color:#8a6500}
+.v284-nav [data-jump="production"]{display:none!important}
