@@ -1059,6 +1059,21 @@ saveShopBtn.addEventListener("click",async()=>{
   previewShell.className='v2853-preview-shell';
   previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
   if(stage) previewShell.appendChild(stage);
+  // v28.5.9: Motivgröße wieder direkt unter der Vorschau sichtbar machen.
+  // Der bestehende Range-Regler steuert weiterhin exakt die gespeicherte Breite,
+  // zeigt aber bewusst keine Prozentwerte – nur Klein / Mittel / Groß.
+  if(sizeControl){
+    const sizeWrap=document.createElement('div');
+    sizeWrap.className='v2859-size-wrap';
+    const sizeTitle=document.createElement('div');
+    sizeTitle.className='v2859-size-title';
+    sizeTitle.textContent='Motivgröße';
+    sizeControl.classList.add('v2859-preview-size-control');
+    const labelSpan=sizeControl.querySelector(':scope > span');
+    if(labelSpan) labelSpan.hidden=true;
+    sizeWrap.append(sizeTitle,sizeControl);
+    previewShell.appendChild(sizeWrap);
+  }
   if(readout) previewShell.appendChild(readout);
   article.body.appendChild(previewShell);
   right.appendChild(article.card);
@@ -1110,7 +1125,7 @@ saveShopBtn.addEventListener("click",async()=>{
   const product=document.getElementById('positionProduct');
   const side=document.getElementById('positionSide');
 
-  // v28.5.8: Artikelauswahl immer vollständig halten.
+  // v28.5.9: Artikelauswahl immer vollständig halten.
   if(product){
     const keep=product.value || 'tshirt';
     product.innerHTML='<option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option>';
@@ -1187,5 +1202,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.8');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.9');
 })();
