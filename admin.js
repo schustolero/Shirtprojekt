@@ -411,6 +411,7 @@ function refreshPositionEditor(){
   if(positionYValue) positionYValue.textContent = "";
   if(positionWValue) positionWValue.textContent = friendlySizeLabel(w);
   window.updateV284PrintTable?.();
+  window.updateV2856PrintTable?.();
 }
 function writePositionValues(x, y, w){
   const fields = getPositionFieldSet(positionProduct.value || "tshirt", positionSide.value || "front");
@@ -1018,7 +1019,7 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   left.appendChild(basic.card);
 
-  // Darstellung: nur Texte/Vorschau. Motivgröße gehört in Motiv / Druckbereich.
+  // Darstellung: nur Texte/Vorschau. Motivgröße liegt im Motiv-/Druckbereich.
   const appearance=makeCard('Darstellung','v2853-appearance-card');
   if(display){
     const accent=display.querySelector('.v2850-accent');
@@ -1063,21 +1064,17 @@ saveShopBtn.addEventListener("click",async()=>{
   article.body.appendChild(previewShell);
   right.appendChild(article.card);
 
-  // Motiv / Druckbereich: Motivgröße, Position und reale Produktionsdaten an EINER Stelle.
+  // Motiv / Druckbereich: zentrale, eigenständige Übersicht.
+  // Wichtig: Die bestehende Artikelauswahl/Positionierungs-Logik bleibt unangetastet.
   const print=makeCard('Motiv / Druckbereich','v2853-print-card');
   const motifIntro=document.createElement('div');
   motifIntro.className='v2855-motif-intro';
-  motifIntro.innerHTML='<strong>Motiv & Position</strong><span>Größe auswählen oder Position direkt auf dem Textil anpassen.</span>';
+  motifIntro.innerHTML='<strong>Motiv & Position</strong><span>Größe wählen und bei Bedarf direkt auf dem Textil positionieren.</span>';
   print.body.appendChild(motifIntro);
-  if(printTable){
-    printTable.classList.add('v2855-print-table');
-    print.body.appendChild(printTable);
-  }
-  const manage=motifWrap?.querySelector('.v284-inline-manage');
-  if(manage){
-    manage.classList.add('v2855-motif-manage-inline');
-    print.body.appendChild(manage);
-  }
+  const mergedTable=document.createElement('div');
+  mergedTable.id='v2856PrintTable';
+  mergedTable.className='v284-print-table v2855-print-table';
+  print.body.appendChild(mergedTable);
   if(productionCard){
     const pb=productionCard.querySelector('.v284-card-body');
     const production=pb?.querySelector('.accordion-body') || pb?.firstElementChild || pb;
@@ -1113,6 +1110,58 @@ saveShopBtn.addEventListener("click",async()=>{
 
   const product=document.getElementById('positionProduct');
   const side=document.getElementById('positionSide');
+
+  // v28.5.6: Artikelauswahl immer vollständig halten.
+  if(product){
+    const keep=product.value || 'tshirt';
+    product.innerHTML='<option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option>';
+    product.value=['tshirt','polo','hoodie'].includes(keep)?keep:'tshirt';
+  }
+
+  function renderMergedPrintTable(){
+    const table=document.getElementById('v2856PrintTable');
+    if(!table) return;
+    const motif=workingMotifs?.[0];
+    const motifSrc=motif?.file?safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||'_simple'):'';
+    const rows=[
+      ['tshirt','front','T-Shirt','Vorderseite',shopFields.tshirtFrontW],
+      ['tshirt','back','T-Shirt','Rückseite',shopFields.tshirtBackW],
+      ['polo','front','Polo-Shirt','Vorderseite',shopFields.poloFrontW],
+      ['polo','back','Polo-Shirt','Rückseite',shopFields.poloBackW],
+      ['hoodie','front','Hoodie','Vorderseite',shopFields.hoodieFrontW],
+      ['hoodie','back','Hoodie','Rückseite',shopFields.hoodieBackW]
+    ];
+    const sizeLabel=(p,s,w)=>{
+      const n=Number(w?.value||0);
+      if(p==='hoodie'&&s==='front') return n<33?'small':n<40?'medium':'large';
+      if(p==='hoodie'&&s==='back') return n<42?'small':n<50?'medium':'large';
+      if(s==='front') return n<24?'small':n<33?'medium':'large';
+      return n<44?'small':n<56?'medium':'large';
+    };
+    const sizeValue=(p,s,label)=>{
+      if(p==='hoodie'&&s==='front') return label==='small'?30:label==='medium'?36:42;
+      if(p==='hoodie'&&s==='back') return label==='small'?38:label==='medium'?46:54;
+      if(s==='front') return label==='small'?20:label==='medium'?28:36;
+      return label==='small'?38:label==='medium'?50:60;
+    };
+    table.innerHTML='<div class="v284-tr v284-th v2852-print-row"><span>Textil</span><span>Seite</span><span>Motiv</span><span>Größe</span><span>Aktion</span></div>'+rows.map(([p,s,pn,sn,w])=>`<div class="v284-tr v2852-print-row"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:'–'}</span><span><select class="v2856-size-select" data-product="${p}" data-side="${s}"><option value="small" ${sizeLabel(p,s,w)==='small'?'selected':''}>Klein</option><option value="medium" ${sizeLabel(p,s,w)==='medium'?'selected':''}>Mittel</option><option value="large" ${sizeLabel(p,s,w)==='large'?'selected':''}>Groß</option></select></span><span><button type="button" class="v284-edit-print v2856-position-btn" data-product="${p}" data-side="${s}">Positionieren</button></span></div>`).join('');
+    table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
+      const row=rows.find(r=>r[0]===sel.dataset.product&&r[1]===sel.dataset.side);
+      if(!row) return;
+      row[4].value=String(sizeValue(sel.dataset.product,sel.dataset.side,sel.value));
+      if(product?.value===sel.dataset.product&&side?.value===sel.dataset.side) refreshPositionEditor();
+      setShopState('Motivgröße geändert – bitte speichern.');
+    }));
+    table.querySelectorAll('.v2856-position-btn').forEach(btn=>btn.addEventListener('click',()=>{
+      if(product){ product.value=btn.dataset.product; product.dispatchEvent(new Event('change',{bubbles:true})); }
+      if(side){ side.value=btn.dataset.side; side.dispatchEvent(new Event('change',{bubbles:true})); }
+      refreshPositionEditor();
+      document.querySelector('.v2853-preview-shell')?.scrollIntoView({behavior:'smooth',block:'center'});
+    }));
+  }
+  window.updateV2856PrintTable=renderMergedPrintTable;
+  renderMergedPrintTable();
+
   const modelInput=document.getElementById('v2853Model');
   const previewTitle=document.getElementById('v2853PreviewTitle');
   const colorName=document.getElementById('v2853ColorName');
@@ -1139,5 +1188,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.5');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.6');
 })();
