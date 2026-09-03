@@ -934,3 +934,195 @@ saveShopBtn.addEventListener("click",async()=>{
     const h=panelHead.querySelector("h2"); if(h) h.insertAdjacentHTML("beforebegin",'<span class="v284-kicker">Shop Einstellungen</span>');
   }
 })();
+
+// ============================================================
+// v28.5.3 – Referenzlayout A (sichtbarer Neuaufbau)
+// ============================================================
+(function initV2853ReferenceUI(){
+  const form=document.getElementById('shopForm');
+  if(!form || document.getElementById('v2853Workspace')) return;
+
+  document.body.classList.add('v2853-reference');
+
+  const stack=form.querySelector('.v284-card-stack');
+  const basicCard=form.querySelector('.v284-card[data-card="basic"]');
+  const motifCard=form.querySelector('.v284-card[data-card="motif"]');
+  const functionCard=form.querySelector('.v284-card[data-card="functions"]');
+  const productionCard=form.querySelector('.v284-card[data-card="production"]');
+  const fixedCard=form.querySelector('.v284-card[data-card="fixed"]');
+  if(!stack || !basicCard || !motifCard) return;
+
+  const basicBody=basicCard.querySelector('.v284-card-body');
+  const grund=basicBody?.querySelector('.v2850-basic, .v284-basic-combined, .form-section');
+  const mainGrid=grund?.querySelector('.v2850-main-fields');
+  const products=grund?.querySelector('.v2850-products');
+  const designHost=grund?.querySelector('.v2850-design');
+  const logo=designHost?.querySelector('.shop-logo-inline') || grund?.querySelector('.shop-logo-inline');
+  const colors=designHost?.querySelector('.compact-colors-section') || grund?.querySelector('.compact-colors-section');
+  const display=designHost?.querySelector('.embedded-display-section') || grund?.querySelector('.embedded-display-section');
+
+  const motifBody=motifCard.querySelector('.v284-card-body');
+  const motifWrap=motifBody?.querySelector('.v284-motif-wrap');
+  const printTable=motifWrap?.querySelector('#v284PrintTable');
+  const position=motifWrap?.querySelector('.position-editor-section');
+  const toolbar=position?.querySelector('.position-editor-toolbar');
+  const stage=position?.querySelector('#positionStage');
+  const readout=position?.querySelector('.position-readout');
+  const sizeControl=toolbar?.querySelector('.position-size-control');
+  const productLabel=toolbar?.querySelector('label:has(#positionProduct)');
+  const sideLabel=toolbar?.querySelector('label:has(#positionSide)');
+
+  const workspace=document.createElement('div');
+  workspace.id='v2853Workspace';
+  workspace.className='v2853-workspace';
+  workspace.innerHTML=`
+    <div class="v2853-left"></div>
+    <div class="v2853-right"></div>
+    <div class="v2853-bottom"></div>`;
+  const left=workspace.querySelector('.v2853-left');
+  const right=workspace.querySelector('.v2853-right');
+  const bottom=workspace.querySelector('.v2853-bottom');
+
+  function makeCard(title,cls=''){
+    const card=document.createElement('section');
+    card.className=`v2853-card ${cls}`.trim();
+    const head=document.createElement('div');
+    head.className='v2853-card-head';
+    head.innerHTML=`<h3>${title}</h3><span aria-hidden="true">⌃</span>`;
+    const body=document.createElement('div');
+    body.className='v2853-card-body';
+    card.append(head,body);
+    return {card,body};
+  }
+
+  // Grunddaten: nur wirklich relevante Felder + Produkte.
+  const basic=makeCard('Grunddaten','v2853-basic-card');
+  if(mainGrid){
+    mainGrid.classList.add('v2853-basic-grid');
+    // Name zuerst und breit, Rest kompakt.
+    const name=mainGrid.querySelector('.v2850-name-field');
+    if(name) name.classList.add('v2853-name');
+    basic.body.appendChild(mainGrid);
+  }
+  if(products){
+    products.classList.add('v2853-products');
+    basic.body.appendChild(products);
+  }
+  left.appendChild(basic.card);
+
+  // Darstellung: Logo + Größenregler + Texte/Vorschau.
+  const appearance=makeCard('Darstellung','v2853-appearance-card');
+  if(logo) appearance.body.appendChild(logo);
+  if(sizeControl){
+    sizeControl.classList.add('v2853-size-control');
+    appearance.body.appendChild(sizeControl);
+  }
+  if(display){
+    const accent=display.querySelector('.v2850-accent');
+    if(accent) accent.remove(); // wandert zu Farben
+    display.classList.add('v2853-display');
+    appearance.body.appendChild(display);
+    if(accent) display.dataset.detachedAccent='1', display._detachedAccent=accent;
+  }
+  left.appendChild(appearance.card);
+
+  // Farben: Shirt, Motiv, Akzent kompakt in einer Reihe.
+  const colorCard=makeCard('Farben','v2853-colors-card');
+  if(colors) colorCard.body.appendChild(colors);
+  const detachedAccent=display?._detachedAccent;
+  if(detachedAccent){
+    let grid=colorCard.body.querySelector('.compact-color-row');
+    if(grid) grid.appendChild(detachedAccent);
+    else colorCard.body.appendChild(detachedAccent);
+  }
+  if(designHost) designHost.remove();
+  left.appendChild(colorCard.card);
+
+  // Artikel + große Vorschau rechts.
+  const article=makeCard('Artikel','v2853-article-card');
+  const articleControls=document.createElement('div');
+  articleControls.className='v2853-article-controls';
+  if(productLabel){ productLabel.querySelector('span').textContent='Kategorie'; articleControls.appendChild(productLabel); }
+  const model=document.createElement('label');
+  model.innerHTML='<span>Modell</span><input id="v2853Model" type="text" readonly value="F140 · T-Shirt">';
+  articleControls.appendChild(model);
+  const color=document.createElement('label');
+  color.innerHTML='<span>Farbe</span><div class="v2853-color-readonly"><i></i><b id="v2853ColorName">Royal Blue</b></div>';
+  articleControls.appendChild(color);
+  if(sideLabel){ sideLabel.querySelector('span').textContent='Ansicht'; articleControls.appendChild(sideLabel); }
+  article.body.appendChild(articleControls);
+
+  const previewShell=document.createElement('div');
+  previewShell.className='v2853-preview-shell';
+  previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
+  if(stage) previewShell.appendChild(stage);
+  if(readout) previewShell.appendChild(readout);
+  article.body.appendChild(previewShell);
+  right.appendChild(article.card);
+
+  // Druckbereich: nur die vereinbarten Produktionsdaten, global für alle Textilien.
+  const print=makeCard('Motiv / Druckbereich','v2853-print-card');
+  if(productionCard){
+    const pb=productionCard.querySelector('.v284-card-body');
+    const production=pb?.querySelector('.accordion-body') || pb?.firstElementChild || pb;
+    if(production) print.body.appendChild(production);
+  }
+  right.appendChild(print.card);
+
+  // Motiv-Tabelle / Positionen als eigene kompakte Verwaltung.
+  const motifManage=makeCard('Motive / Logos','v2853-motif-manage');
+  if(printTable) motifManage.body.appendChild(printTable);
+  const manage=motifWrap?.querySelector('.v284-inline-manage');
+  if(manage) motifManage.body.appendChild(manage);
+  bottom.appendChild(motifManage.card);
+
+  // Funktionen mit echten Toggle-Switches.
+  if(functionCard){
+    const functions=makeCard('Funktionen','v2853-functions-card');
+    const fb=functionCard.querySelector('.v284-card-body');
+    if(fb) while(fb.firstChild) functions.body.appendChild(fb.firstChild);
+    bottom.appendChild(functions.card);
+  }
+
+  // Fester Druck bleibt vorhanden, aber kompakt und weiter unten.
+  if(fixedCard){
+    const fixed=makeCard('Fester Druck','v2853-fixed-card');
+    const xb=fixedCard.querySelector('.v284-card-body');
+    if(xb) while(xb.firstChild) fixed.body.appendChild(xb.firstChild);
+    bottom.appendChild(fixed.card);
+  }
+
+  // Alte Karten entfernen; alle benötigten Felder wurden mit ihren IDs umgezogen.
+  stack.remove();
+  form.appendChild(workspace);
+
+  const product=document.getElementById('positionProduct');
+  const side=document.getElementById('positionSide');
+  const modelInput=document.getElementById('v2853Model');
+  const previewTitle=document.getElementById('v2853PreviewTitle');
+  const colorName=document.getElementById('v2853ColorName');
+  const colorDot=colorCard.card.querySelector('.v2853-color-readonly i');
+
+  function refreshReferenceMeta(){
+    const map={
+      tshirt:'F140 · T-Shirt',
+      polo:'F502 · Polo-Shirt',
+      hoodie:'F421 · Hoodie'
+    };
+    if(modelInput) modelInput.value=map[product?.value]||'Textil';
+    if(previewTitle) previewTitle.textContent=`Vorschau – ${side?.value==='back'?'Rückseite':'Vorderseite'}`;
+    if(colorName) colorName.textContent=document.getElementById('fixedShirtName')?.value || 'Royal Blue';
+    if(colorDot) colorDot.style.background=document.getElementById('fixedShirtHex')?.value || '#0758b2';
+  }
+  product?.addEventListener('change',refreshReferenceMeta);
+  side?.addEventListener('change',refreshReferenceMeta);
+  document.getElementById('fixedShirtName')?.addEventListener('input',refreshReferenceMeta);
+  document.getElementById('fixedShirtHex')?.addEventListener('input',refreshReferenceMeta);
+  refreshReferenceMeta();
+
+  // Sidebar wieder dunkel wie im Zielbild.
+  document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
+
+  // Versionsbadge eindeutig aktualisieren.
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.3');
+})();
