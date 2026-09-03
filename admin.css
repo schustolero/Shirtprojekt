@@ -1455,7 +1455,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 @media(max-width:760px){#v2856PrintTable .v284-tr{grid-template-columns:1fr 1fr}.v284-motif-cell{display:none}}
 
 
-/* v28.5.7 – Admin-Vorschau exakt auf Live-Shop-Geometrie bringen.
+/* v28.5.8 – Admin-Vorschau exakt auf Live-Shop-Geometrie bringen.
    Live: mockup-stage = 590px Breite, aspect-ratio .86. Die Druckzone ist
    darauf abgestimmt. Deshalb darf der Admin-Stage kein unabhängiges
    Breit/Hoch-Verhältnis verwenden. */
@@ -1489,4 +1489,21 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
     min-height:0!important;
     aspect-ratio:.86!important;
   }
+}
+
+
+/* v28.5.8 – kompaktere Desktop-Vorschau, identische Druckzonen-Geometrie */
+.v2853-preview-shell .position-stage{
+  width:min(500px,100%)!important;
+  max-width:500px!important;
+  aspect-ratio:.86!important;
+}
+.v2853-preview-shell .position-print-zone{
+  left:27.966%!important;
+  top:22.22%!important;
+  width:44.068%!important;
+  height:49.56%!important;
+}
+@media(max-width:720px){
+  .v2853-preview-shell .position-stage{width:min(500px,100%)!important;}
 }
