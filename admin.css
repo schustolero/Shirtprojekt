@@ -1338,9 +1338,9 @@ body.v2853-reference #shopForm{display:block!important}
 .v2853-print-card .print-data-fields{display:grid!important;grid-template-columns:1.2fr .7fr .7fr!important;gap:9px!important}
 .v2853-print-card input,.v2853-print-card select{height:39px!important;border-radius:8px!important}
 
-.v2853-motif-manage .v284-print-table{border:1px solid #e7eaee!important;border-radius:10px!important;overflow:hidden!important}
-.v2853-motif-manage .v284-tr{grid-template-columns:1fr 1fr 1fr 1fr 1fr!important;min-height:50px!important}
-.v2853-motif-manage .v284-edit-print,.v2853-motif-manage .v2852-size-select{height:34px!important;border-radius:8px!important}
+.v2853-motif-manage .v284-print-table,.v2853-print-card .v284-print-table{border:1px solid #e7eaee!important;border-radius:10px!important;overflow:hidden!important}
+.v2853-motif-manage .v284-tr,.v2853-print-card .v284-tr{grid-template-columns:1fr 1fr 1fr 1fr 1fr!important;min-height:50px!important}
+.v2853-motif-manage .v284-edit-print,.v2853-motif-manage .v2852-size-select,.v2853-print-card .v284-edit-print,.v2853-print-card .v2852-size-select{height:34px!important;border-radius:8px!important}
 
 .v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
 .v2853-functions-card .feature-grid label,.v2853-functions-card .compact-feature-grid label,
@@ -1379,8 +1379,8 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2853-print-card .print-data-fields{grid-template-columns:1fr 1fr!important}
   .v2853-print-card .print-data-fields label:first-child{grid-column:1/-1}
   .v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{grid-template-columns:1fr!important}
-  .v2853-motif-manage .v284-tr{grid-template-columns:1fr .85fr .75fr .9fr!important}
-  .v2853-motif-manage .v284-tr>span:nth-child(3){display:none!important}
+  .v2853-motif-manage .v284-tr,.v2853-print-card .v284-tr{grid-template-columns:1fr .85fr .75fr .9fr!important}
+  .v2853-motif-manage .v284-tr>span:nth-child(3),.v2853-print-card .v284-tr>span:nth-child(3){display:none!important}
 }
 
 
@@ -1427,4 +1427,21 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 @media(max-width:900px){
   .v2854-name-logo-row{grid-template-columns:1fr}
   .v2854-basic-logo{grid-template-columns:54px minmax(0,1fr) 72px!important}
+}
+
+/* v28.5.5 – Motivgröße und Druckdaten zusammenführen */
+.v2855-motif-intro,.v2855-production-divider{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
+.v2855-motif-intro strong,.v2855-production-divider strong{font-size:13px}
+.v2855-motif-intro span,.v2855-production-divider span{font-size:11px;color:#7c8590}
+.v2855-production-divider{margin-top:18px;padding-top:16px;border-top:1px solid #e8ebef}
+.v2853-print-card .v284-print-table{margin-bottom:0!important}
+.v2853-print-card .v284-tr{grid-template-columns:1fr .9fr .8fr 1fr 1fr!important}
+.v2853-print-card .v2852-size-select{width:100%;min-width:90px}
+.v2855-motif-manage-inline{margin-top:10px!important}
+.v2853-appearance-card .v2853-size-control{display:none!important}
+@media(max-width:720px){
+  .v2855-motif-intro,.v2855-production-divider{display:block}
+  .v2855-motif-intro span,.v2855-production-divider span{display:block;margin-top:3px}
+  .v2853-print-card .v284-tr{grid-template-columns:1fr .85fr .8fr .95fr!important}
+  .v2853-print-card .v284-tr>span:nth-child(3){display:none!important}
 }

@@ -1018,12 +1018,8 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   left.appendChild(basic.card);
 
-  // Darstellung: Größenregler + Texte/Vorschau. Das Shop-Logo sitzt jetzt bei den Grunddaten.
+  // Darstellung: nur Texte/Vorschau. Motivgröße gehört in Motiv / Druckbereich.
   const appearance=makeCard('Darstellung','v2853-appearance-card');
-  if(sizeControl){
-    sizeControl.classList.add('v2853-size-control');
-    appearance.body.appendChild(sizeControl);
-  }
   if(display){
     const accent=display.querySelector('.v2850-accent');
     if(accent) accent.remove(); // wandert zu Farben
@@ -1067,21 +1063,33 @@ saveShopBtn.addEventListener("click",async()=>{
   article.body.appendChild(previewShell);
   right.appendChild(article.card);
 
-  // Druckbereich: nur die vereinbarten Produktionsdaten, global für alle Textilien.
+  // Motiv / Druckbereich: Motivgröße, Position und reale Produktionsdaten an EINER Stelle.
   const print=makeCard('Motiv / Druckbereich','v2853-print-card');
+  const motifIntro=document.createElement('div');
+  motifIntro.className='v2855-motif-intro';
+  motifIntro.innerHTML='<strong>Motiv & Position</strong><span>Größe auswählen oder Position direkt auf dem Textil anpassen.</span>';
+  print.body.appendChild(motifIntro);
+  if(printTable){
+    printTable.classList.add('v2855-print-table');
+    print.body.appendChild(printTable);
+  }
+  const manage=motifWrap?.querySelector('.v284-inline-manage');
+  if(manage){
+    manage.classList.add('v2855-motif-manage-inline');
+    print.body.appendChild(manage);
+  }
   if(productionCard){
     const pb=productionCard.querySelector('.v284-card-body');
     const production=pb?.querySelector('.accordion-body') || pb?.firstElementChild || pb;
-    if(production) print.body.appendChild(production);
+    if(production){
+      const divider=document.createElement('div');
+      divider.className='v2855-production-divider';
+      divider.innerHTML='<strong>Druckdaten</strong><span>Gelten für T-Shirt, Polo und Hoodie.</span>';
+      print.body.appendChild(divider);
+      print.body.appendChild(production);
+    }
   }
   right.appendChild(print.card);
-
-  // Motiv-Tabelle / Positionen als eigene kompakte Verwaltung.
-  const motifManage=makeCard('Motive / Logos','v2853-motif-manage');
-  if(printTable) motifManage.body.appendChild(printTable);
-  const manage=motifWrap?.querySelector('.v284-inline-manage');
-  if(manage) motifManage.body.appendChild(manage);
-  bottom.appendChild(motifManage.card);
 
   // Funktionen mit echten Toggle-Switches.
   if(functionCard){
@@ -1131,5 +1139,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.4');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.5');
 })();
