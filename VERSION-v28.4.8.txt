@@ -1,0 +1,2 @@
+MASTER v28.4.8
+Grunddaten wieder kompakt: Logo, Farben und Darstellung & Texte sind in Grunddaten integriert. Variante A und Toggle-Switches bleiben erhalten.

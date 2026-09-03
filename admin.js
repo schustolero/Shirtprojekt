@@ -111,20 +111,16 @@ function printOrderSlip(order){
     return `<tr><td>${index+1}</td><td>${htmlEscape(item.size)}</td><td>${htmlEscape(item.shirtColor)}</td><td>${htmlEscape(item.motif)}</td><td>${htmlEscape(item.motifColor)}</td><td>${qty}</td><td>${htmlEscape(euro(linePrice))}</td></tr>`;
   }).join("");
 
-  const usedProducts = new Set((Array.isArray(order.items)?order.items:[]).map(item=>item.productId||"tshirt"));
   const printData = order.printData || {};
-  const printRows = [];
-  const addPrintRow=(product,label,side,sideLabel)=>{
-    if(!usedProducts.has(product)) return;
-    const d=printData?.[product]?.[side]||{};
+  const globalPrint = printData.global || {front:printData.tshirt?.front||printData.polo?.front||printData.hoodie?.front||{},back:printData.tshirt?.back||printData.polo?.back||printData.hoodie?.back||{}};
+  const printRows = ["front","back"].map(side=>{
+    const d=globalPrint[side]||{};
     const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
-    if(!has) return;
+    if(!has) return "";
     const size=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"-";
-    printRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td></tr>`);
-  };
-  addPrintRow("tshirt","T-Shirt","front","Vorne"); addPrintRow("tshirt","T-Shirt","back","Hinten");
-  addPrintRow("polo","Polo-Shirt","front","Vorne"); addPrintRow("polo","Polo-Shirt","back","Hinten"); addPrintRow("hoodie","Hoodie","front","Vorne"); addPrintRow("hoodie","Hoodie","back","Hinten");
-  const printSection = printRows.length ? `<div class="section"><h2>Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
+    return `<tr><td>${side==="front"?"Vorne":"Hinten"}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td></tr>`;
+  }).filter(Boolean);
+  const printSection = printRows.length ? `<div class="section"><h2>Produktionsdaten</h2><table><thead><tr><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
   const w = window.open("", "_blank", "width=900,height=900");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
@@ -303,50 +299,44 @@ const shopFields = {
 };
 
 const printDataFields = {
-  tshirt: {
-    front: {method:"pdTshirtFrontMethod",width:"pdTshirtFrontWidth",height:"pdTshirtFrontHeight"},
-    back: {method:"pdTshirtBackMethod",width:"pdTshirtBackWidth",height:"pdTshirtBackHeight"}
-  },
-  polo: {
-    front: {method:"pdPoloFrontMethod",width:"pdPoloFrontWidth",height:"pdPoloFrontHeight"},
-    back: {method:"pdPoloBackMethod",width:"pdPoloBackWidth",height:"pdPoloBackHeight"}
-  },
-  hoodie: {
-    front: {method:"pdHoodieFrontMethod",width:"pdHoodieFrontWidth",height:"pdHoodieFrontHeight"},
-    back: {method:"pdHoodieBackMethod",width:"pdHoodieBackWidth",height:"pdHoodieBackHeight"}
-  }
+  front: {method:document.getElementById("pdGlobalFrontMethod"),width:document.getElementById("pdGlobalFrontWidth"),height:document.getElementById("pdGlobalFrontHeight")},
+  back: {method:document.getElementById("pdGlobalBackMethod"),width:document.getElementById("pdGlobalBackWidth"),height:document.getElementById("pdGlobalBackHeight")}
 };
-Object.values(printDataFields).forEach(product=>Object.values(product).forEach(side=>Object.keys(side).forEach(k=>side[k]=document.getElementById(side[k]))));
 
 function normalizePrintMethod(value){
   const method=String(value||"").trim();
   return method === "Flex" ? "Flexdruck" : (method || "Flexdruck");
 }
-function fillPrintData(cfg){
+function resolveGlobalPrintData(cfg){
   const data=cfg.printData||{};
-  for(const product of ["tshirt","polo","hoodie"]){
-    for(const side of ["front","back"]){
-      const src=data[product]?.[side]||{}; const f=printDataFields[product][side];
-      f.method.value=normalizePrintMethod(src.method);
-      f.width.value=src.widthCm ?? "";
-      f.height.value=src.heightCm ?? "";
-    }
+  const g=data.global||{};
+  return {
+    front:g.front||data.tshirt?.front||data.polo?.front||data.hoodie?.front||{method:"Flexdruck",widthCm:9,heightCm:7},
+    back:g.back||data.tshirt?.back||data.polo?.back||data.hoodie?.back||{method:"Flexdruck",widthCm:28,heightCm:21.8}
+  };
+}
+function fillPrintData(cfg){
+  const data=resolveGlobalPrintData(cfg);
+  for(const side of ["front","back"]){
+    const src=data[side]||{}; const f=printDataFields[side];
+    f.method.value=normalizePrintMethod(src.method);
+    f.width.value=src.widthCm ?? (side==="front"?9:28);
+    f.height.value=src.heightCm ?? (side==="front"?7:21.8);
   }
 }
 function collectPrintData(){
-  const out={tshirt:{},polo:{},hoodie:{}};
-  for(const product of ["tshirt","polo","hoodie"]){
-    for(const side of ["front","back"]){
-      const f=printDataFields[product][side];
-      const num=(el)=>el.value===""?null:Number(el.value);
-      out[product][side]={
-        method:normalizePrintMethod(f.method.value),
-        widthCm:num(f.width),
-        heightCm:num(f.height)
-      };
-    }
-  }
-  return out;
+  const read=(side)=>{
+    const f=printDataFields[side];
+    const num=(el)=>el.value===""?null:Number(el.value);
+    return {method:normalizePrintMethod(f.method.value),widthCm:num(f.width),heightCm:num(f.height)};
+  };
+  const front=read("front"), back=read("back");
+  return {
+    global:{front:{...front},back:{...back}},
+    tshirt:{front:{...front},back:{...back}},
+    polo:{front:{...front},back:{...back}},
+    hoodie:{front:{...front},back:{...back}}
+  };
 }
 
 function getPositionFieldSet(product, side){
@@ -407,11 +397,11 @@ function refreshPositionEditor(){
   positionMotif.style.left = `${x}%`;
   positionMotif.style.top = `${storedYToStagePct(y)}%`;
   positionMotif.style.width = `${w}%`;
-  positionSize.value = String(w);
-  positionSizeValue.textContent = `${w}%`;
-  positionXValue.textContent = `${x}%`;
-  positionYValue.textContent = `${y}%`;
-  positionWValue.textContent = `${w}%`;
+  if(positionSize) positionSize.value = String(w);
+  if(positionSizeValue) positionSizeValue.textContent = `${w}%`;
+  if(positionXValue) positionXValue.textContent = `${x}%`;
+  if(positionYValue) positionYValue.textContent = `${y}%`;
+  if(positionWValue) positionWValue.textContent = `${w}%`;
   window.updateV284PrintTable?.();
 }
 function writePositionValues(x, y, w){
@@ -835,12 +825,22 @@ saveShopBtn.addEventListener("click",async()=>{
     d.append(summary,body); stack.appendChild(d); return d;
   }
 
-  if(logo) logo.remove();
-  if(grund){ grund.classList.add("v284-inner-section"); card("Grunddaten","basic",grund,true); }
-  if(display){ display.classList.add("v284-inner-section"); card("Darstellung","display",display,true); }
-  if(colors){ colors.classList.add("v284-inner-section"); card("Feste Farben","colors",colors,true); }
+  // Grunddaten bewusst als EINEN kompakten Bereich behalten.
+  // Shop-Logo, Farben sowie Darstellung & Texte werden in Grunddaten integriert,
+  // statt wieder als große Einzelkarten untereinander zu erscheinen.
+  if(grund){
+    grund.classList.add("v284-inner-section","v284-basic-combined");
+    if(colors){
+      colors.classList.add("v284-inner-section","v284-basic-subsection","v284-basic-colors");
+      grund.appendChild(colors);
+    }
+    if(display){
+      display.classList.add("v284-inner-section","v284-basic-subsection","v284-basic-display");
+      grund.appendChild(display);
+    }
+    card("Grunddaten","basic",grund,true);
+  }
   if(functions){ const body=functions.querySelector(".accordion-body")||functions; card("Funktionen","functions",body,true); }
-  if(logo){ card("Shop-Logo","logo",logo,true); }
 
   // Motiv-/Druckbereich: kompakte Übersicht + vorhandenen visuellen Editor.
   if(position){
@@ -877,8 +877,8 @@ saveShopBtn.addEventListener("click",async()=>{
       ["hoodie","front","Hoodie","Vorderseite",shopFields.hoodieFrontX,shopFields.hoodieFrontY,shopFields.hoodieFrontW],
       ["hoodie","back","Hoodie","Rückseite",shopFields.hoodieBackX,shopFields.hoodieBackY,shopFields.hoodieBackW]
     ];
-    table.innerHTML=`<div class="v284-tr v284-th"><span>Textil</span><span>Seite</span><span>Motiv</span><span>X</span><span>Y</span><span>Größe</span><span>Aktion</span></div>`+
-      rows.map(([p,s,pn,sn,x,y,w])=>`<div class="v284-tr"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:"–"}</span><span>${x?.value||"–"}%</span><span>${y?.value||"–"}%</span><span>${w?.value||"–"}%</span><span><button type="button" class="v284-edit-print" data-product="${p}" data-side="${s}">Bearbeiten</button></span></div>`).join("");
+    table.innerHTML=`<div class="v284-tr v284-th v284-simple-print-row"><span>Textil</span><span>Seite</span><span>Motiv</span><span>Aktion</span></div>`+
+      rows.map(([p,s,pn,sn])=>`<div class="v284-tr v284-simple-print-row"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:"–"}</span><span><button type="button" class="v284-edit-print" data-product="${p}" data-side="${s}">Positionieren</button></span></div>`).join("");
     table.querySelectorAll(".v284-edit-print").forEach(btn=>btn.addEventListener("click",()=>{
       positionProduct.value=btn.dataset.product;
       positionSide.value=btn.dataset.side;

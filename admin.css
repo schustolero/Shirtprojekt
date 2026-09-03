@@ -1078,3 +1078,112 @@ body.v284-admin #ordersTab .stat-card,body.v284-admin #ordersTab .panel,body.v28
 /* v28.4.5 – reduzierte Produktionsdaten */
 .simplified-print-data-fields{grid-template-columns:1.25fr 1fr 1fr!important;}
 @media(max-width:720px){.simplified-print-data-fields{grid-template-columns:1fr!important;}}
+
+/* v28.4.6 – vereinfachte Position/Produktionsdaten */
+.v284-simple-print-row{grid-template-columns:1.15fr 1fr .8fr 1fr!important}
+.global-print-data-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+@media(max-width:760px){.global-print-data-grid{grid-template-columns:1fr!important}.v284-simple-print-row{grid-template-columns:1fr 1fr .65fr 1fr!important}.v284-simple-print-row>span:nth-child(3){text-align:center}}
+
+/* ============================================================
+   MASTER v28.4.7 – Variante A: hell & elegant
+   ============================================================ */
+:root{--vA-yellow:#ffc400;--vA-yellow-soft:#fff8dd;--vA-ink:#17191d;--vA-muted:#747b86;--vA-line:#e6e9ef;--vA-bg:#f7f8fb}
+body.v284-admin{background:var(--vA-bg);padding-left:236px;color:var(--vA-ink)}
+.v284-sidebar{width:236px;background:#fff;color:var(--vA-ink);border-right:1px solid #eaedf2;box-shadow:8px 0 28px rgba(20,30,45,.035);padding:20px 15px}
+.v284-brand{padding:4px 5px 10px}
+.v284-brand-mark{width:40px;height:40px;border:1px solid #ffe06c;border-radius:11px;color:#b47b00;background:#fff9df;box-shadow:0 4px 14px rgba(255,196,0,.12)}
+.v284-brand strong{color:#202329;font-size:15px}.v284-brand span{color:#9a7a14;font-size:10px;font-weight:700}
+.v284-shop-select-wrap span{color:#8a9099!important;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.v284-shop-select-wrap select{height:40px;background:#fff;color:#202329;border:1px solid #dfe3e9;border-radius:10px;box-shadow:0 2px 8px rgba(20,30,45,.025)}
+.v284-nav{gap:6px}
+.v284-nav button,.v284-side-bottom button{color:#555c66;border-radius:10px;padding:11px 10px;font-weight:750}
+.v284-nav button span{color:#8a919c}
+.v284-nav button:hover,.v284-side-bottom button:hover{background:#f6f7f9;color:#1e2228}
+.v284-nav button.active{background:linear-gradient(90deg,#fff4c8,#fff9e7);color:#9a6900;box-shadow:inset 0 0 0 1px #ffdf75}
+.v284-nav button.active span{color:#c68b00}
+.v284-side-bottom{border-top:1px solid #eceef2}
+.v284-editor-head{background:rgba(247,248,251,.95);backdrop-filter:blur(14px);padding:10px 0 14px!important}
+.v284-editor-head h2{font-size:24px!important;letter-spacing:-.02em}.v284-kicker{color:#9a7a14}
+.v284-editor-head .primary-btn{background:linear-gradient(180deg,#ffd33a,#ffc400);color:#191919;border:1px solid #f4bd00;box-shadow:0 4px 12px rgba(255,196,0,.2);border-radius:10px!important}
+.v284-editor-head .ghost-btn{background:#fff;border-color:#dfe3e9;box-shadow:0 2px 8px rgba(20,30,45,.035);border-radius:10px!important}
+.v284-card-stack{gap:16px}
+.v284-card{border:1px solid #e7eaf0;border-radius:16px;box-shadow:0 8px 28px rgba(25,35,50,.045);background:rgba(255,255,255,.98)}
+.v284-card>summary{padding:16px 18px}.v284-card-title{font-size:14px;letter-spacing:-.01em}.v284-card>summary small{color:#a0a5ad}
+.v284-card-body{padding:16px 18px 18px}
+.v284-card input:not([type="checkbox"]):not([type="color"]),.v284-card select{border:1px solid #dfe3e9!important;border-radius:10px!important;background:#fff!important;box-shadow:0 1px 2px rgba(20,30,45,.015);transition:border-color .18s,box-shadow .18s}
+.v284-card input:not([type="checkbox"]):not([type="color"]):focus,.v284-card select:focus{outline:0;border-color:#efbe17!important;box-shadow:0 0 0 3px rgba(255,196,0,.14)}
+.v284-card label span{color:#686f79;font-weight:750}
+.v284-card[data-card="colors"] input[type="color"]{border:1px solid #dfe3e9!important;box-shadow:0 1px 3px rgba(20,30,45,.04)}
+
+/* Funktionen – moderne ON/OFF-Schalter */
+.v284-card[data-card="functions"] .feature-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important}
+.v284-card[data-card="functions"] .feature-grid label{display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important;min-height:54px;padding:11px 12px!important;border:1px solid #e8ebf0!important;border-radius:12px!important;background:#fbfcfd!important;box-shadow:0 2px 7px rgba(25,35,50,.018);gap:12px!important;transition:.18s}
+.v284-card[data-card="functions"] .feature-grid label:hover{border-color:#dfd59d!important;background:#fffdf5!important}
+.v284-card[data-card="functions"] .feature-grid label span{grid-column:1;grid-row:1;margin:0!important;color:#343940!important;font-size:12px!important;font-weight:800!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]{grid-column:2;grid-row:1;appearance:none!important;-webkit-appearance:none!important;width:46px!important;height:26px!important;min-width:46px!important;border-radius:999px!important;background:#d7dbe1!important;border:0!important;position:relative!important;cursor:pointer!important;transition:background .2s,box-shadow .2s!important;box-shadow:inset 0 0 0 1px rgba(0,0,0,.035)!important;margin:0!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:before{content:""!important;position:absolute!important;top:3px!important;left:3px!important;width:20px!important;height:20px!important;border-radius:50%!important;background:#fff!important;box-shadow:0 2px 5px rgba(0,0,0,.22)!important;transition:transform .2s!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:checked{background:var(--vA-yellow)!important;box-shadow:0 0 0 3px rgba(255,196,0,.10)!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:checked:before{left:3px!important;transform:translateX(20px)!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:focus-visible{outline:3px solid rgba(255,196,0,.25)!important;outline-offset:2px!important}
+
+/* Auch die wichtigsten Aktiv-Schalter im Shop bekommen dieselbe moderne Form */
+.v284-card .check-row input[type="checkbox"]{appearance:none;-webkit-appearance:none;width:46px!important;height:26px!important;min-width:46px;border:0!important;border-radius:999px!important;background:#d7dbe1!important;position:relative;cursor:pointer;transition:.2s;margin:0!important}
+.v284-card .check-row input[type="checkbox"]:before{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.2);transition:transform .2s}
+.v284-card .check-row input[type="checkbox"]:checked{background:var(--vA-yellow)!important}.v284-card .check-row input[type="checkbox"]:checked:before{transform:translateX(20px)}
+.v284-card .check-row{border:1px solid #e8ebf0!important;background:#fbfcfd!important;border-radius:12px!important;padding:10px 12px!important;display:grid!important;grid-template-columns:auto 1fr!important;align-items:center!important;gap:10px!important}.v284-card .check-row span{margin:0!important;color:#343940!important}
+
+.v284-print-table{border-color:#e7eaf0;box-shadow:0 3px 12px rgba(25,35,50,.025)}.v284-th{background:#fafbfc}.v284-edit-print{border-radius:9px}.v284-edit-print:hover{border-color:#efc83f;background:#fff9e5}
+.position-stage{border-radius:14px!important;background:#f9fafc!important;border-color:#e6e9ef!important}.position-save-btn{background:linear-gradient(180deg,#ffd33a,#ffc400)!important;color:#191919!important;border-radius:10px!important}
+.v284-card[data-card="production"] .print-data-card{background:#fbfcfd;border-color:#e8ebf0;border-radius:12px}
+
+@media(max-width:1050px){body.v284-admin{padding-left:0}.v284-sidebar{width:100%;border-right:0;border-bottom:1px solid #e8ebf0}.v284-mobile-menu{border-color:#e1e5eb!important;background:#fff!important;color:#272b31!important}}
+@media(max-width:720px){
+  body.v284-admin{background:#f7f8fb}
+  .v284-sidebar{background:#fff!important;box-shadow:0 5px 18px rgba(20,30,45,.04)}
+  .v284-brand-mark{background:#fff8dc!important;border-color:#ffe17b!important;color:#a66f00!important}
+  .v284-brand strong{color:#202329!important}.v284-brand span{color:#9a7a14!important}
+  .v284-shop-select-wrap select{background:#fff!important;color:#202329!important;border-color:#dfe3e9!important}
+  .v284-nav button{color:#555c66!important}.v284-nav button.active{color:#956600!important;background:#fff7d8!important}
+  .v284-editor-head{background:rgba(247,248,251,.96)!important}
+  .v284-card[data-card="functions"] .feature-grid{grid-template-columns:1fr!important}
+  .v284-card[data-card="functions"] .feature-grid label{min-height:50px!important}
+}
+
+
+/* ============================================================
+   MASTER v28.4.9 – Grunddaten wieder kompakt zusammengeführt
+   ============================================================ */
+.v284-card[data-card="basic"] .v284-card-body{padding:14px 18px 18px}
+.v284-basic-combined{display:block!important}
+.v284-basic-combined>.form-grid{grid-template-columns:minmax(0,.72fr) minmax(0,.72fr) minmax(0,1fr)!important;gap:10px 12px!important}
+.v284-basic-combined>.form-grid label.wide{grid-column:auto!important}
+.v284-basic-combined>.form-grid .check-row.wide{grid-column:auto!important}
+.v284-basic-combined .shop-logo-inline{grid-column:1/-1!important;margin-top:2px!important;padding:10px 12px!important;border:1px solid #eceef2!important;border-radius:12px!important;background:#fbfcfd!important;display:grid!important;grid-template-columns:58px minmax(0,1fr) 120px!important;gap:12px!important;align-items:center!important}
+.v284-basic-combined .shop-logo-mini-preview{width:52px!important;height:52px!important;border-radius:10px!important;background:#fff!important}
+.v284-basic-combined .shop-logo-inline-controls{display:flex!important;align-items:center!important;gap:8px!important;flex-wrap:wrap!important}
+.v284-basic-combined .shop-logo-inline-controls strong{margin-right:4px!important}
+.v284-basic-combined .shop-logo-file,.v284-basic-combined .shop-logo-reset{margin:0!important}
+.v284-basic-subsection{margin-top:12px!important;padding-top:12px!important;border-top:1px solid #edf0f3!important}
+.v284-basic-subsection>h3{font-size:12px!important;text-transform:uppercase!important;letter-spacing:.05em!important;color:#777f8a!important;margin:0 0 10px!important}
+.v284-basic-colors .form-grid{display:grid!important;grid-template-columns:1fr 54px 1fr 54px!important;gap:10px!important}
+.v284-basic-display .form-grid{display:grid!important;grid-template-columns:120px 220px minmax(0,1fr)!important;gap:10px 12px!important}
+.v284-basic-display .form-grid label.wide{grid-column:auto!important}
+.v284-basic-display .form-grid label:last-child{grid-column:2/-1!important}
+.v284-card[data-card="basic"] input,.v284-card[data-card="basic"] select{min-height:38px!important}
+
+@media(max-width:900px){
+ .v284-basic-combined>.form-grid{grid-template-columns:1fr 1fr!important}
+ .v284-basic-combined>.form-grid .wide{grid-column:1/-1!important}
+ .v284-basic-display .form-grid{grid-template-columns:1fr 1fr!important}
+ .v284-basic-display .form-grid label:last-child{grid-column:1/-1!important}
+}
+@media(max-width:720px){
+ .v284-basic-combined>.form-grid{grid-template-columns:1fr!important;gap:8px!important}
+ .v284-basic-combined>.form-grid .wide{grid-column:auto!important}
+ .v284-basic-combined .shop-logo-inline{grid-template-columns:48px 1fr!important;padding:9px!important}
+ .v284-basic-combined .shop-logo-height{grid-column:1/-1!important}
+ .v284-basic-colors .form-grid{grid-template-columns:1fr 48px!important}
+ .v284-basic-display .form-grid{grid-template-columns:1fr!important}
+ .v284-basic-display .form-grid label:last-child{grid-column:auto!important}
+ .v284-basic-subsection{margin-top:10px!important;padding-top:10px!important}
+}

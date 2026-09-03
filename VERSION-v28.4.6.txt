@@ -1,0 +1,1 @@
+Master v28.4.6 – Produktionsdaten global pro Vorder-/Rückseite; Motivgröße und X/Y/Größe-Prozent aus der sichtbaren Admin-Oberfläche entfernt.

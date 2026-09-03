@@ -5,7 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.4.5">
+  <link rel="stylesheet" href="admin.css?v=28.4.9">
+
+<style id="v2849-critical">
+/* v28.4.9 fallback: Grunddaten garantiert zusammengefasst */
+.v2849-version{position:fixed;right:12px;bottom:10px;z-index:9999;font:700 10px/1.2 system-ui,sans-serif;color:#8a6b00;background:#fff7cf;border:1px solid #f0d66b;border-radius:999px;padding:5px 8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.v284-card[data-card="display"],.v284-card[data-card="colors"],.v284-card[data-card="logo"]{display:none!important}
+.v284-card[data-card="basic"] .v284-card-body{padding:14px 18px 18px!important}
+.v284-card[data-card="basic"] .v284-basic-combined{display:block!important}
+.v284-card[data-card="basic"] .v284-basic-subsection{display:block!important;margin-top:12px!important;padding-top:12px!important;border-top:1px solid #edf0f3!important}
+.v284-card[data-card="basic"] .v284-basic-subsection>h3{display:block!important;font-size:12px!important;text-transform:uppercase!important;letter-spacing:.05em!important;color:#777f8a!important;margin:0 0 10px!important}
+.v284-card[data-card="basic"] .shop-logo-inline{grid-column:1/-1!important;margin-top:4px!important;padding:10px 12px!important;border:1px solid #eceef2!important;border-radius:12px!important;background:#fbfcfd!important}
+@media(max-width:720px){.v2849-version{bottom:8px;right:8px}.v284-card[data-card="basic"] .v284-card-body{padding:10px!important}}
+</style>
 </head>
 <body>
   <main class="admin-shell">
@@ -96,7 +108,7 @@
                 <div class="position-editor-toolbar">
                   <label><span>Textil</span><select id="positionProduct"><option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option></select></label>
                   <label><span>Seite</span><select id="positionSide"><option value="front">Vorderseite</option><option value="back">Rückseite</option></select></label>
-                  <label class="position-size-control"><span>Motivgröße <strong id="positionSizeValue">28%</strong></span><input id="positionSize" type="range" min="8" max="80" step="0.5" value="28"></label>
+
                 </div>
                 <div class="position-editor-layout">
                   <div class="position-stage" id="positionStage">
@@ -162,59 +174,27 @@
 
 
               <details class="form-section compact-accordion print-data-accordion">
-                <summary><span>Produktionsdaten</span><small>Druck & Fertigung</small></summary>
+                <summary><span>Produktionsdaten</span><small>Einmal für alle Textilien</small></summary>
                 <div class="accordion-body">
                   <div class="production-help">
-                    <strong>Produktionsdaten – bewusst einfach</strong>
-                    <span>Nur Druckverfahren sowie Breite und Höhe des Drucks eintragen.</span>
+                    <strong>Eine Druckvorgabe für T-Shirt, Polo und Hoodie</strong>
+                    <span>Die Werte gelten automatisch für alle Textilien im Shop.</span>
                   </div>
-                  <div class="print-data-grid">
-                    <section class="print-data-card" data-print-key="tshirtFront">
-                      <h4>T-Shirt · vorne</h4>
+                  <div class="print-data-grid global-print-data-grid">
+                    <section class="print-data-card">
+                      <h4>Vorderseite</h4>
                       <div class="print-data-fields simplified-print-data-fields">
-                        <label><span>Druckverfahren</span><select id="pdTshirtFrontMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdTshirtFrontWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtFrontHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckverfahren</span><select id="pdGlobalFrontMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdGlobalFrontWidth" type="number" min="0" step="0.1" inputmode="decimal" value="9"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdGlobalFrontHeight" type="number" min="0" step="0.1" inputmode="decimal" value="7"></label>
                       </div>
                     </section>
-                    <section class="print-data-card" data-print-key="tshirtBack">
-                      <h4>T-Shirt · hinten</h4>
+                    <section class="print-data-card">
+                      <h4>Rückseite</h4>
                       <div class="print-data-fields simplified-print-data-fields">
-                        <label><span>Druckverfahren</span><select id="pdTshirtBackMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdTshirtBackWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdTshirtBackHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                      </div>
-                    </section>
-                    <section class="print-data-card" data-print-key="poloFront">
-                      <h4>Polo · vorne</h4>
-                      <div class="print-data-fields simplified-print-data-fields">
-                        <label><span>Druckverfahren</span><select id="pdPoloFrontMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdPoloFrontWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdPoloFrontHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                      </div>
-                    </section>
-                    <section class="print-data-card" data-print-key="poloBack">
-                      <h4>Polo · hinten</h4>
-                      <div class="print-data-fields simplified-print-data-fields">
-                        <label><span>Druckverfahren</span><select id="pdPoloBackMethod"><option value="Flexdruck">Flexdruck</option><option value="DTF" selected>DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdPoloBackWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdPoloBackHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                      </div>
-                    </section>
-                    <section class="print-data-card" data-print-key="hoodieFront">
-                      <h4>Hoodie · vorne</h4>
-                      <div class="print-data-fields simplified-print-data-fields">
-                        <label><span>Druckverfahren</span><select id="pdHoodieFrontMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdHoodieFrontWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdHoodieFrontHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                      </div>
-                    </section>
-                    <section class="print-data-card" data-print-key="hoodieBack">
-                      <h4>Hoodie · hinten</h4>
-                      <div class="print-data-fields simplified-print-data-fields">
-                        <label><span>Druckverfahren</span><select id="pdHoodieBackMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdHoodieBackWidth" type="number" min="0" step="0.1" inputmode="decimal"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdHoodieBackHeight" type="number" min="0" step="0.1" inputmode="decimal"></label>
+                        <label><span>Druckverfahren</span><select id="pdGlobalBackMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (cm)</span><input id="pdGlobalBackWidth" type="number" min="0" step="0.1" inputmode="decimal" value="28"></label>
+                        <label><span>Druckhöhe (cm)</span><input id="pdGlobalBackHeight" type="number" min="0" step="0.1" inputmode="decimal" value="21.8"></label>
                       </div>
                     </section>
                   </div>
@@ -256,11 +236,42 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.4.5"></script>
+  <script src="/central-config.js?v=28.4.8"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.4.5"></script>
+  <script src="/admin.js?v=28.4.9"></script>
+
+<script id="v2849-fallback">
+(function(){
+  function combine(){
+    var form=document.getElementById('shopForm'); if(!form) return;
+    var top=form.querySelector('.top-settings-column'); if(!top) return;
+    var grund=top.querySelector('.form-section:not(.compact-colors-section):not(.embedded-display-section)');
+    var colors=form.querySelector('.compact-colors-section');
+    var display=form.querySelector('.embedded-display-section');
+    if(!grund) return;
+    grund.classList.add('v284-basic-combined');
+    if(colors && !grund.contains(colors)){ colors.classList.add('v284-basic-subsection','v284-basic-colors'); grund.appendChild(colors); }
+    if(display && !grund.contains(display)){ display.classList.add('v284-basic-subsection','v284-basic-display'); grund.appendChild(display); }
+    // Falls ein alter v28.4.7-JS-Lauf bereits separate Karten erzeugt hat, Inhalte zurückholen.
+    ['colors','display','logo'].forEach(function(key){
+      var card=document.querySelector('.v284-card[data-card="'+key+'"]');
+      if(!card) return;
+      var body=card.querySelector('.v284-card-body');
+      if(key==='colors' && body){ var el=body.querySelector('.compact-colors-section'); if(el&&!grund.contains(el)){el.classList.add('v284-basic-subsection','v284-basic-colors');grund.appendChild(el);} }
+      if(key==='display' && body){ var el2=body.querySelector('.embedded-display-section'); if(el2&&!grund.contains(el2)){el2.classList.add('v284-basic-subsection','v284-basic-display');grund.appendChild(el2);} }
+      if(key==='logo' && body){ var lg=body.querySelector('.shop-logo-inline'); var grid=grund.querySelector(':scope > .form-grid'); if(lg&&grid&&!grid.contains(lg)){grid.appendChild(lg);} }
+      card.style.display='none';
+    });
+    var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
+    if(basic && !basic.contains(grund)) basic.appendChild(grund);
+  }
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v28.4.9';document.body.appendChild(b);}
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
+  new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
 </body>
 </html>

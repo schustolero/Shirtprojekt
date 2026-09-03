@@ -1,0 +1,8 @@
+MASTER v28.4.7
+Variante A – hell & elegant
+- Admin-Seitenleiste hell und modern
+- Karten/Abstände/Eingabefelder verfeinert
+- Funktionen als moderne ON/OFF Toggle-Switches
+- Shop-aktiv/feste Druckschalter optisch vereinheitlicht
+- Mobile Darstellung angepasst
+- Bestehende Shop-/Firebase-Logik unverändert
