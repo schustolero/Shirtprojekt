@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=28.4.4`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=28.5.1`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -64,6 +64,15 @@
           // TG Solingen: feste Artikelnummern sowie aktuelle VK-/EK-Preise.
           // Diese Werte haben bewusst Vorrang vor älteren Firestore-Produktpreisen.
           if (slug === "tg-solingen") {
+            // v28.5.1: Einmalige Migration der bisherigen Hoodie-Standardgröße.
+            // Danach kann die Größe im Admin frei über den Regler gespeichert werden.
+            if (data.hoodieSizingVersion !== 1) {
+              merged.productPrint = merged.productPrint || {};
+              merged.productPrint.hoodie = merged.productPrint.hoodie || {};
+              merged.productPrint.hoodie.front = { ...(merged.productPrint.hoodie.front || {}), widthPct: 36 };
+              merged.productPrint.hoodie.back = { ...(merged.productPrint.hoodie.back || {}), widthPct: 46 };
+              merged.hoodieSizingVersion = 1;
+            }
             const commercial = {
               tshirt: { articleNo: "F140", price: 15, purchasePrice: 2.60 },
               polo: { articleNo: "F502", price: 25, purchasePrice: 5.61 },

@@ -1,0 +1,6 @@
+MASTER v28.5.1
+- Hoodie-Motivgröße wieder direkt im Admin per Regler anpassbar.
+- Keine sichtbaren Prozentwerte für Motivposition oder Motivgröße.
+- TG Solingen Hoodie Standard: vorne 36, hinten 46 (intern gespeichert).
+- Bestehende alte TG-Hoodie-Größen werden einmalig auf den neuen Standard migriert.
+- T-Shirt und Polo bleiben unverändert.
