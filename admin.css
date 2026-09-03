@@ -1585,7 +1585,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2861-motif-preview img{max-width:52px!important;max-height:32px!important}
 }
 
-/* v28.6.6 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
+/* v28.6.7 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
 .v2862-shared-motif{
   display:flex;
   align-items:center;
@@ -1636,9 +1636,9 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2862-side-row .v284-edit-print{width:100%}
 }
 
-/* build v28.6.6 */
+/* build v28.6.7 */
 
-/* v28.6.6 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
+/* v28.6.7 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
 .v2863-shared-motif{align-items:stretch;gap:14px}
 .v2863-motif-meta{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
 .v2863-shirt-bg{
@@ -1679,7 +1679,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 }
 
 
-/* v28.6.6 – Druckgröße direkt beim Download + Selects vollständig lesbar */
+/* v28.6.7 – Druckgröße direkt beim Download + Selects vollständig lesbar */
 .v2864-size-info{
   display:inline-flex;
   align-items:center;
@@ -1711,5 +1711,40 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2862-side-row .v2856-size-select{min-height:42px!important;height:42px!important;line-height:26px!important}
 }
 
-/* v28.6.6 – redundante Legacy-Bereiche bleiben technisch vorhanden, aber unsichtbar */
+/* v28.6.7 – redundante Legacy-Bereiche bleiben technisch vorhanden, aber unsichtbar */
 .fixed-print-accordion[hidden], .legacy-motifs-accordion[hidden]{display:none!important;}
+
+/* v28.6.7 – Motiv/Druckbereich kompakter */
+.v2862-product-groups{gap:6px!important}
+.v2862-product-group{border-radius:10px!important}
+.v2862-product-head{padding:6px 10px!important;min-height:30px!important}
+.v2862-product-head strong{font-size:11.5px!important}
+.v2862-product-head span{font-size:9.5px!important}
+.v2862-side-row{
+  grid-template-columns:minmax(90px,1fr) 126px auto!important;
+  gap:6px!important;
+  padding:5px 10px!important;
+  min-height:42px!important;
+}
+.v2862-side-row>span{font-size:10.5px!important}
+.v2862-side-row .v2856-size-select{
+  min-height:34px!important;
+  height:34px!important;
+  padding:4px 30px 4px 10px!important;
+  line-height:22px!important;
+  font-size:11.5px!important;
+}
+.v2862-side-row .v284-edit-print{
+  min-height:34px!important;
+  height:34px!important;
+  padding:5px 9px!important;
+  font-size:10px!important;
+}
+.v2862-shared-motif{margin-bottom:8px!important;padding:8px 10px!important}
+@media(max-width:760px){
+  .v2862-product-groups{gap:6px!important}
+  .v2862-side-row{grid-template-columns:88px 1fr auto!important;gap:5px!important;padding:5px 8px!important}
+  .v2862-side-row>span{grid-column:auto!important}
+  .v2862-side-row .v284-edit-print{width:auto!important}
+  .v2862-side-row .v2856-size-select{min-height:34px!important;height:34px!important;line-height:22px!important}
+}
