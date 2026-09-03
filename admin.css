@@ -1326,7 +1326,7 @@ body.v2853-reference #shopForm{display:block!important}
 .v2853-preview-head{height:46px;padding:0 14px;display:flex;align-items:center;justify-content:space-between;background:#fff;border-bottom:1px solid #e7eaee}
 .v2853-preview-head strong{font-size:14px}.v2853-preview-head small{color:#8a929c;font-size:11px}
 .v2853-preview-shell .position-stage{width:100%!important;max-width:none!important;height:min(58vw,560px)!important;min-height:420px!important;border:0!important;border-radius:0!important;background:#f4f5f7!important}
-.v2853-preview-shell .position-shirt{max-height:94%!important;max-width:86%!important}
+.v2853-preview-shell .position-shirt{inset:0!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:contain!important}
 .v2853-preview-shell .position-readout{padding:12px 14px!important;background:#fff!important;border-top:1px solid #e7eaee!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important}
 .v2853-preview-shell .position-readout p{margin:0!important;color:#808995!important;font-size:11px!important}
 .v2853-preview-shell .position-save-btn{width:auto!important;min-width:150px!important}
@@ -1381,4 +1381,50 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{grid-template-columns:1fr!important}
   .v2853-motif-manage .v284-tr{grid-template-columns:1fr .85fr .75fr .9fr!important}
   .v2853-motif-manage .v284-tr>span:nth-child(3){display:none!important}
+}
+
+
+/* v28.5.4 – Logo direkt neben dem Namen + 1:1 Positionsgeometrie */
+.v2854-name-logo-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(270px,360px);
+  gap:14px;
+  align-items:stretch;
+  margin-bottom:12px;
+}
+.v2854-name-logo-row .v2853-name{margin:0!important;align-self:stretch}
+.v2854-name-logo-row .v2853-name input{height:46px!important}
+.v2854-basic-logo{
+  margin:0!important;
+  padding:8px 10px!important;
+  min-height:64px!important;
+  display:grid!important;
+  grid-template-columns:58px minmax(0,1fr) 76px!important;
+  gap:9px!important;
+  align-items:center!important;
+  border:1px solid #e6e9ee!important;
+  border-radius:10px!important;
+  background:#fbfcfd!important;
+}
+.v2854-basic-logo .shop-logo-mini-preview{width:50px!important;height:50px!important;margin:0!important}
+.v2854-basic-logo .shop-logo-mini-preview img{width:100%!important;height:100%!important;object-fit:contain!important}
+.v2854-basic-logo .shop-logo-inline-controls{display:flex!important;align-items:center!important;gap:7px!important;min-width:0!important}
+.v2854-basic-logo .shop-logo-inline-controls strong{white-space:nowrap;font-size:11px!important}
+.v2854-basic-logo .shop-logo-file span{font-size:10px!important}
+.v2854-basic-logo .shop-logo-reset{padding:6px 8px!important;font-size:10px!important}
+.v2854-basic-logo .shop-logo-height{margin:0!important}
+.v2854-basic-logo .shop-logo-height span{font-size:10px!important}
+.v2854-basic-logo .shop-logo-height input{height:34px!important;padding:0 8px!important}
+
+/* Druckzone und Mockup bleiben auf derselben 0–100-Geometrie wie im Live-Shop. */
+.v2853-preview-shell .position-shirt{
+  left:0!important;top:0!important;right:0!important;bottom:0!important;
+  width:100%!important;height:100%!important;
+  max-width:none!important;max-height:none!important;
+  object-fit:contain!important;
+}
+
+@media(max-width:900px){
+  .v2854-name-logo-row{grid-template-columns:1fr}
+  .v2854-basic-logo{grid-template-columns:54px minmax(0,1fr) 72px!important}
 }

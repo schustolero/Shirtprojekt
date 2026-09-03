@@ -999,9 +999,17 @@ saveShopBtn.addEventListener("click",async()=>{
   const basic=makeCard('Grunddaten','v2853-basic-card');
   if(mainGrid){
     mainGrid.classList.add('v2853-basic-grid');
-    // Name zuerst und breit, Rest kompakt.
+    // Name zuerst; Shop-Logo sitzt direkt daneben.
     const name=mainGrid.querySelector('.v2850-name-field');
     if(name) name.classList.add('v2853-name');
+    const nameLogoRow=document.createElement('div');
+    nameLogoRow.className='v2854-name-logo-row';
+    if(name) nameLogoRow.appendChild(name);
+    if(logo){
+      logo.classList.add('v2854-basic-logo');
+      nameLogoRow.appendChild(logo);
+    }
+    if(nameLogoRow.childElementCount) basic.body.appendChild(nameLogoRow);
     basic.body.appendChild(mainGrid);
   }
   if(products){
@@ -1010,9 +1018,8 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   left.appendChild(basic.card);
 
-  // Darstellung: Logo + Größenregler + Texte/Vorschau.
+  // Darstellung: Größenregler + Texte/Vorschau. Das Shop-Logo sitzt jetzt bei den Grunddaten.
   const appearance=makeCard('Darstellung','v2853-appearance-card');
-  if(logo) appearance.body.appendChild(logo);
   if(sizeControl){
     sizeControl.classList.add('v2853-size-control');
     appearance.body.appendChild(sizeControl);
@@ -1124,5 +1131,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.3');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.4');
 })();
