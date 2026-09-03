@@ -1789,3 +1789,80 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 .v2853-colors-card{display:none!important}
 @media(max-width:760px){.v2869-inline-colors .compact-color-row{grid-template-columns:1fr 40px 1fr 40px!important}.v2869-inline-colors .v2850-accent{grid-column:1/-1!important;max-width:56px!important}}
 /* build v28.6.9 */
+
+
+/* v28.7.0 – Motiv/Druckbereich wie Referenz: Motivkopf + Produktkarten mit Vorschau */
+.v2853-print-card .v2853-card-body{padding:16px!important}
+.v2853-print-card .v2855-motif-intro{margin-bottom:12px!important}
+.v2870-shared-motif{
+  display:grid!important;
+  grid-template-columns:92px minmax(220px,1fr) auto!important;
+  gap:16px!important;
+  align-items:center!important;
+  padding:14px 16px!important;
+  margin-bottom:14px!important;
+  border:1px solid #e2e7ed!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(15,23,42,.03)!important;
+}
+.v2870-motif-preview{width:78px!important;height:78px!important;border-radius:16px!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:9px!important}
+.v2870-motif-copy{display:flex!important;flex-direction:column!important;gap:4px!important;min-width:0!important}
+.v2870-motif-copy>strong{font-size:14px!important;color:#1f2937!important}
+.v2870-motif-copy>span{font-size:11.5px!important;color:#6b7280!important}
+.v2870-motif-copy .v2863-downloads{margin-top:7px!important}
+.v2870-size-summary .v2864-size-info{
+  border:0!important;background:transparent!important;padding:0!important;gap:0!important;min-height:0!important;
+}
+.v2870-size-summary .v2864-size-info span{
+  min-width:105px!important;padding:7px 14px!important;text-align:center!important;border-left:1px solid #e5e7eb!important;font-size:11px!important;
+}
+.v2870-size-summary .v2864-size-info b{display:block!important;font-size:11px!important;margin-bottom:2px!important}
+.v2870-product-groups{display:grid!important;gap:10px!important}
+.v2870-product-card{
+  display:grid!important;
+  grid-template-columns:180px minmax(180px,1fr) minmax(180px,1fr)!important;
+  gap:18px!important;
+  align-items:center!important;
+  padding:11px 14px!important;
+  border:1px solid #e3e8ee!important;
+  border-radius:14px!important;
+}
+.v2870-product-card.v2862-product-tshirt{background:#f5f8fc!important;border-color:#dfe7f1!important}
+.v2870-product-card.v2862-product-polo{background:#fffaf0!important;border-color:#eee2c6!important}
+.v2870-product-card.v2862-product-hoodie{background:#f3f9f6!important;border-color:#d9e9e0!important}
+.v2870-product-identity{display:flex!important;align-items:center!important;gap:12px!important;min-width:0!important}
+.v2870-product-identity strong{font-size:13px!important;color:#202833!important;white-space:nowrap!important}
+.v2870-product-thumb{
+  width:62px!important;height:72px!important;display:flex!important;align-items:center!important;justify-content:center!important;
+  overflow:hidden!important;border-radius:10px!important;background:var(--thumb-bg,#0758b2)!important;position:relative!important;
+}
+.v2870-product-thumb img{width:100%!important;height:100%!important;object-fit:contain!important;mix-blend-mode:multiply!important;filter:contrast(.98) saturate(.9)!important}
+.v2870-side-control{display:grid!important;grid-template-columns:1fr!important;gap:6px!important;padding-left:16px!important;border-left:1px solid rgba(31,41,55,.09)!important}
+.v2870-side-control>span{font-size:10.5px!important;font-weight:700!important;color:#596270!important}
+.v2870-side-control .v2856-size-select{height:36px!important;min-height:36px!important;width:100%!important;max-width:180px!important;padding:5px 32px 5px 10px!important;font-size:11.5px!important}
+.v2870-side-control .v284-edit-print{height:34px!important;width:max-content!important;min-width:96px!important;padding:5px 12px!important;font-size:10.5px!important}
+/* Produktionsdaten bleiben direkt beim Motiv; optisch kompakt */
+.v2853-print-card .v2855-production-divider{margin-top:14px!important;padding-top:14px!important}
+.v2853-print-card .global-print-data-grid{max-width:100%!important}
+@media(max-width:980px){
+  .v2870-product-card{grid-template-columns:150px 1fr 1fr!important;gap:12px!important}
+  .v2870-shared-motif{grid-template-columns:78px 1fr!important}
+  .v2870-size-summary{grid-column:1/-1!important}
+  .v2870-size-summary .v2864-size-info{justify-content:flex-start!important}
+  .v2870-size-summary .v2864-size-info span:first-child{border-left:0!important;padding-left:0!important}
+}
+@media(max-width:720px){
+  .v2870-shared-motif{grid-template-columns:68px 1fr!important;padding:10px!important;gap:10px!important}
+  .v2870-motif-preview{width:60px!important;height:60px!important;border-radius:12px!important}
+  .v2870-product-card{grid-template-columns:1fr!important;gap:8px!important;padding:10px!important}
+  .v2870-product-identity{padding-bottom:7px!important;border-bottom:1px solid rgba(31,41,55,.08)!important}
+  .v2870-product-thumb{width:48px!important;height:56px!important}
+  .v2870-side-control{grid-template-columns:78px minmax(0,1fr) auto!important;align-items:center!important;gap:6px!important;padding-left:0!important;border-left:0!important}
+  .v2870-side-control>span{font-size:10px!important}
+  .v2870-side-control .v2856-size-select{max-width:none!important;width:100%!important}
+  .v2870-side-control .v284-edit-print{min-width:0!important;width:auto!important}
+  .v2870-size-summary .v2864-size-info{width:100%!important;justify-content:space-between!important}
+  .v2870-size-summary .v2864-size-info span{min-width:0!important;flex:1!important;padding:6px 10px!important}
+}
+/* build v28.7.0 */
