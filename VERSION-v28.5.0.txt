@@ -1,0 +1,6 @@
+MASTER v28.5.0
+- Grunddaten neu geordnet: Name zuerst.
+- Shop-ID, Bestellpräfix und alter Sammelpreis nur noch intern.
+- Produkte & Preise kompakt sichtbar: F140/F502/F421 inkl. VK/EK.
+- Farben, Logo und Darstellung in einem Bereich "Design & Farben" zusammengeführt.
+- Prozent-X/Y/Größe im visuellen Positionierer nicht mehr sichtbar.

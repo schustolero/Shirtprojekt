@@ -1187,3 +1187,48 @@ body.v284-admin{background:var(--vA-bg);padding-left:236px;color:var(--vA-ink)}
  .v284-basic-display .form-grid label:last-child{grid-column:auto!important}
  .v284-basic-subsection{margin-top:10px!important;padding-top:10px!important}
 }
+
+/* ============================================================
+   MASTER v28.5.0 – Grunddaten logisch neu geordnet
+   ============================================================ */
+.v2850-basic>.form-grid.v2850-main-fields{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 180px!important;gap:10px 12px!important}
+.v2850-basic .v2850-name-field{grid-column:1/-1!important;margin-top:0!important}
+.v2850-basic .v2850-name-field input{font-size:15px!important;font-weight:750!important}
+.v2850-basic .v2850-active-field{margin:16px 0 0!important;align-self:end!important;min-height:38px!important}
+.v2850-products,.v2850-design{grid-column:1/-1!important;margin-top:4px;padding-top:12px;border-top:1px solid #edf0f3}
+.v2850-subtitle{font-size:11px;font-weight:850;text-transform:uppercase;letter-spacing:.06em;color:#7a818c;margin:0 0 9px}
+.v2850-product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.v2850-product{display:grid;grid-template-columns:1fr auto;align-items:center;column-gap:8px;row-gap:2px;padding:10px 12px;background:#fbfcfd;border:1px solid #e7eaf0;border-radius:11px}
+.v2850-product strong{font-size:12px}.v2850-product span{font-size:10px;color:#8a9099}.v2850-product b{font-size:15px;color:#202329}.v2850-product small{font-size:10px;color:#8a9099;text-align:right}
+.v2850-design .shop-logo-inline{margin:0 0 10px!important}
+.v2850-design-grid{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr);gap:10px 14px;align-items:start}
+.v2850-design-grid>.form-section{margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+.v2850-design-grid>.form-section>h3{display:none!important}
+.v2850-design-grid .form-grid{margin:0!important}
+.v2850-design-grid .compact-color-row{display:grid!important;grid-template-columns:minmax(0,1fr) 44px minmax(0,1fr) 44px!important;gap:7px!important}
+.v2850-design-grid .display-grid{display:grid!important;grid-template-columns:62px minmax(180px,.8fr) minmax(200px,1fr)!important;gap:7px 10px!important}
+.v2850-design-grid .display-grid label.wide{grid-column:2/-1!important}
+.v2850-design-grid label{margin:0!important}
+.v2850-design-grid label span{font-size:10px!important;margin-bottom:4px!important}
+.v2850-design-grid input:not([type="color"]),.v2850-design-grid select{height:36px!important;min-height:36px!important;padding:7px 10px!important}
+.v2850-design-grid input[type="color"]{width:40px!important;height:36px!important;min-height:36px!important;padding:3px!important}
+/* Prozentwerte gehören nicht in die normale Bedienung. Motiv wird direkt auf dem Textil positioniert. */
+.v284-card[data-card="motif"] .position-readout>div,.v284-card[data-card="motif"] .position-readout>p{display:none!important}
+.v284-card[data-card="motif"] .position-readout{display:block!important}
+.v284-card[data-card="motif"] .position-save-btn{width:100%!important}
+
+@media(max-width:900px){
+ .v2850-basic>.form-grid.v2850-main-fields{grid-template-columns:1fr 1fr!important}
+ .v2850-basic .v2850-active-field{grid-column:1/-1!important;margin-top:0!important}
+ .v2850-design-grid{grid-template-columns:1fr!important}
+ .v2850-product-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:720px){
+ .v2850-basic>.form-grid.v2850-main-fields{grid-template-columns:1fr!important}
+ .v2850-basic .v2850-name-field,.v2850-basic .v2850-active-field{grid-column:auto!important}
+ .v2850-product-grid{grid-template-columns:1fr!important}
+ .v2850-product{grid-template-columns:1fr auto}
+ .v2850-design-grid .compact-color-row{grid-template-columns:1fr 42px!important}
+ .v2850-design-grid .display-grid{grid-template-columns:52px 1fr!important}
+ .v2850-design-grid .display-grid label:nth-child(3),.v2850-design-grid .display-grid label.wide{grid-column:1/-1!important}
+}

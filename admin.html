@@ -5,10 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=28.4.9">
+  <link rel="stylesheet" href="admin.css?v=28.5.0">
 
 <style id="v2849-critical">
-/* v28.4.9 fallback: Grunddaten garantiert zusammengefasst */
+/* v28.5.0 fallback: Grunddaten garantiert zusammengefasst */
 .v2849-version{position:fixed;right:12px;bottom:10px;z-index:9999;font:700 10px/1.2 system-ui,sans-serif;color:#8a6b00;background:#fff7cf;border:1px solid #f0d66b;border-radius:999px;padding:5px 8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
 .v284-card[data-card="display"],.v284-card[data-card="colors"],.v284-card[data-card="logo"]{display:none!important}
 .v284-card[data-card="basic"] .v284-card-body{padding:14px 18px 18px!important}
@@ -72,34 +72,48 @@
             <form id="shopForm" class="shop-form" hidden>
               <div class="top-editor-grid">
   <div class="top-settings-column">
-    <div class="form-section"><h3>Grunddaten</h3><div class="form-grid">
-                <label><span>Shop-ID</span><input id="shopId" type="text" required placeholder="z. B. tg-solingen"></label>
+    <div class="form-section"><h3>Grunddaten</h3><div class="form-grid v2850-main-fields">
+                <label class="wide v2850-name-field"><span>Name</span><input id="shopName" type="text" required></label>
                 <label><span>Shop-Typ</span><select id="shopType"><option value="simple">Simple</option><option value="motifs">Motiv</option><option value="designer">Designer</option></select></label>
-                <label class="wide"><span>Name</span><input id="shopName" type="text" required></label>
-                <label><span>Preis pro Shirt (€)</span><input id="shopPrice" type="number" min="0" step="0.01" value="15"></label>
-                <label><span>Bestellpräfix</span><input id="shopPrefix" type="text" maxlength="8" placeholder="TG"></label>
-                <label class="wide"><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
-                <label class="check-row wide"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
-                <div class="shop-logo-inline wide">
-                  <div class="shop-logo-mini-preview"><img id="logoPreview" alt="Shop-Logo Vorschau"></div>
-                  <div class="shop-logo-inline-controls">
-                    <strong>Shop-Logo</strong>
-                    <label class="shop-logo-file"><span>Logo ersetzen</span><input id="logoUpload" type="file" accept="image/*"></label>
-                    <button id="removeLogoBtn" class="ghost-btn shop-logo-reset" type="button">Zurücksetzen</button>
+                <label><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
+                <label class="check-row v2850-active-field"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
+
+                <input id="shopId" type="hidden" required>
+                <input id="shopPrice" type="hidden" value="15">
+                <input id="shopPrefix" type="hidden" value="">
+
+                <div class="v2850-products wide" aria-label="Produkte und Preise">
+                  <div class="v2850-subtitle">Produkte &amp; Preise</div>
+                  <div class="v2850-product-grid">
+                    <div class="v2850-product"><strong>T-Shirt</strong><span>F140</span><b>15,00 €</b><small>EK 2,60 €</small></div>
+                    <div class="v2850-product"><strong>Polo-Shirt</strong><span>F502</span><b>25,00 €</b><small>EK 5,61 €</small></div>
+                    <div class="v2850-product"><strong>Hoodie</strong><span>F421</span><b>30,00 €</b><small>EK 9,90 €</small></div>
                   </div>
-                  <label class="shop-logo-height"><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                </div>
+
+                <div class="v2850-design wide">
+                  <div class="v2850-subtitle">Design &amp; Farben</div>
+                  <div class="shop-logo-inline wide">
+                    <div class="shop-logo-mini-preview"><img id="logoPreview" alt="Shop-Logo Vorschau"></div>
+                    <div class="shop-logo-inline-controls">
+                      <strong>Shop-Logo</strong>
+                      <label class="shop-logo-file"><span>Logo ersetzen</span><input id="logoUpload" type="file" accept="image/*"></label>
+                      <button id="removeLogoBtn" class="ghost-btn shop-logo-reset" type="button">Zurücksetzen</button>
+                    </div>
+                    <label class="shop-logo-height"><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                  </div>
                 </div>
               </div></div>
-    <div class="form-section compact-colors-section"><h3>Farben</h3><div class="form-grid compact-color-row">
-                <label><span>Shirt</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
-                <label><span>Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
-                <label><span>Motiv</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
-                <label><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
+    <div class="form-section compact-colors-section v2850-design-fragment"><div class="form-grid compact-color-row">
+                <label><span>Shirtfarbe</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
+                <label class="v2850-color-picker"><span>Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
+                <label><span>Motivfarbe</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
+                <label class="v2850-color-picker"><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
               </div></div>
-<div class="form-section embedded-display-section"><h3>Darstellung & Texte</h3><div class="form-grid display-grid">
-                <label><span>Akzentfarbe</span><input id="accentColor" type="color" value="#111111"></label>
+<div class="form-section embedded-display-section v2850-design-fragment"><div class="form-grid display-grid">
+                <label class="v2850-accent"><span>Akzent</span><input id="accentColor" type="color" value="#111111"></label>
                 <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
-                <label class="wide"><span>Überschrift</span><input id="designerHeading" type="text"></label>
+                <label><span>Überschrift</span><input id="designerHeading" type="text"></label>
                 <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
               </div></div>
   </div>
@@ -241,7 +255,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=28.4.9"></script>
+  <script src="/admin.js?v=28.5.0"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -268,7 +282,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v28.4.9';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v28.5.0';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

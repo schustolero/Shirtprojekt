@@ -829,16 +829,25 @@ saveShopBtn.addEventListener("click",async()=>{
   // Shop-Logo, Farben sowie Darstellung & Texte werden in Grunddaten integriert,
   // statt wieder als große Einzelkarten untereinander zu erscheinen.
   if(grund){
-    grund.classList.add("v284-inner-section","v284-basic-combined");
-    if(colors){
-      colors.classList.add("v284-inner-section","v284-basic-subsection","v284-basic-colors");
-      grund.appendChild(colors);
+    grund.classList.add("v284-inner-section","v284-basic-combined","v2850-basic");
+    const designHost=grund.querySelector(".v2850-design");
+    if(designHost){
+      const designGrid=document.createElement("div");
+      designGrid.className="v2850-design-grid";
+      if(colors){
+        colors.classList.add("v284-inner-section","v284-basic-colors");
+        designGrid.appendChild(colors);
+      }
+      if(display){
+        display.classList.add("v284-inner-section","v284-basic-display");
+        designGrid.appendChild(display);
+      }
+      designHost.appendChild(designGrid);
+    }else{
+      if(colors) grund.appendChild(colors);
+      if(display) grund.appendChild(display);
     }
-    if(display){
-      display.classList.add("v284-inner-section","v284-basic-subsection","v284-basic-display");
-      grund.appendChild(display);
-    }
-    card("Grunddaten","basic",grund,true);
+    card("Grunddaten & Produkte","basic",grund,true);
   }
   if(functions){ const body=functions.querySelector(".accordion-body")||functions; card("Funktionen","functions",body,true); }
 

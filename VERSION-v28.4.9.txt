@@ -1,0 +1,4 @@
+Master v28.4.9
+- Grunddaten-Fallback direkt in admin.html
+- Farben, Darstellung und Shop-Logo werden garantiert in Grunddaten zusammengeführt
+- sichtbarer Versionsindikator v28.4.9
