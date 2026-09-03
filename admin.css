@@ -1776,3 +1776,16 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2853-print-card .v2862-side-row .v2856-size-select{width:100%!important}
   .v2853-print-card .v2862-side-row .v284-edit-print{width:auto!important}
 }
+
+
+/* v28.6.9 – Farben in Darstellung integriert */
+.v2869-appearance-colors .v284-card-body{display:grid!important;gap:12px!important}
+.v2869-inline-colors{margin:0!important;padding:10px 0 0!important;border-top:1px solid #e8ebef!important;background:transparent!important;box-shadow:none!important}
+.v2869-inline-colors .compact-color-row{display:grid!important;grid-template-columns:minmax(110px,1fr) 42px minmax(110px,1fr) 42px 56px!important;gap:8px!important;align-items:end!important}
+.v2869-inline-colors label{margin:0!important}
+.v2869-inline-colors label span{font-size:10px!important;color:#737b86!important;margin-bottom:3px!important}
+.v2869-inline-colors input[type=text]{height:34px!important;min-height:34px!important;padding:6px 8px!important;font-size:11px!important}
+.v2869-inline-colors input[type=color]{width:40px!important;height:34px!important;min-height:34px!important;padding:2px!important;border-radius:7px!important}
+.v2853-colors-card{display:none!important}
+@media(max-width:760px){.v2869-inline-colors .compact-color-row{grid-template-columns:1fr 40px 1fr 40px!important}.v2869-inline-colors .v2850-accent{grid-column:1/-1!important;max-width:56px!important}}
+/* build v28.6.9 */

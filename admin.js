@@ -1039,28 +1039,28 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   left.appendChild(basic.card);
 
-  // Darstellung: nur Texte/Vorschau. Motivgröße liegt im Motiv-/Druckbereich.
-  const appearance=makeCard('Darstellung','v2853-appearance-card');
+  // Darstellung & Farben: alle optischen Einstellungen kompakt in einer Karte.
+  const appearance=makeCard('Darstellung & Farben','v2853-appearance-card v2869-appearance-colors');
+  let detachedAccent=null;
   if(display){
-    const accent=display.querySelector('.v2850-accent');
-    if(accent) accent.remove(); // wandert zu Farben
+    detachedAccent=display.querySelector('.v2850-accent');
+    if(detachedAccent) detachedAccent.remove();
     display.classList.add('v2853-display');
     appearance.body.appendChild(display);
-    if(accent) display.dataset.detachedAccent='1', display._detachedAccent=accent;
   }
-  left.appendChild(appearance.card);
-
-  // Farben: Shirt, Motiv, Akzent kompakt in einer Reihe.
-  const colorCard=makeCard('Farben','v2853-colors-card');
-  if(colors) colorCard.body.appendChild(colors);
-  const detachedAccent=display?._detachedAccent;
-  if(detachedAccent){
-    let grid=colorCard.body.querySelector('.compact-color-row');
-    if(grid) grid.appendChild(detachedAccent);
-    else colorCard.body.appendChild(detachedAccent);
+  if(colors){
+    colors.classList.add('v2869-inline-colors');
+    appearance.body.appendChild(colors);
+    if(detachedAccent){
+      let grid=colors.querySelector('.compact-color-row');
+      if(grid) grid.appendChild(detachedAccent);
+      else colors.appendChild(detachedAccent);
+    }
+  } else if(detachedAccent){
+    appearance.body.appendChild(detachedAccent);
   }
   if(designHost) designHost.remove();
-  left.appendChild(colorCard.card);
+  left.appendChild(appearance.card);
 
   // Artikel + große Vorschau rechts.
   const article=makeCard('Artikel','v2853-article-card');
@@ -1257,5 +1257,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.8');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.9');
 })();
