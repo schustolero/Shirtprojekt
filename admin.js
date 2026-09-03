@@ -1111,7 +1111,7 @@ saveShopBtn.addEventListener("click",async()=>{
   const product=document.getElementById('positionProduct');
   const side=document.getElementById('positionSide');
 
-  // v28.5.6: Artikelauswahl immer vollständig halten.
+  // v28.5.7: Artikelauswahl immer vollständig halten.
   if(product){
     const keep=product.value || 'tshirt';
     product.innerHTML='<option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option>';
@@ -1188,5 +1188,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.6');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.7');
 })();
