@@ -1791,7 +1791,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 /* build v28.6.9 */
 
 
-/* v28.7.0 – Motiv/Druckbereich wie Referenz: Motivkopf + Produktkarten mit Vorschau */
+/* v28.7.3 – Motiv/Druckbereich wie Referenz: Motivkopf + Produktkarten mit Vorschau */
 .v2853-print-card .v2853-card-body{padding:16px!important}
 .v2853-print-card .v2855-motif-intro{margin-bottom:12px!important}
 .v2870-shared-motif{
@@ -1865,17 +1865,4 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2870-size-summary .v2864-size-info{width:100%!important;justify-content:space-between!important}
   .v2870-size-summary .v2864-size-info span{min-width:0!important;flex:1!important;padding:6px 10px!important}
 }
-/* build v28.7.0 */
-
-
-/* v28.7.2 – sichere ON/OFF-Darstellung ohne DOM-Umbau */
-.v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
-.v2853-functions-card .feature-grid label{position:relative!important;display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;align-items:center!important;gap:10px!important;min-height:48px!important;padding:9px 11px!important;border:1px solid #e5e9ef!important;border-radius:12px!important;background:#fbfcfe!important}
-.v2853-functions-card .feature-grid label>span{font-weight:750!important;color:#303844!important}
-.v2853-functions-card .feature-grid label::after{content:'OFF';font-size:9.5px!important;font-weight:900!important;letter-spacing:.04em!important;color:#98a0aa!important}
-.v2853-functions-card .feature-grid label:has(input:checked){background:#fffdf5!important;border-color:#eadb9d!important}
-.v2853-functions-card .feature-grid label:has(input:checked)::after{content:'ON';color:#8a6b00!important}
-.v2853-functions-card .feature-grid input[type=checkbox]{width:42px!important;height:23px!important;margin:0!important}
-.v284-nav [data-jump="production"]{display:none!important}
-@media(max-width:720px){.v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{grid-template-columns:1fr!important}}
-/* build v28.7.2 */
+/* build v28.7.3 */
