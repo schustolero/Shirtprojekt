@@ -1637,3 +1637,43 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 }
 
 /* build v28.6.2 */
+
+/* v28.6.3 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
+.v2863-shared-motif{align-items:stretch;gap:14px}
+.v2863-motif-meta{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
+.v2863-shirt-bg{
+  background:var(--shirt-preview-bg,#0758b2)!important;
+  border-color:rgba(0,0,0,.12)!important;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.16),0 2px 7px rgba(16,24,40,.10)!important;
+}
+.v2863-shirt-bg img{max-width:88%!important;max-height:88%!important;object-fit:contain}
+.v2863-downloads{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.v2863-download-btn{
+  display:inline-flex;align-items:center;justify-content:center;min-height:30px;padding:6px 10px;
+  border-radius:8px;border:1px solid #d7dde5;background:#fff;color:#27313f;text-decoration:none;
+  font-size:10px;font-weight:750;line-height:1.1;box-shadow:0 1px 2px rgba(16,24,40,.04)
+}
+.v2863-download-btn:hover{border-color:#e2b900;background:#fffbea}
+.v2863-download-btn.secondary{background:#f7f8fa}
+.v2853-print-card .v2855-production-divider{margin-top:14px;padding-top:14px;border-top:1px solid #e6eaf0}
+.v2853-print-card .production-help{margin:7px 0 10px;padding:9px 11px;border-radius:9px;background:#f7f9fc;border:1px solid #e4e9f0}
+.v2853-print-card .production-help strong{font-size:11px}
+.v2853-print-card .production-help span{font-size:9px}
+.v2853-print-card .global-print-data-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v2853-print-card .print-data-card{padding:10px;border-radius:10px;background:#fbfcfd;border:1px solid #e5e9ef}
+.v2853-print-card .print-data-card h4{margin:0 0 7px;font-size:11px}
+.v2853-print-card .simplified-print-data-fields{grid-template-columns:1.35fr .8fr .8fr;gap:7px}
+.v2853-print-card .simplified-print-data-fields label span{font-size:9px}
+.v2853-print-card .simplified-print-data-fields input,
+.v2853-print-card .simplified-print-data-fields select{min-height:34px;height:34px;padding:6px 8px;font-size:11px}
+.v2853-print-card .v2863-production-file-row{margin:0 0 10px}
+.v2853-print-card .v2863-production-file-row label{display:grid;gap:5px}
+.v2853-print-card .v2863-production-file-row label span{font-size:10px;font-weight:700;color:#4d5663}
+.v2853-print-card #productionFileUrl{height:34px;min-height:34px;font-size:11px}
+@media(max-width:720px){
+  .v2863-shared-motif{gap:10px}
+  .v2863-downloads{flex-direction:column;align-items:flex-start}
+  .v2853-print-card .global-print-data-grid{grid-template-columns:1fr}
+  .v2853-print-card .simplified-print-data-fields{grid-template-columns:1fr 1fr}
+  .v2853-print-card .simplified-print-data-fields label:first-child{grid-column:1/-1}
+}

@@ -302,6 +302,7 @@ const printDataFields = {
   front: {method:document.getElementById("pdGlobalFrontMethod"),width:document.getElementById("pdGlobalFrontWidth"),height:document.getElementById("pdGlobalFrontHeight")},
   back: {method:document.getElementById("pdGlobalBackMethod"),width:document.getElementById("pdGlobalBackWidth"),height:document.getElementById("pdGlobalBackHeight")}
 };
+const productionFileUrl = document.getElementById("productionFileUrl");
 
 function normalizePrintMethod(value){
   const method=String(value||"").trim();
@@ -540,6 +541,7 @@ function selectShop(id){
   shopFields.hoodieFrontX.value=Number(hoodie.front?.xPct ?? 68); shopFields.hoodieFrontY.value=Number(hoodie.front?.yPct ?? 22); shopFields.hoodieFrontW.value=Number(hoodie.front?.widthPct ?? 36);
   shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); { const hb=Number(hoodie.back?.widthPct ?? 50); shopFields.hoodieBackW.value=(hb===46?50:hb); }
   fillPrintData(cfg);
+  if(productionFileUrl) productionFileUrl.value = cfg.productionFile || cfg.printData?.productionFile || "";
   updateFeatureVisibility(cfg.shopType||"simple");
   updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState("Bereit zum Bearbeiten."); renderShopList();
 }
@@ -627,6 +629,7 @@ function buildShopConfig(){
     hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,80,50)}}
   };
   cfg.printData=collectPrintData();
+  cfg.productionFile=(productionFileUrl?.value||"").trim();
   if(id === "tg-solingen") {
     cfg.hoodieSizingVersion = 1;
     const oldProducts = Array.isArray(old.products) ? old.products : [];
@@ -1116,6 +1119,7 @@ saveShopBtn.addEventListener("click",async()=>{
       divider.innerHTML='<strong>Druckdaten</strong><span>Gelten für T-Shirt, Polo und Hoodie.</span>';
       print.body.appendChild(divider);
       print.body.appendChild(production);
+      productionCard.remove();
     }
   }
   right.appendChild(print.card);
@@ -1156,11 +1160,8 @@ saveShopBtn.addEventListener("click",async()=>{
     const motif=workingMotifs?.[0];
     const motifSrc=motif?.file?safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||'_simple'):'';
     const motifName=motif?.name||'Motiv';
-    const motifHex=(shopFields.fixedMotifHex?.value||'#f6c951').trim();
-    const hex=motifHex.replace('#','');
-    const rgb=hex.length===6?[parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)]:[246,201,81];
-    const luminance=(0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2])/255;
-    const contrastClass=luminance>0.62?'v2861-dark-bg':'v2861-light-bg';
+    const shirtHex=(shopFields.fixedShirtHex?.value||'#0758b2').trim();
+    const productionHref=(productionFileUrl?.value||'').trim();
     const products=[
       {key:'tshirt',name:'T-Shirt',tone:'v2862-product-tshirt',front:shopFields.tshirtFrontW,back:shopFields.tshirtBackW},
       {key:'polo',name:'Polo-Shirt',tone:'v2862-product-polo',front:shopFields.poloFrontW,back:shopFields.poloBackW},
@@ -1180,7 +1181,9 @@ saveShopBtn.addEventListener("click",async()=>{
       return label==='small'?38:label==='medium'?50:60;
     };
     const optionHtml=(p,s,w)=>`<option value="small" ${sizeLabel(p,s,w)==='small'?'selected':''}>Klein</option><option value="medium" ${sizeLabel(p,s,w)==='medium'?'selected':''}>Mittel</option><option value="large" ${sizeLabel(p,s,w)==='large'?'selected':''}>Groß</option>`;
-    const sharedMotif=`<div class="v2862-shared-motif"><div><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span></div><span class="v2861-motif-preview ${contrastClass}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
+    const motifDownload=motifSrc?`<a class="v2863-download-btn" href="${motifSrc}" download>Motivdatei herunterladen</a>`:'';
+    const productionDownload=productionHref?`<a class="v2863-download-btn secondary" href="${productionHref}" target="_blank" rel="noopener">Produktionsdatei öffnen</a>`:'';
+    const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
     table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
       const item=products.find(x=>x.key===sel.dataset.product);
@@ -1203,6 +1206,16 @@ saveShopBtn.addEventListener("click",async()=>{
     shopFields.fixedMotifHex.dataset.v2861Bound='1';
     shopFields.fixedMotifHex.addEventListener('input',renderMergedPrintTable);
     shopFields.fixedMotifHex.addEventListener('change',renderMergedPrintTable);
+  }
+  if(shopFields.fixedShirtHex && !shopFields.fixedShirtHex.dataset.v2863Bound){
+    shopFields.fixedShirtHex.dataset.v2863Bound='1';
+    shopFields.fixedShirtHex.addEventListener('input',renderMergedPrintTable);
+    shopFields.fixedShirtHex.addEventListener('change',renderMergedPrintTable);
+  }
+  if(productionFileUrl && !productionFileUrl.dataset.v2863Bound){
+    productionFileUrl.dataset.v2863Bound='1';
+    productionFileUrl.addEventListener('input',renderMergedPrintTable);
+    productionFileUrl.addEventListener('change',renderMergedPrintTable);
   }
 
   const modelInput=document.getElementById('v2853Model');
@@ -1231,5 +1244,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.2');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.3');
 })();
