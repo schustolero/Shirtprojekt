@@ -453,6 +453,7 @@ function bindPositionEditor(){
   positionMotif.addEventListener("pointerup", ev => { dragging = false; positionMotif.releasePointerCapture?.(ev.pointerId); });
   positionMotif.addEventListener("pointercancel", () => { dragging = false; });
   savePositionBtn?.addEventListener("click", () => {
+    positionSaveRequested = true;
     saveShopBtn?.click();
   });
 }
@@ -460,6 +461,20 @@ function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
 function setShopState(message, kind=""){ shopSaveState.textContent=message; shopSaveState.className=kind?`message-${kind}`:""; }
+
+let positionSaveRequested = false;
+function flashSavedButton(btn, normalText){
+  if(!btn) return;
+  const original = normalText || btn.dataset.normalText || btn.textContent.trim();
+  btn.dataset.normalText = original;
+  btn.classList.add("saved-state");
+  btn.textContent = "✓ Gespeichert";
+  clearTimeout(btn._savedTimer);
+  btn._savedTimer = setTimeout(()=>{
+    btn.classList.remove("saved-state");
+    btn.textContent = original;
+  }, 1800);
+}
 
 function switchAdminTab(name){
   tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
@@ -631,8 +646,11 @@ saveShopBtn.addEventListener("click",async()=>{
     const cfg=buildShopConfig(); saveShopBtn.disabled=true; setShopState("Wird gespeichert …");
     const serialized=JSON.stringify(cfg); if(serialized.length>900000) throw new Error("Shopdaten sind zu groß. Bitte kleinere Motivbilder verwenden.");
     await db.collection("shops").doc(cfg.customerId).set(cfg,{merge:false});
-    selectedShopId=cfg.customerId; selectedShopOriginal=deepClone(cfg); shopConfigs.set(cfg.customerId,deepClone(cfg)); shopFields.id.disabled=true; previewShopBtn.hidden=false; previewShopBtn.href=`/?shop=${encodeURIComponent(cfg.customerId)}`; shopEditorTitle.textContent=cfg.customerName; renderShopList(); setShopState("Gespeichert – Änderungen sind sofort live.","ok");
-  }catch(err){ console.error(err); setShopState(err.message||"Speichern fehlgeschlagen.","error"); alert(err.message||"Shop konnte nicht gespeichert werden."); }
+    selectedShopId=cfg.customerId; selectedShopOriginal=deepClone(cfg); shopConfigs.set(cfg.customerId,deepClone(cfg)); shopFields.id.disabled=true; previewShopBtn.hidden=false; previewShopBtn.href=`/?shop=${encodeURIComponent(cfg.customerId)}`; shopEditorTitle.textContent=cfg.customerName; renderShopList(); setShopState("✓ Gespeichert – Änderungen sind sofort live.","ok");
+    flashSavedButton(saveShopBtn, "Speichern");
+    if(positionSaveRequested) flashSavedButton(savePositionBtn, "Position speichern");
+    positionSaveRequested = false;
+  }catch(err){ positionSaveRequested = false; console.error(err); setShopState(err.message||"Speichern fehlgeschlagen.","error"); alert(err.message||"Shop konnte nicht gespeichert werden."); }
   finally{ saveShopBtn.disabled=false; }
 });
 
@@ -1059,7 +1077,7 @@ saveShopBtn.addEventListener("click",async()=>{
   previewShell.className='v2853-preview-shell';
   previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
   if(stage) previewShell.appendChild(stage);
-  // v28.5.9: Motivgröße wieder direkt unter der Vorschau sichtbar machen.
+  // v28.6.1: Motivgröße wieder direkt unter der Vorschau sichtbar machen.
   // Der bestehende Range-Regler steuert weiterhin exakt die gespeicherte Breite,
   // zeigt aber bewusst keine Prozentwerte – nur Klein / Mittel / Groß.
   if(sizeControl){
@@ -1125,7 +1143,7 @@ saveShopBtn.addEventListener("click",async()=>{
   const product=document.getElementById('positionProduct');
   const side=document.getElementById('positionSide');
 
-  // v28.5.9: Artikelauswahl immer vollständig halten.
+  // v28.6.1: Artikelauswahl immer vollständig halten.
   if(product){
     const keep=product.value || 'tshirt';
     product.innerHTML='<option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option>';
@@ -1137,6 +1155,12 @@ saveShopBtn.addEventListener("click",async()=>{
     if(!table) return;
     const motif=workingMotifs?.[0];
     const motifSrc=motif?.file?safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||'_simple'):'';
+    const motifName=motif?.name||'Motiv';
+    const motifHex=(shopFields.fixedMotifHex?.value||'#f6c951').trim();
+    const hex=motifHex.replace('#','');
+    const rgb=hex.length===6?[parseInt(hex.slice(0,2),16),parseInt(hex.slice(2,4),16),parseInt(hex.slice(4,6),16)]:[246,201,81];
+    const luminance=(0.2126*rgb[0]+0.7152*rgb[1]+0.0722*rgb[2])/255;
+    const contrastClass=luminance>0.62?'v2861-dark-bg':'v2861-light-bg';
     const rows=[
       ['tshirt','front','T-Shirt','Vorderseite',shopFields.tshirtFrontW],
       ['tshirt','back','T-Shirt','Rückseite',shopFields.tshirtBackW],
@@ -1158,7 +1182,7 @@ saveShopBtn.addEventListener("click",async()=>{
       if(s==='front') return label==='small'?20:label==='medium'?28:36;
       return label==='small'?38:label==='medium'?50:60;
     };
-    table.innerHTML='<div class="v284-tr v284-th v2852-print-row"><span>Textil</span><span>Seite</span><span>Motiv</span><span>Größe</span><span>Aktion</span></div>'+rows.map(([p,s,pn,sn,w])=>`<div class="v284-tr v2852-print-row"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell">${motifSrc?`<img src="${motifSrc}" alt="Motiv">`:'–'}</span><span><select class="v2856-size-select" data-product="${p}" data-side="${s}"><option value="small" ${sizeLabel(p,s,w)==='small'?'selected':''}>Klein</option><option value="medium" ${sizeLabel(p,s,w)==='medium'?'selected':''}>Mittel</option><option value="large" ${sizeLabel(p,s,w)==='large'?'selected':''}>Groß</option></select></span><span><button type="button" class="v284-edit-print v2856-position-btn" data-product="${p}" data-side="${s}">Positionieren</button></span></div>`).join('');
+    table.innerHTML='<div class="v284-tr v284-th v2852-print-row"><span>Textil</span><span>Seite</span><span>Motiv</span><span>Größe</span><span>Aktion</span></div>'+rows.map(([p,s,pn,sn,w])=>`<div class="v284-tr v2852-print-row"><span>${pn}</span><span>${sn}</span><span class="v284-motif-cell"><span class="v2861-motif-preview ${contrastClass}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></span><span><select class="v2856-size-select" data-product="${p}" data-side="${s}"><option value="small" ${sizeLabel(p,s,w)==='small'?'selected':''}>Klein</option><option value="medium" ${sizeLabel(p,s,w)==='medium'?'selected':''}>Mittel</option><option value="large" ${sizeLabel(p,s,w)==='large'?'selected':''}>Groß</option></select></span><span><button type="button" class="v284-edit-print v2856-position-btn" data-product="${p}" data-side="${s}">Positionieren</button></span></div>`).join('');
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
       const row=rows.find(r=>r[0]===sel.dataset.product&&r[1]===sel.dataset.side);
       if(!row) return;
@@ -1175,6 +1199,11 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   window.updateV2856PrintTable=renderMergedPrintTable;
   renderMergedPrintTable();
+  if(shopFields.fixedMotifHex && !shopFields.fixedMotifHex.dataset.v2861Bound){
+    shopFields.fixedMotifHex.dataset.v2861Bound='1';
+    shopFields.fixedMotifHex.addEventListener('input',renderMergedPrintTable);
+    shopFields.fixedMotifHex.addEventListener('change',renderMergedPrintTable);
+  }
 
   const modelInput=document.getElementById('v2853Model');
   const previewTitle=document.getElementById('v2853PreviewTitle');
@@ -1202,5 +1231,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.5.9');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.1');
 })();

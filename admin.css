@@ -1507,4 +1507,80 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 @media(max-width:720px){
   .v2853-preview-shell .position-stage{width:min(500px,100%)!important;}
 }
-\n\n/* v28.5.9 – Motivgrößen-Regler direkt unter der großen Vorschau */\n.v2859-size-wrap{\n  padding:12px 16px 10px;\n  border-top:1px solid #e7eaee;\n  background:#fff;\n}\n.v2859-size-title{\n  margin-bottom:6px;\n  font-size:11px;\n  font-weight:800;\n  color:#39414c;\n}\n.v2859-preview-size-control{\n  display:grid!important;\n  gap:4px!important;\n  width:100%!important;\n  min-width:0!important;\n  margin:0!important;\n}\n.v2859-preview-size-control input[type=\"range\"]{\n  width:100%!important;\n  height:24px!important;\n  margin:0!important;\n  padding:0!important;\n  accent-color:#f5bd00;\n  cursor:pointer;\n}\n.v2859-preview-size-control .size-scale{\n  display:flex!important;\n  justify-content:space-between!important;\n  margin:0!important;\n  font-size:10px!important;\n  font-weight:700!important;\n  color:#7a828d!important;\n}\n@media(max-width:760px){\n  .v2859-size-wrap{padding:10px 12px 8px}\n}\n
+\n\n/* v28.6.1 – Motivgrößen-Regler direkt unter der großen Vorschau */\n.v2859-size-wrap{\n  padding:12px 16px 10px;\n  border-top:1px solid #e7eaee;\n  background:#fff;\n}\n.v2859-size-title{\n  margin-bottom:6px;\n  font-size:11px;\n  font-weight:800;\n  color:#39414c;\n}\n.v2859-preview-size-control{\n  display:grid!important;\n  gap:4px!important;\n  width:100%!important;\n  min-width:0!important;\n  margin:0!important;\n}\n.v2859-preview-size-control input[type=\"range\"]{\n  width:100%!important;\n  height:24px!important;\n  margin:0!important;\n  padding:0!important;\n  accent-color:#f5bd00;\n  cursor:pointer;\n}\n.v2859-preview-size-control .size-scale{\n  display:flex!important;\n  justify-content:space-between!important;\n  margin:0!important;\n  font-size:10px!important;\n  font-weight:700!important;\n  color:#7a828d!important;\n}\n@media(max-width:760px){\n  .v2859-size-wrap{padding:10px 12px 8px}\n}\n
+
+/* v28.6.1 – klarer Speicherstatus + kompakter Shop-aktiv-Schalter */
+.primary-btn.saved-state,
+.position-save-btn.saved-state,
+#saveShopBtn.saved-state{
+  background:#20a464!important;
+  border-color:#168653!important;
+  color:#fff!important;
+  box-shadow:0 4px 12px rgba(32,164,100,.22)!important;
+}
+.v2853-basic-card .v2850-active-field,
+.v2850-active-field{
+  min-height:34px!important;
+  max-width:170px!important;
+  padding:6px 9px!important;
+  border-radius:9px!important;
+  gap:8px!important;
+}
+.v2853-basic-card .v2850-active-field input[type="checkbox"],
+.v2850-active-field input[type="checkbox"]{
+  width:36px!important;
+  min-width:36px!important;
+  height:20px!important;
+}
+.v2853-basic-card .v2850-active-field input[type="checkbox"]:before,
+.v2850-active-field input[type="checkbox"]:before{
+  width:16px!important;
+  height:16px!important;
+  top:2px!important;
+  left:2px!important;
+}
+.v2853-basic-card .v2850-active-field input[type="checkbox"]:checked:before,
+.v2850-active-field input[type="checkbox"]:checked:before{
+  transform:translateX(16px)!important;
+}
+.v2850-active-field span{font-size:11px!important;font-weight:700!important}
+@media(max-width:760px){
+  .v2853-basic-card .v2850-active-field,.v2850-active-field{max-width:150px!important}
+}
+
+
+/* v28.6.1 – adaptive Motivvorschau im Druckbereich */
+.v2861-motif-preview{
+  width:70px;
+  height:46px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:5px 7px;
+  border:1px solid #d8dde4;
+  border-radius:9px;
+  box-shadow:0 1px 4px rgba(17,24,39,.08);
+  overflow:hidden;
+  vertical-align:middle;
+}
+.v2861-motif-preview.v2861-dark-bg{
+  background:#252b36;
+  border-color:#39414e;
+}
+.v2861-motif-preview.v2861-light-bg{
+  background:#f3f5f7;
+  border-color:#d9dee5;
+}
+.v2861-motif-preview img{
+  width:100%!important;
+  height:100%!important;
+  max-width:60px!important;
+  max-height:36px!important;
+  object-fit:contain!important;
+  display:block!important;
+  filter:drop-shadow(0 1px 1px rgba(0,0,0,.10));
+}
+@media(max-width:760px){
+  .v2861-motif-preview{width:60px;height:42px;padding:4px 6px}
+  .v2861-motif-preview img{max-width:52px!important;max-height:32px!important}
+}
