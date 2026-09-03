@@ -1163,9 +1163,9 @@ saveShopBtn.addEventListener("click",async()=>{
     const shirtHex=(shopFields.fixedShirtHex?.value||'#0758b2').trim();
     const productionHref=(productionFileUrl?.value||'').trim();
     const products=[
-      {key:'tshirt',name:'T-Shirt',tone:'v2862-product-tshirt',front:shopFields.tshirtFrontW,back:shopFields.tshirtBackW,thumb:'shirt-front-template.png'},
-      {key:'polo',name:'Polo-Shirt',tone:'v2862-product-polo',front:shopFields.poloFrontW,back:shopFields.poloBackW,thumb:'polo-front-template.png'},
-      {key:'hoodie',name:'Hoodie',tone:'v2862-product-hoodie',front:shopFields.hoodieFrontW,back:shopFields.hoodieBackW,thumb:'hoodie-front-template.png'}
+      {key:'tshirt',name:'T-Shirt',tone:'v2862-product-tshirt',front:shopFields.tshirtFrontW,back:shopFields.tshirtBackW},
+      {key:'polo',name:'Polo-Shirt',tone:'v2862-product-polo',front:shopFields.poloFrontW,back:shopFields.poloBackW},
+      {key:'hoodie',name:'Hoodie',tone:'v2862-product-hoodie',front:shopFields.hoodieFrontW,back:shopFields.hoodieBackW}
     ];
     const sizeLabel=(p,s,w)=>{
       const n=Number(w?.value||0);
@@ -1189,8 +1189,8 @@ saveShopBtn.addEventListener("click",async()=>{
       return wn&&hn?`${wn} × ${hn} cm`:'–';
     };
     const sizeInfo=`<div class="v2864-size-info"><span><b>Vorne</b> ${fmtSize(printDataFields.front.width,printDataFields.front.height)}</span><span><b>Hinten</b> ${fmtSize(printDataFields.back.width,printDataFields.back.height)}</span></div>`;
-    const sharedMotif=`<div class="v2870-shared-motif"><span class="v2861-motif-preview v2863-shirt-bg v2870-motif-preview" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span><div class="v2870-motif-copy"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${productionDownload}</div></div><div class="v2870-size-summary">${sizeInfo}</div></div>`;
-    table.innerHTML=sharedMotif+'<div class="v2870-product-groups">'+products.map(item=>`<section class="v2870-product-card ${item.tone}" data-product="${item.key}"><div class="v2870-product-identity"><span class="v2870-product-thumb" style="--thumb-bg:${shirtHex}"><img src="${item.thumb}" alt="${item.name}"></span><strong>${item.name}</strong></div><div class="v2870-side-control"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2870-side-control"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
+    const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${sizeInfo}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
+    table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
       const item=products.find(x=>x.key===sel.dataset.product);
       if(!item) return;
@@ -1257,5 +1257,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.7.0');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.9');
 })();
