@@ -1091,7 +1091,7 @@ saveShopBtn.addEventListener("click",async()=>{
     sizeTitle.textContent='Motivgröße';
     sizeControl.classList.add('v2859-preview-size-control');
     const labelSpan=sizeControl.querySelector(':scope > span');
-    if(labelSpan) labelSpan.hidden=true;
+    if(labelSpan) labelSpan.remove();
     sizeWrap.append(sizeTitle,sizeControl);
     previewShell.appendChild(sizeWrap);
   }
@@ -1188,7 +1188,7 @@ saveShopBtn.addEventListener("click",async()=>{
       const hn=String(h?.value??'').replace('.',',');
       return wn&&hn?`${wn} × ${hn} cm`:'–';
     };
-    const sizeInfo=`<div class="v2864-size-info"><span><b>Vorne</b> ${fmtSize(globalPrintFields.front.width,globalPrintFields.front.height)}</span><span><b>Hinten</b> ${fmtSize(globalPrintFields.back.width,globalPrintFields.back.height)}</span></div>`;
+    const sizeInfo=`<div class="v2864-size-info"><span><b>Vorne</b> ${fmtSize(printDataFields.front.width,printDataFields.front.height)}</span><span><b>Hinten</b> ${fmtSize(printDataFields.back.width,printDataFields.back.height)}</span></div>`;
     const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${sizeInfo}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
     table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
@@ -1223,7 +1223,7 @@ saveShopBtn.addEventListener("click",async()=>{
     productionFileUrl.addEventListener('input',renderMergedPrintTable);
     productionFileUrl.addEventListener('change',renderMergedPrintTable);
   }
-  [globalPrintFields.front.width,globalPrintFields.front.height,globalPrintFields.back.width,globalPrintFields.back.height].forEach(el=>{
+  [printDataFields.front.width,printDataFields.front.height,printDataFields.back.width,printDataFields.back.height].forEach(el=>{
     if(el && !el.dataset.v2864Bound){
       el.dataset.v2864Bound='1';
       el.addEventListener('input',renderMergedPrintTable);
@@ -1257,5 +1257,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.4');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.6');
 })();

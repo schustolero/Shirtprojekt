@@ -1585,7 +1585,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2861-motif-preview img{max-width:52px!important;max-height:32px!important}
 }
 
-/* v28.6.2 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
+/* v28.6.6 – drei klar getrennte Produktgruppen, gemeinsames Motiv nur einmal */
 .v2862-shared-motif{
   display:flex;
   align-items:center;
@@ -1636,9 +1636,9 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2862-side-row .v284-edit-print{width:100%}
 }
 
-/* build v28.6.2 */
+/* build v28.6.6 */
 
-/* v28.6.4 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
+/* v28.6.6 – Motivvorschau auf echter Textilfarbe + Produktionsdaten direkt am Motiv */
 .v2863-shared-motif{align-items:stretch;gap:14px}
 .v2863-motif-meta{display:flex;flex-direction:column;justify-content:center;gap:3px;min-width:0;flex:1}
 .v2863-shirt-bg{
@@ -1679,7 +1679,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 }
 
 
-/* v28.6.4 – Druckgröße direkt beim Download + Selects vollständig lesbar */
+/* v28.6.6 – Druckgröße direkt beim Download + Selects vollständig lesbar */
 .v2864-size-info{
   display:inline-flex;
   align-items:center;
@@ -1710,3 +1710,6 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2864-size-info{width:100%;justify-content:space-between;white-space:normal}
   .v2862-side-row .v2856-size-select{min-height:42px!important;height:42px!important;line-height:26px!important}
 }
+
+/* v28.6.6 – redundante Legacy-Bereiche bleiben technisch vorhanden, aber unsichtbar */
+.fixed-print-accordion[hidden], .legacy-motifs-accordion[hidden]{display:none!important;}
