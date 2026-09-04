@@ -2088,3 +2088,245 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   .v2853-functions-card .feature-grid,
   .v2853-functions-card .compact-feature-grid{grid-template-columns:1fr!important}
 }
+
+
+/* v28.8.2 SAFE – weiße Thumbnails + mobile Funktionen */
+.v2870-product-thumb,
+.v2870-motif-preview,
+.v2861-motif-preview{
+  background:#fff!important;
+  border:1px solid #e3e7ec!important;
+  box-shadow:0 2px 7px rgba(20,30,45,.06)!important;
+}
+.v2870-product-thumb img{
+  mix-blend-mode:normal!important;
+  filter:none!important;
+}
+.v2870-motif-preview img,
+.v2861-motif-preview img{
+  max-width:100%!important;
+  max-height:100%!important;
+  object-fit:contain!important;
+}
+
+@media(max-width:720px){
+  .v2853-functions-card{
+    border:1px solid #e5e8ed!important;
+    border-radius:16px!important;
+    background:#fff!important;
+    box-shadow:0 6px 18px rgba(20,30,45,.05)!important;
+    overflow:hidden!important;
+  }
+  .v2853-functions-card>summary{
+    min-height:58px!important;
+    padding:14px 16px!important;
+    background:#fff!important;
+    border-bottom:1px solid #eef0f3!important;
+  }
+  .v2853-functions-card>summary span{
+    font-size:16px!important;
+    font-weight:900!important;
+    color:#20242b!important;
+  }
+  .v2853-functions-card>summary small{
+    font-size:11px!important;
+    color:#838b96!important;
+  }
+  .v2853-functions-card .v2853-card-body,
+  .v2853-functions-card .accordion-body{
+    padding:12px!important;
+    background:#f8f9fb!important;
+  }
+  .v2853-functions-card .feature-grid,
+  .v2853-functions-card .compact-feature-grid{
+    grid-template-columns:1fr!important;
+    gap:9px!important;
+  }
+  .v2853-functions-card .feature-grid label,
+  .v2853-functions-card .compact-feature-grid label{
+    min-height:58px!important;
+    padding:12px 92px 12px 14px!important;
+    border-radius:14px!important;
+    background:#fff!important;
+    border:1px solid #e3e7ec!important;
+    box-shadow:0 2px 6px rgba(20,30,45,.04)!important;
+  }
+  .v2853-functions-card .feature-grid label span,
+  .v2853-functions-card .compact-feature-grid label span{
+    font-size:14px!important;
+    font-weight:800!important;
+  }
+  .v2853-functions-card input[type="checkbox"]{
+    width:50px!important;
+    min-width:50px!important;
+    height:28px!important;
+    right:14px!important;
+  }
+  .v2853-functions-card input[type="checkbox"]::before{
+    width:22px!important;
+    height:22px!important;
+    top:3px!important;
+    left:3px!important;
+  }
+  .v2853-functions-card input[type="checkbox"]:checked::before{
+    transform:translateX(22px)!important;
+  }
+  .v2853-functions-card .feature-grid label::after,
+  .v2853-functions-card .compact-feature-grid label::after{
+    right:68px!important;
+    font-size:10px!important;
+    font-weight:900!important;
+    letter-spacing:.06em!important;
+  }
+  .v2853-functions-card .feature-grid label:has(input[type="checkbox"]:checked),
+  .v2853-functions-card .compact-feature-grid label:has(input[type="checkbox"]:checked){
+    background:#fff9df!important;
+    border-color:#efd56d!important;
+  }
+}
+
+
+/* v28.8.2 SAFE – kompakter Mobile-Header, ruhige Positionieren-Buttons, finale Mobile-Funktionen */
+.v2856-position-btn,
+.v2870-side-control .v2856-position-btn{
+  min-width:112px!important;
+  height:40px!important;
+  padding:0 14px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:10px!important;
+  border:1px solid #dfe4ea!important;
+  background:#fff!important;
+  color:#2f6df6!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  box-shadow:0 1px 3px rgba(20,30,45,.035)!important;
+}
+.v2856-position-btn:hover{
+  background:#f7f9ff!important;
+  border-color:#cad5f3!important;
+}
+
+@media(max-width:720px){
+  /* kompakter Kopfbereich auf dem iPhone */
+  .v284-editor-head{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:10px!important;
+    padding:10px 8px 12px!important;
+    margin:0!important;
+  }
+  .v284-editor-head>div:first-child{
+    min-width:0!important;
+  }
+  .v284-editor-head h2{
+    font-size:22px!important;
+    line-height:1.08!important;
+    margin:0!important;
+    max-width:100%!important;
+  }
+  .v284-editor-head p{
+    display:none!important;
+  }
+  .v284-editor-head .editor-actions{
+    width:auto!important;
+    display:flex!important;
+    gap:7px!important;
+    align-items:center!important;
+  }
+  .v284-editor-head .editor-actions>*{
+    flex:0 0 auto!important;
+    min-height:40px!important;
+    padding:0 14px!important;
+    border-radius:12px!important;
+    font-size:13px!important;
+    white-space:nowrap!important;
+  }
+
+  /* Produktkarten mobil etwas enger, Buttons identisch */
+  .v2870-side-control{
+    grid-template-columns:132px minmax(0,1fr) 116px!important;
+    gap:8px!important;
+    align-items:center!important;
+  }
+  .v2870-side-control>span{
+    font-size:13px!important;
+  }
+  .v2870-side-control select{
+    height:42px!important;
+    min-height:42px!important;
+    padding:0 38px 0 12px!important;
+    font-size:14px!important;
+  }
+  .v2856-position-btn,
+  .v2870-side-control .v2856-position-btn{
+    width:116px!important;
+    min-width:116px!important;
+    height:42px!important;
+    padding:0 10px!important;
+    font-size:13px!important;
+  }
+
+  /* finale mobile Funktionsschalter */
+  .v2853-functions-card .feature-grid label,
+  .v2853-functions-card .compact-feature-grid label{
+    position:relative!important;
+    display:flex!important;
+    align-items:center!important;
+    justify-content:space-between!important;
+    gap:12px!important;
+    padding:12px 14px!important;
+    min-height:58px!important;
+  }
+  .v2853-functions-card .feature-grid label span,
+  .v2853-functions-card .compact-feature-grid label span{
+    flex:1 1 auto!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+  .v2853-functions-card input[type="checkbox"]{
+    position:relative!important;
+    inset:auto!important;
+    right:auto!important;
+    flex:0 0 50px!important;
+    margin:0!important;
+  }
+  .v2853-functions-card .feature-grid label::after,
+  .v2853-functions-card .compact-feature-grid label::after{
+    position:static!important;
+    order:2!important;
+    min-width:28px!important;
+    text-align:right!important;
+    margin-left:auto!important;
+  }
+  .v2853-functions-card input[type="checkbox"]{
+    order:3!important;
+  }
+}
+
+@media(max-width:480px){
+  .v284-editor-head{
+    grid-template-columns:1fr!important;
+    gap:9px!important;
+  }
+  .v284-editor-head .editor-actions{
+    width:100%!important;
+  }
+  .v284-editor-head .editor-actions>*{
+    flex:1 1 0!important;
+    justify-content:center!important;
+  }
+  .v2870-side-control{
+    grid-template-columns:112px minmax(0,1fr) 108px!important;
+    gap:6px!important;
+  }
+  .v2856-position-btn,
+  .v2870-side-control .v2856-position-btn{
+    width:108px!important;
+    min-width:108px!important;
+    font-size:12px!important;
+  }
+}
