@@ -1794,3 +1794,9 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 .v2853-functions-card .feature-grid label::after,.v2853-functions-card .compact-feature-grid label::after{content:"OFF";position:absolute;right:14px;top:50%;transform:translateY(-50%);font-size:9px;font-weight:900;letter-spacing:.08em;color:#8a9099;pointer-events:none}
 .v2853-functions-card .feature-grid label:has(input[type="checkbox"]:checked)::after,.v2853-functions-card .compact-feature-grid label:has(input[type="checkbox"]:checked)::after{content:"ON";color:#8a6500}
 .v284-nav [data-jump="production"]{display:none!important}
+
+/* v28.7.6 SAFE: separate production accordion hidden visually; fields remain in DOM */
+.print-data-accordion{display:none!important;}
+
+/* v28.7.6 SAFE: separate Motive/Logos navigation hidden; motif logic remains intact */
+.v284-nav [data-jump="motif"]{display:none!important;}

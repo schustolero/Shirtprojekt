@@ -1256,5 +1256,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.7.4');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.7.6');
 })();
