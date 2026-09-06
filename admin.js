@@ -1238,14 +1238,30 @@ saveShopBtn.addEventListener("click",async()=>{
 
   function setNavActive(name){
     sidebar.querySelectorAll(".v284-nav button").forEach(btn=>{
-      btn.classList.toggle("active",btn.dataset.main===name || (name==="shops" && btn.dataset.jump===undefined && btn.dataset.main==="shops"));
+      const active = btn.dataset.main===name || btn.dataset.jump===name;
+      btn.classList.toggle("active",active);
     });
   }
   function openCard(key){
     switchAdminTab("shops");
+
+    if(key==="functions"){
+      setNavActive("functions");
+      const functionsCard=document.querySelector(".v2853-functions-card") || document.querySelector(".v284-card[data-card=\"functions\"]");
+      if(functionsCard){
+        functionsCard.hidden=false;
+        functionsCard.style.display="";
+        functionsCard.scrollIntoView({behavior:"smooth",block:"start"});
+      }
+      return;
+    }
+
     setNavActive("shops");
     const card=document.querySelector(`.v284-card[data-card="${key}"]`);
-    if(card){ card.open=true; card.scrollIntoView({behavior:"smooth",block:"start"}); }
+    if(card){
+      card.open=true;
+      card.scrollIntoView({behavior:"smooth",block:"start"});
+    }
   }
   sidebar.querySelectorAll(".v284-nav button").forEach(btn=>btn.addEventListener("click",()=>{
     if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
@@ -1715,7 +1731,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.3');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.4');
 })();
 
 
