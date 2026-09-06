@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.2.9">
+  <link rel="stylesheet" href="admin.css?v=29.3.0">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -323,6 +323,71 @@
   .v2919-motif-row input[type="color"]{width:42px!important;min-width:42px!important;height:30px!important;min-height:30px!important;padding:2px!important}
 }
 </style>
+
+<style id="v2930-mobile-final">
+@media(max-width:760px){
+  /* v29.3.0 – Grunddaten breiter + Farben in 3 Spalten */
+  .v2853-basic-card,
+  .v2853-basic-card .v2853-card-body,
+  .v2853-basic-card .v284-basic-combined,
+  .v2853-basic-card .v284-basic-subsection,
+  .v2853-basic-card .v2853-basic-grid,
+  .v2853-basic-card .v2853-products,
+  .v2853-basic-card .v2854-name-logo-row{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  .v2853-basic-card{align-self:stretch!important;justify-self:stretch!important}
+  .v2853-basic-card .v2853-card-body{padding:8px 10px 10px!important}
+  .v2853-basic-card .v2854-name-logo-row{grid-template-columns:minmax(0,1fr) 140px!important;gap:8px!important}
+  .v2853-basic-card .v2853-products{margin-top:8px!important;padding-top:8px!important}
+  .v2853-basic-card .v2850-product-grid{gap:6px!important}
+
+  .v2919-f140-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+  }
+  .v2919-f140-option{
+    min-height:31px!important;
+    height:31px!important;
+    padding:4px 5px!important;
+    gap:4px!important;
+    border-radius:7px!important;
+  }
+  .v2919-f140-option input[type="checkbox"]{
+    width:13px!important;
+    min-width:13px!important;
+    max-width:13px!important;
+    height:13px!important;
+    min-height:13px!important;
+    flex:0 0 13px!important;
+  }
+  .v2919-swatch{
+    width:13px!important;
+    min-width:13px!important;
+    height:13px!important;
+    flex:0 0 13px!important;
+  }
+  .v2919-name{
+    font-size:8.1px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .v2920-quick-actions{gap:4px!important}
+  .v2920-quick-btn,
+  .v2920-quick-btn[data-f140-quick="royal"]{
+    min-height:24px!important;
+    height:24px!important;
+    padding:3px 4px!important;
+    font-size:7.6px!important;
+  }
+}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -617,7 +682,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.2.9';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.3.0';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
