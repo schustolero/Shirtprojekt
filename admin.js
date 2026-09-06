@@ -21,16 +21,30 @@ const customerFilter = document.getElementById("customerFilter");
 let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
-function statusCssClass(value){
-  if(value==="In Bearbeitung")return "status-bearbeitung";
-  if(value==="Fertig")return "status-fertig";
-  if(value==="Abgeholt")return "status-abgeholt";
-  return "status-neu";
+const WORKFLOW_STEPS = [
+  "Eingegangen",
+  "Ware bestellt",
+  "Ware da",
+  "Druck fertig",
+  "Abholbereit",
+  "Abgeholt"
+];
+
+function workflowStepFromOrder(order){
+  const saved = Number(order && order.workflowStep);
+  if(Number.isInteger(saved) && saved >= 0 && saved < WORKFLOW_STEPS.length) return saved;
+  const status = (order && order.status) || "Neu";
+  if(status === "Abgeholt") return 5;
+  if(status === "Fertig") return 4;
+  if(status === "In Bearbeitung") return 1;
+  return 0;
 }
-function paintStatusSelect(select,value){
-  if(!select)return;
-  select.classList.remove("status-neu","status-bearbeitung","status-fertig","status-abgeholt");
-  select.classList.add(statusCssClass(value||select.value||"Neu"));
+
+function statusFromWorkflowStep(step){
+  if(step >= 5) return "Abgeholt";
+  if(step >= 3) return "Fertig";
+  if(step >= 1) return "In Bearbeitung";
+  return "Neu";
 }
 
 
@@ -195,47 +209,117 @@ function printProductionSlip(order){
 
 function renderOrder(id,order){
   const card=document.createElement("article");card.className="order-card";
-  const top=document.createElement("div");top.className="order-top";
-  const title=document.createElement("div");
-  const number=document.createElement("div");number.className="order-number";number.textContent=text(order.orderNumber,id);
-  const customerTag=document.createElement("div");customerTag.className="order-customer";customerTag.textContent=text(order.customerName||order.customerId,"Unbekannter Kunde");
-  const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
-  const quick=document.createElement("div");quick.className="order-quick";quick.innerHTML=`<strong>${text(order.totalQuantity,"0")} Shirts</strong><span>${euro(order.totalPrice)}</span>`;
-  title.append(number,customerTag,date,quick);
-  const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
-  STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
-  paintStatusSelect(status,order.status||"Neu");
-  status.addEventListener("change",async()=>{
-    const previousStatus = order.status || "Neu";
-    status.disabled=true;
-    try{
-      await db.collection("orders").doc(id).update({status:status.value,statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      order.status = status.value;
-      paintStatusSelect(status,status.value);
-      if(statusFilter.value !== "Alle") applyFilters();
-    }catch(err){
-      status.value = previousStatus;
-      paintStatusSelect(status,previousStatus);
-      alert("Status konnte nicht gespeichert werden.");
-      console.error(err);
-    }finally{status.disabled=false}
+
+  /* Kunde steht bewusst an erster Stelle */
+  const head=document.createElement("div");head.className="order-head-v2954";
+  const customerName=document.createElement("div");customerName.className="order-main-customer";
+  customerName.textContent=text(order.name,"Unbekannter Kunde");
+
+  const meta=document.createElement("div");meta.className="order-meta-v2954";
+  const orderNo=document.createElement("span");orderNo.textContent=text(order.orderNumber,id);
+  const shop=document.createElement("span");shop.textContent=text(order.customerName||order.customerId,"");
+  const date=document.createElement("span");date.textContent=dateText(order.createdAt);
+  meta.append(orderNo);
+  if(shop.textContent) meta.append(shop);
+  meta.append(date);
+
+  const summary=document.createElement("div");summary.className="order-summary-v2954";
+  const qty=document.createElement("strong");qty.textContent=`${text(order.totalQuantity,"0")} Shirts`;
+  const total=document.createElement("strong");total.textContent=euro(order.totalPrice);
+  summary.append(qty,total);
+
+  head.append(customerName,meta,summary);
+  card.appendChild(head);
+
+  /* Produktionsverlauf: ein Klick setzt den aktuellen Stand,
+     alle vorherigen Schritte erhalten automatisch einen Haken. */
+  const workflow=document.createElement("div");workflow.className="order-workflow";
+  const workflowTitle=document.createElement("div");workflowTitle.className="order-workflow-title";
+  workflowTitle.innerHTML="<strong>Auftragsverlauf</strong><span>Schritt antippen, sobald erledigt</span>";
+  const workflowSteps=document.createElement("div");workflowSteps.className="order-workflow-steps";
+  let currentStep=workflowStepFromOrder(order);
+
+  function paintWorkflow(){
+    [...workflowSteps.children].forEach((btn,index)=>{
+      const done=index<=currentStep;
+      const current=index===currentStep;
+      btn.classList.toggle("done",done);
+      btn.classList.toggle("current",current);
+      const mark=btn.querySelector(".workflow-mark");
+      if(mark) mark.textContent=done?"✓":String(index+1);
+    });
+  }
+
+  WORKFLOW_STEPS.forEach((label,index)=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="workflow-step";
+    btn.innerHTML=`<span class="workflow-mark">${index+1}</span><span class="workflow-label">${label}</span>`;
+    btn.addEventListener("click",async()=>{
+      if(btn.disabled)return;
+      const previousStep=currentStep;
+      const previousStatus=order.status||"Neu";
+      currentStep=index;
+      paintWorkflow();
+      [...workflowSteps.children].forEach(b=>b.disabled=true);
+      const mappedStatus=statusFromWorkflowStep(index);
+      try{
+        await db.collection("orders").doc(id).update({
+          workflowStep:index,
+          workflowLabel:WORKFLOW_STEPS[index],
+          workflowUpdatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+          status:mappedStatus,
+          statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
+        });
+        order.workflowStep=index;
+        order.workflowLabel=WORKFLOW_STEPS[index];
+        order.status=mappedStatus;
+        if(statusFilter.value!=="Alle")applyFilters();
+      }catch(err){
+        currentStep=previousStep;
+        order.status=previousStatus;
+        paintWorkflow();
+        alert("Auftragsverlauf konnte nicht gespeichert werden.");
+        console.error(err);
+      }finally{
+        [...workflowSteps.children].forEach(b=>b.disabled=false);
+      }
+    });
+    workflowSteps.appendChild(btn);
   });
-  const actions=document.createElement("div");actions.className="order-actions";
+  workflow.append(workflowTitle,workflowSteps);
+  card.appendChild(workflow);
+  paintWorkflow();
+
+  const actions=document.createElement("div");actions.className="order-actions order-actions-v2954";
   const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",()=>printOrderSlip(order));
   const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",()=>printProductionSlip(order));
-  actions.append(status,printBtn,productionBtn);
-  top.append(title,actions);card.appendChild(top);
+  actions.append(printBtn,productionBtn);
+  card.appendChild(actions);
 
   const customerDetails=document.createElement("details");customerDetails.className="customer-details";
   const customerSummary=document.createElement("summary");customerSummary.textContent="Kundendaten";customerDetails.appendChild(customerSummary);
   const customer=document.createElement("div");customer.className="customer-grid";
-  [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
+  [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{
+    const box=document.createElement("div");
+    const l=document.createElement("span");l.textContent=label;
+    const v=document.createElement("strong");v.textContent=text(value);
+    box.append(l,v);customer.appendChild(box)
+  });
   customerDetails.appendChild(customer);card.appendChild(customerDetails);
 
   const items=document.createElement("div");items.className="items";
-  (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{const row=document.createElement("div");row.className="item-row";const a=document.createElement("strong");a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;const b=document.createElement("span");b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;row.append(a,b);items.appendChild(row)});
+  (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
+    const row=document.createElement("div");row.className="item-row";
+    const a=document.createElement("strong");
+    a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;
+    const b=document.createElement("span");
+    b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
+    row.append(a,b);items.appendChild(row)
+  });
   card.appendChild(items);
-  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Shirts</span><span>${euro(order.totalPrice)}</span>`;card.appendChild(footer);
+
+  /* Menge und Gesamtpreis stehen bereits einmal oben – kein doppelter Footer mehr. */
   return card;
 }
 
