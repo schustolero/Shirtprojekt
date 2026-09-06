@@ -1178,3 +1178,25 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   font-size:11px;
   color:#75757e;
 }
+
+
+/* v29.2.3 – MOBILE ADMIN SYNC: feste 590px-Referenzbühne beibehalten */
+@media (max-width: 900px) {
+  .workspace {
+    overflow: hidden !important;
+  }
+  .mockup-stage {
+    width: 590px !important;
+    min-width: 590px !important;
+    max-width: none !important;
+    height: 686.0465px !important;
+    min-height: 686.0465px !important;
+    aspect-ratio: .86 !important;
+    transform: scale(var(--mobile-preview-scale, .5568)) !important;
+    transform-origin: center center !important;
+  }
+  .print-zone,
+  .print-zone.back {
+    transform: translate(-50%, -50%) !important;
+  }
+}
