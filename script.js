@@ -38,10 +38,10 @@ function getAllowedShirtColorIds(){
 
 const POLIFLEX_ALLOWED_META = (function parseAllowedMotifColorMeta(){
   const fixed = SHOP.fixedMotifColor || null;
-  const result = { fixed, name: fixed?.name || "Medium Yellow", allowedNames: [] };
+  const result = { fixed, name: fixed?.name || "Yellow", allowedNames: [] };
   if (!fixed || !fixed.name) return result;
   const parts = String(fixed.name).split("||");
-  result.name = (parts.shift() || result.name || "Medium Yellow").trim();
+  result.name = (parts.shift() || result.name || "Yellow").trim();
   parts.forEach(part => {
     if (part.indexOf("allowed=") === 0) {
       try { result.allowedNames = JSON.parse(decodeURIComponent(part.slice(8))); } catch (e) { result.allowedNames = []; }
@@ -1133,7 +1133,7 @@ if (FIXED_SHIRT && FIXED_SHIRT.color) {
 
 if (FIXED_MOTIF && FIXED_MOTIF.color) {
   currentMotifColor = FIXED_MOTIF.color;
-  currentMotifColorLabel = POLIFLEX_ALLOWED_META.name || "Medium Yellow";
+  currentMotifColorLabel = POLIFLEX_ALLOWED_META.name || "Yellow";
   currentMotifColorName.textContent = currentMotifColorLabel;
 }
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
