@@ -321,15 +321,16 @@ function fillPrintData(cfg){
   for(const side of ["front","back"]){
     const src=data[side]||{}; const f=printDataFields[side];
     f.method.value=normalizePrintMethod(src.method);
-    f.width.value=src.widthCm ?? (side==="front"?9:28);
-    f.height.value=src.heightCm ?? (side==="front"?7:21.8);
+    f.width.value=Math.round(Number(src.widthCm ?? (side==="front"?9:28))*10);
+    f.height.value=Math.round(Number(src.heightCm ?? (side==="front"?7:21.8))*10);
   }
 }
 function collectPrintData(){
   const read=(side)=>{
     const f=printDataFields[side];
     const num=(el)=>el.value===""?null:Number(el.value);
-    return {method:normalizePrintMethod(f.method.value),widthCm:num(f.width),heightCm:num(f.height)};
+    const w=num(f.width), h=num(f.height);
+    return {method:normalizePrintMethod(f.method.value),widthCm:w===null?null:w/10,heightCm:h===null?null:h/10};
   };
   const front=read("front"), back=read("back");
   return {
@@ -526,8 +527,8 @@ function selectShop(id){
   shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent=cfg.customerName||id||"Neuer Shop";
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
   shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(cfg.accentColor||"")?cfg.accentColor:"#111111"; shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=cfg.features?.previewMode||"single"; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
-  shopFields.fixedShirtName.value=cfg.fixedShirtColor?.name||""; shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
-  shopFields.showShirtColors.checked=featureValue(cfg,"showShirtColorPicker",true); shopFields.showMotifs.checked=featureValue(cfg,"showMotifPicker",cfg.shopType!=="simple"); shopFields.showMotifColors.checked=featureValue(cfg,"showMotifColorPicker",true);
+  { const rawName=cfg.fixedShirtColor?.name||""; const parts=String(rawName).split("||"); shopFields.fixedShirtName.value=(parts.shift()||"").trim(); const allowedPart=parts.find(x=>x.startsWith("allowed=")); const defaultPart=parts.find(x=>x.startsWith("default=")); shopFields.fixedShirtName.dataset.allowedColors=allowedPart?allowedPart.slice(8):""; shopFields.fixedShirtName.dataset.defaultColor=defaultPart?defaultPart.slice(8):(cfg.fixedShirtColor?.id||""); } shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
+  shopFields.showShirtColors.checked=featureValue(cfg,"showShirtColorPicker",true); shopFields.showMotifs.checked=featureValue(cfg,"showMotifPicker",cfg.shopType!=="simple"); shopFields.showMotifColors.checked=featureValue(cfg,"showMotifColorPicker",true); setTimeout(()=>window.syncV2917ShirtColors?.(),0);
   shopFields.allowUpload.checked=featureValue(cfg,"allowCustomerUpload",cfg.shopType==="designer"); shopFields.allowText.checked=featureValue(cfg,"allowText",cfg.shopType==="designer"); shopFields.allowBack.checked=featureValue(cfg,"allowBackDesign",true); shopFields.allowMove.checked=featureValue(cfg,"allowMoveMotif",cfg.shopType==="designer"); shopFields.allowResize.checked=featureValue(cfg,"allowResizeMotif",cfg.shopType==="designer"); shopFields.allowRotate.checked=featureValue(cfg,"allowRotateMotif",cfg.shopType==="designer");
   const fp=cfg.fixedPrint||{}; refreshFixedPrintMotifOptions(fp.front?.motifId||"",fp.back?.motifId||"");
   shopFields.fixedFrontEnabled.checked=!!fp.front?.enabled; shopFields.fixedFrontPosition.value=fp.front?.position||"left-chest"; shopFields.fixedFrontSize.value=fp.front?.size||"small"; shopFields.fixedFrontTop.value=Number(fp.front?.topPct ?? 24); shopFields.fixedFrontSide.value=Number(fp.front?.sidePct ?? 32);
@@ -604,7 +605,7 @@ addMotifBtn.addEventListener("click",()=>{ if(workingMotifs.length>=4){alert("F�
 
 newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal={}; workingMotifs=[{id:"motiv1",name:"Motiv 1",file:""}]; workingLogo=""; shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent="Neuen Shop anlegen"; shopFields.id.disabled=false;
-  shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=15; shopFields.prefix.value=""; shopFields.email.value=CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true; shopFields.accent.value="#111111"; shopFields.logoHeight.value=90; shopFields.previewMode.value="single"; shopFields.heading.value="Shirt gestalten"; shopFields.intro.value=""; shopFields.fixedShirtName.value=""; shopFields.fixedMotifName.value=""; refreshFixedPrintMotifOptions("motiv1","motiv1"); shopFields.fixedFrontEnabled.checked=false; shopFields.fixedFrontPosition.value="left-chest"; shopFields.fixedFrontSize.value="small"; shopFields.fixedFrontTop.value=24; shopFields.fixedFrontSide.value=32; shopFields.fixedBackEnabled.checked=false; shopFields.fixedBackPosition.value="center"; shopFields.fixedBackSize.value="large";
+  shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=15; shopFields.prefix.value=""; shopFields.email.value=CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true; shopFields.accent.value="#111111"; shopFields.logoHeight.value=90; shopFields.previewMode.value="single"; shopFields.heading.value="Shirt gestalten"; shopFields.intro.value=""; shopFields.fixedShirtName.value=""; shopFields.fixedShirtName.dataset.allowedColors=""; shopFields.fixedShirtName.dataset.defaultColor=""; shopFields.fixedMotifName.value=""; refreshFixedPrintMotifOptions("motiv1","motiv1"); shopFields.fixedFrontEnabled.checked=false; shopFields.fixedFrontPosition.value="left-chest"; shopFields.fixedFrontSize.value="small"; shopFields.fixedFrontTop.value=24; shopFields.fixedFrontSide.value=32; shopFields.fixedBackEnabled.checked=false; shopFields.fixedBackPosition.value="center"; shopFields.fixedBackSize.value="large";
   shopFields.tshirtFrontX.value=68; shopFields.tshirtFrontY.value=20; shopFields.tshirtFrontW.value=28; shopFields.tshirtBackX.value=50; shopFields.tshirtBackY.value=36; shopFields.tshirtBackW.value=50;
   shopFields.poloFrontX.value=68; shopFields.poloFrontY.value=22; shopFields.poloFrontW.value=28; shopFields.poloBackX.value=50; shopFields.poloBackY.value=36; shopFields.poloBackW.value=50; shopFields.hoodieFrontX.value=68; shopFields.hoodieFrontY.value=22; shopFields.hoodieFrontW.value=36; shopFields.hoodieBackX.value=50; shopFields.hoodieBackY.value=34; shopFields.hoodieBackW.value=50; fillPrintData({}); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Neue Shop-ID und Daten eintragen."); renderShopList();
 });
@@ -616,7 +617,7 @@ function buildShopConfig(){
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,allowBackDesign:shopFields.allowBack.checked,allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showMotifColorPicker:shopFields.showMotifColors.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
   const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:old.brandSubtitle||"T-Shirt Konfigurator",designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||""}))};
-  const fsn=shopFields.fixedShirtName.value.trim(), fmn=shopFields.fixedMotifName.value.trim(); if(fsn) cfg.fixedShirtColor={id:slugify(fsn),name:fsn,color:shopFields.fixedShirtHex.value}; else delete cfg.fixedShirtColor; if(fmn) cfg.fixedMotifColor={name:fmn,color:shopFields.fixedMotifHex.value}; else delete cfg.fixedMotifColor;
+  const fsn=shopFields.fixedShirtName.value.trim(), fmn=shopFields.fixedMotifName.value.trim(); if(fsn){ const allowed=(shopFields.fixedShirtName.dataset.allowedColors||"").split(",").filter(Boolean); const def=shopFields.fixedShirtName.dataset.defaultColor||slugify(fsn); const meta=allowed.length?`||default=${def}||allowed=${allowed.join(",")}`:""; cfg.fixedShirtColor={id:def,name:fsn+meta,color:shopFields.fixedShirtHex.value}; } else delete cfg.fixedShirtColor; if(fmn) cfg.fixedMotifColor={name:fmn,color:shopFields.fixedMotifHex.value}; else delete cfg.fixedMotifColor;
   cfg.fixedPrint={
     front:{enabled:shopFields.fixedFrontEnabled.checked,motifId:shopFields.fixedFrontMotif.value||"motiv1",position:shopFields.fixedFrontPosition.value||"left-chest",size:shopFields.fixedFrontSize.value||"small",topPct:Math.max(10,Math.min(70,Number(shopFields.fixedFrontTop.value)||24)),sidePct:Math.max(15,Math.min(50,Number(shopFields.fixedFrontSide.value)||32))},
     back:{enabled:shopFields.fixedBackEnabled.checked,motifId:shopFields.fixedBackMotif.value||"motiv1",position:shopFields.fixedBackPosition.value||"center",size:shopFields.fixedBackSize.value||"large",topPct:Math.max(10,Math.min(70,Number(shopFields.fixedBackTop.value)||36))}
@@ -1187,11 +1188,11 @@ saveShopBtn.addEventListener("click",async()=>{
     const fmtSize=(w,h)=>{
       const wn=String(w?.value??'').replace('.',',');
       const hn=String(h?.value??'').replace('.',',');
-      return wn&&hn?`${wn} × ${hn} cm`:'–';
+      return wn&&hn?`${wn} × ${hn} mm`:'–';
     };
     const sizeInfo=`<div class="v2864-size-info"><span><b>Vorne</b> ${fmtSize(printDataFields.front.width,printDataFields.front.height)}</span><span><b>Hinten</b> ${fmtSize(printDataFields.back.width,printDataFields.back.height)}</span></div>`;
     const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${sizeInfo}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
-    table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
+    table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button><small class="v2917-mm-note">${fmtSize(printDataFields.front.width,printDataFields.front.height)}</small></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button><small class="v2917-mm-note">${fmtSize(printDataFields.back.width,printDataFields.back.height)}</small></div></section>`).join('')+'</div>';
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
       const item=products.find(x=>x.key===sel.dataset.product);
       if(!item) return;
@@ -1259,4 +1260,45 @@ saveShopBtn.addEventListener("click",async()=>{
 
   // Versionsbadge eindeutig aktualisieren.
   document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.9');
+})();
+
+
+// v29.1.7 – F140 Shirtfarben pro Kunde schaltbar
+(function initV2917ShirtColors(){
+  const host=document.querySelector('.compact-colors-section .compact-color-row') || document.querySelector('.compact-colors-section');
+  const nameInput=document.getElementById('fixedShirtName');
+  const hexInput=document.getElementById('fixedShirtHex');
+  if(!host||!nameInput||document.getElementById('v2917ShirtColors')) return;
+  const colors=[
+    ['weiss','White','#ffffff'],['black','Black','#111015'],['azure-blue','Azure Blue','#147fae'],['bottle-green','Bottle Green','#174d2c'],['brick-red','Brick Red','#8e151f'],['burgundy','Burgundy','#83002f'],['chocolate','Chocolate','#65462f'],['classic-olive','Classic Olive','#687043'],['dark-grey-heather','Dark Grey Heather','#4f5054'],['deep-navy','Deep Navy','#001536'],['fuchsia','Fuchsia','#ed0078'],['heather-burgundy','Heather Burgundy','#963b69'],['heather-grey','Heather Grey','#cfd0d2'],['heather-purple','Heather Purple','#583078'],['kelly-green','Kelly Green','#00a651'],['khaki','Khaki','#8a7017'],['light-graphite','Light Graphite','#625754'],['light-pink','Light Pink','#e8a0c4'],['lime','Lime','#8cc152'],['natural','Natural','#fff7d7'],['navy','Navy','#001b3f'],['orange','Orange','#ed4b00'],['purple','Purple','#4d1688'],['red','Red','#f20d09'],['retro-heather-green','Retro Heather Green','#5d9d7b'],['retro-heather-royal','Retro Heather Royal','#5166a8'],['royal-blue','Royal Blue','#0758b2'],['sky-blue','Sky Blue','#72c2e6'],['sunflower','Sunflower','#ffb511'],['vintage-heather-navy','Vintage Heather Navy','#626a86'],['vintage-heather-red','Vintage Heather Red','#a64b64'],['yellow','Yellow','#ffe600']
+  ];
+  const box=document.createElement('div'); box.id='v2917ShirtColors'; box.className='v2917-shirt-colors';
+  box.innerHTML='<div class="v2917-shirt-colors-head"><strong>F140 Shirtfarben</strong><small>Für diesen Kunden ein-/ausschalten</small></div><div class="v2917-shirt-color-grid"></div><div class="v2917-shirt-colors-actions"><button type="button" class="ghost-btn" data-action="all">Alle an</button><button type="button" class="ghost-btn" data-action="none">Alle aus</button></div>';
+  const grid=box.querySelector('.v2917-shirt-color-grid');
+  colors.forEach(([id,n,c])=>{ const l=document.createElement('label'); l.className='v2917-color-item'; l.innerHTML=`<input type="checkbox" data-color-id="${id}"><i style="--c:${c}"></i><span>${n}</span>`; grid.appendChild(l); });
+  host.appendChild(box);
+  function syncFromConfig(){
+    const allowed=(nameInput.dataset.allowedColors||'').split(',').filter(Boolean);
+    const defaultId=nameInput.dataset.defaultColor||'';
+    grid.querySelectorAll('input').forEach(cb=>cb.checked=allowed.length?allowed.includes(cb.dataset.colorId):(!allowed.length && cb.dataset.colorId===defaultId));
+  }
+  function syncToConfig(changed){
+    const active=[...grid.querySelectorAll('input:checked')].map(cb=>cb.dataset.colorId);
+    nameInput.dataset.allowedColors=active.join(',');
+    let def=nameInput.dataset.defaultColor;
+    if(!active.includes(def)) def=changed?.checked?changed.dataset.colorId:(active[0]||'');
+    nameInput.dataset.defaultColor=def||'';
+    const meta=colors.find(x=>x[0]===def);
+    if(meta){ nameInput.value=meta[1]; hexInput.value=meta[2]; hexInput.dispatchEvent(new Event('input',{bubbles:true})); }
+    const toggle=document.getElementById('showShirtColors'); if(toggle) toggle.checked=active.length>1;
+    setShopState('Shirtfarben geändert – bitte speichern.');
+  }
+  grid.addEventListener('change',e=>{ if(e.target.matches('input[data-color-id]')) syncToConfig(e.target); });
+  box.querySelector('[data-action="all"]').addEventListener('click',()=>{grid.querySelectorAll('input').forEach(x=>x.checked=true);syncToConfig();});
+  box.querySelector('[data-action="none"]').addEventListener('click',()=>{grid.querySelectorAll('input').forEach(x=>x.checked=false);syncToConfig();});
+  window.syncV2917ShirtColors=syncFromConfig;
+  // loadShop fills datasets before the next task; observe form value changes caused by shop selection.
+  const obs=new MutationObserver(()=>setTimeout(syncFromConfig,0)); obs.observe(document.getElementById('shopForm'),{attributes:true,subtree:true});
+  document.querySelectorAll('.shop-list').forEach(el=>el.addEventListener('click',()=>setTimeout(syncFromConfig,30)));
+  setTimeout(syncFromConfig,0);
 })();

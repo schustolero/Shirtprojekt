@@ -2104,3 +2104,15 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
     white-space:nowrap!important;
   }
 }
+
+/* v29.1.7 – F140 Shirtfarben im Admin */
+.v2917-shirt-colors{grid-column:1/-1;margin-top:10px;padding:12px;border:1px solid #e7e9ed;border-radius:12px;background:#fbfcfd}
+.v2917-shirt-colors-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:10px}
+.v2917-shirt-colors-head strong{font-size:13px}.v2917-shirt-colors-head small{color:#727985}
+.v2917-shirt-color-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(145px,1fr));gap:7px}
+.v2917-color-item{display:flex!important;align-items:center;gap:8px;padding:7px 9px!important;border:1px solid #e5e7eb;border-radius:9px;background:#fff;min-height:38px}
+.v2917-color-item input{width:16px!important;height:16px!important;margin:0!important;flex:0 0 auto}.v2917-color-item i{width:18px;height:18px;border-radius:50%;background:var(--c);border:1px solid rgba(0,0,0,.15);flex:0 0 auto}.v2917-color-item span{font-size:12px;line-height:1.2}
+.v2917-shirt-colors-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.v2917-shirt-colors-actions button{font-size:11px;padding:6px 9px}
+.v2917-mm-note{display:block;color:#727985;font-size:11px;margin-top:3px}
+.v2862-side-row .v2917-mm-note{margin:0 0 0 2px;white-space:nowrap;font-weight:600;color:#596170}
+@media(max-width:700px){.v2917-shirt-color-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.v2862-side-row .v2917-mm-note{grid-column:2/-1}}
