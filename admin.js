@@ -283,7 +283,11 @@ function renderOrder(id,order){
   date.className="order-row-date-v2958";
   date.textContent=dateOnlyText(order.createdAt);
 
-  meta.appendChild(date);
+  const compactOrderNo=document.createElement("span");
+  compactOrderNo.className="order-row-number-v2963";
+  compactOrderNo.textContent=text(order.orderNumber,id);
+
+  meta.append(date,compactOrderNo);
 
   if(orderNeedsTransfer(order)){
     const badge=document.createElement("span");
@@ -376,7 +380,7 @@ function renderOrder(id,order){
       });
       order[field]=value;
       order.workflowVersion=3;
-      renderOrders();
+      applyFilters();
     }catch(err){
       alert("Auftragseinstellung konnte nicht gespeichert werden.");
       console.error(err);
