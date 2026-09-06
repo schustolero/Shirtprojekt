@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.7.1">
+  <link rel="stylesheet" href="admin.css?v=29.7.3">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -1654,6 +1654,97 @@
 }
 </style>
 
+
+<style id="v2972-three-main-tabs">
+@media(max-width:1050px){
+  .v284-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;}
+}
+@media(max-width:720px){
+  .v284-nav{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important;}
+  .v284-nav button{min-width:0!important;white-space:normal!important;line-height:1.05!important;padding:7px 4px!important;}
+}
+</style>
+
+<style id="v2973-functions-simple">
+/* Funktionen: schlichte Einstellungs-Liste */
+.v2853-functions-card{
+  border:1px solid #e2e6eb!important;
+  border-radius:14px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.v2853-functions-card>summary{
+  min-height:44px!important;
+  padding:10px 14px!important;
+  border-bottom:1px solid #edf0f3!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+.v2853-functions-card .v284-card-body,
+.v2853-functions-card .accordion-body{
+  padding:0!important;
+}
+.v2853-functions-card .core-features{
+  display:block!important;
+}
+.v2853-functions-card .core-features>label{
+  display:flex!important;
+  flex-direction:row-reverse!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  width:100%!important;
+  min-height:48px!important;
+  padding:10px 14px!important;
+  margin:0!important;
+  gap:12px!important;
+  border:0!important;
+  border-radius:0!important;
+  border-bottom:1px solid #edf0f3!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+.v2853-functions-card .core-features>label:last-child{border-bottom:0!important}
+.v2853-functions-card .core-features>label span{
+  flex:1 1 auto!important;
+  min-width:0!important;
+  font-size:12px!important;
+  line-height:1.2!important;
+  font-weight:750!important;
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  color:#252a31!important;
+}
+.v2853-functions-card .core-features input[type=checkbox]{
+  flex:0 0 38px!important;
+  width:38px!important;
+  min-width:38px!important;
+  height:21px!important;
+  margin:0!important;
+}
+.v2853-functions-card .core-features input[type=checkbox]::after{
+  width:15px!important;height:15px!important;left:3px!important;top:3px!important;
+}
+.v2853-functions-card .core-features input[type=checkbox]:checked::after{transform:translateX(17px)!important}
+.v2853-functions-card .designer-feature-tools{
+  margin:0!important;
+  padding:10px 14px!important;
+  border-top:1px solid #edf0f3!important;
+  background:#fafbfc!important;
+}
+.v2853-functions-card .designer-feature-title{font-size:9px!important;margin:0 0 6px!important;color:#7c838c!important}
+
+@media(max-width:720px){
+  .v2853-functions-card{margin-top:0!important;border-radius:12px!important}
+  .v2853-functions-card>summary{min-height:40px!important;padding:8px 11px!important;font-size:11.5px!important}
+  .v2853-functions-card .core-features>label{min-height:43px!important;padding:8px 11px!important;gap:9px!important}
+  .v2853-functions-card .core-features>label span{font-size:10.5px!important}
+  .v2853-functions-card .core-features input[type=checkbox]{width:34px!important;min-width:34px!important;flex-basis:34px!important;height:19px!important}
+  .v2853-functions-card .core-features input[type=checkbox]::after{width:13px!important;height:13px!important;top:3px!important;left:3px!important}
+  .v2853-functions-card .core-features input[type=checkbox]:checked::after{transform:translateX(15px)!important}
+}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -1905,12 +1996,12 @@
                 <summary><span>Funktionen</span><small>Shop-Optionen</small></summary>
                 <div class="accordion-body">
                   <div class="feature-grid compact-feature-grid core-features">
-                    <label><input id="allowBack" type="checkbox"><span>Rückseite</span></label>
-                    <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben</span></label>
-                    <label><input id="showMotifs" type="checkbox"><span>Motivauswahl</span></label>
-                    <label><input id="showMotifColors" type="checkbox"><span>Motivfarben</span></label>
-                    <label><input id="allowUpload" type="checkbox"><span>Kunden-Upload</span></label>
-                    <label><input id="allowText" type="checkbox"><span>Eigener Text</span></label>
+                    <label><input id="allowBack" type="checkbox"><span>Rückseite im Shop</span></label>
+                    <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben auswählbar</span></label>
+                    <label><input id="showMotifs" type="checkbox"><span>Motivauswahl im Shop</span></label>
+                    <label><input id="showMotifColors" type="checkbox"><span>Druckfarben auswählbar</span></label>
+                    <label><input id="allowUpload" type="checkbox"><span>Kunden-Upload erlauben</span></label>
+                    <label><input id="allowText" type="checkbox"><span>Eigener Text erlauben</span></label>
                   </div>
                   <div id="designerFeatureTools" class="designer-feature-tools" hidden>
                     <span class="designer-feature-title">Nur Designer-Shop</span>
@@ -1942,7 +2033,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.7.1"></script>
+  <script src="/admin.js?v=29.7.3"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1969,7 +2060,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.7.1';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.7.3';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

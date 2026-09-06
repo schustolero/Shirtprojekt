@@ -1198,7 +1198,6 @@ saveShopBtn.addEventListener("click",async()=>{
     <nav class="v284-nav" aria-label="Admin Navigation">
       <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
       <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
-      <button type="button" data-jump="motif"><span>✥</span>Motive / Logos</button>
       <button type="button" data-jump="functions"><span>◉</span>Funktionen</button>
     </nav>
     <div class="v284-side-bottom">
@@ -1716,7 +1715,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.1');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.3');
 })();
 
 
