@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.1.8">
+  <link rel="stylesheet" href="admin.css?v=29.2.0">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -104,12 +104,42 @@
                   </div>
                 </div>
               </div></div>
-    <div class="form-section compact-colors-section v2850-design-fragment"><div class="form-grid compact-color-row">
-                <label><span>Shirtfarbe</span><input id="fixedShirtName" type="text" placeholder="Royal Blue"></label>
-                <label class="v2850-color-picker"><span>Farbe</span><input id="fixedShirtHex" type="color" value="#0758b2"></label>
-                <label><span>Motivfarbe</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
-                <label class="v2850-color-picker"><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
-              </div></div>
+    <div class="form-section compact-colors-section v2850-design-fragment">
+              <div class="v2919-color-settings">
+                <div class="v2919-color-head">
+                  <div>
+                    <h3>Darstellung &amp; Farben</h3>
+                    <p>F140-Shirtfarben im Shop auswählen und bei Bedarf ein-/ausblenden.</p>
+                  </div>
+                  <label class="v2919-inline-toggle"><input id="shirtColorsToggleMirror" type="checkbox"><span>Shirtfarben im Shop anzeigen</span></label>
+                </div>
+
+                <input id="fixedShirtName" type="hidden" value="Royal Blue||default=royal-blue||allowed=royal-blue">
+                <input id="fixedShirtHex" type="hidden" value="#0758b2">
+
+                <div class="v2919-shirt-palette-card">
+                  <div class="v2919-card-top">
+                    <strong>F140 Shirtfarben</strong>
+                    <span>Aktiviere die Farben, die der Kunde bestellen darf.</span>
+                  </div>
+                  <div class="v2920-quick-actions" aria-label="Schnellauswahl F140 Farben">
+                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="all">Alle auswählen</button>
+                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="none">Alle abwählen</button>
+                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="royal">Nur Royal Blue</button>
+                  </div>
+                  <div id="f140ColorPicker" class="v2919-f140-grid" aria-label="F140 Shirtfarben Auswahl"></div>
+                  <div class="v2919-shirt-default-row">
+                    <label class="wide"><span>Standardfarbe</span><select id="f140DefaultColor"></select></label>
+                    <p class="v2919-hint">Wenn Shirtfarben deaktiviert sind, wird nur die Standardfarbe im Shop genutzt.</p>
+                  </div>
+                </div>
+
+                <div class="form-grid compact-color-row v2919-motif-row">
+                  <label><span>Motivfarbe</span><input id="fixedMotifName" type="text" placeholder="Medium Yellow"></label>
+                  <label class="v2850-color-picker"><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
+                </div>
+              </div>
+            </div>
 <div class="form-section embedded-display-section v2850-design-fragment"><div class="form-grid display-grid">
                 <label class="v2850-accent"><span>Akzent</span><input id="accentColor" type="color" value="#111111"></label>
                 <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
@@ -282,7 +312,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.1.8';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.2.0';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -443,6 +473,174 @@
     });
   });
   new MutationObserver(function(){ sync(); }).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+
+<script id="v2919-f140-colors">
+(function(){
+  var F140_COLORS = [
+    {id:'white', name:'White', hex:'#ffffff'},
+    {id:'black', name:'Black', hex:'#111015'},
+    {id:'azure-blue', name:'Azure Blue', hex:'#147fae'},
+    {id:'bottle-green', name:'Bottle Green', hex:'#174d2c'},
+    {id:'brick-red', name:'Brick Red', hex:'#8e151f'},
+    {id:'burgundy', name:'Burgundy', hex:'#83002f'},
+    {id:'chocolate', name:'Chocolate', hex:'#65462f'},
+    {id:'classic-olive', name:'Classic Olive', hex:'#687043'},
+    {id:'dark-grey-heather', name:'Dark Grey Heather', hex:'#4f5054'},
+    {id:'deep-navy', name:'Deep Navy', hex:'#001536'},
+    {id:'fuchsia', name:'Fuchsia', hex:'#ed0078'},
+    {id:'heather-burgundy', name:'Heather Burgundy', hex:'#963b69'},
+    {id:'heather-grey', name:'Heather Grey', hex:'#cfd0d2'},
+    {id:'heather-purple', name:'Heather Purple', hex:'#583078'},
+    {id:'kelly-green', name:'Kelly Green', hex:'#00a651'},
+    {id:'khaki', name:'Khaki', hex:'#8a7017'},
+    {id:'light-graphite', name:'Light Graphite (Solid)', hex:'#625754'},
+    {id:'light-pink', name:'Light Pink', hex:'#e8a0c4'},
+    {id:'lime', name:'Lime', hex:'#8cc152'},
+    {id:'natural', name:'Natural', hex:'#fff7d7'},
+    {id:'navy', name:'Navy', hex:'#001b3f'},
+    {id:'orange', name:'Orange', hex:'#ed4b00'},
+    {id:'purple', name:'Purple', hex:'#4d1688'},
+    {id:'red', name:'Red', hex:'#f20d09'},
+    {id:'retro-heather-green', name:'Retro Heather Green', hex:'#5d9d7b'},
+    {id:'retro-heather-royal', name:'Retro Heather Royal', hex:'#5166a8'},
+    {id:'royal-blue', name:'Royal Blue', hex:'#0758b2'},
+    {id:'sky-blue', name:'Sky Blue', hex:'#72c2e6'},
+    {id:'sunflower', name:'Sunflower', hex:'#ffb511'},
+    {id:'vintage-heather-navy', name:'Vintage Heather Navy', hex:'#626a86'},
+    {id:'vintage-heather-red', name:'Vintage Heather Red', hex:'#a64b64'},
+    {id:'yellow', name:'Yellow', hex:'#ffe600'}
+  ];
+  var lastSignature='';
+  function byId(id){ return document.getElementById(id); }
+  function colorById(id){ return F140_COLORS.find(function(c){ return c.id===id; }) || null; }
+  function metaFromFields(){
+    var nameField=byId('fixedShirtName');
+    var hexField=byId('fixedShirtHex');
+    var rawName=(nameField && nameField.value ? String(nameField.value) : '').trim();
+    var rawHex=(hexField && hexField.value ? String(hexField.value) : '#0758b2').trim();
+    var defaultName=rawName || 'Royal Blue';
+    var defaultId='';
+    var allowed=[];
+    if(rawName.indexOf('||')>-1){
+      var parts=rawName.split('||');
+      defaultName=(parts.shift() || defaultName).trim() || defaultName;
+      parts.forEach(function(part){
+        if(part.indexOf('default=')===0) defaultId=part.slice(8).trim();
+        if(part.indexOf('allowed=')===0){ allowed = part.slice(8).split(',').map(function(item){ return item.trim(); }).filter(Boolean); }
+      });
+    }
+    if(!defaultId){
+      var match=F140_COLORS.find(function(c){ return c.hex.toLowerCase()===rawHex.toLowerCase() || c.name===defaultName; });
+      defaultId=match ? match.id : 'royal-blue';
+    }
+    if(!allowed.length) allowed=[defaultId || 'royal-blue'];
+    allowed=allowed.filter(function(id, idx){ return !!colorById(id) && allowed.indexOf(id)===idx; });
+    if(!allowed.length) allowed=['royal-blue'];
+    if(allowed.indexOf(defaultId)===-1) defaultId=allowed[0];
+    return {defaultId:defaultId, allowed:allowed, defaultHex:rawHex, defaultName:defaultName};
+  }
+  function ensureUI(){
+    var wrap=byId('f140ColorPicker');
+    if(!wrap || wrap.dataset.ready==='1') return;
+    F140_COLORS.forEach(function(color){
+      var label=document.createElement('label');
+      label.className='v2919-f140-option';
+      label.setAttribute('data-color-id', color.id);
+      label.innerHTML='<input type="checkbox" value="'+color.id+'"><span class="v2919-swatch" style="--sw:'+color.hex+'"></span><span class="v2919-name">'+color.name+'</span>';
+      wrap.appendChild(label);
+    });
+    wrap.dataset.ready='1';
+  }
+  function syncMirrorCheckbox(fromSource){
+    var main=byId('showShirtColors');
+    var mirror=byId('shirtColorsToggleMirror');
+    if(!mirror || !main) return;
+    if(fromSource) mirror.checked=!!main.checked;
+    else main.checked=!!mirror.checked;
+  }
+  function fillDefaultSelect(selectedIds, preferredId){
+    var select=byId('f140DefaultColor');
+    if(!select) return;
+    select.innerHTML='';
+    selectedIds.forEach(function(id){
+      var color=colorById(id); if(!color) return;
+      var opt=document.createElement('option');
+      opt.value=id; opt.textContent=color.name;
+      select.appendChild(opt);
+    });
+    if(selectedIds.indexOf(preferredId)===-1) preferredId=selectedIds[0];
+    select.value=preferredId;
+  }
+  function selectedIds(){
+    return Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker input[type="checkbox"]:checked')).map(function(el){ return el.value; });
+  }
+  function writeBack(){
+    var nameField=byId('fixedShirtName');
+    var hexField=byId('fixedShirtHex');
+    var select=byId('f140DefaultColor');
+    if(!nameField || !hexField || !select) return;
+    var ids=selectedIds();
+    if(!ids.length){ ids=['royal-blue']; var rescue=document.querySelector('#f140ColorPicker input[value="royal-blue"]'); if(rescue) rescue.checked=true; }
+    fillDefaultSelect(ids, select.value || ids[0]);
+    var chosenId=select.value || ids[0];
+    if(ids.indexOf(chosenId)===-1){ chosenId=ids[0]; select.value=chosenId; }
+    var chosen=colorById(chosenId) || colorById(ids[0]) || colorById('royal-blue');
+    var encoded=(chosen.name || 'Royal Blue')+'||default='+(chosen.id || 'royal-blue')+'||allowed='+ids.join(',');
+    nameField.value=encoded;
+    hexField.value=chosen.hex || '#0758b2';
+    nameField.dispatchEvent(new Event('change',{bubbles:true}));
+    hexField.dispatchEvent(new Event('change',{bubbles:true}));
+    Array.prototype.slice.call(document.querySelectorAll('.v2919-f140-option')).forEach(function(el){
+      var checked=!!el.querySelector('input:checked');
+      el.classList.toggle('is-active', checked);
+    });
+  }
+  function applyMeta(meta){
+    ensureUI();
+    Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker input[type="checkbox"]')).forEach(function(input){
+      input.checked = meta.allowed.indexOf(input.value)>-1;
+    });
+    fillDefaultSelect(meta.allowed, meta.defaultId);
+    writeBack();
+  }
+  function syncFromFields(force){
+    ensureUI();
+    syncMirrorCheckbox(true);
+    var meta=metaFromFields();
+    var signature=JSON.stringify(meta)+':'+(byId('showShirtColors') ? String(!!byId('showShirtColors').checked) : '');
+    if(!force && signature===lastSignature) return;
+    lastSignature=signature;
+    applyMeta(meta);
+  }
+  function bind(){
+    ensureUI();
+    if(bind.done) return; bind.done=true;
+    document.addEventListener('change', function(ev){
+      if(ev.target && ev.target.matches('#f140ColorPicker input[type="checkbox"]')) writeBack();
+      if(ev.target && ev.target.id==='f140DefaultColor') writeBack();
+      if(ev.target && ev.target.id==='shirtColorsToggleMirror') syncMirrorCheckbox(false);
+      if(ev.target && ev.target.id==='showShirtColors') syncMirrorCheckbox(true);
+    }, true);
+    document.addEventListener('click', function(ev){
+      var quick=ev.target.closest('[data-f140-quick]');
+      if(!quick) return;
+      var mode=quick.getAttribute('data-f140-quick');
+      var boxes=Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker input[type=\"checkbox\"]'));
+      if(mode==='all'){
+        boxes.forEach(function(box){ box.checked=true; });
+      } else if(mode==='none'){
+        boxes.forEach(function(box){ box.checked=false; });
+      } else if(mode==='royal'){
+        boxes.forEach(function(box){ box.checked=(box.value==='royal-blue'); });
+      }
+      writeBack();
+    });
+    setInterval(function(){ syncFromFields(false); }, 700);
+  }
+  document.addEventListener('DOMContentLoaded', function(){ bind(); setTimeout(function(){ syncFromFields(true); }, 150); setTimeout(function(){ syncFromFields(true); }, 900); setTimeout(function(){ syncFromFields(true); }, 1800); });
 })();
 </script>
 
