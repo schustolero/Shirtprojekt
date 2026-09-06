@@ -1116,9 +1116,8 @@ saveShopBtn.addEventListener("click",async()=>{
     if(production){
       const divider=document.createElement('div');
       divider.className='v2855-production-divider';
-      divider.innerHTML='<strong>Produktion</strong><span>Einmal hinterlegt – gilt für alle Textilien.</span>';
+      divider.innerHTML='<strong>Druckdaten</strong><span>Gelten für T-Shirt, Polo und Hoodie.</span>';
       print.body.appendChild(divider);
-      production.classList.add('v2911-production-compact');
       print.body.appendChild(production);
       productionCard.remove();
     }
@@ -1258,5 +1257,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.6.9');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.0.0');
 })();
