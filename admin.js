@@ -22,28 +22,51 @@ let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
 const WORKFLOW_STEPS = [
-  "Eingegangen",
   "Ware bestellt",
-  "Ware da",
+  "Transfers bestellt",
   "Druck fertig",
   "Abholbereit",
   "Abgeholt"
 ];
 
 function workflowStepFromOrder(order){
-  const saved = Number(order && order.workflowStep);
-  if(Number.isInteger(saved) && saved >= 0 && saved < WORKFLOW_STEPS.length) return saved;
-  const status = (order && order.status) || "Neu";
-  if(status === "Abgeholt") return 5;
-  if(status === "Fertig") return 4;
-  if(status === "In Bearbeitung") return 1;
-  return 0;
+  if(!order) return -1;
+
+  /* Neue Workflow-Version */
+  if(Number(order.workflowVersion) === 2){
+    const saved = Number(order.workflowStep);
+    return Number.isInteger(saved) && saved >= -1 && saved < WORKFLOW_STEPS.length ? saved : -1;
+  }
+
+  /* Alte Aufträge aus dem bisherigen 6-Schritt-Verlauf sauber übernehmen */
+  const legacyLabel = String(order.workflowLabel || "");
+  const legacyByLabel = {
+    "Eingegangen": -1,
+    "Ware bestellt": 0,
+    "Ware da": 0,
+    "Druck fertig": 2,
+    "Abholbereit": 3,
+    "Abgeholt": 4
+  };
+  if(Object.prototype.hasOwnProperty.call(legacyByLabel, legacyLabel)) return legacyByLabel[legacyLabel];
+
+  const saved = Number(order.workflowStep);
+  if(Number.isInteger(saved)){
+    const legacyByStep = {0:-1,1:0,2:0,3:2,4:3,5:4};
+    if(Object.prototype.hasOwnProperty.call(legacyByStep, saved)) return legacyByStep[saved];
+  }
+
+  const status = order.status || "Neu";
+  if(status === "Abgeholt") return 4;
+  if(status === "Fertig") return 2;
+  if(status === "In Bearbeitung") return 0;
+  return -1;
 }
 
 function statusFromWorkflowStep(step){
-  if(step >= 5) return "Abgeholt";
-  if(step >= 3) return "Fertig";
-  if(step >= 1) return "In Bearbeitung";
+  if(step >= 4) return "Abgeholt";
+  if(step >= 2) return "Fertig";
+  if(step >= 0) return "In Bearbeitung";
   return "Neu";
 }
 
@@ -295,9 +318,11 @@ function renderOrder(id,order){
 
   function paintWorkflow(){
     const timestamps=(order&&order.workflowTimestamps)||{};
-    const currentTs=timestamps[String(currentStep)] || (currentStep===0 ? order.createdAt : null);
+    const currentTs=currentStep>=0 ? timestamps[String(currentStep)] : null;
     const currentTime=workflowTimeText(currentTs);
-    workflowCurrent.textContent=(WORKFLOW_STEPS[currentStep]||"Eingegangen")+(currentTime?` · ${currentTime}`:"");
+    workflowCurrent.textContent=currentStep>=0
+      ? (WORKFLOW_STEPS[currentStep]+(currentTime?` · ${currentTime}`:""))
+      : "Offen";
     [...workflowSteps.children].forEach((btn,index)=>{
       const done=index<=currentStep;
       const current=index===currentStep;
@@ -326,6 +351,7 @@ function renderOrder(id,order){
       try{
         const stepTimestamp=firebase.firestore.FieldValue.serverTimestamp();
         await db.collection("orders").doc(id).update({
+          workflowVersion:2,
           workflowStep:index,
           workflowLabel:WORKFLOW_STEPS[index],
           workflowUpdatedAt:stepTimestamp,
@@ -333,6 +359,7 @@ function renderOrder(id,order){
           status:mappedStatus,
           statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
         });
+        order.workflowVersion=2;
         order.workflowStep=index;
         order.workflowLabel=WORKFLOW_STEPS[index];
         order.status=mappedStatus;
@@ -395,6 +422,13 @@ function renderOrder(id,order){
   customerDetails.appendChild(customer);
   body.appendChild(customerDetails);
 
+  const itemDetails=document.createElement("details");
+  itemDetails.className="item-details-v2960";
+
+  const itemSummary=document.createElement("summary");
+  itemSummary.textContent=`Artikel · ${text(order.totalQuantity,"0")} Shirts`;
+  itemDetails.appendChild(itemSummary);
+
   const items=document.createElement("div");
   items.className="items";
 
@@ -412,7 +446,8 @@ function renderOrder(id,order){
     items.appendChild(row);
   });
 
-  body.appendChild(items);
+  itemDetails.appendChild(items);
+  body.appendChild(itemDetails);
   card.appendChild(body);
 
   return card;

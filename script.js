@@ -1059,9 +1059,10 @@ if (orderForm) {
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
         status: "Neu",
-        workflowStep: 0,
-        workflowLabel: "Eingegangen",
-        workflowTimestamps: {0: firebase.firestore.FieldValue.serverTimestamp()},
+        workflowVersion: 2,
+        workflowStep: -1,
+        workflowLabel: "",
+        workflowTimestamps: {},
         printData: SHOP.printData || {},
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         items: orderItems.map(item => ({
