@@ -181,34 +181,89 @@ function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
   const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
-  const rows = (Array.isArray(order.items) ? order.items : []).map((item,index)=>{
-    const qty = Number(item.quantity)||1;
-    const linePrice = item.linePrice ?? (qty*(Number(order.unitPrice)||15));
-    return `<tr><td>${index+1}</td><td>${htmlEscape(item.size)}</td><td>${htmlEscape(item.shirtColor)}</td><td>${htmlEscape(item.motif)}</td><td>${htmlEscape(item.motifColor)}</td><td>${qty}</td><td>${htmlEscape(euro(linePrice))}</td></tr>`;
-  }).join("");
+  const productLabel = item => item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+
+  const sourceItems = Array.isArray(order.items) ? order.items : [];
+  const grouped = [];
+  const groupedMap = new Map();
+  sourceItems.forEach(item=>{
+    const qty = Number(item.quantity) || 1;
+    const unitPrice = Number(item.unitPrice ?? order.unitPrice) || 0;
+    const linePrice = Number(item.linePrice ?? (qty * unitPrice)) || 0;
+    const key = [
+      item.productId || "tshirt",
+      text(item.size, "–"),
+      text(item.shirtColor, "–"),
+      text(item.motif, "–"),
+      text(item.motifColor, "–")
+    ].join("||");
+    if(!groupedMap.has(key)){
+      const row = {
+        productName: productLabel(item),
+        size: text(item.size, "–"),
+        shirtColor: text(item.shirtColor, "–"),
+        motif: text(item.motif, "–"),
+        motifColor: text(item.motifColor, "–"),
+        quantity: 0,
+        linePrice: 0
+      };
+      groupedMap.set(key, row);
+      grouped.push(row);
+    }
+    const target = groupedMap.get(key);
+    target.quantity += qty;
+    target.linePrice += linePrice;
+  });
+
+  const rows = grouped.length
+    ? grouped.map((item,index)=>`<tr>
+        <td class="col-pos">${index+1}</td>
+        <td>
+          <strong>${htmlEscape(item.productName)}</strong>
+          <small>${htmlEscape(item.size)} · ${htmlEscape(item.shirtColor)}</small>
+        </td>
+        <td>
+          <strong>${htmlEscape(item.motif)}</strong>
+          <small>Farbe: ${htmlEscape(item.motifColor)}</small>
+        </td>
+        <td class="col-qty">${htmlEscape(item.quantity)}</td>
+        <td class="col-price">${htmlEscape(euro(item.linePrice))}</td>
+      </tr>`).join("")
+    : `<tr><td colspan="5" class="empty">Keine Artikel vorhanden.</td></tr>`;
 
   const printData = order.printData || {};
-  const globalPrint = printData.global || {front:printData.tshirt?.front||printData.polo?.front||printData.hoodie?.front||{},back:printData.tshirt?.back||printData.polo?.back||printData.hoodie?.back||{}};
-  const printRows = ["front","back"].map(side=>{
-    const d=globalPrint[side]||{};
-    const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
+  const globalPrint = printData.global || {
+    front: printData.tshirt?.front || printData.polo?.front || printData.hoodie?.front || {},
+    back: printData.tshirt?.back || printData.polo?.back || printData.hoodie?.back || {}
+  };
+  const printBlocks = ["front","back"].map(side=>{
+    const d = globalPrint[side] || {};
+    const has = Object.values(d).some(v=>v!==null && v!==undefined && String(v).trim()!=="");
     if(!has) return "";
-    const size=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"-";
-    return `<tr><td>${side==="front"?"Vorne":"Hinten"}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td></tr>`;
-  }).filter(Boolean);
-  const printSection = printRows.length ? `<div class="section"><h2>Produktionsdaten</h2><table><thead><tr><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
-  const w = window.open("", "_blank", "width=900,height=900");
+    const size = [d.widthCm,d.heightCm].every(v=>v!==null && v!==undefined && String(v).trim()!=="") ? `${d.widthCm} × ${d.heightCm} cm` : "–";
+    return `<div class="print-card"><span>${side==="front"?"Vorne":"Hinten"}</span><strong>${htmlEscape(d.method || "–")}</strong><small>${htmlEscape(size)}</small></div>`;
+  }).filter(Boolean).join("");
+  const printSection = printBlocks ? `<div class="section"><div class="section-head"><h2>Druckdaten</h2></div><div class="print-grid">${printBlocks}</div></div>` : "";
+
+  const totalQuantity = Number(order.totalQuantity) || grouped.reduce((sum,item)=>sum + (Number(item.quantity)||0), 0);
+  const totalPrice = Number(order.totalPrice) || grouped.reduce((sum,item)=>sum + (Number(item.linePrice)||0), 0);
+  const orderDate = htmlEscape(dateOnlyText(order.createdAt));
+  const address = String(order.address || "").trim() || "–";
+  const email = String(order.email || "").trim() || "–";
+  const phone = String(order.phone || "").trim() || "–";
+  const customerDisplay = String(order.name || "").trim() || "–";
+
+  const w = window.open("", "_blank", "width=960,height=920");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
-    *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#18181b;margin:0;background:#fff}.sheet{width:190mm;max-width:100%;margin:0 auto;padding:14mm}.head{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:2px solid #18181b;padding-bottom:14px}.brand{display:flex;align-items:center;gap:16px}.brand img{width:82px;height:82px;object-fit:contain}.brand h1{font-size:20px;margin:0 0 4px}.brand p{margin:0;color:#666}.number{text-align:right}.number strong{display:block;font-size:19px}.number span{font-size:12px;color:#666}.section{margin-top:20px}.section h2{font-size:14px;margin:0 0 9px;text-transform:uppercase;letter-spacing:.04em}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}.field{border-bottom:1px solid #ddd;padding:7px 0}.field span{display:block;font-size:10px;color:#777}.field strong{font-size:13px}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f3f3f4}.total{display:flex;justify-content:flex-end;gap:28px;margin-top:14px;font-size:15px;font-weight:700}.footer{margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#777}.actions{display:flex;gap:10px;margin:18px auto 0;width:190mm;max-width:calc(100% - 20px)}button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}@media print{.actions{display:none}.sheet{padding:8mm}body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
-  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div><div class="number"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Adresse</span><strong>${htmlEscape(order.address||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
-  <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Größe</th><th>Shirtfarbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Shirts</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
+    *{box-sizing:border-box} :root{--text:#17181c;--muted:#69707d;--line:#e6e8ee;--soft:#f7f8fb;--soft2:#fbfbfd;--accent:#e8c54a;--accent-soft:#fff8dc} html,body{margin:0;padding:0;background:#eef1f5;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif} body{padding:18px 10px 24px} .sheet{width:210mm;max-width:100%;margin:0 auto;background:#fff;border:1px solid #dde2ea;border-radius:22px;padding:14mm;box-shadow:0 14px 36px rgba(15,23,42,.08)} .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:14px;border-bottom:1px solid var(--line)} .brand{display:flex;align-items:center;gap:16px;min-width:0} .brand img{width:72px;height:72px;object-fit:contain;border-radius:18px;background:var(--soft2);border:1px solid var(--line);padding:8px;flex:0 0 auto} .brand-copy{min-width:0} .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9a7a00;margin-bottom:7px} .brand-copy h1{margin:0;font-size:24px;line-height:1.15} .brand-copy p{margin:7px 0 0;font-size:13px;color:var(--muted)} .meta{display:grid;grid-template-columns:repeat(2,minmax(125px,1fr));gap:10px;min-width:270px} .meta-card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:11px 12px} .meta-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px} .meta-card strong{display:block;font-size:16px;line-height:1.2;word-break:break-word} .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:16px} .hero-card,.summary-card,.info-card{background:var(--soft2);border:1px solid var(--line);border-radius:18px;padding:14px 16px} .section{margin-top:16px} .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:10px} .section-head h2{margin:0;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase} .section-head p{margin:0;font-size:12px;color:var(--muted)} .info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px} .info-card.wide{grid-column:1/-1} .info-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px} .info-card strong{display:block;font-size:16px;line-height:1.35;word-break:break-word} .order-table-wrap{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff} table{width:100%;border-collapse:collapse} thead th{background:var(--soft);font-size:11px;font-weight:800;letter-spacing:.04em;color:#4f5662;padding:11px 12px;text-align:left;border-bottom:1px solid var(--line)} tbody td{padding:13px 12px;border-bottom:1px solid #edf0f4;vertical-align:top;font-size:13px} tbody tr:last-child td{border-bottom:none} td strong{display:block;font-size:15px;line-height:1.25;margin:0 0 3px} td small{display:block;font-size:12px;line-height:1.35;color:var(--muted)} .col-pos{width:44px;font-weight:700} .col-qty{width:90px;text-align:center;font-weight:700} .col-price{width:120px;text-align:right;font-weight:800;white-space:nowrap} .empty{text-align:center;color:var(--muted);padding:18px 12px} .totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px} .summary-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px} .summary-card strong{display:block;font-size:20px;line-height:1.2} .summary-card.total{background:var(--accent-soft);border-color:#f2df97} .summary-card.total strong{font-size:24px} .print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .print-card{background:var(--soft2);border:1px solid var(--line);border-radius:16px;padding:12px 14px} .print-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px} .print-card strong{display:block;font-size:15px;margin-bottom:4px} .print-card small{display:block;font-size:12px;color:var(--muted)} .footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted)} .actions{display:flex;gap:10px;justify-content:center;margin:16px auto 0;width:210mm;max-width:calc(100% - 20px)} button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer} .print{background:#141821;color:#fff} .close{background:#e9edf2;color:#111} @media(max-width:760px){ body{padding:8px 6px 18px} .sheet{padding:16px;border-radius:18px} .topbar{flex-direction:column;align-items:stretch} .meta{grid-template-columns:1fr 1fr;min-width:0} .hero{grid-template-columns:1fr} .info-grid{grid-template-columns:1fr} .info-card.wide{grid-column:auto} .print-grid,.totals{grid-template-columns:1fr} .brand h1,.brand-copy h1{font-size:21px} .brand img{width:60px;height:60px} thead th{font-size:10px;padding:9px 8px} tbody td{padding:10px 8px;font-size:12px} td strong{font-size:13px} td small{font-size:11px} .col-qty{width:64px} .col-price{width:92px} .actions{width:auto;max-width:none;padding:0 2px}} @media print{ body{background:#fff;padding:0} .sheet{width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;padding:8mm} .actions{display:none!important} @page{margin:10mm} }
+  </style></head><body><div class="sheet"><div class="topbar"><div class="brand"><img src="${logoUrl}" alt="Logo"><div class="brand-copy"><span class="eyebrow">Bestellschein</span><h1>${htmlEscape(customerName)}</h1><p>Schlichter Überblick für Auftrag, Kunde und Bestellung</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
+  <div class="section"><div class="section-head"><h2>Kundendaten</h2><p>Name, Kontakt und Lieferadresse</p></div><div class="info-grid"><div class="info-card"><span>Name</span><strong>${htmlEscape(customerDisplay)}</strong></div><div class="info-card"><span>Telefon</span><strong>${htmlEscape(phone)}</strong></div><div class="info-card"><span>E-Mail</span><strong>${htmlEscape(email)}</strong></div><div class="info-card wide"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div></div></div>
+  <div class="section"><div class="section-head"><h2>Bestellung</h2><p>Zusammengefasst und sauber gruppiert</p></div><div class="order-table-wrap"><table><thead><tr><th class="col-pos">#</th><th>Artikel</th><th>Motiv</th><th class="col-qty">Menge</th><th class="col-price">Gesamt</th></tr></thead><tbody>${rows}</tbody></table></div><div class="totals"><div class="summary-card"><span>Positionen</span><strong>${grouped.length}</strong></div><div class="summary-card"><span>Gesamtmenge</span><strong>${htmlEscape(totalQuantity)} Shirts</strong></div><div class="summary-card total"><span>Gesamtpreis</span><strong>${htmlEscape(euro(totalPrice))}</strong></div></div></div>
   ${printSection}
-  <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+  <div class="footer"><span>${htmlEscape(customerName)}</span><span>Bestellnummer ${htmlEscape(order.orderNumber||"–")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
-
 
 
 function printProductionSlip(order){
@@ -1620,7 +1675,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.5.3');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.6.4');
 })();
 
 
