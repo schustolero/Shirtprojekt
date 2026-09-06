@@ -1035,3 +1035,29 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   width: 260px !important;
   height: 430px !important;
 }
+
+/* v28.8.3 SAFE – Live-Shop Druckzone skaliert proportional zum Mockup.
+   Admin und Shop verwenden damit auf Desktop UND Mobil dieselbe Geometrie.
+   Referenz bei 590px Mockup-Breite: 260x430px Druckcanvas. */
+.mockup-stage{
+  position:relative;
+}
+.print-zone,
+.print-zone.back{
+  width:44.068% !important;
+  height:62.68% !important;
+  left:50% !important;
+  top:40.44% !important;
+  transform:translate(-50%,-50%) !important;
+}
+.print-zone .canvas-container,
+.print-zone.back .canvas-container,
+.print-zone canvas,
+.print-zone.back canvas,
+.print-zone .lower-canvas,
+.print-zone .upper-canvas,
+.print-zone.back .lower-canvas,
+.print-zone.back .upper-canvas{
+  width:100% !important;
+  height:100% !important;
+}
