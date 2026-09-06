@@ -21,52 +21,77 @@ const customerFilter = document.getElementById("customerFilter");
 let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
-const WORKFLOW_STEPS = [
-  "Ware bestellt",
-  "Transfers bestellt",
-  "Druck fertig",
-  "Abholbereit",
-  "Abgeholt"
-];
+const WORKFLOW_DEFS = {
+  goods: {key:"goods", label:"Ware bestellt"},
+  transfers: {key:"transfers", label:"Transfers bestellt"},
+  print: {key:"print", label:"Druck fertig"},
+  pickup_ready: {key:"pickup_ready", label:"Abholbereit"},
+  picked_up: {key:"picked_up", label:"Abgeholt"},
+  shipping_ready: {key:"shipping_ready", label:"Versandbereit"},
+  shipped: {key:"shipped", label:"Versandt"}
+};
 
-function workflowStepFromOrder(order){
-  if(!order) return -1;
+function orderNeedsTransfer(order){
+  return !!(order && order.transferRequired);
+}
 
-  /* Neue Workflow-Version */
-  if(Number(order.workflowVersion) === 2){
-    const saved = Number(order.workflowStep);
-    return Number.isInteger(saved) && saved >= -1 && saved < WORKFLOW_STEPS.length ? saved : -1;
+function orderDeliveryMethod(order){
+  return order && order.deliveryMethod === "shipping" ? "shipping" : "pickup";
+}
+
+function workflowStepsForOrder(order){
+  const steps=[WORKFLOW_DEFS.goods];
+  if(orderNeedsTransfer(order)) steps.push(WORKFLOW_DEFS.transfers);
+  steps.push(WORKFLOW_DEFS.print);
+  if(orderDeliveryMethod(order)==="shipping"){
+    steps.push(WORKFLOW_DEFS.shipping_ready,WORKFLOW_DEFS.shipped);
+  }else{
+    steps.push(WORKFLOW_DEFS.pickup_ready,WORKFLOW_DEFS.picked_up);
   }
+  return steps;
+}
 
-  /* Alte Aufträge aus dem bisherigen 6-Schritt-Verlauf sauber übernehmen */
-  const legacyLabel = String(order.workflowLabel || "");
-  const legacyByLabel = {
-    "Eingegangen": -1,
-    "Ware bestellt": 0,
-    "Ware da": 0,
-    "Druck fertig": 2,
-    "Abholbereit": 3,
-    "Abgeholt": 4
+function legacyWorkflowKey(order){
+  if(!order) return "";
+  if(order.workflowCurrentKey) return String(order.workflowCurrentKey);
+
+  const label=String(order.workflowLabel||"");
+  const byLabel={
+    "Ware bestellt":"goods",
+    "Transfers bestellt":"transfers",
+    "Druck fertig":"print",
+    "Abholbereit":"pickup_ready",
+    "Abgeholt":"picked_up",
+    "Versandbereit":"shipping_ready",
+    "Versandt":"shipped"
   };
-  if(Object.prototype.hasOwnProperty.call(legacyByLabel, legacyLabel)) return legacyByLabel[legacyLabel];
+  if(byLabel[label]) return byLabel[label];
 
-  const saved = Number(order.workflowStep);
-  if(Number.isInteger(saved)){
-    const legacyByStep = {0:-1,1:0,2:0,3:2,4:3,5:4};
-    if(Object.prototype.hasOwnProperty.call(legacyByStep, saved)) return legacyByStep[saved];
+  const legacyStep=Number(order.workflowStep);
+  if(Number(order.workflowVersion)===2 && Number.isInteger(legacyStep)){
+    const oldV2=["goods","transfers","print","pickup_ready","picked_up"];
+    return oldV2[legacyStep]||"";
   }
+  return "";
+}
 
-  const status = order.status || "Neu";
-  if(status === "Abgeholt") return 4;
-  if(status === "Fertig") return 2;
-  if(status === "In Bearbeitung") return 0;
+function currentWorkflowIndex(order,steps){
+  const key=legacyWorkflowKey(order);
+  if(!key) return -1;
+  const exact=steps.findIndex(step=>step.key===key);
+  if(exact>=0) return exact;
+
+  /* Bei Wechsel Abholung/Versand Fortschritt sinnvoll übernehmen */
+  if(key==="picked_up" || key==="shipped") return steps.length-1;
+  if(key==="pickup_ready" || key==="shipping_ready") return Math.max(0,steps.length-2);
+  if(key==="transfers" && !orderNeedsTransfer(order)) return 0;
   return -1;
 }
 
-function statusFromWorkflowStep(step){
-  if(step >= 4) return "Abgeholt";
-  if(step >= 2) return "Fertig";
-  if(step >= 0) return "In Bearbeitung";
+function statusFromWorkflowKey(key){
+  if(key==="picked_up" || key==="shipped") return "Abgeholt";
+  if(key==="print" || key==="pickup_ready" || key==="shipping_ready") return "Fertig";
+  if(key==="goods" || key==="transfers") return "In Bearbeitung";
   return "Neu";
 }
 
@@ -259,6 +284,20 @@ function renderOrder(id,order){
   date.textContent=dateOnlyText(order.createdAt);
 
   meta.appendChild(date);
+
+  if(orderNeedsTransfer(order)){
+    const badge=document.createElement("span");
+    badge.className="order-mini-badge-v2961";
+    badge.textContent="Transfer";
+    meta.appendChild(badge);
+  }
+  if(orderDeliveryMethod(order)==="shipping"){
+    const badge=document.createElement("span");
+    badge.className="order-mini-badge-v2961";
+    badge.textContent="Versand";
+    meta.appendChild(badge);
+  }
+
   left.append(shopName,customerName,meta);
 
   const right=document.createElement("div");
@@ -297,6 +336,69 @@ function renderOrder(id,order){
   info.append(qty);
   body.appendChild(info);
 
+  /* Auftragstyp: Transfer ja/nein + Abholung/Versand */
+  const options=document.createElement("div");
+  options.className="order-flow-options-v2961";
+
+  function makeChoiceGroup(title,choices,current,onChange){
+    const wrap=document.createElement("div");
+    wrap.className="flow-choice-group-v2961";
+    const lab=document.createElement("span");
+    lab.className="flow-choice-title-v2961";
+    lab.textContent=title;
+    const buttons=document.createElement("div");
+    buttons.className="flow-choice-buttons-v2961";
+    choices.forEach(choice=>{
+      const b=document.createElement("button");
+      b.type="button";
+      b.className="flow-choice-btn-v2961";
+      b.textContent=choice.label;
+      b.dataset.value=choice.value;
+      b.classList.toggle("active",String(current)===String(choice.value));
+      b.addEventListener("click",async(event)=>{
+        event.preventDefault();
+        event.stopPropagation();
+        if(b.classList.contains("active"))return;
+        await onChange(choice.value);
+      });
+      buttons.appendChild(b);
+    });
+    wrap.append(lab,buttons);
+    return wrap;
+  }
+
+  async function saveFlowOption(field,value){
+    try{
+      await db.collection("orders").doc(id).update({
+        [field]:value,
+        workflowVersion:3,
+        workflowUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
+      });
+      order[field]=value;
+      order.workflowVersion=3;
+      renderOrders();
+    }catch(err){
+      alert("Auftragseinstellung konnte nicht gespeichert werden.");
+      console.error(err);
+    }
+  }
+
+  options.append(
+    makeChoiceGroup(
+      "Transfer",
+      [{label:"Kein Transfer",value:false},{label:"Transfer nötig",value:true}],
+      orderNeedsTransfer(order),
+      value=>saveFlowOption("transferRequired",value)
+    ),
+    makeChoiceGroup(
+      "Übergabe",
+      [{label:"Abholung",value:"pickup"},{label:"Versand",value:"shipping"}],
+      orderDeliveryMethod(order),
+      value=>saveFlowOption("deliveryMethod",value)
+    )
+  );
+  body.appendChild(options);
+
   const workflow=document.createElement("div");
   workflow.className="order-workflow";
 
@@ -314,14 +416,21 @@ function renderOrder(id,order){
   const workflowSteps=document.createElement("div");
   workflowSteps.className="order-workflow-steps";
 
-  let currentStep=workflowStepFromOrder(order);
+  const flowSteps=workflowStepsForOrder(order);
+  workflowSteps.style.setProperty("--workflow-count",String(flowSteps.length));
+  let currentStep=currentWorkflowIndex(order,flowSteps);
+
+  function workflowTimestampFor(step,index){
+    const timestamps=(order&&order.workflowTimestamps)||{};
+    return timestamps[step.key] || timestamps[String(index)] || null;
+  }
 
   function paintWorkflow(){
-    const timestamps=(order&&order.workflowTimestamps)||{};
-    const currentTs=currentStep>=0 ? timestamps[String(currentStep)] : null;
+    const currentDef=currentStep>=0 ? flowSteps[currentStep] : null;
+    const currentTs=currentDef ? workflowTimestampFor(currentDef,currentStep) : null;
     const currentTime=workflowTimeText(currentTs);
-    workflowCurrent.textContent=currentStep>=0
-      ? (WORKFLOW_STEPS[currentStep]+(currentTime?` · ${currentTime}`:""))
+    workflowCurrent.textContent=currentDef
+      ? (currentDef.label+(currentTime?` · ${currentTime}`:""))
       : "Offen";
     [...workflowSteps.children].forEach((btn,index)=>{
       const done=index<=currentStep;
@@ -333,41 +442,48 @@ function renderOrder(id,order){
     });
   }
 
-  WORKFLOW_STEPS.forEach((label,index)=>{
+  flowSteps.forEach((step,index)=>{
     const btn=document.createElement("button");
     btn.type="button";
     btn.className="workflow-step";
-    btn.innerHTML=`<span class="workflow-mark">${index+1}</span><span class="workflow-label">${label}</span>`;
+    btn.innerHTML=`<span class="workflow-mark">${index+1}</span><span class="workflow-label">${step.label}</span>`;
     btn.addEventListener("click",async(event)=>{
       event.preventDefault();
       event.stopPropagation();
       if(btn.disabled)return;
+
       const previousStep=currentStep;
+      const previousKey=order.workflowCurrentKey||"";
       const previousStatus=order.status||"Neu";
+
       currentStep=index;
       paintWorkflow();
       [...workflowSteps.children].forEach(b=>b.disabled=true);
-      const mappedStatus=statusFromWorkflowStep(index);
+
+      const mappedStatus=statusFromWorkflowKey(step.key);
       try{
         const stepTimestamp=firebase.firestore.FieldValue.serverTimestamp();
         await db.collection("orders").doc(id).update({
-          workflowVersion:2,
-          workflowStep:index,
-          workflowLabel:WORKFLOW_STEPS[index],
+          workflowVersion:3,
+          workflowCurrentKey:step.key,
+          workflowLabel:step.label,
           workflowUpdatedAt:stepTimestamp,
-          [`workflowTimestamps.${index}`]:stepTimestamp,
+          [`workflowTimestamps.${step.key}`]:stepTimestamp,
           status:mappedStatus,
           statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
         });
-        order.workflowVersion=2;
-        order.workflowStep=index;
-        order.workflowLabel=WORKFLOW_STEPS[index];
+
+        order.workflowVersion=3;
+        order.workflowCurrentKey=step.key;
+        order.workflowLabel=step.label;
         order.status=mappedStatus;
         order.workflowTimestamps=order.workflowTimestamps||{};
-        order.workflowTimestamps[String(index)]=firebase.firestore.Timestamp.now();
+        order.workflowTimestamps[step.key]=firebase.firestore.Timestamp.now();
+
         applyFilters();
       }catch(err){
         currentStep=previousStep;
+        order.workflowCurrentKey=previousKey;
         order.status=previousStatus;
         paintWorkflow();
         alert("Auftragsverlauf konnte nicht gespeichert werden.");
