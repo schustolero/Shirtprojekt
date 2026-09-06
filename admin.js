@@ -801,10 +801,6 @@ saveShopBtn.addEventListener("click",async()=>{
     </div>`;
   document.body.insertBefore(sidebar,shell);
 
-  const navBackdrop=document.createElement("div");
-  navBackdrop.className="v2889-nav-backdrop";
-  navBackdrop.setAttribute("aria-hidden","true");
-  document.body.appendChild(navBackdrop);
 
   const shopSelect=sidebar.querySelector("#v284ShopSelect");
   window.refreshV284ShopSelect=function(){
@@ -831,26 +827,27 @@ saveShopBtn.addEventListener("click",async()=>{
   sidebar.querySelector("#v284NewShop").addEventListener("click",()=>originalNewShop?.click());
   sidebar.querySelector("#v284Logout").addEventListener("click",()=>originalLogout?.click());
   const mobileMenuBtn=sidebar.querySelector("#v284MobileMenu");
-  function setMobileMenu(open){
-    sidebar.classList.toggle("mobile-menu-open",open);
-    mobileMenuBtn?.setAttribute("aria-expanded",String(open));
-    if(mobileMenuBtn) mobileMenuBtn.textContent=open?"×":"☰";
-  }
+  const mobileNav=sidebar.querySelector(".v284-nav");
+  const setMobileMenu=(open)=>{
+    const isMobile=window.matchMedia("(max-width:720px)").matches;
+    const next=Boolean(open && isMobile);
+    sidebar.classList.toggle("mobile-menu-open",next);
+    mobileMenuBtn?.setAttribute("aria-expanded",String(next));
+    if(mobileMenuBtn) mobileMenuBtn.textContent=next?"×":"☰";
+    if(mobileNav) mobileNav.hidden=isMobile ? !next : false;
+  };
   mobileMenuBtn?.addEventListener("click",()=>setMobileMenu(!sidebar.classList.contains("mobile-menu-open")));
-  navBackdrop.addEventListener("click",()=>setMobileMenu(false));
-  document.addEventListener("keydown",e=>{ if(e.key==="Escape") setMobileMenu(false); });
-
-  function setNavActive(name){
-    sidebar.querySelectorAll(".v284-nav button").forEach(btn=>{
-      btn.classList.toggle("active",btn.dataset.main===name || (name==="shops" && btn.dataset.jump===undefined && btn.dataset.main==="shops"));
-    });
-  }
-  function openCard(key){
-    switchAdminTab("shops");
-    setNavActive("shops");
-    const card=document.querySelector(`.v284-card[data-card="${key}"]`);
-    if(card){ card.open=true; card.scrollIntoView({behavior:"smooth",block:"start"}); }
-  }
+  window.addEventListener("resize",()=>{
+    if(!window.matchMedia("(max-width:720px)").matches){
+      sidebar.classList.remove("mobile-menu-open");
+      mobileMenuBtn?.setAttribute("aria-expanded","false");
+      if(mobileMenuBtn) mobileMenuBtn.textContent="☰";
+      if(mobileNav) mobileNav.hidden=false;
+    }else if(!sidebar.classList.contains("mobile-menu-open")){
+      if(mobileNav) mobileNav.hidden=true;
+    }
+  });
+  if(window.matchMedia("(max-width:720px)").matches && mobileNav) mobileNav.hidden=true;
   sidebar.querySelectorAll(".v284-nav button").forEach(btn=>btn.addEventListener("click",()=>{
     if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
     else if(btn.dataset.jump) openCard(btn.dataset.jump);
@@ -1316,7 +1313,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.9.3');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.9.4');
 })();
 
 // v28.9.0 – Mobile Grunddaten werden direkt bei Kartenerzeugung gebunden.
