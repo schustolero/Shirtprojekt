@@ -2035,3 +2035,72 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
   .v2853-print-card{order:4!important;}
   .v2853-functions-card{order:5!important;}
 }
+
+
+/* v29.1.5 – Shop-Logo Upload mobil sauber und kompakt */
+.v2854-basic-logo .shop-logo-file{
+  position:relative!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  width:auto!important;
+  min-width:72px!important;
+  height:32px!important;
+  margin:0!important;
+  padding:0 10px!important;
+  border:1px solid #d8dce2!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  overflow:hidden!important;
+  cursor:pointer!important;
+}
+.v2854-basic-logo .shop-logo-file span{
+  display:block!important;
+  margin:0!important;
+  color:#202329!important;
+  font-size:10px!important;
+  font-weight:800!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+  pointer-events:none!important;
+}
+.v2854-basic-logo .shop-logo-file input[type="file"]{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  padding:0!important;
+  margin:0!important;
+  opacity:0!important;
+  cursor:pointer!important;
+}
+@media(max-width:720px){
+  .v2854-basic-logo{
+    grid-template-columns:54px minmax(0,1fr)!important;
+    align-items:start!important;
+  }
+  .v2854-basic-logo .shop-logo-mini-preview{grid-row:1 / span 2!important}
+  .v2854-basic-logo .shop-logo-inline-controls{
+    display:grid!important;
+    grid-template-columns:auto auto!important;
+    justify-content:start!important;
+    gap:6px!important;
+    min-width:0!important;
+  }
+  .v2854-basic-logo .shop-logo-inline-controls strong{
+    grid-column:1/-1!important;
+    margin:0 0 1px!important;
+  }
+  .v2854-basic-logo .shop-logo-height{
+    grid-column:2!important;
+    width:min(100%,220px)!important;
+    margin-top:2px!important;
+  }
+  .v2854-basic-logo .shop-logo-reset{
+    padding:6px 9px!important;
+    font-size:10px!important;
+    white-space:nowrap!important;
+  }
+}

@@ -97,7 +97,7 @@
                     <div class="shop-logo-mini-preview"><img id="logoPreview" alt="Shop-Logo Vorschau"></div>
                     <div class="shop-logo-inline-controls">
                       <strong>Shop-Logo</strong>
-                      <label class="shop-logo-file"><span>Logo ersetzen</span><input id="logoUpload" type="file" accept="image/*"></label>
+                      <label class="shop-logo-file"><span>Auswählen</span><input id="logoUpload" type="file" accept="image/*" aria-label="Shop-Logo auswählen"></label>
                       <button id="removeLogoBtn" class="ghost-btn shop-logo-reset" type="button">Zurücksetzen</button>
                     </div>
                     <label class="shop-logo-height"><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
@@ -282,7 +282,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.1.4';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.1.5';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
