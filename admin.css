@@ -2068,3 +2068,18 @@ body.v284-admin #ordersTab .order-finance>div:nth-child(3) strong{color:#157347}
  body.v284-admin #ordersTab .order-finance{grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px}
  body.v284-admin #ordersTab .order-finance strong{font-size:13px}
 }
+
+
+/* v28.9.2 FIX – mobile nav stacking: menu must sit above backdrop */
+@media(max-width:720px){
+  body.v284-admin .v284-sidebar{
+    z-index:1400!important;
+  }
+  body.v284-admin .v284-sidebar.mobile-menu-open .v284-nav{
+    z-index:1402!important;
+    pointer-events:auto!important;
+  }
+  body.v284-admin .v2889-nav-backdrop{
+    z-index:1300!important;
+  }
+}
