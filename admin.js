@@ -51,6 +51,7 @@ function statusFromWorkflowStep(step){
 function euro(value){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(value)||0)}
 function dateText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}
 function dateOnlyText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})}
+function workflowTimeText(ts){if(!ts||!ts.toDate)return "";return ts.toDate().toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
 function text(value,fallback="–"){return value===undefined||value===null||value===""?fallback:String(value)}
 
 async function loadOrders(){
@@ -85,7 +86,7 @@ function updateStats(entries){
 function searchableText(entry){
   const o = entry.order || {};
   return [
-    o.orderNumber, entry.id, o.customerId, o.customerName, o.name, o.customerClass, o.email, o.phone, o.status,
+    o.orderNumber, entry.id, o.customerId, o.customerName, o.name, o.address, o.customerClass, o.email, o.phone, o.status,
     ...(Array.isArray(o.items) ? o.items.flatMap(item => [item.size,item.shirtColor,item.motif,item.motifColor]) : [])
   ].filter(Boolean).join(" ").toLowerCase();
 }
@@ -110,7 +111,7 @@ function applyFilters(){
   const selectedCustomer = customerFilter ? (customerFilter.value || "Alle") : "Alle";
   const filtered = loadedOrders.filter(entry => {
     const status = entry.order.status || "Neu";
-    const statusMatch = selectedStatus === "Alle" || status === selectedStatus;
+    const statusMatch = selectedStatus === "Alle" ? status !== "Abgeholt" : status === selectedStatus;
     const customerMatch = selectedCustomer === "Alle" || (entry.order.customerId || "ohne-kunde") === selectedCustomer;
     const searchMatch = !query || searchableText(entry).includes(query);
     return statusMatch && customerMatch && searchMatch;
@@ -153,7 +154,7 @@ function printOrderSlip(order){
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
     *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#18181b;margin:0;background:#fff}.sheet{width:190mm;max-width:100%;margin:0 auto;padding:14mm}.head{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:2px solid #18181b;padding-bottom:14px}.brand{display:flex;align-items:center;gap:16px}.brand img{width:82px;height:82px;object-fit:contain}.brand h1{font-size:20px;margin:0 0 4px}.brand p{margin:0;color:#666}.number{text-align:right}.number strong{display:block;font-size:19px}.number span{font-size:12px;color:#666}.section{margin-top:20px}.section h2{font-size:14px;margin:0 0 9px;text-transform:uppercase;letter-spacing:.04em}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}.field{border-bottom:1px solid #ddd;padding:7px 0}.field span{display:block;font-size:10px;color:#777}.field strong{font-size:13px}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f3f3f4}.total{display:flex;justify-content:flex-end;gap:28px;margin-top:14px;font-size:15px;font-weight:700}.footer{margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#777}.actions{display:flex;gap:10px;margin:18px auto 0;width:190mm;max-width:calc(100% - 20px)}button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}@media print{.actions{display:none}.sheet{padding:8mm}body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
   </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div><div class="number"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Klasse / Abteilung</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
+  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Adresse</span><strong>${htmlEscape(order.address||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
   <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Größe</th><th>Shirtfarbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Shirts</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
   ${printSection}
   <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
@@ -199,7 +200,7 @@ function printProductionSlip(order){
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Produktionsschein ${htmlEscape(order.orderNumber||"")}</title><style>
   *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#151515;margin:0;background:#fff}.sheet{width:195mm;max-width:100%;margin:0 auto;padding:11mm}.head{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:3px solid #111;padding-bottom:10px}.brand{display:flex;align-items:center;gap:13px}.brand img{width:68px;height:68px;object-fit:contain}.brand h1{margin:0;font-size:19px}.brand p{margin:3px 0 0;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.08em}.meta{text-align:right}.meta strong{display:block;font-size:20px}.meta span{font-size:11px;color:#666}section{margin-top:16px}h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 7px}.info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.box{border:1px solid #ddd;border-radius:7px;padding:7px}.box span{display:block;color:#777;font-size:9px;text-transform:uppercase}.box strong{display:block;margin-top:2px;font-size:12px}table{width:100%;border-collapse:collapse;font-size:9.5px}th,td{border:1px solid #ccc;padding:6px;vertical-align:top}th{background:#f3f3f3;text-align:left}.check{text-align:center;font-size:16px;width:28px}.warning{padding:10px;border:1px solid #e0a400;background:#fff8d8;border-radius:7px;font-size:11px}.checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.task{border:1px solid #bbb;border-radius:7px;padding:10px;font-size:11px}.task b{font-size:17px;margin-right:5px}.notes{height:62px;border:1px solid #bbb;border-radius:7px}.footer{margin-top:18px;display:flex;justify-content:space-between;border-top:1px solid #ddd;padding-top:8px;font-size:9px;color:#777}.actions{display:flex;gap:8px;width:195mm;max-width:calc(100% - 20px);margin:14px auto}button{border:0;border-radius:7px;padding:10px 14px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}a{color:#111}@media print{.actions{display:none}.sheet{padding:6mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
   </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <section><h2>Auftrag</h2><div class="info"><div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="box"><span>Abteilung / Klasse</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="box"><span>Gesamtmenge</span><strong>${htmlEscape(order.totalQuantity||0)} Teile</strong></div></div></section>
+  <section><h2>Auftrag</h2><div class="info"><div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="box"><span>Adresse</span><strong>${htmlEscape(order.address||"-")}</strong></div><div class="box"><span>Gesamtmenge</span><strong>${htmlEscape(order.totalQuantity||0)} Teile</strong></div></div></section>
   <section><h2>Artikel</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Menge</th><th>Farbe</th><th>Motiv</th><th>Druckfarbe</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table></section>
   ${specs}
   <section><h2>Produktions-Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Druckmaß geprüft</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></section>
@@ -293,7 +294,10 @@ function renderOrder(id,order){
   let currentStep=workflowStepFromOrder(order);
 
   function paintWorkflow(){
-    workflowCurrent.textContent=WORKFLOW_STEPS[currentStep]||"Eingegangen";
+    const timestamps=(order&&order.workflowTimestamps)||{};
+    const currentTs=timestamps[String(currentStep)] || (currentStep===0 ? order.createdAt : null);
+    const currentTime=workflowTimeText(currentTs);
+    workflowCurrent.textContent=(WORKFLOW_STEPS[currentStep]||"Eingegangen")+(currentTime?` · ${currentTime}`:"");
     [...workflowSteps.children].forEach((btn,index)=>{
       const done=index<=currentStep;
       const current=index===currentStep;
@@ -320,17 +324,21 @@ function renderOrder(id,order){
       [...workflowSteps.children].forEach(b=>b.disabled=true);
       const mappedStatus=statusFromWorkflowStep(index);
       try{
+        const stepTimestamp=firebase.firestore.FieldValue.serverTimestamp();
         await db.collection("orders").doc(id).update({
           workflowStep:index,
           workflowLabel:WORKFLOW_STEPS[index],
-          workflowUpdatedAt:firebase.firestore.FieldValue.serverTimestamp(),
+          workflowUpdatedAt:stepTimestamp,
+          [`workflowTimestamps.${index}`]:stepTimestamp,
           status:mappedStatus,
           statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
         });
         order.workflowStep=index;
         order.workflowLabel=WORKFLOW_STEPS[index];
         order.status=mappedStatus;
-        if(statusFilter.value!=="Alle")applyFilters();
+        order.workflowTimestamps=order.workflowTimestamps||{};
+        order.workflowTimestamps[String(index)]=firebase.firestore.Timestamp.now();
+        applyFilters();
       }catch(err){
         currentStep=previousStep;
         order.status=previousStatus;
@@ -376,7 +384,7 @@ function renderOrder(id,order){
   const customer=document.createElement("div");
   customer.className="customer-grid";
 
-  [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{
+  [["Name",order.name],["Adresse",order.address],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{
     const box=document.createElement("div");
     const l=document.createElement("span");l.textContent=label;
     const v=document.createElement("strong");v.textContent=text(value);
@@ -804,7 +812,7 @@ function buildShopConfig(){
   const name=shopFields.name.value.trim(); if(!name) throw new Error("Bitte einen Shopnamen eingeben.");
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,allowBackDesign:shopFields.allowBack.checked,allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showMotifColorPicker:shopFields.showMotifColors.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
-  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:old.brandSubtitle||"T-Shirt Konfigurator",designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||""}))};
+  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:old.brandSubtitle||"T-Shirt Konfigurator",designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:"Adresse",customerExtraFieldName:"Adresse",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||""}))};
   const fsn=shopFields.fixedShirtName.value.trim(), fmn=shopFields.fixedMotifName.value.trim(); if(fsn) cfg.fixedShirtColor={id:slugify(fsn),name:fsn,color:shopFields.fixedShirtHex.value}; else delete cfg.fixedShirtColor; if(fmn) cfg.fixedMotifColor={name:fmn,color:shopFields.fixedMotifHex.value}; else delete cfg.fixedMotifColor;
   cfg.fixedPrint={
     front:{enabled:shopFields.fixedFrontEnabled.checked,motifId:shopFields.fixedFrontMotif.value||"motiv1",position:shopFields.fixedFrontPosition.value||"left-chest",size:shopFields.fixedFrontSize.value||"small",topPct:Math.max(10,Math.min(70,Number(shopFields.fixedFrontTop.value)||24)),sidePct:Math.max(15,Math.min(50,Number(shopFields.fixedFrontSide.value)||32))},
