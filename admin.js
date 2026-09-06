@@ -21,6 +21,18 @@ const customerFilter = document.getElementById("customerFilter");
 let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
+function statusCssClass(value){
+  if(value==="In Bearbeitung")return "status-bearbeitung";
+  if(value==="Fertig")return "status-fertig";
+  if(value==="Abgeholt")return "status-abgeholt";
+  return "status-neu";
+}
+function paintStatusSelect(select,value){
+  if(!select)return;
+  select.classList.remove("status-neu","status-bearbeitung","status-fertig","status-abgeholt");
+  select.classList.add(statusCssClass(value||select.value||"Neu"));
+}
+
 
 function euro(value){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(value)||0)}
 function dateText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}
@@ -188,18 +200,22 @@ function renderOrder(id,order){
   const number=document.createElement("div");number.className="order-number";number.textContent=text(order.orderNumber,id);
   const customerTag=document.createElement("div");customerTag.className="order-customer";customerTag.textContent=text(order.customerName||order.customerId,"Unbekannter Kunde");
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
-  title.append(number,customerTag,date);
+  const quick=document.createElement("div");quick.className="order-quick";quick.innerHTML=`<strong>${text(order.totalQuantity,"0")} Shirts</strong><span>${euro(order.totalPrice)}</span>`;
+  title.append(number,customerTag,date,quick);
   const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
   STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
+  paintStatusSelect(status,order.status||"Neu");
   status.addEventListener("change",async()=>{
     const previousStatus = order.status || "Neu";
     status.disabled=true;
     try{
       await db.collection("orders").doc(id).update({status:status.value,statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()});
       order.status = status.value;
+      paintStatusSelect(status,status.value);
       if(statusFilter.value !== "Alle") applyFilters();
     }catch(err){
       status.value = previousStatus;
+      paintStatusSelect(status,previousStatus);
       alert("Status konnte nicht gespeichert werden.");
       console.error(err);
     }finally{status.disabled=false}
@@ -210,9 +226,11 @@ function renderOrder(id,order){
   actions.append(status,printBtn,productionBtn);
   top.append(title,actions);card.appendChild(top);
 
+  const customerDetails=document.createElement("details");customerDetails.className="customer-details";
+  const customerSummary=document.createElement("summary");customerSummary.textContent="Kundendaten";customerDetails.appendChild(customerSummary);
   const customer=document.createElement("div");customer.className="customer-grid";
   [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
-  card.appendChild(customer);
+  customerDetails.appendChild(customer);card.appendChild(customerDetails);
 
   const items=document.createElement("div");items.className="items";
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{const row=document.createElement("div");row.className="item-row";const a=document.createElement("strong");a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;const b=document.createElement("span");b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;row.append(a,b);items.appendChild(row)});
@@ -1268,21 +1286,43 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.2.6');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.5.3');
 })();
 
 
-// v29.5.0 – mobile Filter kompakt auf-/zuklappen
+// v29.5.3 – mobile Filter klarer + aktive Filter sichtbar
 document.addEventListener("DOMContentLoaded",()=>{
   const btn=document.getElementById("mobileFilterToggle");
   const filters=document.querySelector("#ordersTab .filters");
+  const statusSel=document.getElementById("statusFilter");
+  const customerSel=document.getElementById("customerFilter");
+  const search=document.getElementById("searchInput");
   if(!btn||!filters)return;
-  const close=()=>{filters.classList.remove("v2950-open");btn.setAttribute("aria-expanded","false");btn.textContent="Filter";};
+  const activeCount=()=>{
+    let n=0;
+    if(statusSel && statusSel.value!=="Alle")n++;
+    if(customerSel && customerSel.value!=="Alle")n++;
+    if(search && String(search.value||"").trim())n++;
+    return n;
+  };
+  const refreshState=()=>{
+    const n=activeCount();
+    btn.classList.toggle("is-filtered",n>0);
+    const open=filters.classList.contains("v2950-open");
+    btn.textContent=open ? (n?`Filter schließen · ${n}`:"Filter schließen") : (n?`Filter · ${n} aktiv`:"Filter");
+    if(statusSel)statusSel.classList.toggle("v2953-filtered",statusSel.value!=="Alle");
+    if(customerSel)customerSel.classList.toggle("v2953-filtered",customerSel.value!=="Alle");
+    if(search)search.classList.toggle("v2953-filtered",!!String(search.value||"").trim());
+  };
+  const close=()=>{filters.classList.remove("v2950-open");btn.setAttribute("aria-expanded","false");refreshState();};
   close();
   btn.addEventListener("click",()=>{
     const open=!filters.classList.contains("v2950-open");
     filters.classList.toggle("v2950-open",open);
     btn.setAttribute("aria-expanded",String(open));
-    btn.textContent=open?"Filter schließen":"Filter";
+    refreshState();
   });
+  [statusSel,customerSel].filter(Boolean).forEach(el=>el.addEventListener("change",refreshState));
+  if(search)search.addEventListener("input",refreshState);
+  refreshState();
 });
