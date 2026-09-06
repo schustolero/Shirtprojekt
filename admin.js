@@ -14,6 +14,7 @@ const refreshBtn = document.getElementById("refreshBtn");
 const statOrders = document.getElementById("statOrders");
 const statShirts = document.getElementById("statShirts");
 const statRevenue = document.getElementById("statRevenue");
+const statProfit = document.getElementById("statProfit");
 const lastUpdate = document.getElementById("lastUpdate");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
@@ -44,15 +45,48 @@ async function loadOrders(){
   }
 }
 
+const COST_BY_PRODUCT = { tshirt: 2.60, polo: 5.61, hoodie: 9.90 };
+
+function productIdForItem(item){
+  const id=String(item?.productId||"").toLowerCase();
+  if(id==="polo"||id==="hoodie"||id==="tshirt") return id;
+  const name=String(item?.productName||item?.articleNo||"").toLowerCase();
+  if(name.includes("polo")||name.includes("f502")) return "polo";
+  if(name.includes("hoodie")||name.includes("f421")) return "hoodie";
+  return "tshirt";
+}
+
+function orderFinancials(order){
+  const items=Array.isArray(order?.items)?order.items:[];
+  let revenue=0,cost=0,quantity=0;
+  items.forEach(item=>{
+    const qty=Math.max(0,Number(item.quantity)||1);
+    quantity+=qty;
+    const line=Number(item.linePrice);
+    const unit=Number(item.unitPrice||item.price||order?.unitPrice)||0;
+    revenue += Number.isFinite(line) && line>0 ? line : qty*unit;
+    const storedCost=Number(item.purchasePrice);
+    const unitCost=storedCost>0?storedCost:(COST_BY_PRODUCT[productIdForItem(item)]||0);
+    cost += qty*unitCost;
+  });
+  if(revenue<=0) revenue=Number(order?.totalPrice)||0;
+  const profit=revenue-cost;
+  const margin=revenue>0?(profit/revenue)*100:0;
+  return {revenue,cost,profit,margin,quantity};
+}
+
 function updateStats(entries){
-  let shirts=0,revenue=0;
+  let shirts=0,revenue=0,profit=0;
   entries.forEach(({order})=>{
-    shirts += Number(order.totalQuantity)||0;
-    revenue += Number(order.totalPrice)||0;
+    const f=orderFinancials(order);
+    shirts += Number(order.totalQuantity)||f.quantity||0;
+    revenue += f.revenue;
+    profit += f.profit;
   });
   statOrders.textContent = entries.length;
   statShirts.textContent = shirts;
   statRevenue.textContent = euro(revenue);
+  if(statProfit) statProfit.textContent = euro(profit);
 }
 
 function searchableText(entry){
@@ -221,7 +255,11 @@ function renderOrder(id,order){
   const items=document.createElement("div");items.className="items";
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{const row=document.createElement("div");row.className="item-row";const a=document.createElement("strong");a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;const b=document.createElement("span");b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;row.append(a,b);items.appendChild(row)});
   card.appendChild(items);
-  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Shirts</span><span>${euro(order.totalPrice)}</span>`;card.appendChild(footer);
+  const finance=orderFinancials(order);
+  const financeBox=document.createElement("div");financeBox.className="order-finance";
+  financeBox.innerHTML=`<div><span>Umsatz</span><strong>${euro(finance.revenue)}</strong></div><div><span>EK gesamt</span><strong>${euro(finance.cost)}</strong></div><div><span>Rohertrag</span><strong>${euro(finance.profit)}</strong></div><div><span>Marge</span><strong>${finance.margin.toLocaleString("de-DE",{maximumFractionDigits:1})} %</strong></div>`;
+  card.appendChild(financeBox);
+  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Teile</span><span>Intern · EK/VK</span>`;card.appendChild(footer);
   return card;
 }
 
@@ -763,6 +801,11 @@ saveShopBtn.addEventListener("click",async()=>{
     </div>`;
   document.body.insertBefore(sidebar,shell);
 
+  const navBackdrop=document.createElement("div");
+  navBackdrop.className="v2889-nav-backdrop";
+  navBackdrop.setAttribute("aria-hidden","true");
+  document.body.appendChild(navBackdrop);
+
   const shopSelect=sidebar.querySelector("#v284ShopSelect");
   window.refreshV284ShopSelect=function(){
     if(!shopSelect || !list) return;
@@ -782,16 +825,21 @@ saveShopBtn.addEventListener("click",async()=>{
   shopSelect.addEventListener("change",()=>{
     const btn=list?.querySelector(`button[data-shop-id="${CSS.escape(shopSelect.value)}"]`);
     btn?.click();
+    if(window.matchMedia("(max-width:720px)").matches) setMobileMenu(false);
   });
 
   sidebar.querySelector("#v284NewShop").addEventListener("click",()=>originalNewShop?.click());
   sidebar.querySelector("#v284Logout").addEventListener("click",()=>originalLogout?.click());
   const mobileMenuBtn=sidebar.querySelector("#v284MobileMenu");
-  mobileMenuBtn?.addEventListener("click",()=>{
-    const open=sidebar.classList.toggle("mobile-menu-open");
-    mobileMenuBtn.setAttribute("aria-expanded",String(open));
-    mobileMenuBtn.textContent=open?"×":"☰";
-  });
+  function setMobileMenu(open){
+    sidebar.classList.toggle("mobile-menu-open",open);
+    document.body.classList.toggle("v2889-menu-open",open);
+    mobileMenuBtn?.setAttribute("aria-expanded",String(open));
+    if(mobileMenuBtn) mobileMenuBtn.textContent=open?"×":"☰";
+  }
+  mobileMenuBtn?.addEventListener("click",()=>setMobileMenu(!sidebar.classList.contains("mobile-menu-open")));
+  navBackdrop.addEventListener("click",()=>setMobileMenu(false));
+  document.addEventListener("keydown",e=>{ if(e.key==="Escape") setMobileMenu(false); });
 
   function setNavActive(name){
     sidebar.querySelectorAll(".v284-nav button").forEach(btn=>{
@@ -808,8 +856,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
     else if(btn.dataset.jump) openCard(btn.dataset.jump);
     if(window.matchMedia("(max-width:720px)").matches){
-      sidebar.classList.remove("mobile-menu-open");
-      if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+      setMobileMenu(false);
     }
   }));
 
@@ -1021,6 +1068,16 @@ saveShopBtn.addEventListener("click",async()=>{
 
   // Grunddaten: nur wirklich relevante Felder + Produkte.
   const basic=makeCard('Grunddaten','v2853-basic-card');
+  // v28.9.0: Mobile-Startzustand direkt beim Erzeugen setzen.
+  // Die Karte entsteht erst nach Login/Shop-Rendering, daher muss die
+  // Einklapp-Logik genau hier gebunden werden (nicht einmalig bei DOMContentLoaded).
+  if(window.matchMedia('(max-width: 720px)').matches){
+    basic.card.classList.add('mobile-collapsed');
+  }
+  basic.card.querySelector('.v2853-card-head')?.addEventListener('click',()=>{
+    if(!window.matchMedia('(max-width: 720px)').matches) return;
+    basic.card.classList.toggle('mobile-collapsed');
+  });
   if(mainGrid){
     mainGrid.classList.add('v2853-basic-grid');
     // Name zuerst; Shop-Logo sitzt direkt daneben.
@@ -1260,23 +1317,8 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.8.6');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.9.0');
 })();
 
-// v28.8.6 SAFE – Grunddaten auf Mobil standardmäßig geschlossen
-(function initMobileBasicCollapse(){
-  const apply=()=>{
-    const card=document.querySelector('.v2853-basic-card');
-    if(!card || card.dataset.mobileCollapseBound==='1') return;
-    card.dataset.mobileCollapseBound='1';
-    const head=card.querySelector('.v2853-card-head');
-    if(!head) return;
-    if(window.matchMedia('(max-width: 720px)').matches) card.classList.add('mobile-collapsed');
-    head.addEventListener('click',()=>{
-      if(!window.matchMedia('(max-width: 720px)').matches) return;
-      card.classList.toggle('mobile-collapsed');
-    });
-  };
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,0));
-  else setTimeout(apply,0);
-})();
+// v28.9.0 – Mobile Grunddaten werden direkt bei Kartenerzeugung gebunden.
+
