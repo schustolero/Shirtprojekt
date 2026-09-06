@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.3.5">
+  <link rel="stylesheet" href="admin.css?v=29.3.7">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -484,6 +484,51 @@
 }
 </style>
 
+
+<style id="v2936-cleanup">
+#f140DefaultColor[hidden]{display:none!important}#fixedMotifName[type="hidden"]{display:none!important}.v2934-current-choice{margin-top:8px}.v2919-motif-row{grid-template-columns:auto!important;justify-content:start!important}.v2919-motif-row .v2850-color-picker{max-width:92px!important}.v2935-print-color-block{margin-top:2px}.v2935-print-color-block .v2935-print-color-toggle{margin-bottom:2px!important}@media(max-width:760px){.v2934-current-choice{margin-top:6px}.v2919-motif-row{gap:8px!important}}
+</style>
+
+
+<style id="v2937-motif-compact">
+@media (max-width:760px){
+  .v2853-print-card .accordion-body{padding:8px 8px 10px!important;}
+  .v2853-print-card .panel-head.compact.accordion-panel-head{margin-bottom:6px!important;}
+  .v2853-print-card .section-note{font-size:10px!important;line-height:1.3!important;margin:0 0 8px!important;}
+  .v2853-print-card .v2862-shared-motif{padding:7px 8px!important;margin-bottom:6px!important;border-radius:10px!important;gap:8px!important;}
+  .v2853-print-card .v2862-shared-motif strong{font-size:11px!important;line-height:1.2!important;}
+  .v2853-print-card .v2862-shared-motif span:not(.v2861-motif-preview){font-size:9px!important;line-height:1.25!important;}
+  .v2853-print-card .v2861-motif-preview{width:52px!important;height:38px!important;padding:3px 5px!important;border-radius:8px!important;}
+  .v2853-print-card .v2861-motif-preview img{max-width:44px!important;max-height:26px!important;}
+  .v2853-print-card .v2917-mm-summary{gap:6px!important;margin-top:4px!important;flex-wrap:wrap!important;}
+  .v2853-print-card .v2917-size-chip{padding:5px 8px!important;border-radius:8px!important;font-size:10px!important;line-height:1.2!important;}
+  .v2853-print-card .v2862-product-groups{gap:5px!important;}
+  .v2853-print-card .v2862-product-group{border-radius:10px!important;}
+  .v2853-print-card .v2862-product-head{padding:5px 8px!important;min-height:28px!important;}
+  .v2853-print-card .v2862-product-head strong{font-size:11px!important;}
+  .v2853-print-card .v2862-product-head span{font-size:9px!important;}
+  .v2853-print-card .v2862-side-row{padding:5px 6px!important;gap:5px!important;min-height:auto!important;}
+  .v2853-print-card .v2862-side-row>span:first-child{font-size:10px!important;line-height:1.15!important;}
+  .v2853-print-card .v2862-side-row .v2856-size-select,
+  .v2853-print-card .v2862-side-row select{min-height:32px!important;height:32px!important;font-size:11px!important;padding:4px 8px!important;border-radius:8px!important;}
+  .v2853-print-card .v2862-side-row .v2921-inline-size{min-height:32px!important;height:32px!important;font-size:10px!important;padding:5px 8px!important;border-radius:8px!important;}
+  .v2853-print-card .v2862-side-row .v284-edit-print{min-width:90px!important;width:90px!important;height:32px!important;min-height:32px!important;padding:4px 8px!important;font-size:10px!important;border-radius:8px!important;}
+  .v2853-print-card .v2917-size-badge{font-size:9px!important;padding:3px 6px!important;border-radius:999px!important;}
+  .v2853-print-card .v2855-production-divider{margin-top:8px!important;padding-top:8px!important;}
+  .v2853-print-card .v2855-production-divider strong{font-size:12px!important;}
+  .v2853-print-card .v2855-production-divider span{font-size:10px!important;}
+  .v2853-print-card .v2911-production-compact .v2863-production-file-row{margin-bottom:7px!important;}
+  .v2853-print-card .v2911-production-compact #productionFileUrl{height:32px!important;min-height:32px!important;font-size:10.5px!important;border-radius:8px!important;}
+  .v2853-print-card .v2911-production-compact .global-print-data-grid{gap:6px!important;}
+  .v2853-print-card .v2911-production-compact .print-data-card{padding:8px!important;border-radius:9px!important;}
+  .v2853-print-card .v2911-production-compact .print-data-card h4{margin:0 0 5px!important;font-size:11px!important;}
+  .v2853-print-card .v2911-production-compact .simplified-print-data-fields{gap:5px!important;}
+  .v2853-print-card .v2911-production-compact label span{font-size:9px!important;}
+  .v2853-print-card .v2911-production-compact select,
+  .v2853-print-card .v2911-production-compact input{height:32px!important;min-height:32px!important;font-size:10.5px!important;padding:5px 8px!important;border-radius:8px!important;}
+}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -595,13 +640,13 @@
                   </div>
                   <div id="f140ColorPicker" class="v2919-f140-grid" aria-label="F140 Shirtfarben Auswahl"></div>
                   <div class="v2919-shirt-default-row">
-                    <label class="wide"><span>Standardfarbe</span><select id="f140DefaultColor"><option value="royal-blue" selected>Royal Blue</option></select><div id="f140DefaultColorPreview" class="v2934-current-choice" aria-live="polite"><span class="v2934-current-swatch"></span><strong class="v2934-current-label">Royal Blue</strong></div></label>
+                    <label class="wide"><span>Standardfarbe</span><select id="f140DefaultColor" hidden aria-hidden="true"><option value="royal-blue" selected>Royal Blue</option></select><div id="f140DefaultColorPreview" class="v2934-current-choice" aria-live="polite"><span class="v2934-current-swatch"></span><strong class="v2934-current-label">Royal Blue</strong></div></label>
                     <p class="v2919-hint">Wenn Shirtfarben deaktiviert sind, wird nur die Standardfarbe im Shop genutzt.</p>
                   </div>
                 </div>
 
                 <div class="form-grid compact-color-row v2919-motif-row">
-                  <label><span>Motivfarbe</span><input id="fixedMotifName" type="text" value="Medium Yellow" placeholder="Medium Yellow" list="poliFlexTurboColorList" autocomplete="off"></label>
+                  <input id="fixedMotifName" type="hidden" value="Medium Yellow">
                   <label class="v2850-color-picker"><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
                 </div>
                 <div class="form-grid">
@@ -758,7 +803,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.3.5"></script>
+  <script src="/admin.js?v=29.3.7"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -785,7 +830,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.3.5';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.3.7';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
