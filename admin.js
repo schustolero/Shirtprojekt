@@ -1260,5 +1260,23 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.8.5');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.8.6');
+})();
+
+// v28.8.6 SAFE – Grunddaten auf Mobil standardmäßig geschlossen
+(function initMobileBasicCollapse(){
+  const apply=()=>{
+    const card=document.querySelector('.v2853-basic-card');
+    if(!card || card.dataset.mobileCollapseBound==='1') return;
+    card.dataset.mobileCollapseBound='1';
+    const head=card.querySelector('.v2853-card-head');
+    if(!head) return;
+    if(window.matchMedia('(max-width: 720px)').matches) card.classList.add('mobile-collapsed');
+    head.addEventListener('click',()=>{
+      if(!window.matchMedia('(max-width: 720px)').matches) return;
+      card.classList.toggle('mobile-collapsed');
+    });
+  };
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',()=>setTimeout(apply,0));
+  else setTimeout(apply,0);
 })();

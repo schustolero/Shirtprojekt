@@ -1791,7 +1791,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 /* build v28.6.9 */
 
 
-/* v28.8.5 SAFE – Bestellübersicht: kompakter, mobilfreundlich, Statusfarben */
+/* v28.8.6 SAFE – Bestellübersicht: kompakter, mobilfreundlich, Statusfarben */
 #ordersTab .orders-list{gap:12px}
 #ordersTab .order-card{padding:15px 16px;border-radius:14px}
 #ordersTab .order-top{align-items:center}
@@ -1823,4 +1823,66 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
   #ordersTab .item-row strong{font-size:13px}
   #ordersTab .item-row span{font-size:12px}
   #ordersTab .order-footer{flex-direction:row;justify-content:space-between;font-size:14px}
+}
+
+/* v28.8.6 SAFE – mobile Admin kompakt */
+@media(max-width:720px){
+  body.v2853-reference .v284-editor-head{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    gap:8px 10px!important;
+    padding:8px 8px 10px!important;
+    margin:0!important;
+    align-items:center!important;
+  }
+  body.v2853-reference .v284-editor-head .v284-kicker{
+    font-size:9px!important;
+    margin:0 0 2px!important;
+  }
+  body.v2853-reference .v284-editor-head h2{
+    font-size:18px!important;
+    line-height:1.08!important;
+    margin:0!important;
+    max-width:260px!important;
+  }
+  body.v2853-reference .v284-editor-head .editor-actions{
+    display:flex!important;
+    gap:5px!important;
+    width:auto!important;
+  }
+  body.v2853-reference .v284-editor-head .editor-actions>*{
+    flex:0 0 auto!important;
+    min-height:34px!important;
+    padding:7px 10px!important;
+    font-size:11px!important;
+  }
+
+  /* Grunddaten mobil einklappbar */
+  .v2853-basic-card .v2853-card-head{cursor:pointer!important;user-select:none!important}
+  .v2853-basic-card.mobile-collapsed .v2853-card-body{display:none!important}
+  .v2853-basic-card.mobile-collapsed .v2853-card-head span{transform:rotate(180deg)!important}
+  .v2853-basic-card .v2853-card-head{padding:12px 14px!important}
+  .v2853-basic-card .v2853-card-head h3{font-size:16px!important}
+  .v2853-basic-card .v2853-card-body{padding:10px 12px 12px!important}
+
+  /* Logozeile kompakt */
+  .v2854-name-logo-row{gap:8px!important}
+  .v2854-name-logo-row .v2853-name input{height:42px!important;min-height:42px!important}
+  .v2854-basic-logo{padding:7px 8px!important;border-radius:10px!important}
+  .v2854-basic-logo .shop-logo-mini-preview{width:42px!important;height:42px!important}
+  .v2854-basic-logo .shop-logo-inline-controls{gap:5px!important}
+  .v2854-basic-logo .shop-logo-inline-controls strong{font-size:10px!important}
+  .v2854-basic-logo .shop-logo-file span,.v2854-basic-logo .shop-logo-reset{font-size:10px!important}
+  .v2854-basic-logo .shop-logo-height input{height:34px!important;min-height:34px!important}
+
+  /* Shop aktiv kompakter */
+  .v2850-active-field{min-height:44px!important;max-width:142px!important;padding:7px 10px!important;margin:4px 0!important}
+  .v2850-active-field input[type="checkbox"]{width:34px!important;height:20px!important;min-width:34px!important}
+  .v2850-active-field input[type="checkbox"]:before{width:16px!important;height:16px!important;top:2px!important;left:2px!important}
+  .v2850-active-field input[type="checkbox"]:checked:before{transform:translateX(14px)!important}
+  .v2850-active-field span{font-size:11px!important}
+
+  /* Arbeitsbereich näher an den Kopf */
+  .v2853-workspace{gap:10px!important}
+  .v2853-left,.v2853-right{gap:10px!important}
 }
