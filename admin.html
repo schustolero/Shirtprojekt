@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.3.4">
+  <link rel="stylesheet" href="admin.css?v=29.3.5">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -472,6 +472,18 @@
 .v2934-current-choice{display:flex;align-items:center;gap:8px;margin-top:7px;padding:8px 10px;border:1px solid #e2e6eb;border-radius:12px;background:#fbfbfc}.v2934-current-swatch{width:18px;height:18px;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#0758b2;flex:0 0 18px}.v2934-current-label{font-size:14px;line-height:1.2;color:#202329}.v2933-preset-control select option{font-weight:500}@media(max-width:760px){.v2934-current-choice{padding:7px 9px;border-radius:10px;margin-top:6px}.v2934-current-swatch{width:16px;height:16px;flex-basis:16px}.v2934-current-label{font-size:13px}}
 </style>
 
+
+<style id="v2935-print-color-cleanup">
+.v2935-print-color-block{display:grid;gap:8px;width:100%}
+.v2935-print-color-toggle{width:100%!important;margin:0!important}
+.v2935-print-color-block .v2933-motif-preset-field{margin:0!important}
+.v2935-print-color-block .v2933-preset-control{width:100%}
+@media(max-width:760px){
+  .v2935-print-color-block{gap:6px}
+  .v2935-print-color-toggle{padding:7px 9px!important}
+}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -565,7 +577,7 @@
                     <h3>Darstellung &amp; Farben</h3>
                     <p>F140-Shirtfarben im Shop auswählen und bei Bedarf ein-/ausblenden.</p>
                   </div>
-                  <div class="v2933-inline-toggles"><label class="v2919-inline-toggle"><input id="shirtColorsToggleMirror" type="checkbox"><span>Shirtfarben im Shop anzeigen</span></label><label class="v2919-inline-toggle"><input id="motifColorsToggleMirror" type="checkbox"><span>Druckfarben im Shop anzeigen</span></label></div>
+                  <div class="v2933-inline-toggles"><label class="v2919-inline-toggle"><input id="shirtColorsToggleMirror" type="checkbox"><span>Shirtfarben im Shop anzeigen</span></label></div>
                 </div>
 
                 <input id="fixedShirtName" type="hidden" value="Royal Blue||default=royal-blue||allowed=royal-blue">
@@ -593,7 +605,10 @@
                   <label class="v2850-color-picker"><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
                 </div>
                 <div class="form-grid">
-                  <label class="wide v2933-motif-preset-field"><span>Poli-Flex Turbo Druckfarbe</span><div class="v2933-preset-control"><span id="poliFlexTurboSwatch" class="v2933-color-swatch" aria-hidden="true"></span><select id="poliFlexTurboPreset"><option value="Medium Yellow" selected>Medium Yellow</option></select></div><div id="poliFlexTurboPreview" class="v2934-current-choice" aria-live="polite"><span class="v2934-current-swatch"></span><strong class="v2934-current-label">Medium Yellow</strong></div></label>
+                  <div class="wide v2935-print-color-block">
+                  <label class="v2919-inline-toggle v2935-print-color-toggle"><input id="motifColorsToggleMirror" type="checkbox"><span>Druckfarben im Shop anzeigen</span></label>
+                  <label class="v2933-motif-preset-field"><span>Poli-Flex Turbo Druckfarbe</span><div class="v2933-preset-control"><span id="poliFlexTurboSwatch" class="v2933-color-swatch" aria-hidden="true"></span><select id="poliFlexTurboPreset"><option value="Medium Yellow" selected>Medium Yellow</option></select></div></label>
+                </div>
                 </div>
                 <datalist id="poliFlexTurboColorList"></datalist>
               </div>
@@ -743,7 +758,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.3.4"></script>
+  <script src="/admin.js?v=29.3.5"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -770,7 +785,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.3.4';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.3.5';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1136,7 +1151,6 @@
     if(match){ text = match.name; hex = match.hex; }
     updateChoicePreview('f140DefaultColorPreview', text, hex);
   }
-  function updateMotifPreview(name, hex){ updateChoicePreview('poliFlexTurboPreview', name || 'Medium Yellow', hex || '#f6c431'); }
   function ensurePresetUI(){
     var list=byId('poliFlexTurboColorList');
     if(list && list.dataset.ready!=='1'){
@@ -1162,7 +1176,6 @@
     hexField.value=preset.hex;
     if(select) select.value=preset.name;
     updateSwatch(preset.hex);
-    updateMotifPreview(preset.name, preset.hex);
     fire(nameField);
     fire(hexField);
   }
@@ -1178,7 +1191,6 @@
       select.value=preset.name;
       if(hexField.value && hexField.value.toLowerCase()!==preset.hex.toLowerCase()) hexField.value=preset.hex;
       updateSwatch(preset.hex);
-      updateMotifPreview(preset.name,preset.hex);
     } else {
       if(forceYellow){ select.value='Medium Yellow'; nameField.value='Medium Yellow'; hexField.value='#f6c431'; updateSwatch('#f6c431'); updateMotifPreview('Medium Yellow','#f6c431'); }
       else { updateSwatch(hexField.value||'#f6c431'); updateMotifPreview(nameField.value||'Medium Yellow', hexField.value||'#f6c431'); }
