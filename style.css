@@ -1035,3 +1035,108 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   width: 260px !important;
   height: 430px !important;
 }
+
+
+/* ==========================================================
+   v29.1.2 MOBILE FIRST – Produkt sofort sichtbar
+   Nur mobile Reihenfolge/Abstände; Desktop bleibt unverändert.
+   ========================================================== */
+@media (max-width: 900px) {
+  .app {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  /* Die beiden Desktop-Spalten werden mobil nur zu Layout-Containern. */
+  .sidebar,
+  .designer-area {
+    display: contents !important;
+  }
+
+  /* Produktvorschau wirklich an Position 1. */
+  .workspace,
+  .dual-workspace {
+    order: 1 !important;
+  }
+
+  .workspace {
+    min-height: 0 !important;
+    height: 390px !important;
+    padding: 4px 10px 0 !important;
+  }
+
+  .mockup-stage {
+    height: 382px !important;
+    width: min(390px, 100vw) !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+  }
+
+  /* Shopidentität direkt danach, aber deutlich kompakter. */
+  .brand {
+    order: 2 !important;
+    padding: 8px 18px 10px !important;
+    min-height: 0 !important;
+  }
+
+  .brand .shop-brand-logo {
+    width: 52px !important;
+    height: 52px !important;
+    max-width: 52px !important;
+  }
+
+  .brand-title {
+    font-size: 19px !important;
+    line-height: 1.05 !important;
+  }
+
+  .brand-subtitle {
+    font-size: 11px !important;
+    margin-top: 1px !important;
+  }
+
+  /* Danach nur die wirklich wichtigen Kauf-Schritte. */
+  .product-section { order: 3 !important; }
+  .view-section { order: 4 !important; }
+  .order-section { order: 5 !important; }
+
+  .product-section,
+  .view-section,
+  .order-section {
+    padding: 12px 18px !important;
+  }
+
+  .product-section h3,
+  .view-section h3,
+  .order-section h3 {
+    margin-bottom: 8px !important;
+  }
+
+  .order-price-info {
+    margin-bottom: 8px !important;
+  }
+
+  /* Selten benötigte Designer-Optionen erst danach. */
+  .color-section { order: 10 !important; }
+  .upload-section { order: 11 !important; }
+  .logo-section { order: 12 !important; }
+  .customer-upload-section { order: 13 !important; }
+  .text-section { order: 14 !important; }
+  .motif-section { order: 15 !important; }
+  .motif-color-section { order: 16 !important; }
+  .sidebar-bottom { order: 20 !important; }
+
+  .designer-header,
+  .designer-footer {
+    display: none !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .workspace { height: 360px !important; }
+  .mockup-stage {
+    height: 352px !important;
+    width: min(360px, 100vw) !important;
+  }
+  .brand { padding: 6px 16px 8px !important; }
+}

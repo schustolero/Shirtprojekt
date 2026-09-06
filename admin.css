@@ -1792,7 +1792,7 @@ body.v2853-reference .v2849-version{background:#fff7ce!important;color:#8a6b00!i
 
 
 /* =========================================================
-   v29.1.0 CLEAN MODERN — VISUAL ONLY
+   v29.1.2 CLEAN MODERN — VISUAL ONLY
    Stable v28.6.9 logic intentionally untouched.
    ========================================================= */
 :root{
@@ -1970,4 +1970,49 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
   .v284-card>summary{padding:13px 14px!important}
   .v284-card-body{padding:12px 13px!important}
   .v284-card[data-card="functions"] .feature-grid label{min-height:52px!important}
+}
+
+
+/* v29.1.2 – Produktionsdaten kompakt direkt beim Motiv */
+.v2853-print-card .v2855-production-divider{
+  margin:14px 0 8px!important;
+  padding-top:12px!important;
+  border-top:1px solid #e8ebef!important;
+  display:flex!important;
+  align-items:baseline!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+}
+.v2853-print-card .v2855-production-divider strong{font-size:13px!important;color:#1f2937!important}
+.v2853-print-card .v2855-production-divider span{font-size:11px!important;color:#7b8490!important}
+.v2853-print-card .v2911-production-compact{padding:0!important;margin:0!important;background:transparent!important;border:0!important}
+.v2853-print-card .v2911-production-compact>.production-help{display:none!important}
+.v2853-print-card .v2911-production-compact .v2863-production-file-row{margin:0 0 9px!important}
+.v2853-print-card .v2911-production-compact #productionFileUrl{height:36px!important;min-height:36px!important;border-radius:9px!important}
+.v2853-print-card .v2911-production-compact .global-print-data-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+  margin:0!important;
+}
+.v2853-print-card .v2911-production-compact .print-data-card{
+  padding:9px 10px!important;
+  border:1px solid #e7eaf0!important;
+  border-radius:11px!important;
+  background:#fafbfc!important;
+}
+.v2853-print-card .v2911-production-compact .print-data-card h4{margin:0 0 7px!important;font-size:12px!important}
+.v2853-print-card .v2911-production-compact .simplified-print-data-fields{
+  display:grid!important;
+  grid-template-columns:1.25fr .75fr .75fr!important;
+  gap:7px!important;
+}
+.v2853-print-card .v2911-production-compact label span{font-size:9.5px!important}
+.v2853-print-card .v2911-production-compact select,
+.v2853-print-card .v2911-production-compact input{height:34px!important;min-height:34px!important;font-size:11px!important}
+@media(max-width:720px){
+  .v2853-print-card .v2855-production-divider{display:block!important;margin-top:11px!important;padding-top:10px!important}
+  .v2853-print-card .v2855-production-divider span{display:block!important;margin-top:2px!important}
+  .v2853-print-card .v2911-production-compact .global-print-data-grid{grid-template-columns:1fr!important;gap:7px!important}
+  .v2853-print-card .v2911-production-compact .simplified-print-data-fields{grid-template-columns:1.2fr .8fr .8fr!important;gap:6px!important}
 }
