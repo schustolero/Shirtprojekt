@@ -50,6 +50,7 @@ function statusFromWorkflowStep(step){
 
 function euro(value){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(value)||0)}
 function dateText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}
+function dateOnlyText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})}
 function text(value,fallback="–"){return value===undefined||value===null||value===""?fallback:String(value)}
 
 async function loadOrders(){
@@ -218,25 +219,23 @@ function renderOrder(id,order){
   const left=document.createElement("div");
   left.className="order-row-left-v2956";
 
-  const customerName=document.createElement("strong");
-  customerName.className="order-row-customer-v2956";
-  customerName.textContent=text(order.name,"Unbekannter Kunde");
+  const shopName=document.createElement("strong");
+  shopName.className="order-row-shop-primary-v2958";
+  shopName.textContent=text(order.customerName||order.customerId,"Unbekannter Shop");
+
+  const customerName=document.createElement("span");
+  customerName.className="order-row-customer-secondary-v2958";
+  customerName.textContent=text(order.name,"Unbekannter Besteller");
 
   const meta=document.createElement("div");
   meta.className="order-row-meta-v2956";
 
-  const shopName=document.createElement("span");
-  shopName.className="order-row-shop-v2957";
-  shopName.textContent=text(order.customerName||order.customerId,"");
-
   const date=document.createElement("span");
-  date.className="order-row-date-v2957";
-  date.textContent=dateText(order.createdAt);
+  date.className="order-row-date-v2958";
+  date.textContent=dateOnlyText(order.createdAt);
 
-  if(shopName.textContent) meta.appendChild(shopName);
   meta.appendChild(date);
-
-  left.append(customerName,meta);
+  left.append(shopName,customerName,meta);
 
   const right=document.createElement("div");
   right.className="order-row-right-v2956";
