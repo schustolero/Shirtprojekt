@@ -224,7 +224,7 @@ function printOrderSlip(order){
         </td>
         <td>
           <strong>${htmlEscape(item.motif)}</strong>
-          <small>Farbe: ${htmlEscape(item.motifColor)}</small>
+          <small>${htmlEscape(item.motifColor)}</small>
         </td>
         <td class="col-qty">${htmlEscape(item.quantity)}</td>
         <td class="col-price">${htmlEscape(euro(item.linePrice))}</td>
@@ -241,9 +241,9 @@ function printOrderSlip(order){
     const has = Object.values(d).some(v=>v!==null && v!==undefined && String(v).trim()!=="");
     if(!has) return "";
     const size = [d.widthCm,d.heightCm].every(v=>v!==null && v!==undefined && String(v).trim()!=="") ? `${d.widthCm} × ${d.heightCm} cm` : "–";
-    return `<div class="print-card"><span>${side==="front"?"Vorne":"Hinten"}</span><strong>${htmlEscape(d.method || "–")}</strong><small>${htmlEscape(size)}</small></div>`;
+    return `<div class="print-box"><span>${side==="front"?"Vorne":"Hinten"}</span><strong>${htmlEscape(d.method || "–")}</strong><small>${htmlEscape(size)}</small></div>`;
   }).filter(Boolean).join("");
-  const printSection = printBlocks ? `<div class="section"><div class="section-head"><h2>Druckdaten</h2></div><div class="print-grid">${printBlocks}</div></div>` : "";
+  const printSection = printBlocks ? `<div class="section print-section"><h2>Druckdaten</h2><div class="print-grid">${printBlocks}</div></div>` : "";
 
   const totalQuantity = Number(order.totalQuantity) || grouped.reduce((sum,item)=>sum + (Number(item.quantity)||0), 0);
   const totalPrice = Number(order.totalPrice) || grouped.reduce((sum,item)=>sum + (Number(item.linePrice)||0), 0);
@@ -253,15 +253,46 @@ function printOrderSlip(order){
   const phone = String(order.phone || "").trim() || "–";
   const customerDisplay = String(order.name || "").trim() || "–";
 
-  const w = window.open("", "_blank", "width=960,height=920");
+  const w = window.open("", "_blank", "width=920,height=840");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
-    *{box-sizing:border-box} :root{--text:#17181c;--muted:#69707d;--line:#e6e8ee;--soft:#f7f8fb;--soft2:#fbfbfd;--accent:#e8c54a;--accent-soft:#fff8dc} html,body{margin:0;padding:0;background:#eef1f5;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif} body{padding:18px 10px 24px} .sheet{width:210mm;max-width:100%;margin:0 auto;background:#fff;border:1px solid #dde2ea;border-radius:22px;padding:14mm;box-shadow:0 14px 36px rgba(15,23,42,.08)} .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;padding-bottom:14px;border-bottom:1px solid var(--line)} .brand{display:flex;align-items:center;gap:16px;min-width:0} .brand img{width:72px;height:72px;object-fit:contain;border-radius:18px;background:var(--soft2);border:1px solid var(--line);padding:8px;flex:0 0 auto} .brand-copy{min-width:0} .eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#9a7a00;margin-bottom:7px} .brand-copy h1{margin:0;font-size:24px;line-height:1.15} .brand-copy p{margin:7px 0 0;font-size:13px;color:var(--muted)} .meta{display:grid;grid-template-columns:repeat(2,minmax(125px,1fr));gap:10px;min-width:270px} .meta-card{background:var(--soft);border:1px solid var(--line);border-radius:16px;padding:11px 12px} .meta-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px} .meta-card strong{display:block;font-size:16px;line-height:1.2;word-break:break-word} .hero{display:grid;grid-template-columns:1.2fr .8fr;gap:12px;margin-top:16px} .hero-card,.summary-card,.info-card{background:var(--soft2);border:1px solid var(--line);border-radius:18px;padding:14px 16px} .section{margin-top:16px} .section-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin-bottom:10px} .section-head h2{margin:0;font-size:14px;font-weight:800;letter-spacing:.08em;text-transform:uppercase} .section-head p{margin:0;font-size:12px;color:var(--muted)} .info-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px 16px} .info-card.wide{grid-column:1/-1} .info-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px} .info-card strong{display:block;font-size:16px;line-height:1.35;word-break:break-word} .order-table-wrap{border:1px solid var(--line);border-radius:18px;overflow:hidden;background:#fff} table{width:100%;border-collapse:collapse} thead th{background:var(--soft);font-size:11px;font-weight:800;letter-spacing:.04em;color:#4f5662;padding:11px 12px;text-align:left;border-bottom:1px solid var(--line)} tbody td{padding:13px 12px;border-bottom:1px solid #edf0f4;vertical-align:top;font-size:13px} tbody tr:last-child td{border-bottom:none} td strong{display:block;font-size:15px;line-height:1.25;margin:0 0 3px} td small{display:block;font-size:12px;line-height:1.35;color:var(--muted)} .col-pos{width:44px;font-weight:700} .col-qty{width:90px;text-align:center;font-weight:700} .col-price{width:120px;text-align:right;font-weight:800;white-space:nowrap} .empty{text-align:center;color:var(--muted);padding:18px 12px} .totals{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px} .summary-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px} .summary-card strong{display:block;font-size:20px;line-height:1.2} .summary-card.total{background:var(--accent-soft);border-color:#f2df97} .summary-card.total strong{font-size:24px} .print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px} .print-card{background:var(--soft2);border:1px solid var(--line);border-radius:16px;padding:12px 14px} .print-card span{display:block;font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:5px} .print-card strong{display:block;font-size:15px;margin-bottom:4px} .print-card small{display:block;font-size:12px;color:var(--muted)} .footer{margin-top:20px;padding-top:12px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--muted)} .actions{display:flex;gap:10px;justify-content:center;margin:16px auto 0;width:210mm;max-width:calc(100% - 20px)} button{border:0;border-radius:12px;padding:12px 16px;font-weight:700;font-size:14px;cursor:pointer} .print{background:#141821;color:#fff} .close{background:#e9edf2;color:#111} @media(max-width:760px){ body{padding:8px 6px 18px} .sheet{padding:16px;border-radius:18px} .topbar{flex-direction:column;align-items:stretch} .meta{grid-template-columns:1fr 1fr;min-width:0} .hero{grid-template-columns:1fr} .info-grid{grid-template-columns:1fr} .info-card.wide{grid-column:auto} .print-grid,.totals{grid-template-columns:1fr} .brand h1,.brand-copy h1{font-size:21px} .brand img{width:60px;height:60px} thead th{font-size:10px;padding:9px 8px} tbody td{padding:10px 8px;font-size:12px} td strong{font-size:13px} td small{font-size:11px} .col-qty{width:64px} .col-price{width:92px} .actions{width:auto;max-width:none;padding:0 2px}} @media print{ body{background:#fff;padding:0} .sheet{width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;padding:8mm} .actions{display:none!important} @page{margin:10mm} }
-  </style></head><body><div class="sheet"><div class="topbar"><div class="brand"><img src="${logoUrl}" alt="Logo"><div class="brand-copy"><span class="eyebrow">Bestellschein</span><h1>${htmlEscape(customerName)}</h1><p>Schlichter Überblick für Auftrag, Kunde und Bestellung</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
-  <div class="section"><div class="section-head"><h2>Kundendaten</h2><p>Name, Kontakt und Lieferadresse</p></div><div class="info-grid"><div class="info-card"><span>Name</span><strong>${htmlEscape(customerDisplay)}</strong></div><div class="info-card"><span>Telefon</span><strong>${htmlEscape(phone)}</strong></div><div class="info-card"><span>E-Mail</span><strong>${htmlEscape(email)}</strong></div><div class="info-card wide"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div></div></div>
-  <div class="section"><div class="section-head"><h2>Bestellung</h2><p>Zusammengefasst und sauber gruppiert</p></div><div class="order-table-wrap"><table><thead><tr><th class="col-pos">#</th><th>Artikel</th><th>Motiv</th><th class="col-qty">Menge</th><th class="col-price">Gesamt</th></tr></thead><tbody>${rows}</tbody></table></div><div class="totals"><div class="summary-card"><span>Positionen</span><strong>${grouped.length}</strong></div><div class="summary-card"><span>Gesamtmenge</span><strong>${htmlEscape(totalQuantity)} Shirts</strong></div><div class="summary-card total"><span>Gesamtpreis</span><strong>${htmlEscape(euro(totalPrice))}</strong></div></div></div>
-  ${printSection}
-  <div class="footer"><span>${htmlEscape(customerName)}</span><span>Bestellnummer ${htmlEscape(order.orderNumber||"–")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+    *{box-sizing:border-box}
+    :root{--text:#16181d;--muted:#6f7784;--line:#dde2ea;--soft:#f7f8fb;--soft2:#fbfcfe;--accent:#fff7d1;--accent-line:#ebd47a}
+    html,body{margin:0;padding:0;background:#eef1f5;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
+    body{padding:10px 8px 20px}
+    .sheet{width:190mm;max-width:100%;margin:0 auto;background:#fff;border:1px solid #dfe4ec;border-radius:16px;padding:8mm 9mm;box-shadow:0 10px 28px rgba(15,23,42,.08)}
+    .topbar{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}
+    .brand{display:flex;align-items:center;gap:12px;min-width:0}
+    .brand img{width:48px;height:48px;object-fit:contain;border-radius:12px;background:var(--soft2);border:1px solid var(--line);padding:5px;flex:0 0 auto}
+    .brand-copy{min-width:0}.eyebrow{display:block;font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:#9a7a00;margin-bottom:3px}
+    .brand-copy h1{margin:0;font-size:18px;line-height:1.15}.brand-copy p{margin:3px 0 0;font-size:10.5px;color:var(--muted)}
+    .meta{display:grid;grid-template-columns:repeat(2,minmax(100px,1fr));gap:7px;min-width:220px}
+    .meta-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 9px}
+    .meta-card span,.info-item span,.summary-item span,.print-box span{display:block;font-size:8.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}
+    .meta-card strong{display:block;font-size:12px;line-height:1.25;word-break:break-word}
+    .section{margin-top:10px}.section h2{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+    .info-grid{display:grid;grid-template-columns:1.05fr .95fr .95fr 1.2fr;gap:8px}
+    .info-item{background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:8px 9px;min-height:48px}
+    .info-item strong{display:block;font-size:11.5px;line-height:1.3;word-break:break-word}
+    .table-wrap{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff}
+    table{width:100%;border-collapse:collapse}
+    thead th{background:var(--soft);font-size:9px;font-weight:800;letter-spacing:.04em;color:#515866;padding:7px 8px;text-align:left;border-bottom:1px solid var(--line)}
+    tbody td{padding:8px 8px;border-bottom:1px solid #edf0f4;vertical-align:top;font-size:10.5px}
+    tbody tr:last-child td{border-bottom:none}
+    td strong{display:block;font-size:11.5px;line-height:1.2;margin:0 0 2px}td small{display:block;font-size:9.5px;line-height:1.25;color:var(--muted)}
+    .col-pos{width:30px;font-weight:700}.col-qty{width:54px;text-align:center;font-weight:700}.col-price{width:88px;text-align:right;font-weight:800;white-space:nowrap}.empty{text-align:center;color:var(--muted);padding:12px 8px}
+    .totals{display:grid;grid-template-columns:1fr 1fr 1.1fr;gap:8px;margin-top:8px}
+    .summary-item{background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:8px 9px}.summary-item strong{display:block;font-size:13px;line-height:1.2}.summary-item.total{background:var(--accent);border-color:var(--accent-line)}.summary-item.total strong{font-size:16px}
+    .print-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.print-box{background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:8px 9px}.print-box strong{display:block;font-size:11.5px;line-height:1.2;margin-bottom:2px}.print-box small{display:block;font-size:9.5px;color:var(--muted)}
+    .footer{margin-top:12px;padding-top:8px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;font-size:9px;color:var(--muted)}
+    .actions{display:flex;gap:8px;justify-content:center;margin:12px auto 0;width:190mm;max-width:calc(100% - 16px)}button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer}.print{background:#141821;color:#fff}.close{background:#e9edf2;color:#111}
+    @media(max-width:760px){body{padding:6px 4px 18px}.sheet{padding:12px;border-radius:14px}.topbar{flex-direction:column}.meta{min-width:0;grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr 1fr}.col-price{width:78px}.actions{width:auto;max-width:none;padding:0 2px}}
+    @media print{html,body{background:#fff}body{padding:0}.sheet{width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;padding:6mm 7mm}.actions{display:none!important}@page{size:A4 portrait;margin:8mm}}
+  </style></head><body><div class="sheet"><div class="topbar"><div class="brand"><img src="${logoUrl}" alt="Logo"><div class="brand-copy"><span class="eyebrow">Bestellschein</span><h1>${htmlEscape(customerName)}</h1><p>Übersichtlicher Auftrag auf einem DIN-A4-Blatt</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
+    <div class="section"><h2>Kundendaten</h2><div class="info-grid"><div class="info-item"><span>Name</span><strong>${htmlEscape(customerDisplay)}</strong></div><div class="info-item"><span>Telefon</span><strong>${htmlEscape(phone)}</strong></div><div class="info-item"><span>E-Mail</span><strong>${htmlEscape(email)}</strong></div><div class="info-item"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div></div></div>
+    <div class="section"><h2>Bestellung</h2><div class="table-wrap"><table><thead><tr><th class="col-pos">#</th><th>Artikel</th><th>Motiv</th><th class="col-qty">Menge</th><th class="col-price">Preis</th></tr></thead><tbody>${rows}</tbody></table></div><div class="totals"><div class="summary-item"><span>Positionen</span><strong>${grouped.length}</strong></div><div class="summary-item"><span>Gesamtmenge</span><strong>${htmlEscape(totalQuantity)} Teile</strong></div><div class="summary-item total"><span>Gesamtpreis</span><strong>${htmlEscape(euro(totalPrice))}</strong></div></div></div>
+    ${printSection}
+    <div class="footer"><span>${htmlEscape(customerName)}</span><span>Bestellnummer ${htmlEscape(order.orderNumber||"–")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
 
@@ -271,10 +302,18 @@ function printProductionSlip(order){
   const customerName = order.customerName || customerId || "Shirtprojekt";
   const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
   const items = Array.isArray(order.items) ? order.items : [];
-  const itemRows = items.map((item,index)=>{
+
+  const productName = item => item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+  const itemRows = items.length ? items.map((item,index)=>{
     const qty=Number(item.quantity)||1;
-    return `<tr><td>${index+1}</td><td>${htmlEscape(item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt"))}</td><td>${htmlEscape(item.size||"-")}</td><td>${qty}</td><td>${htmlEscape(item.shirtColor||"-")}</td><td>${htmlEscape(item.motif||"-")}</td><td>${htmlEscape(item.motifColor||"-")}</td><td class="check">□</td></tr>`;
-  }).join("");
+    return `<tr>
+      <td class="pos">${index+1}</td>
+      <td><strong>${htmlEscape(productName(item))}</strong><small>${htmlEscape(item.size||"–")} · ${htmlEscape(item.shirtColor||"–")}</small></td>
+      <td><strong>${htmlEscape(item.motif||"–")}</strong><small>${htmlEscape(item.motifColor||"–")}</small></td>
+      <td class="qty">${qty}</td>
+      <td class="check">□</td>
+    </tr>`;
+  }).join("") : `<tr><td colspan="5" class="empty">Keine Artikel vorhanden.</td></tr>`;
 
   const usedProducts = new Set(items.map(item=>item.productId||"tshirt"));
   const printData = order.printData || {};
@@ -284,8 +323,8 @@ function printProductionSlip(order){
     const d=printData?.[product]?.[side]||{};
     const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
     if(!has) return;
-    const format=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"–";
-    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(format)}</td><td class="check">□</td></tr>`);
+    const format=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&String(v).trim()!=="")?`${d.widthCm} × ${d.heightCm} cm`:"–";
+    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"–")}</td><td>${htmlEscape(format)}</td><td class="check">□</td></tr>`);
   };
   addSpec("tshirt","T-Shirt","front","Vorne");
   addSpec("tshirt","T-Shirt","back","Hinten");
@@ -294,21 +333,27 @@ function printProductionSlip(order){
   addSpec("hoodie","Hoodie","front","Vorne");
   addSpec("hoodie","Hoodie","back","Hinten");
 
-  const specs = specRows.length
-    ? `<section><h2>Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
-    : `<section><div class="warning">Für diese Bestellung sind noch keine Produktionsdaten hinterlegt.</div></section>`;
+  const specs = specRows.length ? `<div class="section"><h2>Druckdaten</h2><div class="table-wrap"><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Maß</th><th class="check">OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></div></div>` : "";
+  const totalQty=Number(order.totalQuantity)||items.reduce((sum,item)=>sum+(Number(item.quantity)||1),0);
+  const orderDate=htmlEscape(dateOnlyText(order.createdAt));
+  const address=String(order.address||"").trim()||"–";
+  const customer=String(order.name||"").trim()||"–";
 
-  const w=window.open("","_blank","width=1000,height=900");
+  const w=window.open("","_blank","width=920,height=840");
   if(!w){alert("Bitte Pop-ups für den Produktionsschein erlauben.");return;}
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Produktionsschein ${htmlEscape(order.orderNumber||"")}</title><style>
-  *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#151515;margin:0;background:#fff}.sheet{width:195mm;max-width:100%;margin:0 auto;padding:11mm}.head{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:3px solid #111;padding-bottom:10px}.brand{display:flex;align-items:center;gap:13px}.brand img{width:68px;height:68px;object-fit:contain}.brand h1{margin:0;font-size:19px}.brand p{margin:3px 0 0;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.08em}.meta{text-align:right}.meta strong{display:block;font-size:20px}.meta span{font-size:11px;color:#666}section{margin-top:16px}h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 7px}.info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.box{border:1px solid #ddd;border-radius:7px;padding:7px}.box span{display:block;color:#777;font-size:9px;text-transform:uppercase}.box strong{display:block;margin-top:2px;font-size:12px}table{width:100%;border-collapse:collapse;font-size:9.5px}th,td{border:1px solid #ccc;padding:6px;vertical-align:top}th{background:#f3f3f3;text-align:left}.check{text-align:center;font-size:16px;width:28px}.warning{padding:10px;border:1px solid #e0a400;background:#fff8d8;border-radius:7px;font-size:11px}.checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.task{border:1px solid #bbb;border-radius:7px;padding:10px;font-size:11px}.task b{font-size:17px;margin-right:5px}.notes{height:62px;border:1px solid #bbb;border-radius:7px}.footer{margin-top:18px;display:flex;justify-content:space-between;border-top:1px solid #ddd;padding-top:8px;font-size:9px;color:#777}.actions{display:flex;gap:8px;width:195mm;max-width:calc(100% - 20px);margin:14px auto}button{border:0;border-radius:7px;padding:10px 14px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}a{color:#111}@media print{.actions{display:none}.sheet{padding:6mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <section><h2>Auftrag</h2><div class="info"><div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="box"><span>Adresse</span><strong>${htmlEscape(order.address||"-")}</strong></div><div class="box"><span>Gesamtmenge</span><strong>${htmlEscape(order.totalQuantity||0)} Teile</strong></div></div></section>
-  <section><h2>Artikel</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Menge</th><th>Farbe</th><th>Motiv</th><th>Druckfarbe</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table></section>
+  *{box-sizing:border-box}:root{--text:#16181d;--muted:#707783;--line:#dde2ea;--soft:#f7f8fb;--soft2:#fbfcfe;--accent:#fff7d1;--accent-line:#ebd47a}html,body{margin:0;padding:0;background:#eef1f5;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}body{padding:10px 8px 20px}.sheet{width:190mm;max-width:100%;margin:0 auto;background:#fff;border:1px solid #dfe4ec;border-radius:16px;padding:8mm 9mm;box-shadow:0 10px 28px rgba(15,23,42,.08)}
+  .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;min-width:0}.brand img{width:48px;height:48px;object-fit:contain;border-radius:12px;background:var(--soft2);border:1px solid var(--line);padding:5px;flex:0 0 auto}.brand h1{margin:0;font-size:16px;line-height:1.12;max-width:300px;word-break:break-word}.brand p{margin:3px 0 0;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a7a00}.meta{display:grid;grid-template-columns:repeat(2,minmax(100px,1fr));gap:7px;min-width:220px}.meta-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 9px}.meta-card span,.info span{display:block;font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}.meta-card strong{display:block;font-size:11px;line-height:1.25;word-break:break-word}
+  .section{margin-top:10px}.section h2{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.info-grid{display:grid;grid-template-columns:1.1fr 1.4fr .7fr;gap:8px}.info{background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:8px 9px;min-height:46px}.info strong{display:block;font-size:11px;line-height:1.25;word-break:break-word}.table-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}table{width:100%;border-collapse:collapse}th{background:var(--soft);font-size:8.5px;font-weight:800;letter-spacing:.04em;color:#515866;padding:6px 7px;text-align:left;border-bottom:1px solid var(--line)}td{padding:7px 7px;border-bottom:1px solid #edf0f4;vertical-align:top;font-size:9.5px}tr:last-child td{border-bottom:none}td strong{display:block;font-size:10.5px;line-height:1.2;margin-bottom:2px}td small{display:block;font-size:8.5px;color:var(--muted);line-height:1.2}.pos{width:28px}.qty{width:48px;text-align:center;font-weight:800}.check{width:34px;text-align:center;font-size:14px}.empty{text-align:center;color:var(--muted);padding:10px}.checklist{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}.task{border:1px solid var(--line);border-radius:12px;padding:8px 9px;background:var(--soft2);font-size:9.5px;font-weight:700}.task b{font-size:14px;margin-right:4px}.notes{height:46px;border:1px solid var(--line);border-radius:12px;background:var(--soft2)}.actions{display:flex;gap:8px;justify-content:center;margin:12px auto 0;width:190mm;max-width:calc(100% - 16px)}button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer}.print{background:#141821;color:#fff}.close{background:#e9edf2;color:#111}
+  @media(max-width:760px){body{padding:6px 4px 18px}.sheet{padding:12px;border-radius:14px}.head{flex-direction:column}.meta{min-width:0;grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr 1fr}.info-grid .info:last-child{grid-column:1/-1}.checklist{grid-template-columns:1fr 1fr}.actions{width:auto;max-width:none;padding:0 2px}}
+  @media print{html,body{background:#fff}body{padding:0}.sheet{width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;padding:6mm 7mm}.actions{display:none!important}@page{size:A4 portrait;margin:8mm}}
+  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
+  <div class="section"><h2>Auftrag</h2><div class="info-grid"><div class="info"><span>Kunde</span><strong>${htmlEscape(customer)}</strong></div><div class="info"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div><div class="info"><span>Menge</span><strong>${htmlEscape(totalQty)} Teile</strong></div></div></div>
+  <div class="section"><h2>Artikel</h2><div class="table-wrap"><table><thead><tr><th class="pos">#</th><th>Textil</th><th>Motiv</th><th class="qty">Menge</th><th class="check">OK</th></tr></thead><tbody>${itemRows}</tbody></table></div></div>
   ${specs}
-  <section><h2>Produktions-Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Druckmaß geprüft</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></section>
-  <section><h2>Notizen / Besonderheiten</h2><div class="notes"></div></section>
-  <div class="footer"><span>${htmlEscape(customerName)}</span><span>Produktionsschein · ${htmlEscape(order.orderNumber||"")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+  <div class="section"><h2>Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Druckmaß geprüft</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></div>
+  <div class="section"><h2>Notizen</h2><div class="notes"></div></div>
+  </div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
 
@@ -1675,7 +1720,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.6.4');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.6.7');
 })();
 
 
