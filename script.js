@@ -1103,3 +1103,33 @@ async function initializeFixedPrints() {
 }
 applyPreviewMode();
 initializeFixedPrints();
+
+// v29.1.5: Mobile Vorschau exakt wie Admin skalieren.
+// Die interne Geometrie bleibt immer 590px breit mit aspect-ratio .86;
+// nur die komplette Stage wird proportional verkleinert.
+(function syncAdminMobilePreviewGeometry() {
+  const BASE_STAGE_WIDTH = 590;
+  const BASE_STAGE_HEIGHT = BASE_STAGE_WIDTH / 0.86;
+
+  function update() {
+    const stage = document.querySelector('.mockup-stage');
+    if (!stage) return;
+
+    if (window.innerWidth > 900) {
+      stage.style.removeProperty('--mobile-preview-scale');
+      return;
+    }
+
+    // Bisherige sichtbare Shirt-Höhen beibehalten, aber ohne Verzerrung.
+    const targetHeight = window.innerWidth <= 390 ? 352 : 382;
+    const scaleByHeight = targetHeight / BASE_STAGE_HEIGHT;
+    const scaleByWidth = Math.max(0.1, (window.innerWidth - 8) / BASE_STAGE_WIDTH);
+    const scale = Math.min(scaleByHeight, scaleByWidth);
+
+    stage.style.setProperty('--mobile-preview-scale', String(scale));
+  }
+
+  update();
+  window.addEventListener('resize', update, { passive: true });
+  window.addEventListener('orientationchange', update, { passive: true });
+})();

@@ -1145,3 +1145,28 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
 }
 
 /* v29.1.3: Kunden-/Vereinskopf mobil wieder oberhalb der Produktvorschau. */
+
+/* ==========================================================
+   v29.1.5 – MOBILE POSITION SYNC
+   Admin und Kundenseite benutzen mobil dieselbe 590px/.86-
+   Vorschaugeometrie. Das komplette Mockup (Shirt + Druckzone)
+   wird gemeinsam skaliert; die Druckzone wird NICHT mehr separat
+   verkleinert. Dadurch bleiben X/Y/Größe aus dem Admin identisch.
+   ========================================================== */
+@media (max-width: 900px) {
+  .mockup-stage {
+    width: 590px !important;
+    max-width: none !important;
+    height: 686.0465px !important; /* 590 / .86 */
+    aspect-ratio: .86 !important;
+    flex: 0 0 auto !important;
+    transform: scale(var(--mobile-preview-scale, .5568)) !important;
+    transform-origin: center center !important;
+  }
+
+  .print-zone,
+  .print-zone.back {
+    /* Wichtig: kein eigenes scale(.64) mehr. */
+    transform: translate(-50%, -50%) !important;
+  }
+}
