@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.4.6">
+  <link rel="stylesheet" href="admin.css?v=29.4.8">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -960,7 +960,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.4.6"></script>
+  <script src="/admin.js?v=29.4.8"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -987,7 +987,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.4.6';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.4.8';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1328,116 +1328,10 @@
   document.addEventListener('DOMContentLoaded', function(){ bind(); setTimeout(function(){ syncFromFields(true); }, 150); setTimeout(function(){ syncFromFields(true); }, 900); setTimeout(function(){ syncFromFields(true); }, 1800); });
 })();
 </script>
-
-
-<script id="v2934-motif-presets">
-(function(){
-  var POLI_FLEX_TURBO = [
-    {name:'Anthracite',hex:'#4a4b46'},{name:'Apple Green',hex:'#94d600'},{name:'Aqua Green',hex:'#007d84'},{name:'Baby Pink',hex:'#e79ab2'},{name:'Beige',hex:'#d9cfad'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#7f2632'},{name:'Bright Blue',hex:'#7aa8dc'},{name:'Bright Copper',hex:'#a96442'},{name:'Bright Gold',hex:'#e4c15a'},{name:'Bright Lavender',hex:'#b39acb'},{name:'Bright Lime',hex:'#a4cf7a'},{name:'Bright Pink',hex:'#c12586'},{name:'Bright Red',hex:'#c6342c'},{name:'Bright Silver',hex:'#b5b6b8'},{name:'Bright Violet',hex:'#bda5cb'},{name:'Bright Yellow',hex:'#f3ca42'},{name:'Bronze',hex:'#b67b2f'},{name:'Brown',hex:'#5b4330'},{name:'Champagne',hex:'#e0d7a2'},{name:'Coffee',hex:'#9c755f'},{name:'Coral',hex:'#ff6b4f'},{name:'Flame Red',hex:'#f7303e'},{name:'Flamingo',hex:'#c36a66'},{name:'Frog Green',hex:'#09b53b'},{name:'Fuchsia',hex:'#bd0d6c'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#c62821'},{name:'Glossy White',hex:'#ffffff'},{name:'Gold Metallic',hex:'#9a8255'},{name:'Green',hex:'#117a3a'},{name:'Grey',hex:'#8a96a1'},{name:'Ice Blue',hex:'#94bedb'},{name:'Lemon Yellow',hex:'#efe555'},{name:'Light Apricot',hex:'#e7c8a9'},{name:'Light Berry',hex:'#b66ba9'},{name:'Light Grey',hex:'#d0d0d0'},{name:'Yellow',hex:'#FCB91D'},{name:'Mint',hex:'#86c9b0'},{name:'Navy Blue',hex:'#00233f'},{name:'Neon Berry',hex:'#9122af'},{name:'Neon Blue',hex:'#1899d4'},{name:'Neon Dark Pink',hex:'#d4008f'},{name:'Neon Green',hex:'#47d72c'},{name:'Neon Orange',hex:'#f7a34a'},{name:'Neon Pink',hex:'#f43bad'},{name:'Neon Red',hex:'#f36e72'},{name:'Neon Yellow',hex:'#dce61d'},{name:'Olive',hex:'#93b178'},{name:'Orange',hex:'#df722d'},{name:'Pastel Yellow',hex:'#e8d97e'},{name:'Peach Fuzz',hex:'#efb18a'},{name:'Peri',hex:'#6d6eb4'},{name:'Purple',hex:'#2f1a70'},{name:'Red',hex:'#bf231f'},{name:'Rose Gold',hex:'#b17d6d'},{name:'Royal Blue',hex:'#2f6a9b'},{name:'Sage Green',hex:'#aebc9b'},{name:'Sand Beige',hex:'#d1b894'},{name:'Silver Metallic',hex:'#a6a8ad'},{name:'Sky Blue',hex:'#6db2d9'},{name:'Violet',hex:'#b59ad0'},{name:'Viva Magenta',hex:'#c62f58'},{name:'White',hex:'#ffffff'},{name:'Yellow',hex:'#fcbc1b'}
-  ];
-  function byId(id){ return document.getElementById(id); }
-  function norm(v){ return String(v||'').trim().toLowerCase().replace(/\s+/g,' '); }
-  function findColorByName(name){ var n=norm(name); return POLI_FLEX_TURBO.find(function(c){ return norm(c.name)===n; }) || null; }
-  function swatchEl(){ return byId('poliFlexTurboSwatch'); }
-  function updateSwatch(hex){ var sw=swatchEl(); if(sw) sw.style.background = hex || '#FCB91D'; }
-  function updateChoicePreview(previewId, name, hex){ var box=byId(previewId); if(!box) return; var sw=box.querySelector('.v2934-current-swatch'); var lab=box.querySelector('.v2934-current-label'); if(sw) sw.style.background = hex || '#d9dde3'; if(lab) lab.textContent = name || '—'; }
-  function updateShirtPreview(){
-    var select=byId('f140DefaultColor'); if(!select) return;
-    var value = select.value || 'royal-blue';
-    var text = 'Royal Blue';
-    var hex = '#2f6a9b';
-    var F140 = (window.F140_COLORS || [
-      {id:'royal-blue',name:'Royal Blue',hex:'#2f6a9b'}
-    ]);
-    var match = F140.find(function(c){ return c.id===value; }) || F140.find(function(c){ return c.id==='royal-blue'; }) || F140[0];
-    if(match){ text = match.name; hex = match.hex; }
-    updateChoicePreview('f140DefaultColorPreview', text, hex);
-  }
-  function ensurePresetUI(){
-    var list=byId('poliFlexTurboColorList');
-    if(list && list.dataset.ready!=='1'){
-      list.innerHTML = POLI_FLEX_TURBO.map(function(c){ return '<option value="'+c.name+'"></option>'; }).join('');
-      list.dataset.ready='1';
-    }
-    var select=byId('poliFlexTurboPreset');
-    if(select && select.dataset.ready!=='1'){
-      select.innerHTML='';
-      POLI_FLEX_TURBO.forEach(function(c){ var o=document.createElement('option'); o.value=c.name; o.textContent=c.name; o.dataset.hex=c.hex; select.appendChild(o); });
-      select.dataset.ready='1';
-    }
-  }
-  function fire(input){ if(!input) return; input.dispatchEvent(new Event('input',{bubbles:true})); input.dispatchEvent(new Event('change',{bubbles:true})); }
-  function applyMotifPreset(name, force){
-    var preset=findColorByName(name);
-    var nameField=byId('fixedMotifName');
-    var hexField=byId('fixedMotifHex');
-    var select=byId('poliFlexTurboPreset');
-    if(!nameField || !hexField) return;
-    if(!preset){ if(force){ nameField.value='Yellow'; hexField.value='#FCB91D'; updateSwatch('#FCB91D'); updateMotifPreview('Yellow','#FCB91D'); if(select) select.value='Yellow'; fire(nameField); fire(hexField);} return; }
-    nameField.value=preset.name;
-    hexField.value=preset.hex;
-    if(select) select.value=preset.name;
-    updateSwatch(preset.hex);
-    fire(nameField);
-    fire(hexField);
-  }
-  function syncMotifPresetFromFields(forceYellow){
-    ensurePresetUI();
-    var nameField=byId('fixedMotifName');
-    var hexField=byId('fixedMotifHex');
-    var select=byId('poliFlexTurboPreset');
-    if(!nameField || !hexField || !select) return;
-    if(forceYellow && !String(nameField.value||'').trim()){ nameField.value='Yellow'; hexField.value='#FCB91D'; }
-    var preset=findColorByName(nameField.value);
-    if(preset){
-      select.value=preset.name;
-      if(hexField.value && hexField.value.toLowerCase()!==preset.hex.toLowerCase()) hexField.value=preset.hex;
-      updateSwatch(preset.hex);
-    } else {
-      if(forceYellow){ select.value='Yellow'; nameField.value='Yellow'; hexField.value='#FCB91D'; updateSwatch('#FCB91D'); updateMotifPreview('Yellow','#FCB91D'); }
-      else { updateSwatch(hexField.value||'#FCB91D'); updateMotifPreview(nameField.value||'Yellow', hexField.value||'#FCB91D'); }
-    }
-  }
-  function syncRoyalBlueVisible(){
-    var select=byId('f140DefaultColor');
-    if(!select) return;
-    if(!select.options.length){ var fb=document.createElement('option'); fb.value='royal-blue'; fb.textContent='Royal Blue'; select.appendChild(fb); }
-    var hasRoyal=false, royalIndex=0;
-    Array.prototype.slice.call(select.options).forEach(function(opt, idx){ if(opt.value==='royal-blue'){ hasRoyal=true; royalIndex=idx; } });
-    if(!select.value || select.selectedIndex<0){ if(hasRoyal){ select.value='royal-blue'; select.selectedIndex=royalIndex; } else { select.selectedIndex=0; } }
-    updateShirtPreview();
-  }
-  function syncMotifMirror(fromSource){ var main=byId('showMotifColors'); var mirror=byId('motifColorsToggleMirror'); if(!main || !mirror) return; if(fromSource) mirror.checked=!!main.checked; else main.checked=!!mirror.checked; }
-  document.addEventListener('DOMContentLoaded', function(){
-    ensurePresetUI();
-    syncMotifMirror(true);
-    setTimeout(function(){ syncRoyalBlueVisible(); updateShirtPreview(); syncMotifPresetFromFields(true); }, 120);
-    setTimeout(function(){ syncRoyalBlueVisible(); updateShirtPreview(); syncMotifPresetFromFields(false); syncMotifMirror(true); }, 700);
-    setTimeout(function(){ syncRoyalBlueVisible(); updateShirtPreview(); syncMotifPresetFromFields(false); syncMotifMirror(true); }, 1600);
-  });
-  document.addEventListener('change', function(ev){
-    if(!ev.target) return;
-    if(ev.target.id==='poliFlexTurboPreset'){ applyMotifPreset(ev.target.value || 'Yellow', !ev.target.value); }
-    if(ev.target.id==='fixedMotifName'){ var preset=findColorByName(ev.target.value); if(preset){ var hexField=byId('fixedMotifHex'); if(hexField){ hexField.value=preset.hex; fire(hexField); } updateSwatch(preset.hex); updateMotifPreview(preset.name,preset.hex); } syncMotifPresetFromFields(false); }
-    if(ev.target.id==='fixedMotifHex' || ev.target.id==='f140DefaultColor'){ setTimeout(function(){ syncRoyalBlueVisible(); updateShirtPreview(); syncMotifPresetFromFields(false); }, 10); }
-    if(ev.target.id==='motifColorsToggleMirror'){ syncMotifMirror(false); }
-    if(ev.target.id==='showMotifColors'){ syncMotifMirror(true); }
-  }, true);
-  document.addEventListener('input', function(ev){
-    if(ev.target && ev.target.id==='fixedMotifName'){ var preset=findColorByName(ev.target.value); if(preset){ var hexField=byId('fixedMotifHex'); if(hexField){ hexField.value=preset.hex; } updateSwatch(preset.hex); updateMotifPreview(preset.name,preset.hex); } }
-  }, true);
-  setInterval(function(){ syncRoyalBlueVisible(); updateShirtPreview(); syncMotifPresetFromFields(false); syncMotifMirror(true); }, 1200);
-})();
-</script>
-
-
-
-
-
 <script id="v2940-print-colors">
 (function(){
   var COLORS = [
-    {name:'Anthracite',hex:'#474946'},{name:'Apple Green',hex:'#A5D542'},{name:'Aqua Green',hex:'#317176'},{name:'Baby Pink',hex:'#ECA7BC'},{name:'Beige',hex:'#F0E4C1'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#642C32'},{name:'Bright Blue',hex:'#93ACD1'},{name:'Bright Copper',hex:'#955D42'},{name:'Bright Gold',hex:'#DDBE68'},{name:'Bright Lavender',hex:'#9D86B3'},{name:'Bright Lime',hex:'#B3DB88'},{name:'Bright Pink',hex:'#A03271'},{name:'Bright Red',hex:'#8E3128'},{name:'Bright Silver',hex:'#A6A9AA'},{name:'Bright Violet',hex:'#C7AFCE'},{name:'Bright Yellow',hex:'#F7D35E'},{name:'Bronze',hex:'#C18D45'},{name:'Brown',hex:'#44382B'},{name:'Champagne',hex:'#DDD29A'},{name:'Coffee',hex:'#8F6E5B'},{name:'Coral',hex:'#ED7157'},{name:'Flame Red',hex:'#DC4647'},{name:'Flamingo',hex:'#B36966'},{name:'Frog Green',hex:'#4FAE4F'},{name:'Fuchsia',hex:'#9E2759'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#A13126'},{name:'Glossy White',hex:'#FFFFFF'},{name:'Gold Metallic',hex:'#857451'},{name:'Green',hex:'#2D683D'},{name:'Grey',hex:'#85909A'},{name:'Ice Blue',hex:'#91BFDD'},{name:'Lemon Yellow',hex:'#FAF077'},{name:'Light Apricot',hex:'#EDD0B7'},{name:'Light Berry',hex:'#AF6D9E'},{name:'Light Grey',hex:'#CDCDCD'},{name:'Yellow',hex:'#FCB91D'},{name:'Mint',hex:'#9FD4BE'},{name:'Navy Blue',hex:'#0B1B2B'},{name:'Neon Berry',hex:'#7C2398'},{name:'Neon Blue',hex:'#459AD8'},{name:'Neon Dark Pink',hex:'#B5257B'},{name:'Neon Green',hex:'#72D34C'},{name:'Neon Orange',hex:'#F3AE5F'},{name:'Neon Pink',hex:'#EB50B1'},{name:'Neon Red',hex:'#EE7A7A'},{name:'Neon Yellow',hex:'#E4E855'},{name:'Olive',hex:'#9AB37F'},{name:'Orange',hex:'#CF743E'},{name:'Pastel Yellow',hex:'#E9D980'},{name:'Peach Fuzz',hex:'#EFB18A'},{name:'Peri',hex:'#7374B4'},{name:'Purple',hex:'#2D1C6F'},{name:'Red',hex:'#B62820'},{name:'Rose Gold',hex:'#B17D6D'},{name:'Royal Blue',hex:'#326C99'},{name:'Sage Green',hex:'#A9B99B'},{name:'Sand Beige',hex:'#D1B894'},{name:'Silver Metallic',hex:'#A6A8AD'},{name:'Sky Blue',hex:'#67B5DA'},{name:'Violet',hex:'#B59AD0'},{name:'Viva Magenta',hex:'#C62F58'},{name:'White',hex:'#FFFFFF'},{name:'Yellow',hex:'#FCB91D'}
+    {name:'Anthracite',hex:'#474946'},{name:'Apple Green',hex:'#A5D542'},{name:'Aqua Green',hex:'#317176'},{name:'Baby Pink',hex:'#ECA7BC'},{name:'Beige',hex:'#F0E4C1'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#642C32'},{name:'Bright Blue',hex:'#93ACD1'},{name:'Bright Copper',hex:'#955D42'},{name:'Bright Gold',hex:'#DDBE68'},{name:'Bright Lavender',hex:'#9D86B3'},{name:'Bright Lime',hex:'#B3DB88'},{name:'Bright Pink',hex:'#A03271'},{name:'Bright Red',hex:'#8E3128'},{name:'Bright Silver',hex:'#A6A9AA'},{name:'Bright Violet',hex:'#C7AFCE'},{name:'Bright Yellow',hex:'#F7D35E'},{name:'Bronze',hex:'#C18D45'},{name:'Brown',hex:'#44382B'},{name:'Champagne',hex:'#DDD29A'},{name:'Coffee',hex:'#8F6E5B'},{name:'Coral',hex:'#ED7157'},{name:'Flame Red',hex:'#DC4647'},{name:'Flamingo',hex:'#B36966'},{name:'Frog Green',hex:'#4FAE4F'},{name:'Fuchsia',hex:'#9E2759'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#A13126'},{name:'Glossy White',hex:'#FFFFFF'},{name:'Gold Metallic',hex:'#857451'},{name:'Green',hex:'#2D683D'},{name:'Grey',hex:'#85909A'},{name:'Ice Blue',hex:'#91BFDD'},{name:'Lemon Yellow',hex:'#FAF077'},{name:'Light Apricot',hex:'#EDD0B7'},{name:'Light Berry',hex:'#AF6D9E'},{name:'Light Grey',hex:'#CDCDCD'},{name:'Medium Yellow',hex:'#F6C951'},{name:'Mint',hex:'#9FD4BE'},{name:'Navy Blue',hex:'#0B1B2B'},{name:'Neon Berry',hex:'#7C2398'},{name:'Neon Blue',hex:'#459AD8'},{name:'Neon Dark Pink',hex:'#B5257B'},{name:'Neon Green',hex:'#72D34C'},{name:'Neon Orange',hex:'#F3AE5F'},{name:'Neon Pink',hex:'#EB50B1'},{name:'Neon Red',hex:'#EE7A7A'},{name:'Neon Yellow',hex:'#E4E855'},{name:'Olive',hex:'#9AB37F'},{name:'Orange',hex:'#CF743E'},{name:'Pastel Yellow',hex:'#E9D980'},{name:'Peach Fuzz',hex:'#EFB18A'},{name:'Peri',hex:'#7374B4'},{name:'Purple',hex:'#2D1C6F'},{name:'Red',hex:'#B62820'},{name:'Rose Gold',hex:'#B17D6D'},{name:'Royal Blue',hex:'#326C99'},{name:'Sage Green',hex:'#A9B99B'},{name:'Sand Beige',hex:'#D1B894'},{name:'Silver Metallic',hex:'#A6A8AD'},{name:'Sky Blue',hex:'#67B5DA'},{name:'Violet',hex:'#B59AD0'},{name:'Viva Magenta',hex:'#C62F58'},{name:'White',hex:'#FFFFFF'},{name:'Yellow',hex:'#FCB91D'}
   ];
   var DEFAULT='Yellow';
   function byId(id){return document.getElementById(id)}
