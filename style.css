@@ -1172,23 +1172,9 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
 }
 
 
-/* ==========================================================
-   v29.1.6 – MOBILE ADMIN SYNC HOTFIX
-   Die alte Inline-Regel darf die feste 590px-Referenzbühne
-   nicht wieder auf die Viewportbreite verkleinern.
-   ========================================================== */
-@media (max-width: 900px) {
-  .workspace {
-    overflow: hidden !important;
-  }
-  .mockup-stage {
-    width: 590px !important;
-    min-width: 590px !important;
-    max-width: none !important;
-    height: 686.0465px !important;
-    min-height: 686.0465px !important;
-    aspect-ratio: .86 !important;
-    transform: scale(var(--mobile-preview-scale, .5568)) !important;
-    transform-origin: center center !important;
-  }
+/* v29.1.9 – F140 Farbfreigabe pro Shop */
+.color-section .tool-note{
+  margin:0 0 10px;
+  font-size:11px;
+  color:#75757e;
 }
