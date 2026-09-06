@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.1.6">
+  <link rel="stylesheet" href="admin.css?v=29.1.8">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -199,16 +199,16 @@
                       <h4>Vorderseite</h4>
                       <div class="print-data-fields simplified-print-data-fields">
                         <label><span>Druckverfahren</span><select id="pdGlobalFrontMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdGlobalFrontWidth" type="number" min="0" step="0.1" inputmode="decimal" value="9"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdGlobalFrontHeight" type="number" min="0" step="0.1" inputmode="decimal" value="7"></label>
+                        <label><span>Druckbreite (mm)</span><input id="pdGlobalFrontWidth" type="number" min="0" step="0.1" inputmode="decimal" value="9"></label>
+                        <label><span>Druckhöhe (mm)</span><input id="pdGlobalFrontHeight" type="number" min="0" step="0.1" inputmode="decimal" value="7"></label>
                       </div>
                     </section>
                     <section class="print-data-card">
                       <h4>Rückseite</h4>
                       <div class="print-data-fields simplified-print-data-fields">
                         <label><span>Druckverfahren</span><select id="pdGlobalBackMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
-                        <label><span>Druckbreite (cm)</span><input id="pdGlobalBackWidth" type="number" min="0" step="0.1" inputmode="decimal" value="28"></label>
-                        <label><span>Druckhöhe (cm)</span><input id="pdGlobalBackHeight" type="number" min="0" step="0.1" inputmode="decimal" value="21.8"></label>
+                        <label><span>Druckbreite (mm)</span><input id="pdGlobalBackWidth" type="number" min="0" step="0.1" inputmode="decimal" value="28"></label>
+                        <label><span>Druckhöhe (mm)</span><input id="pdGlobalBackHeight" type="number" min="0" step="0.1" inputmode="decimal" value="21.8"></label>
                       </div>
                     </section>
                   </div>
@@ -255,7 +255,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.1.2"></script>
+  <script src="/admin.js?v=29.1.8"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -282,10 +282,169 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.1.6';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.1.8';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>
+
+<script id="v2917-mm-badges">
+(function(){
+  function parseNum(value){
+    if(value == null) return NaN;
+    var txt=String(value).trim().replace(/\s+/g,'').replace(',', '.');
+    return parseFloat(txt);
+  }
+  function formatMmFromCm(value){
+    var num=parseNum(value);
+    if(!isFinite(num)) return '–';
+    var mm=Math.round(num*10*10)/10;
+    var out=(Math.abs(mm-Math.round(mm))<0.001? String(Math.round(mm)) : mm.toFixed(1).replace('.',','));
+    return out+' mm';
+  }
+  function currentSizes(){
+    var fw=document.getElementById('pdGlobalFrontWidth');
+    var fh=document.getElementById('pdGlobalFrontHeight');
+    var bw=document.getElementById('pdGlobalBackWidth');
+    var bh=document.getElementById('pdGlobalBackHeight');
+    var front=(fw&&fh)? (formatMmFromCm(fw.value)+' ×TEMP× '+formatMmFromCm(fh.value)) : '90 mm × 70 mm';
+    var back=(bw&&bh)? (formatMmFromCm(bw.value)+' ×TEMP× '+formatMmFromCm(bh.value)) : '280 mm × 218 mm';
+    front=front.replace(/ mm ×TEMP× /,' × ');
+    back=back.replace(/ mm ×TEMP× /,' × ');
+    return {front: front, back: back};
+  }
+  function createEl(tag, cls, txt){
+    var el=document.createElement(tag);
+    if(cls) el.className=cls;
+    if(txt != null) el.textContent=txt;
+    return el;
+  }
+  function labelIsMmAware(){
+    return document.querySelector('.v2917-mm-note, .v2917-size-badge, .v2917-mm-summary');
+  }
+  function updateProductionHint(){
+    var grid=document.querySelector('.print-data-grid');
+    var acc=document.querySelector('.print-data-accordion .accordion-body') || document.querySelector('.v2911-production-compact') || (grid ? grid.parentElement : null);
+    if(!acc) return;
+    var note=acc.querySelector('.v2917-mm-note');
+    if(!note){
+      note=createEl('div','v2917-mm-note');
+      note.textContent='Alle Druckgrößen werden in mm angezeigt und eingegeben.';
+      var target=acc.querySelector('.production-help') || acc.firstElementChild;
+      if(target && target.parentNode===acc) acc.insertBefore(note, target.nextSibling);
+      else acc.insertBefore(note, acc.firstChild);
+    }
+  }
+  function updateSharedSummary(){
+    var sizes=currentSizes();
+    var shared=document.querySelector('.v2862-shared-motif');
+    if(!shared) return;
+    var info=shared.querySelector('div') || shared.firstElementChild;
+    if(!info) return;
+    var wrap=info.querySelector('.v2917-mm-summary');
+    if(!wrap){
+      wrap=createEl('div','v2917-mm-summary');
+      wrap.appendChild(createEl('span','v2917-size-chip v2917-front-chip'));
+      wrap.appendChild(createEl('span','v2917-size-chip v2917-back-chip'));
+      info.appendChild(wrap);
+    }
+    var frontChip=wrap.querySelector('.v2917-front-chip');
+    var backChip=wrap.querySelector('.v2917-back-chip');
+    if(frontChip) frontChip.textContent='Vorne '+sizes.front;
+    if(backChip) backChip.textContent='Hinten '+sizes.back;
+  }
+  function guessSide(row){
+    var text=(row.innerText || row.textContent || '').toLowerCase();
+    if(text.indexOf('rück')>-1) return 'back';
+    if(text.indexOf('vorder')>-1) return 'front';
+    return null;
+  }
+  function updateRowBadges(){
+    var sizes=currentSizes();
+    document.querySelectorAll('.v2862-side-row').forEach(function(row){
+      var side=guessSide(row);
+      if(!side) return;
+      var badge=row.querySelector('.v2917-size-badge');
+      if(!badge){
+        badge=createEl('span','v2917-size-badge');
+        row.appendChild(badge);
+      }
+      badge.textContent = side==='back' ? sizes.back : sizes.front;
+      badge.setAttribute('aria-label','Druckgröße '+badge.textContent);
+    });
+  }
+  function retitleButtons(){
+    // keep native file input intact; no-op for now
+  }
+  function setupMmInputs(){
+    var configs=[
+      ['pdGlobalFrontWidth',90],
+      ['pdGlobalFrontHeight',70],
+      ['pdGlobalBackWidth',280],
+      ['pdGlobalBackHeight',218]
+    ];
+    configs.forEach(function(cfg){
+      var id=cfg[0], fallback=cfg[1];
+      var original=document.getElementById(id);
+      if(!original || original.dataset.mmProxyReady==='1') return;
+      original.dataset.mmProxyReady='1';
+      original.classList.add('v2918-cm-source');
+      original.setAttribute('aria-hidden','true');
+      original.tabIndex=-1;
+      var proxy=document.createElement('input');
+      proxy.type='number';
+      proxy.className='v2918-mm-input';
+      proxy.min='0';
+      proxy.step='1';
+      proxy.inputMode='decimal';
+      proxy.dataset.sourceId=id;
+      var cm=parseNum(original.value);
+      proxy.value=isFinite(cm)? String(Math.round(cm*10*10)/10).replace('.0','') : String(fallback);
+      original.parentNode.insertBefore(proxy, original.nextSibling);
+      function pushToCm(){
+        var mm=parseNum(proxy.value);
+        if(!isFinite(mm)) return;
+        original.value=String(mm/10);
+        original.dispatchEvent(new Event('input',{bubbles:true}));
+        original.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+      proxy.addEventListener('input',pushToCm);
+      proxy.addEventListener('change',pushToCm);
+    });
+  }
+  function refreshMmInputsFromSources(){
+    document.querySelectorAll('.v2918-mm-input').forEach(function(proxy){
+      if(document.activeElement===proxy) return;
+      var original=document.getElementById(proxy.dataset.sourceId);
+      if(!original) return;
+      var cm=parseNum(original.value);
+      if(!isFinite(cm)) return;
+      var mm=Math.round(cm*10*10)/10;
+      var txt=(Math.abs(mm-Math.round(mm))<0.001)?String(Math.round(mm)):String(mm).replace('.',',');
+      if(String(proxy.value)!==txt) proxy.value=txt;
+    });
+  }
+  function sync(){
+    setupMmInputs();
+    refreshMmInputsFromSources();
+    updateProductionHint();
+    updateSharedSummary();
+    updateRowBadges();
+    retitleButtons();
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    sync();
+    setTimeout(sync, 300);
+    setTimeout(sync, 1000);
+    var ids=['pdGlobalFrontWidth','pdGlobalFrontHeight','pdGlobalBackWidth','pdGlobalBackHeight'];
+    ids.forEach(function(id){
+      document.addEventListener('input', function(ev){ if(ev.target && ev.target.id===id) sync(); }, true);
+      document.addEventListener('change', function(ev){ if(ev.target && ev.target.id===id) sync(); }, true);
+    });
+  });
+  new MutationObserver(function(){ sync(); }).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
 </body>
 </html>

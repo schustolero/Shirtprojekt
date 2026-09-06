@@ -19,22 +19,6 @@ const FEATURES = Object.assign({
 }, SHOP.features || {});
 
 function featureEnabled(name) { return FEATURES[name] !== false; }
-
-const F140_ALLOWED_META = (function parseAllowedShirtColorMeta(){
-  const fixed = SHOP.fixedShirtColor || null;
-  const result = { fixed, name: fixed?.name || "", defaultId: fixed?.id || "", allowedIds: [] };
-  if (!fixed || !fixed.name) return result;
-  const parts = String(fixed.name).split("||");
-  result.name = (parts.shift() || result.name || "").trim();
-  parts.forEach(part => {
-    if (part.indexOf("default=") === 0) result.defaultId = part.slice(8).trim();
-    if (part.indexOf("allowed=") === 0) result.allowedIds = part.slice(8).split(",").map(item => item.trim()).filter(Boolean);
-  });
-  return result;
-})();
-function getAllowedShirtColorIds(){
-  return Array.isArray(F140_ALLOWED_META.allowedIds) && F140_ALLOWED_META.allowedIds.length ? F140_ALLOWED_META.allowedIds : null;
-}
 (function applyShopConfig() {
   const cfg = SHOP;
   if (cfg.pageTitle) document.title = cfg.pageTitle;
@@ -84,12 +68,6 @@ function getAllowedShirtColorIds(){
 
   const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
-  const allowedShirtColorIds = getAllowedShirtColorIds();
-  if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
-    shirtColorSection.querySelectorAll(".shirt-color").forEach((button) => {
-      if (!allowedShirtColorIds.includes(button.dataset.id)) button.remove();
-    });
-  }
   if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
   if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
@@ -1086,26 +1064,17 @@ if (orderForm) {
 
 // Startzustand. Feste Shopfarben haben Vorrang vor der allgemeinen Auswahl.
 const FIXED_SHIRT = SHOP.fixedShirtColor || null;
-const FIXED_SHIRT_META = F140_ALLOWED_META || { name: FIXED_SHIRT?.name || "", defaultId: FIXED_SHIRT?.id || "", allowedIds: [] };
 const FIXED_MOTIF = SHOP.fixedMotifColor || null;
 
 if (FIXED_SHIRT && FIXED_SHIRT.color) {
-  const fixedButton = FIXED_SHIRT_META.defaultId
-    ? document.querySelector(`.shirt-color[data-id="${FIXED_SHIRT_META.defaultId}"]`)
-    : null;
   changeShirtColor(
-    fixedButton?.dataset.color || FIXED_SHIRT.color,
-    fixedButton?.dataset.name || FIXED_SHIRT_META.name || FIXED_SHIRT.name || "Festfarbe",
-    fixedButton?.dataset.id || FIXED_SHIRT_META.defaultId || FIXED_SHIRT.id || "fixed-shirt-color",
-    fixedButton?.dataset.pattern || FIXED_SHIRT.pattern || ""
+    FIXED_SHIRT.color,
+    FIXED_SHIRT.name || "Festfarbe",
+    FIXED_SHIRT.id || "fixed-shirt-color",
+    FIXED_SHIRT.pattern || ""
   );
 } else {
-  const firstVisibleColor = document.querySelector(".shirt-color");
-  if (firstVisibleColor) {
-    changeShirtColor(firstVisibleColor.dataset.color, firstVisibleColor.dataset.name, firstVisibleColor.dataset.id, firstVisibleColor.dataset.pattern || "");
-  } else {
-    changeShirtColor("#ffffff", "White", "weiss", "");
-  }
+  changeShirtColor("#ffffff", "White", "weiss", "");
 }
 
 if (FIXED_MOTIF && FIXED_MOTIF.color) {

@@ -2104,3 +2104,71 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
     white-space:nowrap!important;
   }
 }
+
+
+/* v29.1.7 – Druckgrößen kompakt neben Positionieren + mm-Ansicht */
+.v2917-mm-note{
+  margin:8px 0 10px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  color:#677181!important;
+}
+.v2917-mm-summary{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  margin-top:8px!important;
+}
+.v2917-size-chip,
+.v2917-size-badge{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:34px!important;
+  padding:6px 12px!important;
+  border:1px solid #dde3ea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#495361!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+}
+.v2853-print-card .v2862-side-row{
+  grid-template-columns:96px 128px 92px auto!important;
+}
+.v2853-print-card .v2917-size-badge{
+  justify-self:start!important;
+}
+@media(max-width:760px){
+  .v2853-print-card .v2862-side-row{
+    grid-template-columns:82px minmax(104px,1fr) auto auto!important;
+    align-items:center!important;
+  }
+  .v2917-size-chip,
+  .v2917-size-badge{
+    min-height:32px!important;
+    padding:5px 10px!important;
+    font-size:10.5px!important;
+  }
+}
+
+
+/* v29.1.8 – Produktionsdaten vollständig in mm bedienbar */
+.v2918-cm-source{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.v2918-mm-input{
+  width:100%!important;
+}
