@@ -833,7 +833,6 @@ saveShopBtn.addEventListener("click",async()=>{
   const mobileMenuBtn=sidebar.querySelector("#v284MobileMenu");
   function setMobileMenu(open){
     sidebar.classList.toggle("mobile-menu-open",open);
-    document.body.classList.toggle("v2889-menu-open",open);
     mobileMenuBtn?.setAttribute("aria-expanded",String(open));
     if(mobileMenuBtn) mobileMenuBtn.textContent=open?"×":"☰";
   }
@@ -1317,7 +1316,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.9.0');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.9.3');
 })();
 
 // v28.9.0 – Mobile Grunddaten werden direkt bei Kartenerzeugung gebunden.

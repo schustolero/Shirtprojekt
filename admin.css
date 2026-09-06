@@ -2070,7 +2070,7 @@ body.v284-admin #ordersTab .order-finance>div:nth-child(3) strong{color:#157347}
 }
 
 
-/* v28.9.2 FIX – mobile nav stacking: menu must sit above backdrop */
+/* v28.9.3 FIX – mobile nav stacking: menu must sit above backdrop */
 @media(max-width:720px){
   body.v284-admin .v284-sidebar{
     z-index:1400!important;
@@ -2082,4 +2082,25 @@ body.v284-admin #ordersTab .order-finance>div:nth-child(3) strong{color:#157347}
   body.v284-admin .v2889-nav-backdrop{
     z-index:1300!important;
   }
+}
+
+
+/* v28.9.3 FIX – robust mobile navigation without overlay */
+@media(max-width:720px){
+  body.v284-admin.v2889-menu-open{overflow:auto!important}
+  body.v284-admin .v2889-nav-backdrop{display:none!important;pointer-events:none!important}
+  body.v284-admin .v284-sidebar{position:sticky!important;top:0!important;z-index:1400!important}
+  body.v284-admin .v284-nav{
+    position:static!important;
+    grid-column:1/-1!important;
+    left:auto!important;right:auto!important;top:auto!important;
+    width:100%!important;
+    margin-top:2px!important;
+    box-shadow:none!important;
+    border:1px solid #e2e6ec!important;
+    border-radius:12px!important;
+    background:#fff!important;
+    z-index:auto!important;
+  }
+  body.v284-admin .v284-sidebar.mobile-menu-open .v284-nav{display:grid!important}
 }
