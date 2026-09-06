@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.2.0">
+  <link rel="stylesheet" href="admin.css?v=29.2.4">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -285,7 +285,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.1.8"></script>
+  <script src="/admin.js?v=29.2.4"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -312,7 +312,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.2.0';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.2.4';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -472,7 +472,10 @@
       document.addEventListener('change', function(ev){ if(ev.target && ev.target.id===id) sync(); }, true);
     });
   });
-  new MutationObserver(function(){ sync(); }).observe(document.documentElement,{childList:true,subtree:true});
+  // v29.2.4: Kein globaler MutationObserver mehr. Der frühere Observer
+  // löste durch eigene DOM-Aktualisierungen eine Endlosschleife aus.
+  // Die initialen Delays sowie Input/Change-Events reichen für die Synchronisierung aus.
+  setTimeout(sync, 1800);
 })();
 </script>
 
