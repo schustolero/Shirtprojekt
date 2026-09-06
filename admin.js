@@ -190,16 +190,20 @@ function renderOrder(id,order){
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
   title.append(number,customerTag,date);
   const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
+  const syncStatusClass=()=>{status.dataset.status=(status.value||"Neu").toLowerCase().replaceAll(" ","-").replace("ä","ae")};
   STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
+  syncStatusClass();
   status.addEventListener("change",async()=>{
     const previousStatus = order.status || "Neu";
     status.disabled=true;
     try{
       await db.collection("orders").doc(id).update({status:status.value,statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()});
       order.status = status.value;
+      syncStatusClass();
       if(statusFilter.value !== "Alle") applyFilters();
     }catch(err){
       status.value = previousStatus;
+      syncStatusClass();
       alert("Status konnte nicht gespeichert werden.");
       console.error(err);
     }finally{status.disabled=false}
@@ -1256,5 +1260,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.8.3');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.8.5');
 })();
