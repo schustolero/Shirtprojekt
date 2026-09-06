@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.3.8">
+  <link rel="stylesheet" href="admin.css?v=29.4.0">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -550,6 +550,36 @@
 }
 </style>
 
+
+<style id="v2939-hide-farbe">
+.v2919-motif-row[hidden]{display:none!important}
+</style>
+
+<style id="v2940-print-grid-style">
+.v2940-print-default-row{margin-top:8px!important}
+.v2940-print-default-row .v2934-current-choice{margin-top:5px!important}
+.v2938-print-grid .v2919-f140-option input[type="checkbox"]{margin:0!important;flex:0 0 auto!important}
+.v2938-print-grid .v2919-f140-option.is-active{border-color:#e0be36!important;background:#fff9df!important;box-shadow:inset 0 0 0 1px rgba(224,190,54,.18)!important}
+@media(max-width:760px){
+  .v2940-print-default-row{margin-top:6px!important}
+  /* Motiv/Druckversion: Vorder- und Rückseite wirklich komplett in einer Zeile */
+  .v2853-print-card .v2862-side-row{
+    display:grid!important;
+    grid-template-columns:72px minmax(78px,1fr) 88px 84px!important;
+    grid-template-areas:none!important;
+    align-items:center!important;
+    column-gap:4px!important;
+    row-gap:0!important;
+    padding:4px 5px!important;
+    overflow:visible!important;
+  }
+  .v2853-print-card .v2862-side-row>span:first-child{grid-area:auto!important;width:auto!important;min-width:0!important;white-space:nowrap!important;font-size:9.5px!important}
+  .v2853-print-card .v2862-side-row .v2856-size-select{grid-area:auto!important;width:100%!important;min-width:0!important;height:30px!important;min-height:30px!important;font-size:10px!important;padding:3px 6px!important}
+  .v2853-print-card .v2862-side-row .v2921-inline-size{grid-area:auto!important;width:88px!important;min-width:88px!important;height:30px!important;min-height:30px!important;padding:3px 5px!important;font-size:9px!important;white-space:nowrap!important;justify-content:center!important}
+  .v2853-print-card .v2862-side-row .v284-edit-print{grid-area:auto!important;width:84px!important;min-width:84px!important;height:30px!important;min-height:30px!important;padding:3px 5px!important;font-size:9px!important}
+}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -666,18 +696,27 @@
                   </div>
                 </div>
 
-                <div class="form-grid compact-color-row v2919-motif-row">
+                <div class="form-grid compact-color-row v2919-motif-row" hidden aria-hidden="true">
                   <input id="fixedMotifName" type="hidden" value="Medium Yellow">
-                  <label class="v2850-color-picker"><span>Farbe</span><input id="fixedMotifHex" type="color" value="#f6c951"></label>
+                  <input id="fixedMotifHex" type="hidden" value="#f6c951">
                 </div>
                 <div class="form-grid">
                   <div class="wide v2935-print-color-block">
                     <label class="v2919-inline-toggle v2935-print-color-toggle"><input id="motifColorsToggleMirror" type="checkbox"><span>Druckfarben im Shop anzeigen</span></label>
                     <div class="v2919-card-top v2938-print-head">
                       <strong>Poli-Flex Turbo Druckfarben</strong>
-                      <span>Druckfarbe direkt wie bei den Shirtfarben über Farbkarten auswählen.</span>
+                      <span>Aktiviere die Druckfarben, die der Kunde auswählen darf.</span>
+                    </div>
+                    <div class="v2920-quick-actions" aria-label="Schnellauswahl Poli-Flex Turbo Druckfarben">
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="all">Alle auswählen</button>
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="none">Alle abwählen</button>
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="yellow">Nur Medium Yellow</button>
                     </div>
                     <div id="poliFlexTurboPicker" class="v2919-f140-grid v2938-print-grid" aria-label="Poli-Flex Turbo Druckfarben Auswahl"></div>
+                    <div class="v2919-shirt-default-row v2940-print-default-row">
+                      <label class="wide"><span>Standard-Druckfarbe</span><div id="poliFlexDefaultPreview" class="v2934-current-choice" aria-live="polite"><span class="v2934-current-swatch" style="background:#F6C951"></span><strong class="v2934-current-label">Medium Yellow</strong></div></label>
+                      <p class="v2919-hint">Medium Yellow bleibt die Standard-Druckfarbe.</p>
+                    </div>
                     <label class="v2933-motif-preset-field" hidden aria-hidden="true"><span>Poli-Flex Turbo Druckfarbe</span><div class="v2933-preset-control"><span id="poliFlexTurboSwatch" class="v2933-color-swatch" aria-hidden="true"></span><select id="poliFlexTurboPreset"><option value="Medium Yellow" selected>Medium Yellow</option></select></div></label>
                   </div>
                 </div>
@@ -829,7 +868,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.3.8"></script>
+  <script src="/admin.js?v=29.4.0"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -856,7 +895,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.3.8';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.4.0';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1300,68 +1339,80 @@
 </script>
 
 
-<script id="v2938-print-grid-script">
+
+
+
+<script id="v2940-print-colors">
 (function(){
-  var POLI_FLEX_TURBO = [
-    {name:'Anthracite',hex:'#4a4b46'},{name:'Apple Green',hex:'#94d600'},{name:'Aqua Green',hex:'#007d84'},{name:'Baby Pink',hex:'#e79ab2'},{name:'Beige',hex:'#d9cfad'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#7f2632'},{name:'Bright Blue',hex:'#7aa8dc'},{name:'Bright Copper',hex:'#a96442'},{name:'Bright Gold',hex:'#e4c15a'},{name:'Bright Lavender',hex:'#b39acb'},{name:'Bright Lime',hex:'#a4cf7a'},{name:'Bright Pink',hex:'#c12586'},{name:'Bright Red',hex:'#c6342c'},{name:'Bright Silver',hex:'#b5b6b8'},{name:'Bright Violet',hex:'#bda5cb'},{name:'Bright Yellow',hex:'#f3ca42'},{name:'Bronze',hex:'#b67b2f'},{name:'Brown',hex:'#5b4330'},{name:'Champagne',hex:'#e0d7a2'},{name:'Coffee',hex:'#9c755f'},{name:'Coral',hex:'#ff6b4f'},{name:'Flame Red',hex:'#f7303e'},{name:'Flamingo',hex:'#c36a66'},{name:'Frog Green',hex:'#09b53b'},{name:'Fuchsia',hex:'#bd0d6c'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#c62821'},{name:'Glossy White',hex:'#ffffff'},{name:'Gold Metallic',hex:'#9a8255'},{name:'Green',hex:'#117a3a'},{name:'Grey',hex:'#8a96a1'},{name:'Ice Blue',hex:'#94bedb'},{name:'Lemon Yellow',hex:'#efe555'},{name:'Light Apricot',hex:'#e7c8a9'},{name:'Light Berry',hex:'#b66ba9'},{name:'Light Grey',hex:'#d0d0d0'},{name:'Medium Yellow',hex:'#f6c431'},{name:'Mint',hex:'#86c9b0'},{name:'Navy Blue',hex:'#00233f'},{name:'Neon Berry',hex:'#9122af'},{name:'Neon Blue',hex:'#1899d4'},{name:'Neon Dark Pink',hex:'#d4008f'},{name:'Neon Green',hex:'#47d72c'},{name:'Neon Orange',hex:'#f7a34a'},{name:'Neon Pink',hex:'#f43bad'},{name:'Neon Red',hex:'#f36e72'},{name:'Neon Yellow',hex:'#dce61d'},{name:'Olive',hex:'#93b178'},{name:'Orange',hex:'#df722d'},{name:'Pastel Yellow',hex:'#e8d97e'},{name:'Peach Fuzz',hex:'#efb18a'},{name:'Peri',hex:'#6d6eb4'},{name:'Purple',hex:'#2f1a70'},{name:'Red',hex:'#bf231f'},{name:'Rose Gold',hex:'#b17d6d'},{name:'Royal Blue',hex:'#2f6a9b'},{name:'Sage Green',hex:'#aebc9b'},{name:'Sand Beige',hex:'#d1b894'},{name:'Silver Metallic',hex:'#a6a8ad'},{name:'Sky Blue',hex:'#6db2d9'},{name:'Violet',hex:'#b59ad0'},{name:'Viva Magenta',hex:'#c62f58'},{name:'White',hex:'#ffffff'},{name:'Yellow',hex:'#fcbc1b'}
+  var COLORS = [
+    {name:'Anthracite',hex:'#474946'},{name:'Apple Green',hex:'#A5D542'},{name:'Aqua Green',hex:'#317176'},{name:'Baby Pink',hex:'#ECA7BC'},{name:'Beige',hex:'#F0E4C1'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#642C32'},{name:'Bright Blue',hex:'#93ACD1'},{name:'Bright Copper',hex:'#955D42'},{name:'Bright Gold',hex:'#DDBE68'},{name:'Bright Lavender',hex:'#9D86B3'},{name:'Bright Lime',hex:'#B3DB88'},{name:'Bright Pink',hex:'#A03271'},{name:'Bright Red',hex:'#8E3128'},{name:'Bright Silver',hex:'#A6A9AA'},{name:'Bright Violet',hex:'#C7AFCE'},{name:'Bright Yellow',hex:'#F7D35E'},{name:'Bronze',hex:'#C18D45'},{name:'Brown',hex:'#44382B'},{name:'Champagne',hex:'#DDD29A'},{name:'Coffee',hex:'#8F6E5B'},{name:'Coral',hex:'#ED7157'},{name:'Flame Red',hex:'#DC4647'},{name:'Flamingo',hex:'#B36966'},{name:'Frog Green',hex:'#4FAE4F'},{name:'Fuchsia',hex:'#9E2759'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#A13126'},{name:'Glossy White',hex:'#FFFFFF'},{name:'Gold Metallic',hex:'#857451'},{name:'Green',hex:'#2D683D'},{name:'Grey',hex:'#85909A'},{name:'Ice Blue',hex:'#91BFDD'},{name:'Lemon Yellow',hex:'#FAF077'},{name:'Light Apricot',hex:'#EDD0B7'},{name:'Light Berry',hex:'#AF6D9E'},{name:'Light Grey',hex:'#CDCDCD'},{name:'Medium Yellow',hex:'#F6C951'},{name:'Mint',hex:'#9FD4BE'},{name:'Navy Blue',hex:'#0B1B2B'},{name:'Neon Berry',hex:'#7C2398'},{name:'Neon Blue',hex:'#459AD8'},{name:'Neon Dark Pink',hex:'#B5257B'},{name:'Neon Green',hex:'#72D34C'},{name:'Neon Orange',hex:'#F3AE5F'},{name:'Neon Pink',hex:'#EB50B1'},{name:'Neon Red',hex:'#EE7A7A'},{name:'Neon Yellow',hex:'#E4E855'},{name:'Olive',hex:'#9AB37F'},{name:'Orange',hex:'#CF743E'},{name:'Pastel Yellow',hex:'#E9D980'},{name:'Peach Fuzz',hex:'#EFB18A'},{name:'Peri',hex:'#7374B4'},{name:'Purple',hex:'#2D1C6F'},{name:'Red',hex:'#B62820'},{name:'Rose Gold',hex:'#B17D6D'},{name:'Royal Blue',hex:'#326C99'},{name:'Sage Green',hex:'#A9B99B'},{name:'Sand Beige',hex:'#D1B894'},{name:'Silver Metallic',hex:'#A6A8AD'},{name:'Sky Blue',hex:'#67B5DA'},{name:'Violet',hex:'#B59AD0'},{name:'Viva Magenta',hex:'#C62F58'},{name:'White',hex:'#FFFFFF'},{name:'Yellow',hex:'#FCB91D'}
   ];
-  function byId(id){ return document.getElementById(id); }
-  function norm(v){ return String(v||'').trim().toLowerCase().replace(/\s+/g,' '); }
-  function findByName(name){ var n=norm(name); return POLI_FLEX_TURBO.find(function(c){ return norm(c.name)===n; }) || null; }
-  function picker(){ return byId('poliFlexTurboPicker'); }
-  function buildGrid(){
-    var wrap=picker();
-    if(!wrap || wrap.dataset.ready==='1') return;
-    POLI_FLEX_TURBO.forEach(function(color){
+  var DEFAULT='Medium Yellow';
+  function byId(id){return document.getElementById(id)}
+  function norm(v){return String(v||'').trim().toLowerCase()}
+  function find(name){return COLORS.find(function(c){return norm(c.name)===norm(name)})||null}
+  function parseMeta(){
+    var f=byId('fixedMotifName');
+    var raw=f?String(f.value||''):'';
+    var parts=raw.split('||');
+    var name=(parts.shift()||DEFAULT).trim()||DEFAULT;
+    var allowed=[];
+    parts.forEach(function(part){
+      if(part.indexOf('allowed=')===0){
+        try{allowed=JSON.parse(decodeURIComponent(part.slice(8)))}catch(e){allowed=[]}
+      }
+    });
+    if(!allowed.length) allowed=[name||DEFAULT];
+    allowed=allowed.filter(function(n,i){return !!find(n)&&allowed.indexOf(n)===i});
+    if(!allowed.length) allowed=[DEFAULT];
+    return {defaultName:DEFAULT,allowed:allowed};
+  }
+  function build(){
+    var wrap=byId('poliFlexTurboPicker');
+    if(!wrap||wrap.dataset.multiReady==='1')return;
+    wrap.innerHTML='';
+    COLORS.forEach(function(c){
       var label=document.createElement('label');
-      label.className='v2919-f140-option v2938-print-option';
-      label.setAttribute('data-print-color', color.name);
-      label.innerHTML='<input type="radio" name="poliFlexTurboChoice" value="'+color.name+'"><span class="v2919-swatch" style="--sw:'+color.hex+'"></span><span class="v2919-name">'+color.name+'</span>' ;
+      label.className='v2919-f140-option';
+      label.innerHTML='<input type="checkbox" value="'+c.name+'"><span class="v2919-swatch" style="--sw:'+c.hex+'"></span><span class="v2919-name">'+c.name+'</span>' ;
       wrap.appendChild(label);
     });
-    wrap.dataset.ready='1';
+    wrap.dataset.multiReady='1';
   }
-  function setActive(name){
-    var current=norm(name || 'Medium Yellow');
-    Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker .v2938-print-option')).forEach(function(el){
-      var input=el.querySelector('input');
-      var active=input && norm(input.value)===current;
-      if(input) input.checked=!!active;
-      el.classList.toggle('is-active', !!active);
-    });
+  function selected(){return Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input:checked')).map(function(i){return i.value})}
+  function renderActive(){document.querySelectorAll('#poliFlexTurboPicker .v2919-f140-option').forEach(function(el){el.classList.toggle('is-active',!!el.querySelector('input:checked'))})}
+  function writeBack(){
+    var nameField=byId('fixedMotifName'),hexField=byId('fixedMotifHex'),select=byId('poliFlexTurboPreset');
+    if(!nameField||!hexField)return;
+    var ids=selected();
+    if(!ids.length){ids=[DEFAULT];var rescue=document.querySelector('#poliFlexTurboPicker input[value="'+DEFAULT+'"]');if(rescue)rescue.checked=true}
+    var d=find(DEFAULT);
+    nameField.value=DEFAULT+'||default='+encodeURIComponent(DEFAULT)+'||allowed='+encodeURIComponent(JSON.stringify(ids));
+    hexField.value=d.hex;
+    if(select)select.value=DEFAULT;
+    nameField.dispatchEvent(new Event('change',{bubbles:true}));
+    hexField.dispatchEvent(new Event('change',{bubbles:true}));
+    renderActive();
   }
-  function updateHiddenControls(name){
-    var color=findByName(name) || findByName('Medium Yellow');
-    var nameField=byId('fixedMotifName');
-    var hexField=byId('fixedMotifHex');
-    var select=byId('poliFlexTurboPreset');
-    if(nameField) nameField.value=color.name;
-    if(hexField) hexField.value=color.hex;
-    if(select) select.value=color.name;
-    if(nameField){ nameField.dispatchEvent(new Event('input',{bubbles:true})); nameField.dispatchEvent(new Event('change',{bubbles:true})); }
-    if(hexField){ hexField.dispatchEvent(new Event('input',{bubbles:true})); hexField.dispatchEvent(new Event('change',{bubbles:true})); }
-    if(select){ select.dispatchEvent(new Event('change',{bubbles:true})); }
-    setActive(color.name);
-  }
-  function syncFromFields(force){
-    buildGrid();
-    var select=byId('poliFlexTurboPreset');
-    var nameField=byId('fixedMotifName');
-    var desired=(nameField && nameField.value) || (select && select.value) || 'Medium Yellow';
-    var color=findByName(desired) || (force ? findByName('Medium Yellow') : null) || findByName('Medium Yellow');
-    if(force && (!desired || !findByName(desired))){ updateHiddenControls('Medium Yellow'); return; }
-    setActive(color.name);
+  function apply(){
+    build();var m=parseMeta();
+    document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]').forEach(function(i){i.checked=m.allowed.indexOf(i.value)>-1});
+    renderActive();
   }
   function bind(){
-    buildGrid();
-    if(bind.done) return; bind.done=true;
-    document.addEventListener('change', function(ev){
-      if(ev.target && ev.target.matches('#poliFlexTurboPicker input[type="radio"]')) updateHiddenControls(ev.target.value || 'Medium Yellow');
-      if(ev.target && (ev.target.id==='fixedMotifName' || ev.target.id==='poliFlexTurboPreset' || ev.target.id==='fixedMotifHex')) setTimeout(function(){ syncFromFields(false); }, 20);
-    }, true);
+    build();if(bind.done)return;bind.done=true;
+    document.addEventListener('change',function(ev){if(ev.target&&ev.target.matches('#poliFlexTurboPicker input[type="checkbox"]'))writeBack()},true);
+    document.addEventListener('click',function(ev){
+      var b=ev.target.closest('[data-print-quick]');if(!b)return;
+      var mode=b.getAttribute('data-print-quick');var boxes=Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]'));
+      if(mode==='all')boxes.forEach(function(x){x.checked=true});
+      else if(mode==='none')boxes.forEach(function(x){x.checked=false});
+      else boxes.forEach(function(x){x.checked=(x.value===DEFAULT)});
+      writeBack();
+    });
   }
-  document.addEventListener('DOMContentLoaded', function(){ bind(); setTimeout(function(){ syncFromFields(true); }, 150); setTimeout(function(){ syncFromFields(true); }, 900); });
-  setInterval(function(){ syncFromFields(false); }, 1200);
+  document.addEventListener('DOMContentLoaded',function(){bind();setTimeout(apply,150);setTimeout(apply,900)});
+  setInterval(apply,1200);
 })();
 </script>
 

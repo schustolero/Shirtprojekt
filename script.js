@@ -35,6 +35,23 @@ const F140_ALLOWED_META = (function parseAllowedShirtColorMeta(){
 function getAllowedShirtColorIds(){
   return Array.isArray(F140_ALLOWED_META.allowedIds) && F140_ALLOWED_META.allowedIds.length ? F140_ALLOWED_META.allowedIds : null;
 }
+
+const POLIFLEX_ALLOWED_META = (function parseAllowedMotifColorMeta(){
+  const fixed = SHOP.fixedMotifColor || null;
+  const result = { fixed, name: fixed?.name || "Medium Yellow", allowedNames: [] };
+  if (!fixed || !fixed.name) return result;
+  const parts = String(fixed.name).split("||");
+  result.name = (parts.shift() || result.name || "Medium Yellow").trim();
+  parts.forEach(part => {
+    if (part.indexOf("allowed=") === 0) {
+      try { result.allowedNames = JSON.parse(decodeURIComponent(part.slice(8))); } catch (e) { result.allowedNames = []; }
+    }
+  });
+  return result;
+})();
+function getAllowedMotifColorNames(){
+  return Array.isArray(POLIFLEX_ALLOWED_META.allowedNames) && POLIFLEX_ALLOWED_META.allowedNames.length ? POLIFLEX_ALLOWED_META.allowedNames : null;
+}
 (function applyShopConfig() {
   const cfg = SHOP;
   if (cfg.pageTitle) document.title = cfg.pageTitle;
@@ -92,6 +109,12 @@ function getAllowedShirtColorIds(){
   }
   if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
+  const allowedMotifColorNames = getAllowedMotifColorNames();
+  if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
+    motifColorSection.querySelectorAll(".motif-color").forEach((button) => {
+      if (!allowedMotifColorNames.includes(button.dataset.name)) button.remove();
+    });
+  }
   if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
   if (backButton) backButton.hidden = !FEATURES.allowBackDesign;
   if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
@@ -1110,7 +1133,7 @@ if (FIXED_SHIRT && FIXED_SHIRT.color) {
 
 if (FIXED_MOTIF && FIXED_MOTIF.color) {
   currentMotifColor = FIXED_MOTIF.color;
-  currentMotifColorLabel = FIXED_MOTIF.name || "Festfarbe";
+  currentMotifColorLabel = POLIFLEX_ALLOWED_META.name || "Medium Yellow";
   currentMotifColorName.textContent = currentMotifColorLabel;
 }
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
