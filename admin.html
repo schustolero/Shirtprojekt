@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.5.4">
+  <link rel="stylesheet" href="admin.css?v=29.5.6">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -1107,6 +1107,292 @@
 }
 </style>
 
+
+<style id="v2955-mobile-order-polish">
+@media(max-width:720px){
+  /* Kennzahlen: Umsatz immer vollständig */
+  #ordersTab .stats-grid .stat-card{
+    min-width:0!important;
+    padding:12px 14px!important;
+  }
+  #ordersTab .stats-grid .stat-card strong,
+  #ordersTab .stats-grid .stat-value{
+    font-size:clamp(20px,7vw,31px)!important;
+    line-height:1!important;
+    letter-spacing:-.04em!important;
+    white-space:nowrap!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+  }
+
+  /* Karten etwas flacher */
+  #ordersTab .order-card{
+    padding:8px!important;
+    border-radius:12px!important;
+  }
+  .order-main-customer{
+    font-size:14px!important;
+  }
+  .order-summary-v2954 strong{
+    font-size:7.5px!important;
+    padding:3px 5px!important;
+  }
+
+  /* Echter kompakter Fortschrittsverlauf */
+  .order-workflow{
+    margin:6px 0 5px!important;
+    padding:7px 7px 6px!important;
+    border-radius:9px!important;
+  }
+  .order-workflow-title{
+    margin-bottom:7px!important;
+    align-items:center!important;
+  }
+  .order-workflow-title strong{
+    font-size:8.5px!important;
+  }
+  .workflow-current-label{
+    padding:3px 6px!important;
+    border-radius:999px!important;
+    background:#fff4c6!important;
+    color:#6f5510!important;
+    border:1px solid #efd269!important;
+    font-size:7px!important;
+    line-height:1!important;
+    font-weight:850!important;
+    white-space:nowrap!important;
+  }
+  .order-workflow-steps{
+    position:relative!important;
+    display:grid!important;
+    grid-template-columns:repeat(6,minmax(0,1fr))!important;
+    gap:0!important;
+    padding:0 1px!important;
+  }
+  .order-workflow-steps:before{
+    content:""!important;
+    position:absolute!important;
+    left:8.5%!important;
+    right:8.5%!important;
+    top:9px!important;
+    height:2px!important;
+    background:#dfe3e7!important;
+    z-index:0!important;
+  }
+  .workflow-step{
+    position:relative!important;
+    z-index:1!important;
+    min-width:0!important;
+    min-height:43px!important;
+    padding:0 1px!important;
+    border:0!important;
+    border-radius:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    gap:4px!important;
+  }
+  .workflow-step.done,
+  .workflow-step.current{
+    border:0!important;
+    background:transparent!important;
+    box-shadow:none!important;
+  }
+  .workflow-mark{
+    width:19px!important;
+    height:19px!important;
+    flex:0 0 19px!important;
+    border:2px solid #d6dbe0!important;
+    background:#fff!important;
+    color:#747b83!important;
+    font-size:7px!important;
+    box-sizing:border-box!important;
+  }
+  .workflow-step.done .workflow-mark{
+    border-color:#3d9454!important;
+    background:#3d9454!important;
+    color:#fff!important;
+  }
+  .workflow-step.current .workflow-mark{
+    box-shadow:0 0 0 3px rgba(246,201,63,.45)!important;
+    border-color:#dfb72f!important;
+  }
+  .workflow-label{
+    width:100%!important;
+    padding:0 1px!important;
+    font-size:6px!important;
+    line-height:1.05!important;
+    text-align:center!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    color:#707780!important;
+    font-weight:750!important;
+  }
+  .workflow-step.done .workflow-label{
+    color:#397449!important;
+  }
+  .workflow-step.current .workflow-label{
+    color:#66500d!important;
+    font-weight:900!important;
+  }
+
+  /* Dokumente weniger dominant */
+  #ordersTab .order-actions-v2954{
+    gap:4px!important;
+  }
+  #ordersTab .order-actions-v2954 .ghost-btn{
+    height:25px!important;
+    min-height:25px!important;
+    border-radius:7px!important;
+    font-size:7px!important;
+    padding:3px 5px!important;
+  }
+
+  /* Kundendaten kompakter */
+  #ordersTab .customer-details{
+    margin-top:5px!important;
+  }
+  #ordersTab .customer-details>summary{
+    min-height:30px!important;
+    padding:6px 0!important;
+    font-size:8.5px!important;
+  }
+  #ordersTab .item-row{
+    padding:5px 6px!important;
+  }
+}
+</style>
+
+
+<style id="v2956-ultra-compact-orders">
+/* Kompakte Bestellliste */
+.order-card-v2956{
+  padding:0!important;
+  overflow:hidden;
+}
+.order-row-summary-v2956{
+  list-style:none;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  padding:12px 14px;
+  cursor:pointer;
+}
+.order-row-summary-v2956::-webkit-details-marker{display:none}
+.order-row-left-v2956{
+  min-width:0;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.order-row-customer-v2956{
+  font-size:15px;
+  line-height:1.05;
+  color:#1d2228;
+}
+.order-row-meta-v2956{
+  font-size:9px;
+  color:#7b828a;
+  font-weight:700;
+}
+.order-row-right-v2956{
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.order-row-price-v2956{
+  font-size:13px;
+  white-space:nowrap;
+}
+.order-row-chevron-v2956{
+  width:22px;
+  height:22px;
+  display:grid;
+  place-items:center;
+  border-radius:50%;
+  background:#f0f2f4;
+  color:#59616a;
+  font-size:14px;
+  line-height:1;
+  transition:transform .18s ease;
+}
+.order-card-v2956[open] .order-row-chevron-v2956{
+  transform:rotate(180deg);
+}
+.order-card-body-v2956{
+  border-top:1px solid #e7eaee;
+  padding:10px 14px 14px;
+}
+.order-open-info-v2956{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:5px 10px;
+  margin-bottom:7px;
+  font-size:8px;
+  color:#7a8189;
+  font-weight:700;
+}
+.order-open-info-v2956 strong{
+  margin-left:auto;
+  color:#272c33;
+  font-size:8px;
+}
+
+@media(max-width:720px){
+  #ordersTab .orders-list{
+    gap:5px!important;
+  }
+  #ordersTab .order-card-v2956{
+    border-radius:9px!important;
+    box-shadow:none!important;
+    border:1px solid #e2e5e9!important;
+  }
+  .order-row-summary-v2956{
+    min-height:48px!important;
+    padding:8px 10px!important;
+    gap:8px!important;
+  }
+  .order-row-customer-v2956{
+    font-size:11.5px!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .order-row-meta-v2956{
+    font-size:7px!important;
+  }
+  .order-row-price-v2956{
+    font-size:9.5px!important;
+  }
+  .order-row-right-v2956{
+    gap:6px!important;
+  }
+  .order-row-chevron-v2956{
+    width:18px!important;
+    height:18px!important;
+    font-size:11px!important;
+  }
+  .order-card-body-v2956{
+    padding:7px 9px 9px!important;
+  }
+  .order-open-info-v2956{
+    margin-bottom:5px!important;
+    font-size:6.8px!important;
+    gap:3px 7px!important;
+  }
+  .order-open-info-v2956 strong{
+    font-size:7px!important;
+  }
+}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -1395,7 +1681,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.5.4"></script>
+  <script src="/admin.js?v=29.5.6"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1422,7 +1708,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.5.4';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.5.6';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

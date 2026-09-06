@@ -208,38 +208,85 @@ function printProductionSlip(order){
 }
 
 function renderOrder(id,order){
-  const card=document.createElement("article");card.className="order-card";
+  const card=document.createElement("details");
+  card.className="order-card order-card-v2956";
 
-  /* Kunde steht bewusst an erster Stelle */
-  const head=document.createElement("div");head.className="order-head-v2954";
-  const customerName=document.createElement("div");customerName.className="order-main-customer";
+  /* Kompakte Listenzeile – immer sichtbar */
+  const summary=document.createElement("summary");
+  summary.className="order-row-summary-v2956";
+
+  const left=document.createElement("div");
+  left.className="order-row-left-v2956";
+
+  const customerName=document.createElement("strong");
+  customerName.className="order-row-customer-v2956";
   customerName.textContent=text(order.name,"Unbekannter Kunde");
 
-  const meta=document.createElement("div");meta.className="order-meta-v2954";
-  const orderNo=document.createElement("span");orderNo.textContent=text(order.orderNumber,id);
-  const shop=document.createElement("span");shop.textContent=text(order.customerName||order.customerId,"");
-  const date=document.createElement("span");date.textContent=dateText(order.createdAt);
-  meta.append(orderNo);
-  if(shop.textContent) meta.append(shop);
-  meta.append(date);
+  const meta=document.createElement("div");
+  meta.className="order-row-meta-v2956";
+  const date=document.createElement("span");
+  date.textContent=dateText(order.createdAt);
+  meta.appendChild(date);
 
-  const summary=document.createElement("div");summary.className="order-summary-v2954";
-  const qty=document.createElement("strong");qty.textContent=`${text(order.totalQuantity,"0")} Shirts`;
-  const total=document.createElement("strong");total.textContent=euro(order.totalPrice);
-  summary.append(qty,total);
+  left.append(customerName,meta);
 
-  head.append(customerName,meta,summary);
-  card.appendChild(head);
+  const right=document.createElement("div");
+  right.className="order-row-right-v2956";
 
-  /* Produktionsverlauf: ein Klick setzt den aktuellen Stand,
-     alle vorherigen Schritte erhalten automatisch einen Haken. */
-  const workflow=document.createElement("div");workflow.className="order-workflow";
-  const workflowTitle=document.createElement("div");workflowTitle.className="order-workflow-title";
-  workflowTitle.innerHTML="<strong>Auftragsverlauf</strong><span>Schritt antippen, sobald erledigt</span>";
-  const workflowSteps=document.createElement("div");workflowSteps.className="order-workflow-steps";
+  const price=document.createElement("strong");
+  price.className="order-row-price-v2956";
+  price.textContent=euro(order.totalPrice);
+
+  const chevron=document.createElement("span");
+  chevron.className="order-row-chevron-v2956";
+  chevron.textContent="⌄";
+
+  right.append(price,chevron);
+  summary.append(left,right);
+  card.appendChild(summary);
+
+  const body=document.createElement("div");
+  body.className="order-card-body-v2956";
+
+  /* Kleine Zusatzzeile im geöffneten Zustand */
+  const info=document.createElement("div");
+  info.className="order-open-info-v2956";
+
+  const orderNo=document.createElement("span");
+  orderNo.textContent=text(order.orderNumber,id);
+
+  const shop=document.createElement("span");
+  shop.textContent=text(order.customerName||order.customerId,"");
+
+  const qty=document.createElement("strong");
+  qty.textContent=`${text(order.totalQuantity,"0")} Shirts`;
+
+  info.append(orderNo);
+  if(shop.textContent) info.append(shop);
+  info.append(qty);
+  body.appendChild(info);
+
+  const workflow=document.createElement("div");
+  workflow.className="order-workflow";
+
+  const workflowTitle=document.createElement("div");
+  workflowTitle.className="order-workflow-title";
+
+  const workflowHeading=document.createElement("strong");
+  workflowHeading.textContent="Auftragsverlauf";
+
+  const workflowCurrent=document.createElement("span");
+  workflowCurrent.className="workflow-current-label";
+
+  workflowTitle.append(workflowHeading,workflowCurrent);
+
+  const workflowSteps=document.createElement("div");
+  workflowSteps.className="order-workflow-steps";
+
   let currentStep=workflowStepFromOrder(order);
 
   function paintWorkflow(){
+    workflowCurrent.textContent=WORKFLOW_STEPS[currentStep]||"Eingegangen";
     [...workflowSteps.children].forEach((btn,index)=>{
       const done=index<=currentStep;
       const current=index===currentStep;
@@ -255,7 +302,9 @@ function renderOrder(id,order){
     btn.type="button";
     btn.className="workflow-step";
     btn.innerHTML=`<span class="workflow-mark">${index+1}</span><span class="workflow-label">${label}</span>`;
-    btn.addEventListener("click",async()=>{
+    btn.addEventListener("click",async(event)=>{
+      event.preventDefault();
+      event.stopPropagation();
       if(btn.disabled)return;
       const previousStep=currentStep;
       const previousStatus=order.status||"Neu";
@@ -287,39 +336,70 @@ function renderOrder(id,order){
     });
     workflowSteps.appendChild(btn);
   });
+
   workflow.append(workflowTitle,workflowSteps);
-  card.appendChild(workflow);
+  body.appendChild(workflow);
   paintWorkflow();
 
-  const actions=document.createElement("div");actions.className="order-actions order-actions-v2954";
-  const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",()=>printOrderSlip(order));
-  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",()=>printProductionSlip(order));
-  actions.append(printBtn,productionBtn);
-  card.appendChild(actions);
+  const actions=document.createElement("div");
+  actions.className="order-actions order-actions-v2954";
 
-  const customerDetails=document.createElement("details");customerDetails.className="customer-details";
-  const customerSummary=document.createElement("summary");customerSummary.textContent="Kundendaten";customerDetails.appendChild(customerSummary);
-  const customer=document.createElement("div");customer.className="customer-grid";
+  const printBtn=document.createElement("button");
+  printBtn.type="button";
+  printBtn.className="ghost-btn print-order-btn";
+  printBtn.textContent="Bestellschein";
+  printBtn.addEventListener("click",()=>printOrderSlip(order));
+
+  const productionBtn=document.createElement("button");
+  productionBtn.type="button";
+  productionBtn.className="ghost-btn production-order-btn";
+  productionBtn.textContent="Produktionsschein";
+  productionBtn.addEventListener("click",()=>printProductionSlip(order));
+
+  actions.append(printBtn,productionBtn);
+  body.appendChild(actions);
+
+  const customerDetails=document.createElement("details");
+  customerDetails.className="customer-details";
+
+  const customerSummary=document.createElement("summary");
+  customerSummary.textContent="Kundendaten";
+  customerDetails.appendChild(customerSummary);
+
+  const customer=document.createElement("div");
+  customer.className="customer-grid";
+
   [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{
     const box=document.createElement("div");
     const l=document.createElement("span");l.textContent=label;
     const v=document.createElement("strong");v.textContent=text(value);
-    box.append(l,v);customer.appendChild(box)
+    box.append(l,v);
+    customer.appendChild(box);
   });
-  customerDetails.appendChild(customer);card.appendChild(customerDetails);
 
-  const items=document.createElement("div");items.className="items";
+  customerDetails.appendChild(customer);
+  body.appendChild(customerDetails);
+
+  const items=document.createElement("div");
+  items.className="items";
+
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
-    const row=document.createElement("div");row.className="item-row";
+    const row=document.createElement("div");
+    row.className="item-row";
+
     const a=document.createElement("strong");
     a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;
+
     const b=document.createElement("span");
     b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
-    row.append(a,b);items.appendChild(row)
-  });
-  card.appendChild(items);
 
-  /* Menge und Gesamtpreis stehen bereits einmal oben – kein doppelter Footer mehr. */
+    row.append(a,b);
+    items.appendChild(row);
+  });
+
+  body.appendChild(items);
+  card.appendChild(body);
+
   return card;
 }
 
