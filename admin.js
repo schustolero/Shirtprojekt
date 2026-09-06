@@ -231,20 +231,6 @@ function printOrderSlip(order){
       </tr>`).join("")
     : `<tr><td colspan="5" class="empty">Keine Artikel vorhanden.</td></tr>`;
 
-  const printData = order.printData || {};
-  const globalPrint = printData.global || {
-    front: printData.tshirt?.front || printData.polo?.front || printData.hoodie?.front || {},
-    back: printData.tshirt?.back || printData.polo?.back || printData.hoodie?.back || {}
-  };
-  const printBlocks = ["front","back"].map(side=>{
-    const d = globalPrint[side] || {};
-    const has = Object.values(d).some(v=>v!==null && v!==undefined && String(v).trim()!=="");
-    if(!has) return "";
-    const size = [d.widthCm,d.heightCm].every(v=>v!==null && v!==undefined && String(v).trim()!=="") ? `${d.widthCm} × ${d.heightCm} cm` : "–";
-    return `<div class="print-box"><span>${side==="front"?"Vorne":"Hinten"}</span><strong>${htmlEscape(d.method || "–")}</strong><small>${htmlEscape(size)}</small></div>`;
-  }).filter(Boolean).join("");
-  const printSection = printBlocks ? `<div class="section print-section"><h2>Druckdaten</h2><div class="print-grid">${printBlocks}</div></div>` : "";
-
   const totalQuantity = Number(order.totalQuantity) || grouped.reduce((sum,item)=>sum + (Number(item.quantity)||0), 0);
   const totalPrice = Number(order.totalPrice) || grouped.reduce((sum,item)=>sum + (Number(item.linePrice)||0), 0);
   const orderDate = htmlEscape(dateOnlyText(order.createdAt));
@@ -291,7 +277,6 @@ function printOrderSlip(order){
   </style></head><body><div class="sheet"><div class="topbar"><div class="brand"><img src="${logoUrl}" alt="Logo"><div class="brand-copy"><span class="eyebrow">Bestellschein</span><h1>${htmlEscape(customerName)}</h1><p>Übersichtlicher Auftrag auf einem DIN-A4-Blatt</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
     <div class="section"><h2>Kundendaten</h2><div class="info-grid"><div class="info-item"><span>Name</span><strong>${htmlEscape(customerDisplay)}</strong></div><div class="info-item"><span>Telefon</span><strong>${htmlEscape(phone)}</strong></div><div class="info-item"><span>E-Mail</span><strong>${htmlEscape(email)}</strong></div><div class="info-item"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div></div></div>
     <div class="section"><h2>Bestellung</h2><div class="table-wrap"><table><thead><tr><th class="col-pos">#</th><th>Artikel</th><th>Motiv</th><th class="col-qty">Menge</th><th class="col-price">Preis</th></tr></thead><tbody>${rows}</tbody></table></div><div class="totals"><div class="summary-item"><span>Positionen</span><strong>${grouped.length}</strong></div><div class="summary-item"><span>Gesamtmenge</span><strong>${htmlEscape(totalQuantity)} Teile</strong></div><div class="summary-item total"><span>Gesamtpreis</span><strong>${htmlEscape(euro(totalPrice))}</strong></div></div></div>
-    ${printSection}
     <div class="footer"><span>${htmlEscape(customerName)}</span><span>Bestellnummer ${htmlEscape(order.orderNumber||"–")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
@@ -1726,7 +1711,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.6.9');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.0');
 })();
 
 
