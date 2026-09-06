@@ -2016,3 +2016,22 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
   .v2853-print-card .v2911-production-compact .global-print-data-grid{grid-template-columns:1fr!important;gap:7px!important}
   .v2853-print-card .v2911-production-compact .simplified-print-data-fields{grid-template-columns:1.2fr .8fr .8fr!important;gap:6px!important}
 }
+
+/* v29.1.4 – Mobile Admin: Artikel/Shirt direkt nach Kundenkopf */
+@media (max-width: 1050px){
+  .v2853-workspace{
+    display:flex!important;
+    flex-direction:column!important;
+    gap:12px!important;
+  }
+  .v2853-left,
+  .v2853-right,
+  .v2853-bottom{
+    display:contents!important;
+  }
+  .v2853-article-card{order:1!important;}
+  .v2853-basic-card{order:2!important;}
+  .v2853-appearance-card{order:3!important;}
+  .v2853-print-card{order:4!important;}
+  .v2853-functions-card{order:5!important;}
+}
