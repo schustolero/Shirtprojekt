@@ -101,6 +101,11 @@ function dateText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.t
 function dateOnlyText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})}
 function workflowTimeText(ts){if(!ts||!ts.toDate)return "";return ts.toDate().toLocaleString("de-DE",{day:"2-digit",month:"2-digit",hour:"2-digit",minute:"2-digit"})}
 function text(value,fallback="–"){return value===undefined||value===null||value===""?fallback:String(value)}
+function shortOrderNumber(value){
+  const raw=String(value||"").trim();
+  const match=raw.match(/^(.+)-(\d{6})-(\d{6})-(\d{4})$/);
+  return match ? `${match[1]}-${match[2]}-${match[4]}` : raw;
+}
 
 async function loadOrders(){
   ordersList.replaceChildren();
@@ -241,7 +246,7 @@ function printOrderSlip(order){
 
   const w = window.open("", "_blank", "width=920,height=840");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
-  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
+  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(shortOrderNumber(order.orderNumber)||"")}</title><style>
     *{box-sizing:border-box}
     :root{--text:#16181d;--muted:#6f7784;--line:#dde2ea;--soft:#f7f8fb;--soft2:#fbfcfe;--accent:#fff7d1;--accent-line:#ebd47a}
     html,body{margin:0;padding:0;background:#eef1f5;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}
@@ -274,10 +279,10 @@ function printOrderSlip(order){
     .actions{display:flex;gap:8px;justify-content:center;margin:12px auto 0;width:190mm;max-width:calc(100% - 16px)}button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer}.print{background:#141821;color:#fff}.close{background:#e9edf2;color:#111}
     @media(max-width:760px){body{padding:6px 4px 18px}.sheet{padding:12px;border-radius:14px}.topbar{flex-direction:column}.meta{min-width:0;grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr 1fr}.col-price{width:78px}.actions{width:auto;max-width:none;padding:0 2px}}
     @media print{html,body{background:#fff}body{padding:0}.sheet{width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;padding:6mm 7mm}.actions{display:none!important}@page{size:A4 portrait;margin:8mm}}
-  </style></head><body><div class="sheet"><div class="topbar"><div class="brand"><img src="${logoUrl}" alt="Logo"><div class="brand-copy"><span class="eyebrow">Bestellschein</span><h1>${htmlEscape(customerName)}</h1><p>Übersichtlicher Auftrag auf einem DIN-A4-Blatt</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
+  </style></head><body><div class="sheet"><div class="topbar"><div class="brand"><img src="${logoUrl}" alt="Logo"><div class="brand-copy"><span class="eyebrow">Bestellschein</span><h1>${htmlEscape(customerName)}</h1></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(shortOrderNumber(order.orderNumber)||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
     <div class="section"><h2>Kundendaten</h2><div class="info-grid"><div class="info-item"><span>Name</span><strong>${htmlEscape(customerDisplay)}</strong></div><div class="info-item"><span>Telefon</span><strong>${htmlEscape(phone)}</strong></div><div class="info-item"><span>E-Mail</span><strong>${htmlEscape(email)}</strong></div><div class="info-item"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div></div></div>
     <div class="section"><h2>Bestellung</h2><div class="table-wrap"><table><thead><tr><th class="col-pos">#</th><th>Artikel</th><th>Motiv</th><th class="col-qty">Menge</th><th class="col-price">Preis</th></tr></thead><tbody>${rows}</tbody></table></div><div class="totals"><div class="summary-item"><span>Positionen</span><strong>${grouped.length}</strong></div><div class="summary-item"><span>Gesamtmenge</span><strong>${htmlEscape(totalQuantity)} Teile</strong></div><div class="summary-item total"><span>Gesamtpreis</span><strong>${htmlEscape(euro(totalPrice))}</strong></div></div></div>
-    <div class="footer"><span>${htmlEscape(customerName)}</span><span>Bestellnummer ${htmlEscape(order.orderNumber||"–")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+    <div class="footer"><span>${htmlEscape(customerName)}</span><span>Bestellnummer ${htmlEscape(shortOrderNumber(order.orderNumber)||"–")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
 
@@ -332,13 +337,13 @@ function printProductionSlip(order){
 
   const w=window.open("","_blank","width=920,height=840");
   if(!w){alert("Bitte Pop-ups für den Produktionsschein erlauben.");return;}
-  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Produktionsschein ${htmlEscape(order.orderNumber||"")}</title><style>
+  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Produktionsschein ${htmlEscape(shortOrderNumber(order.orderNumber)||"")}</title><style>
   *{box-sizing:border-box}:root{--text:#16181d;--muted:#707783;--line:#dde2ea;--soft:#f7f8fb;--soft2:#fbfcfe;--accent:#fff7d1;--accent-line:#ebd47a}html,body{margin:0;padding:0;background:#eef1f5;color:var(--text);font-family:Inter,Arial,Helvetica,sans-serif}body{padding:10px 8px 20px}.sheet{width:190mm;max-width:100%;margin:0 auto;background:#fff;border:1px solid #dfe4ec;border-radius:16px;padding:8mm 9mm;box-shadow:0 10px 28px rgba(15,23,42,.08)}
   .head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:10px;border-bottom:1px solid var(--line)}.brand{display:flex;align-items:center;gap:12px;min-width:0}.brand img{width:48px;height:48px;object-fit:contain;border-radius:12px;background:var(--soft2);border:1px solid var(--line);padding:5px;flex:0 0 auto}.brand h1{margin:0;font-size:16px;line-height:1.12;max-width:300px;word-break:break-word}.brand p{margin:3px 0 0;font-size:9px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#9a7a00}.meta{display:grid;grid-template-columns:repeat(2,minmax(100px,1fr));gap:7px;min-width:220px}.meta-card{background:var(--soft);border:1px solid var(--line);border-radius:12px;padding:8px 9px}.meta-card span,.info span{display:block;font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:3px}.meta-card strong{display:block;font-size:11px;line-height:1.25;word-break:break-word}
   .section{margin-top:10px}.section h2{margin:0 0 6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.info-grid{display:grid;grid-template-columns:1.1fr 1.4fr .7fr;gap:8px}.info{background:var(--soft2);border:1px solid var(--line);border-radius:12px;padding:8px 9px;min-height:46px}.info strong{display:block;font-size:11px;line-height:1.25;word-break:break-word}.table-wrap{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#fff}table{width:100%;border-collapse:collapse}th{background:var(--soft);font-size:8.5px;font-weight:800;letter-spacing:.04em;color:#515866;padding:6px 7px;text-align:left;border-bottom:1px solid var(--line)}td{padding:7px 7px;border-bottom:1px solid #edf0f4;vertical-align:top;font-size:9.5px}tr:last-child td{border-bottom:none}td strong{display:block;font-size:10.5px;line-height:1.2;margin-bottom:2px}td small{display:block;font-size:8.5px;color:var(--muted);line-height:1.2}.pos{width:28px}.qty{width:48px;text-align:center;font-weight:800}.check{width:34px;text-align:center;font-size:14px}.empty{text-align:center;color:var(--muted);padding:10px}.checklist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}.task{border:1px solid var(--line);border-radius:12px;padding:8px 9px;background:var(--soft2);font-size:9.5px;font-weight:700}.task b{font-size:14px;margin-right:4px}.notes{height:46px;border:1px solid var(--line);border-radius:12px;background:var(--soft2)}.actions{display:flex;gap:8px;justify-content:center;margin:12px auto 0;width:190mm;max-width:calc(100% - 16px)}button{border:0;border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer}.print{background:#141821;color:#fff}.close{background:#e9edf2;color:#111}
   @media(max-width:760px){body{padding:6px 4px 18px}.sheet{padding:12px;border-radius:14px}.head{flex-direction:column}.meta{min-width:0;grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr 1fr}.info-grid .info:last-child{grid-column:1/-1}.checklist{grid-template-columns:1fr 1fr}.actions{width:auto;max-width:none;padding:0 2px}}
   @media print{html,body{background:#fff}body{padding:0}.sheet{width:auto;max-width:none;border:none;border-radius:0;box-shadow:none;padding:6mm 7mm}.actions{display:none!important}@page{size:A4 portrait;margin:8mm}}
-  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
+  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><div class="meta-card"><span>Bestellnummer</span><strong>${htmlEscape(shortOrderNumber(order.orderNumber)||"–")}</strong></div><div class="meta-card"><span>Datum</span><strong>${orderDate}</strong></div></div></div>
   <div class="section"><h2>Auftrag</h2><div class="info-grid"><div class="info"><span>Kunde</span><strong>${htmlEscape(customer)}</strong></div><div class="info"><span>Adresse</span><strong>${htmlEscape(address)}</strong></div><div class="info"><span>Menge</span><strong>${htmlEscape(totalQty)} Teile</strong></div></div></div>
   <div class="section"><h2>Artikel</h2><div class="table-wrap"><table><thead><tr><th class="pos">#</th><th>Textil</th><th>Motiv</th><th class="qty">Menge</th><th class="check">OK</th></tr></thead><tbody>${itemRows}</tbody></table></div></div>
   ${specs}
@@ -376,7 +381,7 @@ function renderOrder(id,order){
 
   const compactOrderNo=document.createElement("span");
   compactOrderNo.className="order-row-number-v2963";
-  compactOrderNo.textContent=text(order.orderNumber,id);
+  compactOrderNo.textContent=shortOrderNumber(text(order.orderNumber,id));
 
   meta.append(date,compactOrderNo);
 
@@ -418,7 +423,7 @@ function renderOrder(id,order){
   info.className="order-open-info-v2956";
 
   const orderNo=document.createElement("span");
-  orderNo.textContent=text(order.orderNumber,id);
+  orderNo.textContent=shortOrderNumber(text(order.orderNumber,id));
 
   const shop=document.createElement("span");
   shop.textContent=text(order.customerName||order.customerId,"");
@@ -1711,7 +1716,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.0');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.1');
 })();
 
 
