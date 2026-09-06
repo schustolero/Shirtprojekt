@@ -1053,10 +1053,14 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     display: contents !important;
   }
 
-  /* Produktvorschau wirklich an Position 1. */
+  /* Kunde/Verein bleibt ganz oben, Produkt direkt darunter. */
+  .brand {
+    order: 1 !important;
+  }
+
   .workspace,
   .dual-workspace {
-    order: 1 !important;
+    order: 2 !important;
   }
 
   .workspace {
@@ -1072,9 +1076,8 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     margin: 0 auto !important;
   }
 
-  /* Shopidentität direkt danach, aber deutlich kompakter. */
+  /* Shopidentität ganz oben und kompakt. */
   .brand {
-    order: 2 !important;
     padding: 8px 18px 10px !important;
     min-height: 0 !important;
   }
@@ -1140,3 +1143,5 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   }
   .brand { padding: 6px 16px 8px !important; }
 }
+
+/* v29.1.3: Kunden-/Vereinskopf mobil wieder oberhalb der Produktvorschau. */

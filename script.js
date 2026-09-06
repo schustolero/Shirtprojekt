@@ -26,7 +26,7 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
     const el = document.getElementById(id);
     if (el && value !== undefined && value !== null) el.textContent = value;
   };
-  setText("brandTitle", cfg.brandTitle);
+  setText("brandTitle", cfg.brandTitle || cfg.customerName || "");
   setText("brandSubtitle", cfg.brandSubtitle);
   setText("designerHeading", cfg.designerHeading);
   setText("designerIntro", cfg.designerIntro);
