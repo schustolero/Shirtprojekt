@@ -1270,3 +1270,19 @@ saveShopBtn.addEventListener("click",async()=>{
   // Versionsbadge eindeutig aktualisieren.
   document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.2.6');
 })();
+
+
+// v29.5.0 – mobile Filter kompakt auf-/zuklappen
+document.addEventListener("DOMContentLoaded",()=>{
+  const btn=document.getElementById("mobileFilterToggle");
+  const filters=document.querySelector("#ordersTab .filters");
+  if(!btn||!filters)return;
+  const close=()=>{filters.classList.remove("v2950-open");btn.setAttribute("aria-expanded","false");btn.textContent="Filter";};
+  close();
+  btn.addEventListener("click",()=>{
+    const open=!filters.classList.contains("v2950-open");
+    filters.classList.toggle("v2950-open",open);
+    btn.setAttribute("aria-expanded",String(open));
+    btn.textContent=open?"Filter schließen":"Filter";
+  });
+});
