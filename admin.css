@@ -2104,3 +2104,115 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
     white-space:nowrap!important;
   }
 }
+
+
+/* v29.1.7 – Druckgrößen kompakt neben Positionieren + mm-Ansicht */
+.v2917-mm-note{
+  margin:8px 0 10px!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  color:#677181!important;
+}
+.v2917-mm-summary{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  margin-top:8px!important;
+}
+.v2917-size-chip,
+.v2917-size-badge{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:34px!important;
+  padding:6px 12px!important;
+  border:1px solid #dde3ea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#495361!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  white-space:nowrap!important;
+}
+.v2853-print-card .v2862-side-row{
+  grid-template-columns:96px 128px 92px auto!important;
+}
+.v2853-print-card .v2917-size-badge{
+  justify-self:start!important;
+}
+@media(max-width:760px){
+  .v2853-print-card .v2862-side-row{
+    grid-template-columns:82px minmax(104px,1fr) auto auto!important;
+    align-items:center!important;
+  }
+  .v2917-size-chip,
+  .v2917-size-badge{
+    min-height:32px!important;
+    padding:5px 10px!important;
+    font-size:10.5px!important;
+  }
+}
+
+
+/* v29.1.8 – Produktionsdaten vollständig in mm bedienbar */
+.v2918-cm-source{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0 0 0 0)!important;
+  white-space:nowrap!important;
+  border:0!important;
+  opacity:0!important;
+  pointer-events:none!important;
+}
+.v2918-mm-input{
+  width:100%!important;
+}
+
+
+/* v29.1.9 – F140 Shirtfarben Auswahl im Bereich Darstellung & Farben */
+.v2919-color-settings{display:grid!important;gap:14px!important}
+.v2919-color-head{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;flex-wrap:wrap!important}
+.v2919-color-head h3{margin:0!important;font-size:14px!important;color:#202733!important}
+.v2919-color-head p{margin:3px 0 0!important;font-size:11px!important;color:#6f7782!important}
+.v2919-inline-toggle{display:inline-flex!important;align-items:center!important;gap:8px!important;padding:9px 12px!important;border:1px solid #e1e5eb!important;border-radius:11px!important;background:#fbfcfd!important;font-size:11px!important;font-weight:700!important;color:#27303b!important}
+.v2919-inline-toggle input{margin:0!important}
+.v2919-shirt-palette-card{padding:12px!important;border:1px solid #e7ebf0!important;border-radius:14px!important;background:#fbfcfd!important}
+.v2919-card-top{display:grid!important;gap:2px!important;margin-bottom:10px!important}
+.v2919-card-top strong{font-size:12px!important;color:#1f2937!important}
+.v2919-card-top span{font-size:10px!important;color:#7a838f!important}
+.v2919-f140-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:8px!important}
+.v2919-f140-option{display:flex!important;align-items:center!important;gap:8px!important;padding:8px 9px!important;border:1px solid #dfe4ea!important;border-radius:11px!important;background:#fff!important;cursor:pointer!important;min-width:0!important}
+.v2919-f140-option.is-active{border-color:#e0be36!important;background:#fff9df!important;box-shadow:inset 0 0 0 1px rgba(224,190,54,.18)!important}
+.v2919-f140-option input{margin:0!important;flex:0 0 auto!important}
+.v2919-swatch{width:18px!important;height:18px!important;border-radius:999px!important;border:1px solid rgba(24,34,44,.12)!important;background:var(--sw)!important;display:inline-block!important;flex:0 0 18px!important}
+.v2919-name{font-size:10.5px!important;font-weight:700!important;color:#35404c!important;line-height:1.2!important;min-width:0!important}
+.v2919-shirt-default-row{display:grid!important;grid-template-columns:minmax(190px,260px) 1fr!important;gap:10px!important;align-items:end!important;margin-top:12px!important}
+.v2919-shirt-default-row label{margin:0!important}
+.v2919-shirt-default-row label span{font-size:10px!important}
+.v2919-shirt-default-row select{height:36px!important;min-height:36px!important}
+.v2919-hint{margin:0 0 2px!important;font-size:10px!important;color:#75808d!important}
+.v2919-motif-row{grid-template-columns:minmax(180px,1fr) 76px!important}
+@media(max-width:920px){
+  .v2919-f140-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:720px){
+  .v2919-color-head{display:grid!important;grid-template-columns:1fr!important}
+  .v2919-inline-toggle{justify-content:flex-start!important}
+  .v2919-f140-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important}
+  .v2919-f140-option{padding:8px!important}
+  .v2919-name{font-size:10px!important}
+  .v2919-shirt-default-row{grid-template-columns:1fr!important}
+  .v2919-motif-row{grid-template-columns:1fr 70px!important}
+}
+
+
+/* v29.2.0 – Schnellbuttons für F140-Farben */
+.v2920-quick-actions{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:0 0 10px!important}
+.v2920-quick-btn{min-height:34px!important;padding:7px 12px!important;font-size:10.5px!important;font-weight:800!important;border-radius:9px!important}
+.v2920-quick-btn[data-f140-quick="royal"]{border-color:#dcb52d!important;background:#fff9df!important;color:#6d5600!important}
+@media(max-width:720px){.v2920-quick-actions{display:grid!important;grid-template-columns:1fr 1fr!important}.v2920-quick-btn[data-f140-quick="royal"]{grid-column:1/-1!important}}
