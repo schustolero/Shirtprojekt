@@ -927,7 +927,9 @@ function flashSavedButton(btn, normalText){
 
 function switchAdminTab(name){
   tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
-  ordersTab.hidden=name!=="orders"; shopsTab.hidden=name!=="shops";
+  ordersTab.hidden=name!=="orders";
+  shopsTab.hidden=name!=="shops";
+  if(name!=="shops") shopsTab.classList.remove("v2975-functions-only");
 }
 tabButtons.forEach(btn=>btn.addEventListener("click",()=>switchAdminTab(btn.dataset.tab)));
 
@@ -1247,15 +1249,18 @@ saveShopBtn.addEventListener("click",async()=>{
 
     if(key==="functions"){
       setNavActive("functions");
+      shopsTab.classList.add("v2975-functions-only");
       const functionsCard=document.querySelector(".v2853-functions-card") || document.querySelector(".v284-card[data-card=\"functions\"]");
       if(functionsCard){
         functionsCard.hidden=false;
         functionsCard.style.display="";
-        functionsCard.scrollIntoView({behavior:"smooth",block:"start"});
+        functionsCard.open=true;
+        window.scrollTo({top:0,behavior:"smooth"});
       }
       return;
     }
 
+    shopsTab.classList.remove("v2975-functions-only");
     setNavActive("shops");
     const card=document.querySelector(`.v284-card[data-card="${key}"]`);
     if(card){
@@ -1264,7 +1269,11 @@ saveShopBtn.addEventListener("click",async()=>{
     }
   }
   sidebar.querySelectorAll(".v284-nav button").forEach(btn=>btn.addEventListener("click",()=>{
-    if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
+    if(btn.dataset.main){
+      switchAdminTab(btn.dataset.main);
+      if(btn.dataset.main==="shops") shopsTab.classList.remove("v2975-functions-only");
+      setNavActive(btn.dataset.main);
+    }
     else if(btn.dataset.jump) openCard(btn.dataset.jump);
     if(window.matchMedia("(max-width:720px)").matches){
       sidebar.classList.remove("mobile-menu-open");
@@ -1275,7 +1284,7 @@ saveShopBtn.addEventListener("click",async()=>{
   const dashObserver=new MutationObserver(()=>{
     sidebar.hidden=dashboardEl.hidden;
     if(!dashboardEl.hidden){
-      setNavActive(ordersTab.hidden?"shops":"orders");
+      setNavActive(!ordersTab.hidden ? "orders" : (shopsTab.classList.contains("v2975-functions-only") ? "functions" : "shops"));
       window.refreshV284ShopSelect?.();
     }
   });
@@ -1731,7 +1740,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.4');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.7.5');
 })();
 
 
