@@ -14,7 +14,6 @@ const refreshBtn = document.getElementById("refreshBtn");
 const statOrders = document.getElementById("statOrders");
 const statShirts = document.getElementById("statShirts");
 const statRevenue = document.getElementById("statRevenue");
-const statProfit = document.getElementById("statProfit");
 const lastUpdate = document.getElementById("lastUpdate");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
@@ -45,48 +44,15 @@ async function loadOrders(){
   }
 }
 
-const COST_BY_PRODUCT = { tshirt: 2.60, polo: 5.61, hoodie: 9.90 };
-
-function productIdForItem(item){
-  const id=String(item?.productId||"").toLowerCase();
-  if(id==="polo"||id==="hoodie"||id==="tshirt") return id;
-  const name=String(item?.productName||item?.articleNo||"").toLowerCase();
-  if(name.includes("polo")||name.includes("f502")) return "polo";
-  if(name.includes("hoodie")||name.includes("f421")) return "hoodie";
-  return "tshirt";
-}
-
-function orderFinancials(order){
-  const items=Array.isArray(order?.items)?order.items:[];
-  let revenue=0,cost=0,quantity=0;
-  items.forEach(item=>{
-    const qty=Math.max(0,Number(item.quantity)||1);
-    quantity+=qty;
-    const line=Number(item.linePrice);
-    const unit=Number(item.unitPrice||item.price||order?.unitPrice)||0;
-    revenue += Number.isFinite(line) && line>0 ? line : qty*unit;
-    const storedCost=Number(item.purchasePrice);
-    const unitCost=storedCost>0?storedCost:(COST_BY_PRODUCT[productIdForItem(item)]||0);
-    cost += qty*unitCost;
-  });
-  if(revenue<=0) revenue=Number(order?.totalPrice)||0;
-  const profit=revenue-cost;
-  const margin=revenue>0?(profit/revenue)*100:0;
-  return {revenue,cost,profit,margin,quantity};
-}
-
 function updateStats(entries){
-  let shirts=0,revenue=0,profit=0;
+  let shirts=0,revenue=0;
   entries.forEach(({order})=>{
-    const f=orderFinancials(order);
-    shirts += Number(order.totalQuantity)||f.quantity||0;
-    revenue += f.revenue;
-    profit += f.profit;
+    shirts += Number(order.totalQuantity)||0;
+    revenue += Number(order.totalPrice)||0;
   });
   statOrders.textContent = entries.length;
   statShirts.textContent = shirts;
   statRevenue.textContent = euro(revenue);
-  if(statProfit) statProfit.textContent = euro(profit);
 }
 
 function searchableText(entry){
@@ -224,20 +190,16 @@ function renderOrder(id,order){
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
   title.append(number,customerTag,date);
   const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
-  const syncStatusClass=()=>{status.dataset.status=(status.value||"Neu").toLowerCase().replaceAll(" ","-").replace("ä","ae")};
   STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
-  syncStatusClass();
   status.addEventListener("change",async()=>{
     const previousStatus = order.status || "Neu";
     status.disabled=true;
     try{
       await db.collection("orders").doc(id).update({status:status.value,statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()});
       order.status = status.value;
-      syncStatusClass();
       if(statusFilter.value !== "Alle") applyFilters();
     }catch(err){
       status.value = previousStatus;
-      syncStatusClass();
       alert("Status konnte nicht gespeichert werden.");
       console.error(err);
     }finally{status.disabled=false}
@@ -255,11 +217,7 @@ function renderOrder(id,order){
   const items=document.createElement("div");items.className="items";
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{const row=document.createElement("div");row.className="item-row";const a=document.createElement("strong");a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;const b=document.createElement("span");b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;row.append(a,b);items.appendChild(row)});
   card.appendChild(items);
-  const finance=orderFinancials(order);
-  const financeBox=document.createElement("div");financeBox.className="order-finance";
-  financeBox.innerHTML=`<div><span>Umsatz</span><strong>${euro(finance.revenue)}</strong></div><div><span>EK gesamt</span><strong>${euro(finance.cost)}</strong></div><div><span>Rohertrag</span><strong>${euro(finance.profit)}</strong></div><div><span>Marge</span><strong>${finance.margin.toLocaleString("de-DE",{maximumFractionDigits:1})} %</strong></div>`;
-  card.appendChild(financeBox);
-  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Teile</span><span>Intern · EK/VK</span>`;card.appendChild(footer);
+  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Shirts</span><span>${euro(order.totalPrice)}</span>`;card.appendChild(footer);
   return card;
 }
 
@@ -793,6 +751,7 @@ saveShopBtn.addEventListener("click",async()=>{
       <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
       <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
       <button type="button" data-jump="motif"><span>✥</span>Motive / Logos</button>
+      <button type="button" data-jump="production"><span>▤</span>Produktionsdaten</button>
       <button type="button" data-jump="functions"><span>◉</span>Funktionen</button>
     </nav>
     <div class="v284-side-bottom">
@@ -800,7 +759,6 @@ saveShopBtn.addEventListener("click",async()=>{
       <button type="button" id="v284Logout">↪ Abmelden</button>
     </div>`;
   document.body.insertBefore(sidebar,shell);
-
 
   const shopSelect=sidebar.querySelector("#v284ShopSelect");
   window.refreshV284ShopSelect=function(){
@@ -821,38 +779,34 @@ saveShopBtn.addEventListener("click",async()=>{
   shopSelect.addEventListener("change",()=>{
     const btn=list?.querySelector(`button[data-shop-id="${CSS.escape(shopSelect.value)}"]`);
     btn?.click();
-    if(window.matchMedia("(max-width:720px)").matches) setMobileMenu(false);
   });
 
   sidebar.querySelector("#v284NewShop").addEventListener("click",()=>originalNewShop?.click());
   sidebar.querySelector("#v284Logout").addEventListener("click",()=>originalLogout?.click());
   const mobileMenuBtn=sidebar.querySelector("#v284MobileMenu");
-  const mobileNav=sidebar.querySelector(".v284-nav");
-  const setMobileMenu=(open)=>{
-    const isMobile=window.matchMedia("(max-width:720px)").matches;
-    const next=Boolean(open && isMobile);
-    sidebar.classList.toggle("mobile-menu-open",next);
-    mobileMenuBtn?.setAttribute("aria-expanded",String(next));
-    if(mobileMenuBtn) mobileMenuBtn.textContent=next?"×":"☰";
-    if(mobileNav) mobileNav.hidden=isMobile ? !next : false;
-  };
-  mobileMenuBtn?.addEventListener("click",()=>setMobileMenu(!sidebar.classList.contains("mobile-menu-open")));
-  window.addEventListener("resize",()=>{
-    if(!window.matchMedia("(max-width:720px)").matches){
-      sidebar.classList.remove("mobile-menu-open");
-      mobileMenuBtn?.setAttribute("aria-expanded","false");
-      if(mobileMenuBtn) mobileMenuBtn.textContent="☰";
-      if(mobileNav) mobileNav.hidden=false;
-    }else if(!sidebar.classList.contains("mobile-menu-open")){
-      if(mobileNav) mobileNav.hidden=true;
-    }
+  mobileMenuBtn?.addEventListener("click",()=>{
+    const open=sidebar.classList.toggle("mobile-menu-open");
+    mobileMenuBtn.setAttribute("aria-expanded",String(open));
+    mobileMenuBtn.textContent=open?"×":"☰";
   });
-  if(window.matchMedia("(max-width:720px)").matches && mobileNav) mobileNav.hidden=true;
+
+  function setNavActive(name){
+    sidebar.querySelectorAll(".v284-nav button").forEach(btn=>{
+      btn.classList.toggle("active",btn.dataset.main===name || (name==="shops" && btn.dataset.jump===undefined && btn.dataset.main==="shops"));
+    });
+  }
+  function openCard(key){
+    switchAdminTab("shops");
+    setNavActive("shops");
+    const card=document.querySelector(`.v284-card[data-card="${key}"]`);
+    if(card){ card.open=true; card.scrollIntoView({behavior:"smooth",block:"start"}); }
+  }
   sidebar.querySelectorAll(".v284-nav button").forEach(btn=>btn.addEventListener("click",()=>{
     if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
     else if(btn.dataset.jump) openCard(btn.dataset.jump);
     if(window.matchMedia("(max-width:720px)").matches){
-      setMobileMenu(false);
+      sidebar.classList.remove("mobile-menu-open");
+      if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
     }
   }));
 
@@ -1064,16 +1018,6 @@ saveShopBtn.addEventListener("click",async()=>{
 
   // Grunddaten: nur wirklich relevante Felder + Produkte.
   const basic=makeCard('Grunddaten','v2853-basic-card');
-  // v28.9.0: Mobile-Startzustand direkt beim Erzeugen setzen.
-  // Die Karte entsteht erst nach Login/Shop-Rendering, daher muss die
-  // Einklapp-Logik genau hier gebunden werden (nicht einmalig bei DOMContentLoaded).
-  if(window.matchMedia('(max-width: 720px)').matches){
-    basic.card.classList.add('mobile-collapsed');
-  }
-  basic.card.querySelector('.v2853-card-head')?.addEventListener('click',()=>{
-    if(!window.matchMedia('(max-width: 720px)').matches) return;
-    basic.card.classList.toggle('mobile-collapsed');
-  });
   if(mainGrid){
     mainGrid.classList.add('v2853-basic-grid');
     // Name zuerst; Shop-Logo sitzt direkt daneben.
@@ -1219,9 +1163,9 @@ saveShopBtn.addEventListener("click",async()=>{
     const shirtHex=(shopFields.fixedShirtHex?.value||'#0758b2').trim();
     const productionHref=(productionFileUrl?.value||'').trim();
     const products=[
-      {key:'tshirt',name:'T-Shirt',tone:'v2862-product-tshirt',front:shopFields.tshirtFrontW,back:shopFields.tshirtBackW,thumb:'shirt-front-template.png'},
-      {key:'polo',name:'Polo-Shirt',tone:'v2862-product-polo',front:shopFields.poloFrontW,back:shopFields.poloBackW,thumb:'polo-front-template.png'},
-      {key:'hoodie',name:'Hoodie',tone:'v2862-product-hoodie',front:shopFields.hoodieFrontW,back:shopFields.hoodieBackW,thumb:'hoodie-front-template.png'}
+      {key:'tshirt',name:'T-Shirt',tone:'v2862-product-tshirt',front:shopFields.tshirtFrontW,back:shopFields.tshirtBackW},
+      {key:'polo',name:'Polo-Shirt',tone:'v2862-product-polo',front:shopFields.poloFrontW,back:shopFields.poloBackW},
+      {key:'hoodie',name:'Hoodie',tone:'v2862-product-hoodie',front:shopFields.hoodieFrontW,back:shopFields.hoodieBackW}
     ];
     const sizeLabel=(p,s,w)=>{
       const n=Number(w?.value||0);
@@ -1245,8 +1189,8 @@ saveShopBtn.addEventListener("click",async()=>{
       return wn&&hn?`${wn} × ${hn} cm`:'–';
     };
     const sizeInfo=`<div class="v2864-size-info"><span><b>Vorne</b> ${fmtSize(printDataFields.front.width,printDataFields.front.height)}</span><span><b>Hinten</b> ${fmtSize(printDataFields.back.width,printDataFields.back.height)}</span></div>`;
-    const sharedMotif=`<div class="v2870-shared-motif"><span class="v2861-motif-preview v2863-shirt-bg v2870-motif-preview" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span><div class="v2870-motif-copy"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${productionDownload}</div></div><div class="v2870-size-summary">${sizeInfo}</div></div>`;
-    table.innerHTML=sharedMotif+'<div class="v2870-product-groups">'+products.map(item=>`<section class="v2870-product-card ${item.tone}" data-product="${item.key}"><div class="v2870-product-identity"><span class="v2870-product-thumb" style="--thumb-bg:${shirtHex}"><img src="${item.thumb}" alt="${item.name}"></span><strong>${item.name}</strong></div><div class="v2870-side-control"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2870-side-control"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
+    const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${sizeInfo}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
+    table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select><button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
       const item=products.find(x=>x.key===sel.dataset.product);
       if(!item) return;
@@ -1313,8 +1257,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v28.9.4');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.0.0');
 })();
-
-// v28.9.0 – Mobile Grunddaten werden direkt bei Kartenerzeugung gebunden.
-
