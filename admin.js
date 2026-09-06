@@ -224,8 +224,16 @@ function renderOrder(id,order){
 
   const meta=document.createElement("div");
   meta.className="order-row-meta-v2956";
+
+  const shopName=document.createElement("span");
+  shopName.className="order-row-shop-v2957";
+  shopName.textContent=text(order.customerName||order.customerId,"");
+
   const date=document.createElement("span");
+  date.className="order-row-date-v2957";
   date.textContent=dateText(order.createdAt);
+
+  if(shopName.textContent) meta.appendChild(shopName);
   meta.appendChild(date);
 
   left.append(customerName,meta);
