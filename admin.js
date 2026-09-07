@@ -397,7 +397,12 @@ function refreshPositionEditor(){
   coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => { positionShirt.src = src; });
   const motif = selectedPositionMotif();
   if(motif?.file){
-    positionMotif.src = safeAssetUrl(motif.file, shopFields.id.value || selectedShopId || "_simple");
+    positionMotif.onerror = () => {
+      const fallback = `/shops/${encodeURIComponent(currentAssetSlug())}/motiv-1.png`;
+      if(positionMotif.src !== new URL(fallback, location.href).href) positionMotif.src = fallback;
+      else positionMotif.onerror = null;
+    };
+    positionMotif.src = safeAssetUrl(motif.file, currentAssetSlug());
     positionMotif.hidden = false;
   } else {
     positionMotif.hidden = true;
@@ -461,6 +466,19 @@ function bindPositionEditor(){
 function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
+function assetSlugForShop(id, cfg){
+  const raw=String(id||"");
+  const name=String(cfg?.customerName||shopFields?.name?.value||"").trim().toLowerCase();
+  if(raw==="_simple" || name==="vorlage simple") return "_simple";
+  if(raw==="_motifs" || name==="vorlage motive") return "_motifs";
+  if(raw==="_designer" || name==="vorlage designer") return "_designer";
+  return raw || "_simple";
+}
+function currentAssetSlug(){
+  const id=shopFields?.id?.value || selectedShopId || "_simple";
+  const cfg=shopConfigs?.get?.(selectedShopId) || selectedShopOriginal || {};
+  return assetSlugForShop(id,cfg);
+}
 function setShopState(message, kind=""){ shopSaveState.textContent=message; shopSaveState.className=kind?`message-${kind}`:""; }
 
 let positionSaveRequested = false;
@@ -559,7 +577,7 @@ shopFields.type.addEventListener("change",()=>typePreset(shopFields.type.value))
 bindPositionEditor();
 
 function updateLogoPreview(){
-  const slug=shopFields.id.value||selectedShopId||"_simple"; const src=safeAssetUrl(workingLogo,slug); logoPreview.src=src||""; logoPreview.style.display=src?"block":"none";
+  const slug=currentAssetSlug(); const src=safeAssetUrl(workingLogo,slug); logoPreview.src=src||""; logoPreview.style.display=src?"block":"none";
 }
 
 async function compressImage(file,maxSide=700,targetChars=230000){
@@ -588,7 +606,7 @@ function renderMotifsEditor(){
   motifsEditor.replaceChildren();
   workingMotifs.forEach((motif,index)=>{
     const row=document.createElement("div"); row.className="motif-edit-row";
-    const img=document.createElement("img"); img.alt="Motiv"; img.src=safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||"_simple");
+    const img=document.createElement("img"); img.alt="Motiv"; img.onerror=()=>{ const f=`/shops/${encodeURIComponent(currentAssetSlug())}/motiv-1.png`; if(img.src!==new URL(f,location.href).href){img.src=f;} else {img.onerror=null;} }; img.src=safeAssetUrl(motif.file,currentAssetSlug());
     const fields=document.createElement("div"); fields.className="motif-fields";
     const name=document.createElement("input"); name.className="motif-name"; name.value=motif.name||`Motiv ${index+1}`; name.placeholder="Motivname"; name.addEventListener("input",()=>{workingMotifs[index].name=name.value});
     const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Motiv wird vorbereitet …");workingMotifs[index].file=await compressImage(file,800,210000);img.src=workingMotifs[index].file;setShopState("Motiv geändert – noch speichern.","ok")}catch(err){alert(err.message||"Motiv konnte nicht verarbeitet werden.")}upload.value=""});
@@ -790,7 +808,16 @@ saveShopBtn.addEventListener("click",async()=>{
   function renderV2949ShopTree(){
     if(!shopsTree) return;
     shopsTree.replaceChildren();
-    const entries=[...shopConfigs.entries()].sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de"));
+    const allEntries=[...shopConfigs.entries()];
+    const canonicalTemplateIds=new Set(["_simple","_motifs","_designer"].filter(id=>shopConfigs.has(id)));
+    const entries=allEntries.filter(([id,cfg])=>{
+      if(canonicalTemplateIds.has(id)) return true;
+      const n=String(cfg?.customerName||"").trim().toLowerCase();
+      if(n==="vorlage simple" && canonicalTemplateIds.has("_simple")) return false;
+      if(n==="vorlage motive" && canonicalTemplateIds.has("_motifs")) return false;
+      if(n==="vorlage designer" && canonicalTemplateIds.has("_designer")) return false;
+      return true;
+    }).sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de"));
     if(shopCount) shopCount.textContent=String(entries.length);
     SHOP_TYPE_GROUPS.forEach(group=>{
       const matches=entries.filter(([,cfg])=>(cfg.shopType||"simple")===group.key);
@@ -810,7 +837,9 @@ saveShopBtn.addEventListener("click",async()=>{
         name.className="v2949-shop-item-name";
         name.textContent=cfg.customerName||id;
         const meta=document.createElement("small");
-        meta.textContent=id.startsWith("_")?"Vorlage":(cfg.active===false?"Deaktiviert":"Aktiv");
+        const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
+        const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
+        meta.textContent=isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
         btn.append(name,meta);
         btn.addEventListener("click",()=>{
           const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
@@ -977,7 +1006,7 @@ saveShopBtn.addEventListener("click",async()=>{
   window.updateV284PrintTable=function(){
     const table=document.getElementById("v284PrintTable"); if(!table) return;
     const motif=workingMotifs?.[0];
-    const motifSrc=motif?.file?safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||"_simple"):"";
+    const motifSrc=motif?.file?safeAssetUrl(motif.file,currentAssetSlug()):"";
     const rows=[
       ["tshirt","front","T-Shirt","Vorderseite",shopFields.tshirtFrontX,shopFields.tshirtFrontY,shopFields.tshirtFrontW],
       ["tshirt","back","T-Shirt","Rückseite",shopFields.tshirtBackX,shopFields.tshirtBackY,shopFields.tshirtBackW],
@@ -1229,7 +1258,7 @@ saveShopBtn.addEventListener("click",async()=>{
     const table=document.getElementById('v2856PrintTable');
     if(!table) return;
     const motif=workingMotifs?.[0];
-    const motifSrc=motif?.file?safeAssetUrl(motif.file,shopFields.id.value||selectedShopId||'_simple'):'';
+    const motifSrc=motif?.file?safeAssetUrl(motif.file,currentAssetSlug()):'';
     const motifName=motif?.name||'Motiv';
     const shirtHex=(shopFields.fixedShirtHex?.value||'#0758b2').trim();
     const productionHref=(productionFileUrl?.value||'').trim();

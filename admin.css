@@ -2540,3 +2540,12 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
     overflow-wrap:anywhere!important;
   }
 }
+
+
+/* v29.5.5 – breitere linke Admin-Navigation + eindeutige Shopstatus-Anzeige */
+@media (min-width:1051px){
+  body.v284-admin{padding-left:280px!important}
+  .v284-sidebar{width:280px!important;padding-left:17px!important;padding-right:17px!important}
+  .v2949-shop-item-name{font-size:11px!important}
+  .v2949-shop-item small{font-size:9px!important}
+}
