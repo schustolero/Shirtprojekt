@@ -63,12 +63,12 @@ function getAllowedMotifColorNames(){
   setText("brandSubtitle", cfg.brandSubtitle);
   setText("designerHeading", cfg.designerHeading);
   setText("designerIntro", cfg.designerIntro);
-  setText("customerExtraFieldLabel", "Adresse *");
+  setText("customerExtraFieldLabel", `${cfg.customerExtraFieldLabel || "Team / Abteilung"} *`);
   setText("orderEmailDisplay", cfg.orderEmail);
   if (cfg.accentColor) document.documentElement.style.setProperty("--accent", cfg.accentColor);
 
-  const extraField = document.getElementById("customerAddress");
-  if (extraField) extraField.name = "Adresse";
+  const extraField = document.getElementById("customerClass");
+  if (extraField && cfg.customerExtraFieldName) extraField.name = cfg.customerExtraFieldName;
   const orderForm = document.getElementById("orderForm");
   if (orderForm && cfg.orderEmail) orderForm.action = `https://formsubmit.co/${encodeURIComponent(cfg.orderEmail)}`;
   const subject = document.getElementById("formSubject");
@@ -1016,7 +1016,7 @@ if (orderForm) {
     event.preventDefault();
 
     const name = document.getElementById("customerName").value.trim();
-    const address = document.getElementById("customerAddress").value.trim();
+    const customerClass = document.getElementById("customerClass").value.trim();
     const email = document.getElementById("customerEmail").value.trim();
     const sendOrderBtn = document.getElementById("sendOrderBtn");
 
@@ -1024,8 +1024,8 @@ if (orderForm) {
       sendOrderMessage.textContent = "Die Bestellung enthält noch keine Shirts.";
       return;
     }
-    if (!name || !address || !email) {
-      sendOrderMessage.textContent = "Bitte Name, Adresse und E-Mail vollständig ausfüllen.";
+    if (!name || !customerClass || !email) {
+      sendOrderMessage.textContent = `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"} und E-Mail vollständig ausfüllen.`;
       return;
     }
 
@@ -1052,19 +1052,13 @@ if (orderForm) {
         customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
         sourcePath: window.location.pathname,
         name,
-        address,
+        customerClass,
         email,
         phone,
         totalQuantity,
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
         status: "Neu",
-        workflowVersion: 3,
-        workflowCurrentKey: "",
-        workflowLabel: "",
-        transferRequired: false,
-        deliveryMethod: "pickup",
-        workflowTimestamps: {},
         printData: SHOP.printData || {},
         createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         items: orderItems.map(item => ({
@@ -1092,7 +1086,7 @@ if (orderForm) {
           customerId: CUSTOMER_ID,
           customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
           name,
-          address,
+          customerClass,
           email,
           totalQuantity,
           unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,

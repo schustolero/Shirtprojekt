@@ -2351,3 +2351,38 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
     justify-self:stretch!important;
   }
 }
+
+/* v29.4.9 – Shop-Ordner mit klarer Aufteilung in Typ 1/2/3 */
+.v2949-shop-select-hidden{display:none!important}
+.v2949-shops-folder{margin:10px 0 12px;border:1px solid #2a3543;border-radius:11px;background:#0d141e;overflow:hidden}
+.v2949-shops-toggle{width:100%;height:42px;border:0;background:#151e2a;color:#f3f6f9;display:grid;grid-template-columns:18px 1fr auto;align-items:center;gap:7px;padding:0 10px;text-align:left;cursor:pointer}
+.v2949-shops-toggle strong{font-size:12px;font-weight:850;letter-spacing:.01em}
+.v2949-folder-icon{font-size:12px;color:#ffd21a;text-align:center}
+.v2949-shop-count{min-width:22px;height:20px;padding:0 6px;border-radius:999px;background:#263142;color:#d9e0e8;display:grid;place-items:center;font-size:9px;font-weight:800}
+.v2949-shops-tree{max-height:335px;overflow:auto;padding:6px}
+.v2949-shops-collapsed .v2949-shops-tree{display:none}
+.v2949-shop-group+.v2949-shop-group{margin-top:7px;padding-top:7px;border-top:1px solid #222d3a}
+.v2949-shop-group-title{padding:3px 7px 5px;color:#ffd21a;font-size:9px;font-weight:900;letter-spacing:.08em}
+.v2949-shop-item{width:100%;border:0;background:transparent;color:#e7edf3;border-radius:8px;padding:7px 8px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;align-items:center;text-align:left;cursor:pointer}
+.v2949-shop-item:hover{background:#192433}
+.v2949-shop-item.active{background:rgba(255,205,0,.14);box-shadow:inset 0 0 0 1px rgba(255,205,0,.18)}
+.v2949-shop-item-name{font-size:10px;font-weight:750;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2949-shop-item small{font-size:8px;color:#96a3b2;white-space:nowrap}
+.v2949-shop-item.active .v2949-shop-item-name{color:#ffe064}
+@media(max-width:1050px){
+  .v2949-shops-folder{grid-column:1/-1;margin:6px 0 2px;background:#fff;border-color:#e1e5eb}
+  .v2949-shops-toggle{background:#f7f8fa;color:#252a31}
+  .v2949-folder-icon{color:#b58a00}.v2949-shop-count{background:#edf0f4;color:#5f6874}
+  .v2949-shops-tree{max-height:260px}
+  .v2949-shop-group+.v2949-shop-group{border-top-color:#eceff3}
+  .v2949-shop-group-title{color:#9a7200}
+  .v2949-shop-item{color:#303640}.v2949-shop-item:hover{background:#f4f6f8}
+  .v2949-shop-item.active{background:#fff7d8;box-shadow:inset 0 0 0 1px #eed46b}
+  .v2949-shop-item.active .v2949-shop-item-name{color:#7a5b00}
+  .v2949-shop-item small{color:#818a96}
+}
+@media(max-width:720px){
+  .v2949-shops-folder{margin:4px 0 0}
+  .v2949-shops-toggle{height:38px}
+  .v2949-shops-tree{max-height:230px}
+}
