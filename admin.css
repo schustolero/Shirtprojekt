@@ -2464,3 +2464,79 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
     overflow-wrap:anywhere!important;
   }
 }
+
+/* v29.5.2 – Poli-Flex Turbo Druckfarben kompakt wie Shirtfarben */
+@media (min-width: 761px){
+  #poliFlexTurboPicker.v2919-f140-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  #poliFlexTurboPicker .v2919-f140-option{
+    min-height:34px!important;
+    height:auto!important;
+    padding:5px 6px!important;
+    gap:5px!important;
+    border-radius:8px!important;
+    overflow:visible!important;
+  }
+  #poliFlexTurboPicker .v2919-f140-option input[type="checkbox"]{
+    width:14px!important;
+    min-width:14px!important;
+    max-width:14px!important;
+    height:14px!important;
+    min-height:14px!important;
+    padding:0!important;
+    margin:0!important;
+    flex:0 0 14px!important;
+  }
+  #poliFlexTurboPicker .v2919-swatch{
+    width:14px!important;
+    min-width:14px!important;
+    height:14px!important;
+    flex:0 0 14px!important;
+  }
+  #poliFlexTurboPicker .v2919-name{
+    display:block!important;
+    min-width:0!important;
+    font-size:8.7px!important;
+    line-height:1.08!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    overflow-wrap:anywhere!important;
+  }
+}
+@media (max-width:760px){
+  #poliFlexTurboPicker.v2919-f140-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  #poliFlexTurboPicker .v2919-f140-option{
+    min-height:36px!important;
+    height:auto!important;
+    padding:5px 6px!important;
+    gap:5px!important;
+  }
+  #poliFlexTurboPicker .v2919-f140-option input[type="checkbox"]{
+    width:14px!important;
+    min-width:14px!important;
+    max-width:14px!important;
+    height:14px!important;
+    min-height:14px!important;
+    flex:0 0 14px!important;
+  }
+  #poliFlexTurboPicker .v2919-swatch{
+    width:14px!important;
+    min-width:14px!important;
+    height:14px!important;
+    flex:0 0 14px!important;
+  }
+  #poliFlexTurboPicker .v2919-name{
+    font-size:9px!important;
+    line-height:1.08!important;
+    white-space:normal!important;
+    overflow:visible!important;
+    text-overflow:clip!important;
+    overflow-wrap:anywhere!important;
+  }
+}
