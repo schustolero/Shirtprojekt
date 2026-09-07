@@ -11,9 +11,9 @@ window.CENTRAL_CONFIG = {
       designerHeading:"Dein TG Solingen Shirt", designerIntro:"Royal Blue Shirt mit Vereinslogo in Medium Yellow – einfach Größe und Menge auswählen.",
       accentColor:"#f0df00", logoFile:"shop-logo.png", logoHeight:105, shirtPrice:15, currency:"EUR",
       products:[
-        {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
-        {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
-        {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
+        {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
+        {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
+        {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
       ],
       orderEmail:"shirtzentrale@gmail.com", orderSubject:"Neue Tanzgruppe Klingenstadt Solingen T-Shirt Bestellung",
       customerExtraFieldLabel:"Mannschaft / Abteilung", customerExtraFieldName:"Mannschaft / Abteilung", orderPrefix:"TG", shopType:"simple", active:true, hoodieSizingVersion:1,
@@ -33,9 +33,9 @@ window.CENTRAL_CONFIG = {
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Simple Shop",brandTitle:"Simple Shop",brandSubtitle:"Vorlage",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach bestellen.",accentColor:"#111111",logoFile:"shop-logo.png",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,
       products:[
-        {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
-        {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
-        {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
+        {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
+        {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
+        {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
       ],
       features:{layout:"simple",motifMode:"single",allowCustomerUpload:false,allowText:false,allowMoveMotif:false,allowResizeMotif:false,allowRotateMotif:false,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:false,showMotifColorPicker:true,autoSelectSingleMotif:true,maxUploadMB:8,previewMode:"single"},
       productPrint:{

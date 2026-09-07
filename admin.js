@@ -665,9 +665,9 @@ function buildShopConfig(){
     const oldProducts = Array.isArray(old.products) ? old.products : [];
     const byId = Object.fromEntries(oldProducts.map(p => [p.id, p]));
     cfg.products = [
-      {...(byId.tshirt||{}),id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
-      {...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
-      {...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
+      {...(byId.tshirt||{}),id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},
+      {...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},
+      {...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
     ];
   }
   if(cfg.fixedPrint.back.enabled) cfg.features.allowBackDesign=true;

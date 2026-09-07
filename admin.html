@@ -782,9 +782,9 @@
                 <div class="v2850-products wide" aria-label="Produkte und Preise">
                   <div class="v2850-subtitle">Produkte &amp; Preise</div>
                   <div class="v2850-product-grid">
-                    <div class="v2850-product"><strong>T-Shirt</strong><span>F140</span><b>15,00 €</b><small>EK 2,60 €</small></div>
-                    <div class="v2850-product"><strong>Polo-Shirt</strong><span>F502</span><b>25,00 €</b><small>EK 5,61 €</small></div>
-                    <div class="v2850-product"><strong>Hoodie</strong><span>F421</span><b>30,00 €</b><small>EK 9,90 €</small></div>
+                    <div class="v2850-product"><strong>T-Shirt</strong><span>F140</span><b>15,00 €</b><small>EK 2,60 € · Druck 1,50 €</small></div>
+                    <div class="v2850-product"><strong>Polo-Shirt</strong><span>F502</span><b>25,00 €</b><small>EK 5,61 € · Druck 1,50 €</small></div>
+                    <div class="v2850-product"><strong>Hoodie</strong><span>F421</span><b>30,00 €</b><small>EK 9,90 € · Druck 1,50 €</small></div>
                   </div>
                 </div>
 
@@ -1029,7 +1029,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.5.5';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.5.6';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
