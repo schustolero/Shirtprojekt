@@ -3064,3 +3064,32 @@ body.v284-admin #ordersTab .customer-filter-native{position:static!important;wid
   body.v284-admin #ordersTab .v2963-search{grid-column:1/-1!important;grid-row:3!important}
   body.v284-admin #ordersTab .v2963-status{grid-column:1/-1!important;grid-row:4!important}
 }
+
+
+/* ============================================================
+   v29.6.6 – Bestellungen als kompakte Kunden-Dropdowns
+   ============================================================ */
+body.v284-admin #ordersTab .v2966-order-card{padding:0!important;overflow:hidden!important}
+.v2966-order-summary{width:100%;border:0;background:#fff;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:14px;padding:10px 13px;cursor:pointer;text-align:left;color:inherit;font:inherit}
+.v2966-order-summary:hover{background:#fafbfc}
+.v2966-order-main{min-width:0;display:grid;gap:2px}
+.v2966-customer-name{font-size:13px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2966-order-meta{font-size:9px;color:#7b8490;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.v2966-order-quick{display:flex;align-items:center;justify-content:flex-end;gap:12px;white-space:nowrap;font-size:10px;color:#606975}
+.v2966-order-quick strong{font-size:12px;color:#16181d}
+.v2966-order-arrow{width:24px;height:24px;border:1px solid #e2e6eb;border-radius:999px;display:grid;place-items:center;font-size:14px;line-height:1;transition:transform .18s ease;background:#f8f9fb}
+.v2966-order-card.open .v2966-order-arrow{transform:rotate(180deg)}
+.v2966-order-body{display:none;border-top:1px solid #eceff3;padding:10px 13px 12px}
+.v2966-order-card.open .v2966-order-body{display:block}
+.v2966-order-card.open .v2966-order-summary{background:#fbfcfd}
+body.v284-admin #ordersTab .v2966-order-body .order-top{margin-bottom:0!important}
+
+@media(max-width:650px){
+  .v2966-order-summary{padding:10px 11px;gap:8px}
+  .v2966-customer-name{font-size:12px}
+  .v2966-order-meta{font-size:8.5px}
+  .v2966-order-quick{gap:7px;font-size:9px}
+  .v2966-order-quick strong{font-size:11px}
+  .v2966-order-arrow{width:22px;height:22px}
+  .v2966-order-body{padding:9px 10px 11px}
+}

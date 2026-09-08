@@ -214,15 +214,37 @@ function printProductionSlip(order){
 }
 
 function renderOrder(id,order){
-  const card=document.createElement("article");card.className="order-card";
+  const card=document.createElement("article");card.className="order-card v2966-order-card collapsed";
+
+  const summary=document.createElement("button");
+  summary.type="button";
+  summary.className="v2966-order-summary";
+  summary.setAttribute("aria-expanded","false");
+
+  const main=document.createElement("div");main.className="v2966-order-main";
+  const customerName=document.createElement("strong");customerName.className="v2966-customer-name";customerName.textContent=text(order.name,"Unbekannter Kunde");
+  const meta=document.createElement("span");meta.className="v2966-order-meta";meta.textContent=`${text(order.orderNumber,id)} · ${dateText(order.createdAt)}`;
+  main.append(customerName,meta);
+
+  const quick=document.createElement("div");quick.className="v2966-order-quick";
+  const qty=document.createElement("span");qty.textContent=`${text(order.totalQuantity,"0")} Shirts`;
+  const total=document.createElement("strong");total.textContent=euro(order.totalPrice);
+  const arrow=document.createElement("span");arrow.className="v2966-order-arrow";arrow.textContent="⌄";
+  quick.append(qty,total,arrow);
+  summary.append(main,quick);
+  card.appendChild(summary);
+
+  const body=document.createElement("div");body.className="v2966-order-body";
   const top=document.createElement("div");top.className="order-top";
   const title=document.createElement("div");
   const number=document.createElement("div");number.className="order-number";number.textContent=text(order.orderNumber,id);
   const customerTag=document.createElement("div");customerTag.className="order-customer";customerTag.textContent=text(order.customerName||order.customerId,"Unbekannter Kunde");
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
   title.append(number,customerTag,date);
+
   const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
   STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
+  status.addEventListener("click",e=>e.stopPropagation());
   status.addEventListener("change",async()=>{
     const previousStatus = order.status || "Neu";
     status.disabled=true;
@@ -237,19 +259,26 @@ function renderOrder(id,order){
     }finally{status.disabled=false}
   });
   const actions=document.createElement("div");actions.className="order-actions";
-  const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",()=>printOrderSlip(order));
-  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",()=>printProductionSlip(order));
+  const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",e=>{e.stopPropagation();printOrderSlip(order)});
+  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",e=>{e.stopPropagation();printProductionSlip(order)});
   actions.append(status,printBtn,productionBtn);
-  top.append(title,actions);card.appendChild(top);
+  top.append(title,actions);body.appendChild(top);
 
   const customer=document.createElement("div");customer.className="customer-grid";
   [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
-  card.appendChild(customer);
+  body.appendChild(customer);
 
   const items=document.createElement("div");items.className="items";
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{const row=document.createElement("div");row.className="item-row";const a=document.createElement("strong");a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;const b=document.createElement("span");b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;row.append(a,b);items.appendChild(row)});
-  card.appendChild(items);
-  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Shirts</span><span>${euro(order.totalPrice)}</span>`;card.appendChild(footer);
+  body.appendChild(items);
+  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Shirts</span><span>${euro(order.totalPrice)}</span>`;body.appendChild(footer);
+  card.appendChild(body);
+
+  summary.addEventListener("click",()=>{
+    const isOpen=card.classList.toggle("open");
+    card.classList.toggle("collapsed",!isOpen);
+    summary.setAttribute("aria-expanded",String(isOpen));
+  });
   return card;
 }
 
