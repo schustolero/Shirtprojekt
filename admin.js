@@ -823,24 +823,26 @@ saveShopBtn.addEventListener("click",async()=>{
       const matches=entries.filter(([,cfg])=>(cfg.shopType||"simple")===group.key);
       const block=document.createElement("div");
       block.className="v2949-shop-group";
-      const head=document.createElement("div");
-      head.className="v2949-shop-group-title";
-      head.textContent=`${group.label} (${matches.length})`;
-      block.appendChild(head);
       matches.forEach(([id,cfg])=>{
         const btn=document.createElement("button");
         btn.type="button";
         btn.className="v2949-shop-item";
         btn.dataset.shopId=id;
         btn.classList.toggle("active",id===selectedShopId);
+        const main=document.createElement("span");
+        main.className="v2958-shop-main";
         const name=document.createElement("span");
         name.className="v2949-shop-item-name";
         name.textContent=cfg.customerName||id;
+        const badge=document.createElement("span");
+        badge.className=`v2958-type-badge v2958-type-${group.key}`;
+        badge.textContent=group.key==="motifs"?"Motive":(group.key==="designer"?"Designer":"Simple");
+        main.append(name,badge);
         const meta=document.createElement("small");
         const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
         const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
         meta.textContent=isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
-        btn.append(name,meta);
+        btn.append(main,meta);
         btn.addEventListener("click",()=>{
           const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
           original?.click();
