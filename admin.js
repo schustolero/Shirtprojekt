@@ -933,9 +933,7 @@ saveShopBtn.addEventListener("click",async()=>{
     <nav class="v284-nav" aria-label="Admin Navigation">
       <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
       <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
-      <button type="button" data-jump="motif"><span>✥</span>Motive / Logos</button>
       <button type="button" data-main="production"><span>▤</span>Produktion</button>
-      <button type="button" data-jump="functions"><span>◉</span>Funktionen</button>
     </nav>
     <div class="v284-side-bottom">
       <button type="button" id="v284NewShop">＋ Neuer Shop</button>

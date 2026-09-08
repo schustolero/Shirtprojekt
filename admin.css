@@ -3127,115 +3127,149 @@ body.v284-admin #ordersTab .v2971-item-amount{display:block!important;white-spac
   body.v284-admin #ordersTab .v2971-item-amount{font-size:10px}
 }
 
-/* v29.7.2 – Funktionen direkt in Grunddaten neben Shop aktiv */
+/* v29.7.3 – Funktionen in Grunddaten optisch sauberer */
 .v2972-status-functions{
   display:flex;
-  align-items:center;
-  gap:10px;
+  align-items:flex-start;
+  gap:12px;
   flex-wrap:wrap;
-  padding:2px 0 0;
+  padding-top:2px;
 }
 .v2972-status-functions .v2850-active-field{
   width:auto!important;
-  min-width:max-content!important;
+  min-width:144px!important;
   margin:0!important;
-  padding:7px 10px!important;
-  border-radius:9px!important;
+  padding:10px 14px!important;
+  border-radius:14px!important;
+  background:#fff8df!important;
+  border:1px solid #ecd67a!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.04)!important;
 }
 .v2972-inline-functions{
   display:flex;
   align-items:center;
-  gap:5px;
-  flex:1 1 auto;
+  gap:8px;
+  flex:1 1 520px;
   min-width:0;
   flex-wrap:wrap;
+  padding:10px 12px;
+  border:1px solid #e5e9f0;
+  border-radius:14px;
+  background:linear-gradient(180deg,#fbfcfe 0%,#f5f7fb 100%);
 }
 .v2972-functions-label{
-  font-size:10px;
+  font-size:11px;
   font-weight:800;
-  color:#7b8491;
+  color:#667085;
   margin-right:2px;
+  letter-spacing:.02em;
 }
 .v2972-inline-functions>label,
 .v2972-designer-tools>label{
   display:inline-flex!important;
   align-items:center!important;
-  gap:4px!important;
+  gap:8px!important;
   width:auto!important;
   min-width:0!important;
-  min-height:28px!important;
+  min-height:34px!important;
   margin:0!important;
-  padding:4px 7px!important;
-  border:1px solid #e3e7ec!important;
-  border-radius:8px!important;
-  background:#f8f9fb!important;
-  color:#424a56!important;
-  font-size:9px!important;
+  padding:7px 10px!important;
+  border:1px solid #dbe2ea!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  color:#344054!important;
+  font-size:11px!important;
   font-weight:700!important;
   line-height:1!important;
   cursor:pointer;
+  transition:all .18s ease;
+  box-shadow:0 1px 2px rgba(16,24,40,.04)!important;
+}
+.v2972-inline-functions>label:hover,
+.v2972-designer-tools>label:hover{
+  border-color:#cfd8e3!important;
+  background:#fdfefe!important;
+}
+.v2972-inline-functions>label:has(input:checked),
+.v2972-designer-tools>label:has(input:checked){
+  background:#fff8df!important;
+  border-color:#e6c454!important;
+  color:#7a5b00!important;
 }
 .v2972-inline-functions input[type="checkbox"],
 .v2972-designer-tools input[type="checkbox"]{
-  width:13px!important;
-  min-width:13px!important;
-  max-width:13px!important;
-  height:13px!important;
-  min-height:13px!important;
+  width:16px!important;
+  min-width:16px!important;
+  max-width:16px!important;
+  height:16px!important;
+  min-height:16px!important;
   margin:0!important;
   padding:0!important;
+  accent-color:#e6b800;
 }
 .v2972-inline-functions label span,
 .v2972-designer-tools label span{
   margin:0!important;
-  font-size:9px!important;
+  font-size:11px!important;
   line-height:1!important;
   white-space:nowrap!important;
 }
 .v2972-designer-tools{
   display:flex;
   align-items:center;
-  gap:5px;
+  gap:8px;
   flex-wrap:wrap;
+  padding-left:6px;
+  border-left:1px dashed #d8dee7;
+  margin-left:2px;
 }
 .v2972-designer-tools[hidden]{display:none!important}
 
 @media(max-width:720px){
   .v2972-status-functions{
     display:grid!important;
-    grid-template-columns:auto minmax(0,1fr)!important;
-    gap:6px!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
     align-items:start!important;
   }
   .v2972-status-functions .v2850-active-field{
-    min-height:28px!important;
-    height:28px!important;
-    padding:4px 7px!important;
+    min-width:0!important;
+    width:fit-content!important;
+    min-height:36px!important;
+    padding:8px 12px!important;
   }
   .v2972-inline-functions{
-    gap:4px!important;
+    gap:6px!important;
+    padding:9px 10px!important;
+    border-radius:12px!important;
   }
   .v2972-functions-label{
     width:100%;
-    font-size:8px!important;
-    margin-bottom:0!important;
+    font-size:10px!important;
+    margin-bottom:2px!important;
   }
   .v2972-inline-functions>label,
   .v2972-designer-tools>label{
-    min-height:24px!important;
-    padding:3px 5px!important;
-    border-radius:7px!important;
+    min-height:31px!important;
+    padding:6px 9px!important;
+    border-radius:999px!important;
+    gap:6px!important;
   }
   .v2972-inline-functions input[type="checkbox"],
   .v2972-designer-tools input[type="checkbox"]{
-    width:11px!important;
-    min-width:11px!important;
-    max-width:11px!important;
-    height:11px!important;
-    min-height:11px!important;
+    width:14px!important;
+    min-width:14px!important;
+    max-width:14px!important;
+    height:14px!important;
+    min-height:14px!important;
   }
   .v2972-inline-functions label span,
   .v2972-designer-tools label span{
-    font-size:7.5px!important;
+    font-size:10px!important;
+  }
+  .v2972-designer-tools{
+    border-left:0!important;
+    padding-left:0!important;
+    margin-left:0!important;
   }
 }
