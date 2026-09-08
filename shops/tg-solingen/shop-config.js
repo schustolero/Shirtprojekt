@@ -46,7 +46,7 @@ window.SHOP_CONFIG = {
     },
     hoodie: {
       front: { xPct: 68, yPct: 22, widthPct: 28 },
-      back:  { xPct: 50, yPct: 34, widthPct: 62 }
+      back:  { xPct: 50, yPct: 34, widthPct: 72 }
     }
   },
 
