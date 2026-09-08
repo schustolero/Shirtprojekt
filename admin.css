@@ -2859,7 +2859,7 @@ body.v284-admin #ordersTab .order-footer{margin-top:8px!important;padding-top:8p
 }
 
 
-/* v29.6.2 – Kunden/Vereine direkt in der Bestellübersicht */
+/* v29.6.3 – Kunden/Vereine direkt in der Bestellübersicht */
 body.v284-admin #ordersTab .orders-toolbar{align-items:flex-start!important;gap:12px!important;}
 body.v284-admin #ordersTab .orders-toolbar-main{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:18px;min-width:0;flex:1;}
 body.v284-admin #ordersTab .orders-toolbar-title{min-width:max-content;}
@@ -2884,4 +2884,48 @@ body.v284-admin #ordersTab .orders-secondary-filters{grid-template-columns:minma
   body.v284-admin #ordersTab .orders-toolbar{grid-template-columns:1fr!important;}
   body.v284-admin #ordersTab .orders-toolbar .ghost-btn{justify-self:start!important;}
   body.v284-admin #ordersTab .orders-secondary-filters{grid-template-columns:1fr!important;}
+}
+
+/* ============================================================
+   v29.6.3 – Bestellübersicht: Shop zuerst, Kunden kompakt, Suche oben
+   ============================================================ */
+body.v284-admin #ordersTab .v2963-orders-toolbar{
+  display:grid!important;
+  grid-template-columns:auto minmax(150px,220px) minmax(260px,1fr) minmax(220px,1.2fr) minmax(120px,160px) auto!important;
+  align-items:end!important;
+  gap:8px!important;
+  padding:9px 12px!important;
+}
+body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title{align-self:center!important;min-width:122px!important}
+body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title h2{font-size:17px!important;line-height:1.05!important;margin:0!important}
+body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title p{font-size:9px!important;margin:3px 0 0!important}
+body.v284-admin #ordersTab .v2963-orders-toolbar label>span,
+body.v284-admin #ordersTab .v2963-orders-toolbar .customer-quick-label{display:block!important;font-size:9px!important;font-weight:800!important;color:#7a818b!important;margin:0 0 3px!important}
+body.v284-admin #ordersTab .v2963-orders-toolbar select,
+body.v284-admin #ordersTab .v2963-orders-toolbar input{height:34px!important;min-height:34px!important;border-radius:9px!important;padding:5px 9px!important;font-size:11px!important}
+body.v284-admin #ordersTab .v2963-buyer-filter{display:block!important;min-width:0!important}
+body.v284-admin #ordersTab .v2963-buyer-filter .customer-chips{height:34px!important;display:flex!important;align-items:center!important;gap:5px!important;overflow-x:auto!important;padding:0!important;scrollbar-width:none!important}
+body.v284-admin #ordersTab .v2963-buyer-filter .customer-chips::-webkit-scrollbar{display:none!important}
+body.v284-admin #ordersTab .v2963-buyer-filter .customer-chip{height:28px!important;padding:0 9px!important;font-size:9.5px!important;border-radius:999px!important;flex:0 0 auto!important}
+body.v284-admin #ordersTab .v2963-refresh{height:34px!important;min-height:34px!important;padding:0 13px!important;border-radius:9px!important;font-size:10px!important;align-self:end!important}
+body.v284-admin #ordersTab .orders-secondary-filters{display:none!important}
+
+@media(max-width:1180px){
+  body.v284-admin #ordersTab .v2963-orders-toolbar{grid-template-columns:auto minmax(140px,190px) minmax(220px,1fr) minmax(180px,1fr) 120px!important}
+  body.v284-admin #ordersTab .v2963-refresh{grid-column:5!important;grid-row:1!important}
+  body.v284-admin #ordersTab .v2963-status{grid-column:5!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-search{grid-column:4!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-shop-filter{grid-column:2!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-buyer-filter{grid-column:3!important;grid-row:2!important}
+  body.v284-admin #ordersTab .orders-toolbar-title{grid-column:1/5!important;grid-row:1!important}
+}
+@media(max-width:720px){
+  body.v284-admin #ordersTab .v2963-orders-toolbar{grid-template-columns:1fr 1fr!important;gap:7px!important;padding:10px!important}
+  body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title{grid-column:1!important;grid-row:1!important}
+  body.v284-admin #ordersTab .v2963-refresh{grid-column:2!important;grid-row:1!important;justify-self:end!important}
+  body.v284-admin #ordersTab .v2963-shop-filter{grid-column:1!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-status{grid-column:2!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-buyer-filter{grid-column:1/-1!important;grid-row:3!important}
+  body.v284-admin #ordersTab .v2963-search{grid-column:1/-1!important;grid-row:4!important}
+  body.v284-admin #ordersTab .v2963-buyer-filter .customer-chips{height:32px!important}
 }
