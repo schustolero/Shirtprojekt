@@ -699,7 +699,7 @@ function selectShop(id){
   shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
   shopFields.hoodieFrontX.value=Number(hoodie.front?.xPct ?? 68); shopFields.hoodieFrontY.value=Number(hoodie.front?.yPct ?? 22); shopFields.hoodieFrontW.value=Number(hoodie.front?.widthPct ?? 36);
-  shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); { const hb=Number(hoodie.back?.widthPct ?? 58); shopFields.hoodieBackW.value=(hb===46?58:hb); }
+  shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); { const hb=Number(hoodie.back?.widthPct ?? 62); shopFields.hoodieBackW.value=([46,54,58].includes(hb)?62:hb); }
   fillPrintData(cfg);
   if(productionFileUrl) productionFileUrl.value = cfg.productionFile || cfg.printData?.productionFile || "";
   updateFeatureVisibility(cfg.shopType||"simple");
@@ -777,7 +777,7 @@ newShopBtn.addEventListener("click",()=>{
   const pp=template.productPrint||{};
   shopFields.tshirtFrontX.value=Number(pp.tshirt?.front?.xPct??68); shopFields.tshirtFrontY.value=Number(pp.tshirt?.front?.yPct??16); shopFields.tshirtFrontW.value=Number(pp.tshirt?.front?.widthPct??28); shopFields.tshirtBackX.value=Number(pp.tshirt?.back?.xPct??50); shopFields.tshirtBackY.value=Number(pp.tshirt?.back?.yPct??36); shopFields.tshirtBackW.value=Number(pp.tshirt?.back?.widthPct??50);
   shopFields.poloFrontX.value=Number(pp.polo?.front?.xPct??68); shopFields.poloFrontY.value=Number(pp.polo?.front?.yPct??22); shopFields.poloFrontW.value=Number(pp.polo?.front?.widthPct??28); shopFields.poloBackX.value=Number(pp.polo?.back?.xPct??50); shopFields.poloBackY.value=Number(pp.polo?.back?.yPct??36); shopFields.poloBackW.value=Number(pp.polo?.back?.widthPct??50);
-  shopFields.hoodieFrontX.value=Number(pp.hoodie?.front?.xPct??68); shopFields.hoodieFrontY.value=Number(pp.hoodie?.front?.yPct??22); shopFields.hoodieFrontW.value=Number(pp.hoodie?.front?.widthPct??36); shopFields.hoodieBackX.value=Number(pp.hoodie?.back?.xPct??50); shopFields.hoodieBackY.value=Number(pp.hoodie?.back?.yPct??34); shopFields.hoodieBackW.value=Number(pp.hoodie?.back?.widthPct??58);
+  shopFields.hoodieFrontX.value=Number(pp.hoodie?.front?.xPct??68); shopFields.hoodieFrontY.value=Number(pp.hoodie?.front?.yPct??22); shopFields.hoodieFrontW.value=Number(pp.hoodie?.front?.widthPct??36); shopFields.hoodieBackX.value=Number(pp.hoodie?.back?.xPct??50); shopFields.hoodieBackY.value=Number(pp.hoodie?.back?.yPct??34); shopFields.hoodieBackW.value=Number(pp.hoodie?.back?.widthPct??62);
   fillPrintData(template); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("SIMPLE-Mastervorlage geladen – Shop-ID und Kundendaten eintragen."); renderShopList();
 });
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
@@ -798,12 +798,12 @@ function buildShopConfig(){
     ...(old.productPrint||{}),
     tshirt:{front:{xPct:clamp(shopFields.tshirtFrontX.value,10,90,68),yPct:clamp(shopFields.tshirtFrontY.value,10,70,20),widthPct:clamp(shopFields.tshirtFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.tshirtBackX.value,10,90,50),yPct:clamp(shopFields.tshirtBackY.value,10,70,36),widthPct:clamp(shopFields.tshirtBackW.value,10,80,50)}},
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}},
-    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,80,58)}}
+    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,80,62)}}
   };
   cfg.printData=collectPrintData();
   cfg.productionFile=(productionFileUrl?.value||"").trim();
   if(id === "tg-solingen") {
-    cfg.hoodieSizingVersion = 2;
+    cfg.hoodieSizingVersion = 3;
     const oldProducts = Array.isArray(old.products) ? old.products : [];
     const byId = Object.fromEntries(oldProducts.map(p => [p.id, p]));
     cfg.products = [
@@ -1199,13 +1199,13 @@ saveShopBtn.addEventListener("click",async()=>{
     const sizeLabel=(p,s,w)=>{
       const n=Number(w?.value||0);
       if(p==="hoodie"&&s==="front") return n<33?"small":n<40?"medium":"large";
-      if(p==="hoodie"&&s==="back") return n<46?"small":n<54?"medium":"large";
+      if(p==="hoodie"&&s==="back") return n<50?"small":n<58?"medium":"large";
       if(s==="front") return n<24?"small":n<33?"medium":"large";
       return n<44?"small":n<56?"medium":"large";
     };
     const sizeValue=(p,s,label)=>{
       if(p==="hoodie"&&s==="front") return label==="small"?30:label==="medium"?36:42;
-      if(p==="hoodie"&&s==="back") return label==="small"?42:label==="medium"?50:58;
+      if(p==="hoodie"&&s==="back") return label==="small"?46:label==="medium"?54:62;
       if(s==="front") return label==="small"?20:label==="medium"?28:36;
       return label==="small"?38:label==="medium"?50:60;
     };
@@ -1451,13 +1451,13 @@ saveShopBtn.addEventListener("click",async()=>{
     const sizeLabel=(p,s,w)=>{
       const n=Number(w?.value||0);
       if(p==='hoodie'&&s==='front') return n<33?'small':n<40?'medium':'large';
-      if(p==='hoodie'&&s==='back') return n<46?'small':n<54?'medium':'large';
+      if(p==='hoodie'&&s==='back') return n<50?'small':n<58?'medium':'large';
       if(s==='front') return n<24?'small':n<33?'medium':'large';
       return n<44?'small':n<56?'medium':'large';
     };
     const sizeValue=(p,s,label)=>{
       if(p==='hoodie'&&s==='front') return label==='small'?30:label==='medium'?36:42;
-      if(p==='hoodie'&&s==='back') return label==='small'?42:label==='medium'?50:58;
+      if(p==='hoodie'&&s==='back') return label==='small'?46:label==='medium'?54:62;
       if(s==='front') return label==='small'?20:label==='medium'?28:36;
       return label==='small'?38:label==='medium'?50:60;
     };
