@@ -781,6 +781,11 @@ saveShopBtn.addEventListener("click",async()=>{
       <button type="button" id="v2949ShopsToggle" class="v2949-shops-toggle" aria-expanded="true">
         <span class="v2949-folder-icon">▾</span><strong>Shops</strong><span id="v2949ShopCount" class="v2949-shop-count">0</span>
       </button>
+      <div id="v2959ShopTypes" class="v2959-shop-types" role="tablist" aria-label="Shop-Typen">
+        <button type="button" class="v2959-shop-type v2959-simple active" data-shop-type="simple" role="tab" aria-selected="true">Simple</button>
+        <button type="button" class="v2959-shop-type v2959-motifs" data-shop-type="motifs" role="tab" aria-selected="false">Motive</button>
+        <button type="button" class="v2959-shop-type v2959-designer" data-shop-type="designer" role="tab" aria-selected="false">Designer</button>
+      </div>
       <div id="v2949ShopsTree" class="v2949-shops-tree"></div>
     </section>
     <nav class="v284-nav" aria-label="Admin Navigation">
@@ -800,6 +805,8 @@ saveShopBtn.addEventListener("click",async()=>{
   const shopsTree=sidebar.querySelector("#v2949ShopsTree");
   const shopsToggle=sidebar.querySelector("#v2949ShopsToggle");
   const shopCount=sidebar.querySelector("#v2949ShopCount");
+  const shopTypeTabs=[...sidebar.querySelectorAll(".v2959-shop-type")];
+  let activeShopType="simple";
   const SHOP_TYPE_GROUPS=[
     {key:"simple",label:"1 · SIMPLE"},
     {key:"motifs",label:"2 · MOTIVE"},
@@ -819,46 +826,51 @@ saveShopBtn.addEventListener("click",async()=>{
       return true;
     }).sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de"));
     if(shopCount) shopCount.textContent=String(entries.length);
-    SHOP_TYPE_GROUPS.forEach(group=>{
-      const matches=entries.filter(([,cfg])=>(cfg.shopType||"simple")===group.key);
-      const block=document.createElement("div");
-      block.className="v2949-shop-group";
-      matches.forEach(([id,cfg])=>{
-        const btn=document.createElement("button");
-        btn.type="button";
-        btn.className="v2949-shop-item";
-        btn.dataset.shopId=id;
-        btn.classList.toggle("active",id===selectedShopId);
-        const main=document.createElement("span");
-        main.className="v2958-shop-main";
-        const name=document.createElement("span");
-        name.className="v2949-shop-item-name";
-        name.textContent=cfg.customerName||id;
-        const badge=document.createElement("span");
-        badge.className=`v2958-type-badge v2958-type-${group.key}`;
-        badge.textContent=group.key==="motifs"?"Motive":(group.key==="designer"?"Designer":"Simple");
-        main.append(name,badge);
-        const meta=document.createElement("small");
-        const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
-        const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
-        meta.textContent=isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
-        btn.append(main,meta);
-        btn.addEventListener("click",()=>{
-          const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
-          original?.click();
-          switchAdminTab("shops");
-          setNavActive("shops");
-          renderV2949ShopTree();
-          if(window.matchMedia("(max-width:720px)").matches){
-            sidebar.classList.remove("mobile-menu-open");
-            if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
-          }
-        });
-        block.appendChild(btn);
+    const group=SHOP_TYPE_GROUPS.find(g=>g.key===activeShopType) || SHOP_TYPE_GROUPS[0];
+    const matches=entries.filter(([,cfg])=>(cfg.shopType||"simple")===group.key);
+    const block=document.createElement("div");
+    block.className=`v2949-shop-group v2959-active-group v2959-group-${group.key}`;
+    matches.forEach(([id,cfg])=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="v2949-shop-item";
+      btn.dataset.shopId=id;
+      btn.classList.toggle("active",id===selectedShopId);
+      const name=document.createElement("span");
+      name.className="v2949-shop-item-name";
+      name.textContent=cfg.customerName||id;
+      const meta=document.createElement("small");
+      const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
+      const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
+      meta.textContent=isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
+      btn.append(name,meta);
+      btn.addEventListener("click",()=>{
+        const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
+        original?.click();
+        switchAdminTab("shops");
+        setNavActive("shops");
+        renderV2949ShopTree();
+        if(window.matchMedia("(max-width:720px)").matches){
+          sidebar.classList.remove("mobile-menu-open");
+          if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+        }
       });
-      shopsTree.appendChild(block);
+      block.appendChild(btn);
+    });
+    if(!matches.length){
+      const empty=document.createElement("div");
+      empty.className="v2959-shop-empty";
+      empty.textContent="Noch kein Shop in dieser Kategorie";
+      block.appendChild(empty);
+    }
+    shopsTree.appendChild(block);
+    shopTypeTabs.forEach(tab=>{
+      const active=tab.dataset.shopType===activeShopType;
+      tab.classList.toggle("active",active);
+      tab.setAttribute("aria-selected",String(active));
     });
   }
+
   window.refreshV284ShopSelect=function(){
     if(!shopSelect || !list) return;
     const current=selectedShopId || "";
@@ -873,6 +885,11 @@ saveShopBtn.addEventListener("click",async()=>{
     });
     renderV2949ShopTree();
   };
+  shopTypeTabs.forEach(tab=>tab.addEventListener("click",()=>{
+    activeShopType=tab.dataset.shopType||"simple";
+    renderV2949ShopTree();
+  }));
+
   shopsToggle?.addEventListener("click",()=>{
     const collapsed=sidebar.classList.toggle("v2949-shops-collapsed");
     shopsToggle.setAttribute("aria-expanded",String(!collapsed));
@@ -915,10 +932,20 @@ saveShopBtn.addEventListener("click",async()=>{
     }
   }));
 
+  let v2959InitialMobileStartDone=false;
   const dashObserver=new MutationObserver(()=>{
     sidebar.hidden=dashboardEl.hidden;
     if(!dashboardEl.hidden){
-      setNavActive(ordersTab.hidden?"shops":"orders");
+      if(window.matchMedia("(max-width:720px)").matches && !v2959InitialMobileStartDone){
+        v2959InitialMobileStartDone=true;
+        switchAdminTab("shops");
+        setNavActive("shops");
+        activeShopType="simple";
+        sidebar.classList.add("mobile-menu-open");
+        if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","true"); mobileMenuBtn.textContent="×"; }
+      } else {
+        setNavActive(ordersTab.hidden?"shops":"orders");
+      }
       window.refreshV284ShopSelect?.();
     }
   });
