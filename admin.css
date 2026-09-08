@@ -2549,3 +2549,143 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
   .v2949-shop-item-name{font-size:11px!important}
   .v2949-shop-item small{font-size:9px!important}
 }
+
+/* =========================================================
+   v29.5.7 – Mobile Admin aufgeräumt / professionell
+   Desktop bleibt unverändert.
+   ========================================================= */
+@media (max-width:720px){
+  /* 1) Mobile Kopfzeile nur noch als kompakte App-Bar */
+  .v284-sidebar{
+    position:sticky!important;
+    top:0!important;
+    z-index:80!important;
+    width:100%!important;
+    min-height:58px!important;
+    padding:8px 10px!important;
+    margin:0!important;
+    display:block!important;
+    border:0!important;
+    border-bottom:1px solid #e6e9ee!important;
+    border-radius:0!important;
+    background:rgba(255,255,255,.98)!important;
+    box-shadow:0 4px 14px rgba(15,23,42,.05)!important;
+    backdrop-filter:blur(12px)!important;
+  }
+  .v284-brand{
+    min-height:42px!important;
+    display:grid!important;
+    grid-template-columns:34px minmax(0,1fr) 38px!important;
+    align-items:center!important;
+    gap:9px!important;
+    padding:0!important;
+  }
+  .v284-brand-mark{width:34px!important;height:34px!important}
+  .v284-brand-copy strong{font-size:14px!important;line-height:1.05!important}
+  .v284-brand-copy span{font-size:9px!important;line-height:1.1!important;margin-top:2px!important}
+  .v284-mobile-menu{width:36px!important;height:36px!important;border-radius:9px!important}
+
+  /* Shops + Navigation erscheinen nur nach Tippen auf das Menü. */
+  .v2949-shops-folder,
+  .v284-nav{display:none!important}
+  .v284-sidebar.mobile-menu-open .v2949-shops-folder{display:block!important}
+  .v284-sidebar.mobile-menu-open .v284-nav{display:grid!important}
+  .v284-sidebar.mobile-menu-open{
+    max-height:78vh!important;
+    overflow-y:auto!important;
+  }
+  .v284-sidebar.mobile-menu-open .v2949-shops-folder{
+    margin:8px 0 6px!important;
+    border-radius:12px!important;
+  }
+  .v284-sidebar.mobile-menu-open .v2949-shops-tree{max-height:none!important}
+  .v284-sidebar.mobile-menu-open .v284-nav{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px!important;
+    padding:2px 0 4px!important;
+  }
+
+  /* 2) Inhalt beginnt direkt nach der App-Bar */
+  body.v284-admin .admin-shell{
+    width:100%!important;
+    margin:0!important;
+    padding:0 10px 22px!important;
+    box-sizing:border-box!important;
+  }
+
+  /* 3) Shop-Titel + Aktionen als ruhige, flache Toolbar */
+  .v284-editor-head{
+    position:sticky!important;
+    top:58px!important;
+    z-index:55!important;
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) auto!important;
+    align-items:center!important;
+    gap:8px!important;
+    min-height:60px!important;
+    padding:8px 0!important;
+    margin:0 0 8px!important;
+    background:rgba(244,246,249,.97)!important;
+    backdrop-filter:blur(10px)!important;
+    border-bottom:1px solid #e8ebef!important;
+  }
+  .v284-editor-head>div:first-child{min-width:0!important}
+  .v284-kicker{font-size:8px!important;letter-spacing:.11em!important;margin:0 0 2px!important}
+  .v284-editor-head h2{
+    margin:0!important;
+    font-size:18px!important;
+    line-height:1.08!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .v284-editor-head .editor-actions{display:flex!important;gap:5px!important;width:auto!important}
+  .v284-editor-head .editor-actions>*{
+    flex:none!important;
+    min-width:0!important;
+    min-height:34px!important;
+    height:34px!important;
+    padding:0 10px!important;
+    border-radius:9px!important;
+    font-size:11px!important;
+    font-weight:800!important;
+  }
+
+  /* 4) Karten dichter und weniger 'Formularwüste' */
+  .v2853-workspace,.v2853-left,.v2853-right,.v2853-bottom{gap:9px!important}
+  .v2853-card{border-radius:12px!important;box-shadow:0 4px 14px rgba(15,23,42,.035)!important}
+  .v2853-card-head{height:40px!important;min-height:40px!important;padding:0 11px!important}
+  .v2853-card-head h3{font-size:13px!important}
+  .v2853-card-body{padding:9px 10px!important}
+
+  /* Artikel-Steuerung kompakter */
+  .v2853-article-controls{
+    grid-template-columns:1fr 1fr!important;
+    gap:8px!important;
+    margin-bottom:10px!important;
+  }
+  .v2853-article-controls label>span{font-size:10px!important;margin-bottom:4px!important}
+  .v2853-article-controls select,
+  .v2853-article-controls input,
+  .v2853-color-readonly{
+    height:38px!important;
+    min-height:38px!important;
+    border-radius:9px!important;
+    padding-left:10px!important;
+    padding-right:10px!important;
+    font-size:12px!important;
+  }
+  .v2853-color-readonly b{font-size:12px!important}
+
+  /* Vorschau klarer eingerahmt, aber nicht unnötig hoch */
+  .v2853-preview-shell{border-radius:11px!important}
+  .v2853-preview-head{height:40px!important;padding:0 11px!important}
+  .v2853-preview-head strong{font-size:12px!important}
+  .v2853-preview-shell .position-stage{
+    height:min(105vw,430px)!important;
+    min-height:330px!important;
+  }
+
+  /* Versionsbadge unauffälliger */
+  .v2849-version{font-size:8px!important;padding:4px 7px!important;opacity:.82!important}
+}

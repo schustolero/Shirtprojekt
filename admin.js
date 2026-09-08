@@ -847,6 +847,10 @@ saveShopBtn.addEventListener("click",async()=>{
           switchAdminTab("shops");
           setNavActive("shops");
           renderV2949ShopTree();
+          if(window.matchMedia("(max-width:720px)").matches){
+            sidebar.classList.remove("mobile-menu-open");
+            if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+          }
         });
         block.appendChild(btn);
       });
