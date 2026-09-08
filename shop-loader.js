@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=29.7.5`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=29.7.6`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -66,12 +66,12 @@
           if (slug === "tg-solingen") {
             // v28.5.2: Einmalige Migration der bisherigen Hoodie-Standardgröße.
             // Danach kann die Größe im Admin frei über den Regler gespeichert werden.
-            if (data.hoodieSizingVersion !== 1) {
+            if ((data.hoodieSizingVersion || 0) < 2) {
               merged.productPrint = merged.productPrint || {};
               merged.productPrint.hoodie = merged.productPrint.hoodie || {};
               merged.productPrint.hoodie.front = { ...(merged.productPrint.hoodie.front || {}), widthPct: 36 };
               merged.productPrint.hoodie.back = { ...(merged.productPrint.hoodie.back || {}), widthPct: 46 };
-              merged.hoodieSizingVersion = 1;
+              merged.hoodieSizingVersion = 2;
             }
             const commercial = {
               tshirt: { articleNo: "F140", price: 15, purchasePrice: 2.60 },
