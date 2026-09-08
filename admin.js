@@ -221,13 +221,16 @@ function renderOrder(id,order){
   summary.className="v2966-order-summary";
   summary.setAttribute("aria-expanded","false");
 
-  const main=document.createElement("div");main.className="v2966-order-main";
-  const customerName=document.createElement("strong");customerName.className="v2966-customer-name";customerName.textContent=text(order.name,"Unbekannter Kunde");
-  const meta=document.createElement("span");meta.className="v2966-order-meta";meta.textContent=`${text(order.orderNumber,id)} · ${dateText(order.createdAt)}`;
-  main.append(customerName,meta);
+  const main=document.createElement("div");main.className="v2966-order-main v2967-order-main";
+  const headline=document.createElement("div");headline.className="v2967-order-headline";
+  const summaryDate=document.createElement("span");summaryDate.className="v2967-order-date";summaryDate.textContent=dateOnlyText(order.createdAt);
+  const shop=document.createElement("strong");shop.className="v2967-order-shop";shop.textContent=text(order.customerName||order.customerId,"Unbekannter Shop");
+  const buyer=document.createElement("strong");buyer.className="v2967-order-buyer";buyer.textContent=text(order.name,"Unbekannter Besteller");
+  headline.append(summaryDate,shop,buyer);
+  main.append(headline);
 
   const quick=document.createElement("div");quick.className="v2966-order-quick";
-  const qty=document.createElement("span");qty.textContent=`${text(order.totalQuantity,"0")} Shirts`;
+  const qty=document.createElement("span");qty.textContent=`${text(order.totalQuantity,"0")} Artikel`;
   const total=document.createElement("strong");total.textContent=euro(order.totalPrice);
   const arrow=document.createElement("span");arrow.className="v2966-order-arrow";arrow.textContent="⌄";
   quick.append(qty,total,arrow);

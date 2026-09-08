@@ -3093,3 +3093,16 @@ body.v284-admin #ordersTab .v2966-order-body .order-top{margin-bottom:0!importan
   .v2966-order-arrow{width:22px;height:22px}
   .v2966-order-body{padding:9px 10px 11px}
 }
+
+/* v29.6.7 — compact order summary: date → shop → buyer */
+.v2967-order-main{gap:3px!important}
+.v2967-order-headline{display:flex;align-items:center;gap:8px;min-width:0;white-space:nowrap}
+.v2967-order-date{flex:0 0 auto;font-size:9px;color:#68717d;background:#f2f4f7;border:1px solid #e5e8ec;border-radius:7px;padding:3px 6px;font-weight:700}
+.v2967-order-shop{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:11px;color:#17191d}
+.v2967-order-buyer{flex:0 0 auto;font-size:11px;color:#7a5c00;background:#fff7d6;border:1px solid #f1df8e;border-radius:7px;padding:3px 7px}
+@media(max-width:720px){
+ .v2967-order-headline{gap:5px}
+ .v2967-order-date{font-size:8.5px;padding:3px 5px}
+ .v2967-order-shop,.v2967-order-buyer{font-size:10px}
+ .v2967-order-buyer{padding:3px 6px}
+}
