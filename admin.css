@@ -2929,3 +2929,138 @@ body.v284-admin #ordersTab .orders-secondary-filters{display:none!important}
   body.v284-admin #ordersTab .v2963-search{grid-column:1/-1!important;grid-row:4!important}
   body.v284-admin #ordersTab .v2963-buyer-filter .customer-chips{height:32px!important}
 }
+
+
+/* ============================================================
+   v29.6.4 – Kunden wie Shop-Auswahl, Shop-Filter entfernt
+   ============================================================ */
+body.v284-admin #ordersTab .v2963-orders-toolbar{
+  grid-template-columns:auto minmax(320px,1fr) minmax(220px,.85fr) minmax(155px,.45fr) auto!important;
+  align-items:end!important;
+}
+body.v284-admin #ordersTab .v2964-customers{
+  min-width:0!important;
+  border:1px solid #e1e5ea!important;
+  background:#f7f8fa!important;
+  border-radius:12px!important;
+  padding:7px 8px 8px!important;
+}
+body.v284-admin #ordersTab .v2964-customers-head{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:7px!important;
+  margin:0 0 6px!important;
+}
+body.v284-admin #ordersTab .v2964-customers-head strong{
+  font-size:11px!important;
+  color:#2f3742!important;
+}
+body.v284-admin #ordersTab .v2964-customers-head span{
+  font-size:8.5px!important;
+  color:#8a929d!important;
+}
+body.v284-admin #ordersTab .v2964-customers .customer-chips{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  overflow-x:auto!important;
+  padding:0!important;
+  height:32px!important;
+  scrollbar-width:none!important;
+}
+body.v284-admin #ordersTab .v2964-customers .customer-chips::-webkit-scrollbar{display:none!important}
+body.v284-admin #ordersTab .v2964-customers .customer-chip{
+  height:28px!important;
+  padding:0 10px!important;
+  border-radius:9px!important;
+  border:1px solid #dde2e8!important;
+  background:#fff!important;
+  color:#4d5662!important;
+  font-size:9.5px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+  flex:0 0 auto!important;
+}
+body.v284-admin #ordersTab .v2964-customers .customer-chip.active{
+  background:#fff3c8!important;
+  border-color:#e7c24f!important;
+  color:#6a560e!important;
+}
+body.v284-admin #ordersTab .v2963-search{grid-column:3!important;grid-row:1!important}
+body.v284-admin #ordersTab .v2963-status{grid-column:4!important;grid-row:1!important}
+body.v284-admin #ordersTab .v2963-refresh{grid-column:5!important;grid-row:1!important}
+body.v284-admin #ordersTab .v2964-customers{grid-column:2!important;grid-row:1!important}
+body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title{grid-column:1!important;grid-row:1!important;align-self:center!important}
+
+@media(max-width:900px){
+  body.v284-admin #ordersTab .v2963-orders-toolbar{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title{grid-column:1!important;grid-row:1!important}
+  body.v284-admin #ordersTab .v2963-refresh{grid-column:2!important;grid-row:1!important;justify-self:end!important}
+  body.v284-admin #ordersTab .v2964-customers{grid-column:1/-1!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-search{grid-column:1!important;grid-row:3!important}
+  body.v284-admin #ordersTab .v2963-status{grid-column:2!important;grid-row:3!important}
+}
+@media(max-width:560px){
+  body.v284-admin #ordersTab .v2963-orders-toolbar{grid-template-columns:1fr auto!important}
+  body.v284-admin #ordersTab .v2964-customers{grid-column:1/-1!important}
+  body.v284-admin #ordersTab .v2963-search{grid-column:1/-1!important;grid-row:3!important}
+  body.v284-admin #ordersTab .v2963-status{grid-column:1/-1!important;grid-row:4!important}
+  body.v284-admin #ordersTab .v2964-customers-head span{display:none!important}
+}
+
+
+/* ============================================================
+   v29.6.5 – Kundenfilter wieder als kompaktes Dropdown
+   ============================================================ */
+body.v284-admin #ordersTab .v2963-orders-toolbar{
+  grid-template-columns:auto minmax(170px,.45fr) minmax(300px,1fr) minmax(145px,.38fr) auto!important;
+  align-items:end!important;
+  gap:8px!important;
+}
+body.v284-admin #ordersTab .v2965-customer{
+  grid-column:2!important;
+  grid-row:1!important;
+  margin:0!important;
+  min-width:0!important;
+}
+body.v284-admin #ordersTab .v2965-customer span,
+body.v284-admin #ordersTab .v2963-search span,
+body.v284-admin #ordersTab .v2963-status span{
+  display:block!important;
+  margin:0 0 3px!important;
+  font-size:9px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+  color:#747b85!important;
+}
+body.v284-admin #ordersTab .v2965-customer select,
+body.v284-admin #ordersTab .v2963-search input,
+body.v284-admin #ordersTab .v2963-status select{
+  height:34px!important;
+  min-height:34px!important;
+  padding:0 10px!important;
+  border-radius:9px!important;
+  font-size:10px!important;
+  background:#fff!important;
+}
+body.v284-admin #ordersTab .v2963-search{grid-column:3!important;grid-row:1!important;margin:0!important}
+body.v284-admin #ordersTab .v2963-status{grid-column:4!important;grid-row:1!important;margin:0!important}
+body.v284-admin #ordersTab .v2963-refresh{grid-column:5!important;grid-row:1!important;height:34px!important;align-self:end!important}
+body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title{grid-column:1!important;grid-row:1!important;align-self:end!important;padding-bottom:1px!important}
+body.v284-admin #ordersTab .v2964-customers{display:none!important}
+body.v284-admin #ordersTab .customer-filter-native{position:static!important;width:100%!important;height:34px!important;opacity:1!important;pointer-events:auto!important}
+
+@media(max-width:900px){
+  body.v284-admin #ordersTab .v2963-orders-toolbar{grid-template-columns:1fr 1fr!important;gap:7px!important}
+  body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title{grid-column:1!important;grid-row:1!important}
+  body.v284-admin #ordersTab .v2963-refresh{grid-column:2!important;grid-row:1!important;justify-self:end!important}
+  body.v284-admin #ordersTab .v2965-customer{grid-column:1!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-search{grid-column:2!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-status{grid-column:1/-1!important;grid-row:3!important}
+}
+@media(max-width:560px){
+  body.v284-admin #ordersTab .v2963-orders-toolbar{grid-template-columns:1fr auto!important}
+  body.v284-admin #ordersTab .v2965-customer{grid-column:1/-1!important;grid-row:2!important}
+  body.v284-admin #ordersTab .v2963-search{grid-column:1/-1!important;grid-row:3!important}
+  body.v284-admin #ordersTab .v2963-status{grid-column:1/-1!important;grid-row:4!important}
+}

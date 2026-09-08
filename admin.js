@@ -17,8 +17,8 @@ const statRevenue = document.getElementById("statRevenue");
 const lastUpdate = document.getElementById("lastUpdate");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
-const customerFilter = document.getElementById("customerFilter");
-const customerChips = document.getElementById("customerChips");
+const customerFilter = null;
+const customerChips = document.getElementById("customerChips"); // legacy, may be absent
 const buyerFilter = document.getElementById("buyerFilter");
 let loadedOrders = [];
 
@@ -66,34 +66,14 @@ function searchableText(entry){
 }
 
 function refreshCustomerFilter(){
-  if(!customerFilter)return;
-  const previous=customerFilter.value||"Alle";
-  const shops=new Map();
-  loadedOrders.forEach(({order})=>{
-    const id=order.customerId||"ohne-shop";
-    shops.set(id,order.customerName||id);
-  });
-  customerFilter.replaceChildren();
-  const all=document.createElement("option"); all.value="Alle"; all.textContent="Alle Shops"; customerFilter.appendChild(all);
-  [...shops.entries()].sort((a,b)=>a[1].localeCompare(b[1],"de")).forEach(([id,name])=>{
-    const o=document.createElement("option"); o.value=id; o.textContent=name; customerFilter.appendChild(o);
-  });
-  const preferred=(previous!=="Alle" && [...customerFilter.options].some(o=>o.value===previous))
-    ? previous
-    : ((selectedShopId && !String(selectedShopId).startsWith("_") && [...customerFilter.options].some(o=>o.value===selectedShopId))
-      ? selectedShopId
-      : ([...customerFilter.options][1]?.value || "Alle"));
-  customerFilter.value=preferred;
   refreshBuyerFilter();
 }
 
 function refreshBuyerFilter(){
-  if(!buyerFilter || !customerChips) return;
+  if(!buyerFilter) return;
   const previous=buyerFilter.value||"Alle";
-  const selectedShop=customerFilter?.value||"Alle";
   const buyers=new Map();
   loadedOrders.forEach(({order})=>{
-    if(selectedShop!=="Alle" && (order.customerId||"ohne-shop")!==selectedShop) return;
     const name=String(order.name||"").trim();
     if(!name) return;
     const key=name.toLocaleLowerCase("de");
@@ -105,7 +85,7 @@ function refreshBuyerFilter(){
     const o=document.createElement("option"); o.value=key; o.textContent=name; buyerFilter.appendChild(o);
   });
   buyerFilter.value=[...buyerFilter.options].some(o=>o.value===previous)?previous:"Alle";
-  renderCustomerChips(buyers);
+  if(customerChips) renderCustomerChips(buyers);
 }
 
 function renderCustomerChips(buyers){
@@ -131,16 +111,14 @@ function renderCustomerChips(buyers){
 function applyFilters(){
   const query = (searchInput.value || "").trim().toLowerCase();
   const selectedStatus = statusFilter.value || "Alle";
-  const selectedShop = customerFilter ? (customerFilter.value || "Alle") : "Alle";
   const selectedBuyer = buyerFilter ? (buyerFilter.value || "Alle") : "Alle";
   const filtered = loadedOrders.filter(entry => {
     const status = entry.order.status || "Neu";
     const statusMatch = selectedStatus === "Alle" || status === selectedStatus;
-    const shopMatch = selectedShop === "Alle" || (entry.order.customerId || "ohne-shop") === selectedShop;
     const buyerKey = String(entry.order.name||"").trim().toLocaleLowerCase("de");
     const buyerMatch = selectedBuyer === "Alle" || buyerKey === selectedBuyer;
     const searchMatch = !query || searchableText(entry).includes(query);
-    return statusMatch && shopMatch && buyerMatch && searchMatch;
+    return statusMatch && buyerMatch && searchMatch;
   });
 
   updateStats(filtered);
@@ -285,7 +263,6 @@ logoutBtn.addEventListener("click",()=>auth.signOut());
 refreshBtn.addEventListener("click",loadOrders);
 searchInput.addEventListener("input", applyFilters);
 statusFilter.addEventListener("change", applyFilters);
-if(customerFilter)customerFilter.addEventListener("change",()=>{refreshBuyerFilter();applyFilters();});
 if(buyerFilter)buyerFilter.addEventListener("change",applyFilters);
 
 auth.onAuthStateChanged(user=>{
