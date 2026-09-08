@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.6.8">
+  <link rel="stylesheet" href="admin.css?v=29.7.0">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -738,6 +738,7 @@
       <nav class="admin-tabs panel" aria-label="Adminbereiche">
         <button type="button" class="tab-btn active" data-tab="orders">Bestellungen</button>
         <button type="button" class="tab-btn" data-tab="shops">Shops verwalten</button>
+        <button type="button" class="tab-btn" data-tab="production">Produktion</button>
       </nav>
 
       <section id="ordersTab" class="tab-panel">
@@ -755,6 +756,35 @@
         </div>
         <div id="ordersList" class="orders-list"></div>
         <p id="ordersMessage" class="empty-message" hidden>Keine Bestellungen vorhanden.</p>
+      </section>
+
+      <section id="productionTab" class="tab-panel" hidden>
+        <div class="production-dashboard">
+          <div class="production-head panel">
+            <div><span class="eyebrow">PRODUKTION</span><h2>Offene Produktion</h2><p>Automatisch aus allen noch offenen Bestellungen zusammengefasst.</p></div>
+            <button id="productionRefreshBtn" class="ghost-btn" type="button">Aktualisieren</button>
+          </div>
+          <div class="production-stats">
+            <article class="production-stat panel"><span>Offene Aufträge</span><strong id="prodStatOrders">0</strong></article>
+            <article class="production-stat panel"><span>Artikel</span><strong id="prodStatItems">0</strong></article>
+            <article class="production-stat panel"><span>Textil-Varianten</span><strong id="prodStatVariants">0</strong></article>
+            <article class="production-stat panel"><span>Druck-Varianten</span><strong id="prodStatPrints">0</strong></article>
+          </div>
+          <div class="production-grid">
+            <section class="panel production-block">
+              <div class="production-block-head"><div><h3>Textilienbedarf</h3><p>Zusammengefasst nach Artikel, Farbe und Größe.</p></div></div>
+              <div id="productionTextiles" class="production-list"></div>
+            </section>
+            <section class="panel production-block">
+              <div class="production-block-head"><div><h3>Druckbedarf</h3><p>Zusammengefasst nach Motiv und Druckfarbe.</p></div></div>
+              <div id="productionPrints" class="production-list"></div>
+            </section>
+          </div>
+          <section class="panel production-block production-orders-block">
+            <div class="production-block-head"><div><h3>Offene Aufträge</h3><p>Nur Neu und In Bearbeitung.</p></div></div>
+            <div id="productionOrders" class="production-order-list"></div>
+          </section>
+        </div>
       </section>
 
       <section id="shopsTab" class="tab-panel" hidden>
@@ -933,7 +963,7 @@
 
 
               <details class="form-section compact-accordion print-data-accordion" hidden aria-hidden="true">
-                <summary><span>Produktionsdaten</span><small>Einmal für alle Textilien</small></summary>
+                <summary><span>Druckvorgaben</span><small>Maße & Verfahren</small></summary>
                 <div class="accordion-body">
                   <div class="production-help">
                     <strong>Eine Druckvorgabe für T-Shirt, Polo und Hoodie</strong>
@@ -1003,7 +1033,7 @@
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.6.8"></script>
+  <script src="/admin.js?v=29.7.0"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1030,7 +1060,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.6.8';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.7.0';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

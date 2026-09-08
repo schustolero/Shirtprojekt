@@ -26,6 +26,7 @@ const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
 
 function euro(value){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(value)||0)}
 function dateText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}
+function dateOnlyText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})}
 function text(value,fallback="–"){return value===undefined||value===null||value===""?fallback:String(value)}
 
 async function loadOrders(){
@@ -38,6 +39,7 @@ async function loadOrders(){
     refreshCustomerFilter();
     applyFilters();
     lastUpdate.textContent = `Aktualisiert: ${new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`;
+    if(productionTab && !productionTab.hidden) renderProductionDashboard();
   }catch(err){
     console.error(err);
     ordersMessage.textContent = "Bestellungen konnten nicht geladen werden.";
@@ -285,6 +287,72 @@ function renderOrder(id,order){
   return card;
 }
 
+
+function productLabel(item){
+  return text(item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt"),"T-Shirt");
+}
+function renderProductionDashboard(){
+  const root=document.getElementById("productionTab");
+  if(!root) return;
+  const openEntries=loadedOrders.filter(({order})=>!["Fertig","Abgeholt"].includes(order.status||"Neu"));
+  const textileMap=new Map();
+  const printMap=new Map();
+  let totalItems=0;
+  openEntries.forEach(({order})=>{
+    (Array.isArray(order.items)?order.items:[]).forEach(item=>{
+      const qty=Number(item.quantity)||1;
+      totalItems+=qty;
+      const product=productLabel(item);
+      const article=String(item.articleNo||"").trim();
+      const color=text(item.shirtColor,"–");
+      const size=text(item.size,"–");
+      const tkey=[product,article,color,size].join("|");
+      const t=textileMap.get(tkey)||{product,article,color,size,qty:0}; t.qty+=qty; textileMap.set(tkey,t);
+      const motif=text(item.motif,"Ohne Motiv");
+      const motifColor=text(item.motifColor,"–");
+      const pkey=[motif,motifColor].join("|");
+      const pr=printMap.get(pkey)||{motif,motifColor,qty:0}; pr.qty+=qty; printMap.set(pkey,pr);
+    });
+  });
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=String(val)};
+  set("prodStatOrders",openEntries.length); set("prodStatItems",totalItems); set("prodStatVariants",textileMap.size); set("prodStatPrints",printMap.size);
+  const textileHost=document.getElementById("productionTextiles");
+  if(textileHost){
+    textileHost.replaceChildren();
+    const rows=[...textileMap.values()].sort((a,b)=>a.product.localeCompare(b.product,"de")||a.color.localeCompare(b.color,"de")||a.size.localeCompare(b.size,"de"));
+    if(!rows.length){ textileHost.innerHTML='<p class="production-empty">Aktuell kein Textilienbedarf.</p>'; }
+    rows.forEach(row=>{
+      const el=document.createElement("div"); el.className="production-row";
+      el.innerHTML=`<div><strong>${htmlEscape(row.product)}${row.article?` <small>${htmlEscape(row.article)}</small>`:""}</strong><span>${htmlEscape(row.color)} · Größe ${htmlEscape(row.size)}</span></div><b>${row.qty}×</b>`;
+      textileHost.appendChild(el);
+    });
+  }
+  const printHost=document.getElementById("productionPrints");
+  if(printHost){
+    printHost.replaceChildren();
+    const rows=[...printMap.values()].sort((a,b)=>b.qty-a.qty||a.motif.localeCompare(b.motif,"de"));
+    if(!rows.length){ printHost.innerHTML='<p class="production-empty">Aktuell kein Druckbedarf.</p>'; }
+    rows.forEach(row=>{
+      const el=document.createElement("div"); el.className="production-row";
+      el.innerHTML=`<div><strong>${htmlEscape(row.motif)}</strong><span>Druckfarbe: ${htmlEscape(row.motifColor)}</span></div><b>${row.qty}×</b>`;
+      printHost.appendChild(el);
+    });
+  }
+  const orderHost=document.getElementById("productionOrders");
+  if(orderHost){
+    orderHost.replaceChildren();
+    if(!openEntries.length){ orderHost.innerHTML='<p class="production-empty">Keine offenen Aufträge.</p>'; }
+    openEntries.forEach(({id,order})=>{
+      const row=document.createElement("button"); row.type="button"; row.className="production-order-row";
+      row.innerHTML=`<span class="prod-date">${htmlEscape(dateOnlyText(order.createdAt))}</span><strong>${htmlEscape(text(order.customerName||order.customerId,"Shop"))}</strong><span>${htmlEscape(text(order.name,"Besteller"))}</span><b>${htmlEscape(text(order.totalQuantity,"0"))} Artikel</b><em>${htmlEscape(order.status||"Neu")}</em>`;
+      row.addEventListener("click",()=>{switchAdminTab("orders"); const card=document.querySelector(`.order-card[data-order-id="${CSS.escape(id)}"]`); if(card){card.scrollIntoView({behavior:"smooth",block:"center"});}});
+      orderHost.appendChild(row);
+    });
+  }
+}
+const productionRefreshBtn=document.getElementById("productionRefreshBtn");
+productionRefreshBtn?.addEventListener("click",async()=>{await loadOrders();renderProductionDashboard();});
+
 loginForm.addEventListener("submit",async e=>{
   e.preventDefault();loginMessage.textContent="";
   const email=document.getElementById("adminEmail").value.trim();const password=document.getElementById("adminPassword").value;
@@ -312,6 +380,7 @@ const seedShops = (CENTRAL && CENTRAL.seedShops) || {};
 const tabButtons = [...document.querySelectorAll(".tab-btn")];
 const ordersTab = document.getElementById("ordersTab");
 const shopsTab = document.getElementById("shopsTab");
+const productionTab = document.getElementById("productionTab");
 const shopList = document.getElementById("shopList");
 const shopForm = document.getElementById("shopForm");
 const shopEditorTitle = document.getElementById("shopEditorTitle");
@@ -561,7 +630,8 @@ function flashSavedButton(btn, normalText){
 
 function switchAdminTab(name){
   tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
-  ordersTab.hidden=name!=="orders"; shopsTab.hidden=name!=="shops";
+  ordersTab.hidden=name!=="orders"; shopsTab.hidden=name!=="shops"; if(productionTab) productionTab.hidden=name!=="production";
+  if(name==="production") renderProductionDashboard();
 }
 tabButtons.forEach(btn=>btn.addEventListener("click",()=>switchAdminTab(btn.dataset.tab)));
 
@@ -858,7 +928,7 @@ saveShopBtn.addEventListener("click",async()=>{
       <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
       <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
       <button type="button" data-jump="motif"><span>✥</span>Motive / Logos</button>
-      <button type="button" data-jump="production"><span>▤</span>Produktionsdaten</button>
+      <button type="button" data-main="production"><span>▤</span>Produktion</button>
       <button type="button" data-jump="functions"><span>◉</span>Funktionen</button>
     </nav>
     <div class="v284-side-bottom">
@@ -1099,7 +1169,7 @@ saveShopBtn.addEventListener("click",async()=>{
     card("Motive (Druckbereich)","motif",wrap,true);
   }
   if(fixed){ const body=fixed.querySelector(".accordion-body")||fixed; card("Fester Druck (vorne / hinten)","fixed",body,true); }
-  if(production){ const body=production.querySelector(".accordion-body")||production; card("Produktionsdaten","production",body,false); }
+  if(production){ const body=production.querySelector(".accordion-body")||production; card("Druckvorgaben","production",body,false); }
   if(technical){ technical.hidden=true; form.appendChild(technical); }
 
   // Alte Zwischen-Navigation/Wrapper entfernen, nachdem Inhalte umgezogen wurden.
