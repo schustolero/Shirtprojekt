@@ -3541,3 +3541,71 @@ body.v284-admin #ordersTab .v2971-item-amount{display:block!important;white-spac
   .v2850-product b{font-size:15px!important}
   .v2850-product small{font-size:9px!important;margin-top:5px!important;padding-top:5px!important}
 }
+
+
+/* v29.8.1 – Grunddaten/Funktionen: horizontal, kompakt, kein unnötiger Platz */
+.v2853-basic-grid > .v2972-status-functions{
+  grid-column:1 / -1!important;
+  width:100%!important;
+  max-width:none!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+  flex-wrap:nowrap!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2850-active-field{
+  flex:0 0 auto!important;
+  width:auto!important;
+  max-width:none!important;
+  min-width:128px!important;
+  margin:0!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2972-inline-functions{
+  flex:1 1 auto!important;
+  width:auto!important;
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  flex-wrap:wrap!important;
+  padding:8px 10px!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2972-functions-label{
+  flex:0 0 auto!important;
+  width:auto!important;
+  margin:0 2px 0 0!important;
+  font-size:9px!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2972-inline-functions > label,
+.v2853-basic-grid > .v2972-status-functions .v2972-designer-tools > label{
+  min-height:26px!important;
+  padding:5px 8px!important;
+  gap:5px!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2972-inline-functions label span,
+.v2853-basic-grid > .v2972-status-functions .v2972-designer-tools label span{
+  font-size:9px!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2972-designer-tools{
+  flex:0 0 auto!important;
+  width:auto!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  padding:0 0 0 6px!important;
+  margin:0!important;
+  border-left:1px dashed #d6dde6!important;
+  border-top:0!important;
+}
+.v2853-basic-grid > .v2972-status-functions .v2972-designer-tools[hidden]{
+  display:none!important;
+}
+@media(max-width:980px){
+  .v2853-basic-grid > .v2972-status-functions{flex-wrap:wrap!important;align-items:flex-start!important}
+  .v2853-basic-grid > .v2972-status-functions .v2972-inline-functions{flex-basis:100%!important}
+}
+@media(max-width:720px){
+  .v2853-basic-grid > .v2972-status-functions{display:grid!important;grid-template-columns:1fr!important;gap:7px!important}
+  .v2853-basic-grid > .v2972-status-functions .v2972-inline-functions{width:100%!important;padding:8px!important}
+  .v2853-basic-grid > .v2972-status-functions .v2972-functions-label{width:100%!important;flex-basis:100%!important;margin-bottom:2px!important}
+}
