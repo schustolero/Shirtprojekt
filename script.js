@@ -242,7 +242,13 @@ function renderProductSelector() {
     btn.type = "button";
     btn.className = "product-btn";
     btn.dataset.product = product.id;
-    btn.textContent = product.name || product.id;
+    const productName = document.createElement("span");
+    productName.className = "product-btn-name";
+    productName.textContent = product.name || product.id;
+    const productPrice = document.createElement("small");
+    productPrice.className = "product-btn-price";
+    productPrice.textContent = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
+    btn.append(productName, productPrice);
     btn.classList.toggle("active", product.id === currentProductId);
     btn.addEventListener("click", async () => {
       if (product.id === currentProductId) return;

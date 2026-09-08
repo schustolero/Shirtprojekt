@@ -1200,3 +1200,122 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     transform: translate(-50%, -50%) !important;
   }
 }
+
+
+/* v29.8.2 – Mobile Shop Feinschliff: Produktwahl, Größe/Menge und CTA */
+.product-switch{
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:7px;
+}
+.product-btn{
+  min-height:48px;
+  padding:7px 8px;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  justify-content:center;
+  gap:3px;
+  border-radius:11px;
+}
+.product-btn-name{
+  font-size:12px;
+  line-height:1.05;
+  font-weight:800;
+  color:var(--text);
+}
+.product-btn-price{
+  font-size:10px;
+  line-height:1;
+  color:var(--muted);
+  font-weight:700;
+}
+.product-btn.active .product-btn-price{
+  color:var(--text);
+}
+.order-fields{
+  display:grid;
+  grid-template-columns:minmax(0,1.35fr) minmax(88px,.65fr);
+  gap:8px;
+  margin-bottom:9px;
+}
+.order-field{
+  gap:4px;
+}
+.order-field span{
+  font-size:10.5px;
+}
+.order-field select,
+.order-field input{
+  min-height:38px;
+  height:38px;
+  padding:7px 9px;
+  border-radius:9px;
+  font-size:12px;
+}
+.order-section .primary-btn#addToOrderBtn{
+  min-height:40px;
+  padding:9px 12px;
+  border-radius:10px;
+  font-size:12px;
+  box-shadow:0 4px 12px color-mix(in srgb,var(--accent) 18%,transparent);
+}
+.view-switch{
+  gap:6px;
+}
+.view-btn{
+  min-height:36px;
+  padding:7px 10px;
+  border-radius:9px;
+}
+@media(max-width:900px){
+  .product-section,
+  .view-section,
+  .order-section{
+    padding:10px 16px!important;
+  }
+  .product-section h3,
+  .view-section h3,
+  .order-section h3{
+    margin-bottom:6px!important;
+  }
+  .order-price-info{
+    margin:0 0 7px!important;
+    font-size:10.5px!important;
+  }
+  .product-switch{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+  .product-btn{
+    min-height:44px!important;
+    padding:6px 7px!important;
+    border-radius:10px!important;
+  }
+  .product-btn-name{
+    font-size:11px!important;
+  }
+  .product-btn-price{
+    font-size:9px!important;
+  }
+  .order-fields{
+    grid-template-columns:minmax(0,1.35fr) minmax(82px,.65fr)!important;
+    gap:7px!important;
+    margin-bottom:8px!important;
+  }
+  .order-field select,
+  .order-field input{
+    min-height:36px!important;
+    height:36px!important;
+    padding:6px 8px!important;
+    font-size:11.5px!important;
+  }
+  #addToOrderBtn{
+    min-height:38px!important;
+    padding:8px 10px!important;
+    font-size:11.5px!important;
+  }
+}
+@media(max-width:360px){
+  .product-btn-name{font-size:10px!important}
+  .product-btn-price{font-size:8.5px!important}
+}
