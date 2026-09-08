@@ -18,6 +18,7 @@ const lastUpdate = document.getElementById("lastUpdate");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
 const customerFilter = document.getElementById("customerFilter");
+const customerChips = document.getElementById("customerChips");
 let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
@@ -75,6 +76,27 @@ function refreshCustomerFilter(){
   const all=document.createElement("option");all.value="Alle";all.textContent="Alle Kunden";customerFilter.appendChild(all);
   [...customers.entries()].sort((x,y)=>x[1].localeCompare(y[1],"de")).forEach(([id,name])=>{const o=document.createElement("option");o.value=id;o.textContent=name;customerFilter.appendChild(o)});
   customerFilter.value=[...customerFilter.options].some(o=>o.value===previous)?previous:"Alle";
+  renderCustomerChips(customers);
+}
+
+function renderCustomerChips(customers){
+  if(!customerChips || !customerFilter) return;
+  customerChips.replaceChildren();
+  const entries=[["Alle","Alle"], ...[...customers.entries()].sort((a,b)=>a[1].localeCompare(b[1],"de"))];
+  entries.forEach(([id,name])=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="customer-chip";
+    button.dataset.customerId=id;
+    button.textContent=name;
+    button.classList.toggle("active", customerFilter.value===id);
+    button.addEventListener("click",()=>{
+      customerFilter.value=id;
+      customerChips.querySelectorAll(".customer-chip").forEach(chip=>chip.classList.toggle("active",chip.dataset.customerId===id));
+      applyFilters();
+    });
+    customerChips.appendChild(button);
+  });
 }
 
 function applyFilters(){

@@ -2857,3 +2857,31 @@ body.v284-admin #ordersTab .order-footer{margin-top:8px!important;padding-top:8p
   body.v284-admin #ordersTab .print-order-btn,
   body.v284-admin #ordersTab .production-order-btn{height:34px!important;font-size:9.5px!important}
 }
+
+
+/* v29.6.2 – Kunden/Vereine direkt in der Bestellübersicht */
+body.v284-admin #ordersTab .orders-toolbar{align-items:flex-start!important;gap:12px!important;}
+body.v284-admin #ordersTab .orders-toolbar-main{display:grid;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:18px;min-width:0;flex:1;}
+body.v284-admin #ordersTab .orders-toolbar-title{min-width:max-content;}
+body.v284-admin #ordersTab .customer-quick-filter{display:flex;align-items:center;gap:8px;min-width:0;}
+body.v284-admin #ordersTab .customer-quick-label{font-size:10px;font-weight:800;color:#777b84;white-space:nowrap;}
+body.v284-admin #ordersTab .customer-chips{display:flex;align-items:center;gap:6px;min-width:0;overflow-x:auto;padding:1px 2px 3px;scrollbar-width:thin;}
+body.v284-admin #ordersTab .customer-chip{appearance:none;border:1px solid #dfe3e9;background:#f7f8fa;color:#4f5560;border-radius:999px;padding:6px 10px;font:inherit;font-size:10px;font-weight:750;white-space:nowrap;cursor:pointer;transition:.15s ease;}
+body.v284-admin #ordersTab .customer-chip:hover{background:#fff;border-color:#cfd5dd;}
+body.v284-admin #ordersTab .customer-chip.active{background:#fff4c9;border-color:#efc33b;color:#735c0b;box-shadow:0 0 0 1px rgba(239,195,59,.08) inset;}
+body.v284-admin #ordersTab .customer-filter-native{position:absolute!important;width:1px!important;height:1px!important;opacity:0!important;pointer-events:none!important;}
+body.v284-admin #ordersTab .orders-secondary-filters{grid-template-columns:minmax(0,1fr) 210px!important;}
+@media(max-width:720px){
+  body.v284-admin #ordersTab .orders-toolbar{display:grid!important;grid-template-columns:1fr auto!important;align-items:start!important;}
+  body.v284-admin #ordersTab .orders-toolbar-main{grid-template-columns:1fr!important;gap:7px!important;}
+  body.v284-admin #ordersTab .customer-quick-filter{display:block!important;}
+  body.v284-admin #ordersTab .customer-quick-label{display:block!important;margin-bottom:5px!important;}
+  body.v284-admin #ordersTab .customer-chips{gap:5px!important;}
+  body.v284-admin #ordersTab .customer-chip{padding:6px 9px!important;font-size:10px!important;}
+  body.v284-admin #ordersTab .orders-secondary-filters{grid-template-columns:1fr 120px!important;gap:7px!important;}
+}
+@media(max-width:480px){
+  body.v284-admin #ordersTab .orders-toolbar{grid-template-columns:1fr!important;}
+  body.v284-admin #ordersTab .orders-toolbar .ghost-btn{justify-self:start!important;}
+  body.v284-admin #ordersTab .orders-secondary-filters{grid-template-columns:1fr!important;}
+}
