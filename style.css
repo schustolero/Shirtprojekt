@@ -1319,3 +1319,66 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   .product-btn-name{font-size:10px!important}
   .product-btn-price{font-size:8.5px!important}
 }
+
+/* v29.8.3 – Produktpreise hochwertiger und besser lesbar */
+.product-btn{
+  position:relative;
+  min-height:54px;
+  padding:9px 10px;
+  justify-content:space-between;
+  gap:7px;
+  background:linear-gradient(180deg,#ffffff 0%,#f8f9fb 100%);
+  border-color:#dfe3e8;
+  box-shadow:0 1px 2px rgba(16,24,40,.04);
+}
+.product-btn-name{
+  font-size:12px;
+  font-weight:800;
+  letter-spacing:-.01em;
+  color:#20242a;
+}
+.product-btn-price{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  align-self:flex-start;
+  min-height:24px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#eef1f4;
+  border:1px solid #e0e4e9;
+  color:#20242a;
+  font-size:11.5px;
+  line-height:1;
+  font-weight:850;
+  letter-spacing:.01em;
+  font-variant-numeric:tabular-nums;
+  white-space:nowrap;
+}
+.product-btn.active{
+  background:#fff;
+}
+.product-btn.active .product-btn-price{
+  background:color-mix(in srgb,var(--accent) 22%,#fff);
+  border-color:color-mix(in srgb,var(--accent) 52%,#d9dde3);
+  color:#171717;
+}
+@media(max-width:900px){
+  .product-btn{
+    min-height:52px!important;
+    padding:8px 8px!important;
+    gap:6px!important;
+  }
+  .product-btn-name{
+    font-size:11px!important;
+  }
+  .product-btn-price{
+    min-height:22px!important;
+    padding:4px 7px!important;
+    font-size:11px!important;
+  }
+}
+@media(max-width:360px){
+  .product-btn-name{font-size:10px!important}
+  .product-btn-price{font-size:10.5px!important;padding:4px 6px!important}
+}
