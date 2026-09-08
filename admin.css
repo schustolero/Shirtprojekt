@@ -3387,3 +3387,157 @@ body.v284-admin #ordersTab .v2971-item-amount{display:block!important;white-spac
   margin-left:2px!important;
   border-left:1px dashed #d6dde6!important;
 }
+
+
+/* v29.7.9 – Funktionen besser positioniert und kompakter */
+.shop-form .v2972-status-functions{
+  display:grid!important;
+  grid-template-columns:minmax(132px,150px) 1fr!important;
+  gap:10px!important;
+  align-items:start!important;
+}
+.shop-form .v2972-status-functions .v2850-active-field{
+  align-self:start!important;
+  min-height:40px!important;
+}
+.shop-form .v2972-inline-functions{
+  display:flex!important;
+  align-items:flex-start!important;
+  align-content:flex-start!important;
+  gap:7px!important;
+  flex-wrap:wrap!important;
+  padding:10px 12px!important;
+}
+.shop-form .v2972-functions-label{
+  flex:0 0 100%!important;
+  width:100%!important;
+  display:block!important;
+  margin:0 0 3px 0!important;
+  font-size:10px!important;
+}
+.shop-form .v2972-inline-functions > label,
+.shop-form .v2972-designer-tools > label{
+  min-height:28px!important;
+  padding:5px 9px!important;
+  gap:6px!important;
+}
+.shop-form .v2972-inline-functions input[type="checkbox"],
+.shop-form .v2972-designer-tools input[type="checkbox"]{
+  width:13px!important;
+  min-width:13px!important;
+  max-width:13px!important;
+  height:13px!important;
+  min-height:13px!important;
+  flex:0 0 13px!important;
+}
+.shop-form .v2972-inline-functions label span,
+.shop-form .v2972-designer-tools label span{
+  font-size:9.5px!important;
+}
+.shop-form .v2972-designer-tools{
+  flex:0 0 100%!important;
+  width:100%!important;
+  padding-top:4px!important;
+  padding-left:0!important;
+  margin-left:0!important;
+  border-left:0!important;
+  border-top:1px dashed #d6dde6!important;
+}
+@media(max-width:720px){
+  .shop-form .v2972-status-functions{
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+  }
+  .shop-form .v2972-inline-functions{
+    padding:9px 10px!important;
+  }
+  .shop-form .v2972-inline-functions > label,
+  .shop-form .v2972-designer-tools > label{
+    min-height:27px!important;
+    padding:5px 8px!important;
+  }
+}
+
+
+/* v29.8.0 – Produkte & Preise moderner und ruhiger */
+.v2850-products{
+  margin-top:8px!important;
+  padding-top:14px!important;
+  border-top:1px solid #edf0f3!important;
+}
+.v2850-products .v2850-subtitle{
+  margin-bottom:9px!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  color:#667085!important;
+  letter-spacing:.02em!important;
+}
+.v2850-product-grid{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:10px!important;
+}
+.v2850-product{
+  position:relative!important;
+  display:grid!important;
+  grid-template-columns:1fr auto!important;
+  grid-template-areas:
+    "name price"
+    "article price"
+    "costs costs"!important;
+  align-items:center!important;
+  gap:2px 10px!important;
+  min-height:82px!important;
+  padding:12px 14px!important;
+  border:1px solid #e4e8ee!important;
+  border-radius:14px!important;
+  background:linear-gradient(180deg,#ffffff 0%,#fafbfd 100%)!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.035)!important;
+  overflow:hidden!important;
+}
+.v2850-product::before{
+  content:"";
+  position:absolute;
+  left:0;top:0;bottom:0;
+  width:3px;
+  background:#e5b800;
+}
+.v2850-product strong{
+  grid-area:name!important;
+  font-size:13px!important;
+  line-height:1.15!important;
+  color:#1f2937!important;
+}
+.v2850-product span{
+  grid-area:article!important;
+  font-size:9.5px!important;
+  color:#98a2b3!important;
+  text-transform:uppercase!important;
+  letter-spacing:.04em!important;
+}
+.v2850-product b{
+  grid-area:price!important;
+  align-self:start!important;
+  justify-self:end!important;
+  font-size:17px!important;
+  line-height:1!important;
+  color:#111827!important;
+  white-space:nowrap!important;
+}
+.v2850-product small{
+  grid-area:costs!important;
+  margin-top:7px!important;
+  padding-top:7px!important;
+  border-top:1px solid #eef1f4!important;
+  font-size:9.5px!important;
+  line-height:1.2!important;
+  color:#7b8491!important;
+  text-align:left!important;
+}
+@media(max-width:760px){
+  .v2850-product-grid{grid-template-columns:1fr!important;gap:7px!important}
+  .v2850-product{min-height:68px!important;padding:10px 12px!important;border-radius:12px!important}
+  .v2850-product strong{font-size:12px!important}
+  .v2850-product b{font-size:15px!important}
+  .v2850-product small{font-size:9px!important;margin-top:5px!important;padding-top:5px!important}
+}
