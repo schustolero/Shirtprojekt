@@ -505,6 +505,8 @@ async function initShopAdmin(){
   if(shopAdminInitialized) return;
   shopAdminInitialized=true;
   await loadShopConfigs();
+  // v29.6.0: Admin startet grundsätzlich in der Shop-Verwaltung.
+  switchAdminTab("shops");
 }
 
 async function loadShopConfigs(){
@@ -827,7 +829,14 @@ saveShopBtn.addEventListener("click",async()=>{
     }).sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de"));
     if(shopCount) shopCount.textContent=String(entries.length);
     const group=SHOP_TYPE_GROUPS.find(g=>g.key===activeShopType) || SHOP_TYPE_GROUPS[0];
-    const matches=entries.filter(([,cfg])=>(cfg.shopType||"simple")===group.key);
+    const matches=entries
+      .filter(([,cfg])=>(cfg.shopType||"simple")===group.key)
+      .sort((a,b)=>{
+        const isTemplateA=a[0].startsWith("_") || String(a[1]?.customerName||"").trim().toLowerCase().startsWith("vorlage ");
+        const isTemplateB=b[0].startsWith("_") || String(b[1]?.customerName||"").trim().toLowerCase().startsWith("vorlage ");
+        if(isTemplateA!==isTemplateB) return isTemplateA?-1:1;
+        return String(a[1]?.customerName||a[0]).localeCompare(String(b[1]?.customerName||b[0]),"de");
+      });
     const block=document.createElement("div");
     block.className=`v2949-shop-group v2959-active-group v2959-group-${group.key}`;
     matches.forEach(([id,cfg])=>{
@@ -842,7 +851,8 @@ saveShopBtn.addEventListener("click",async()=>{
       const meta=document.createElement("small");
       const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
       const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
-      meta.textContent=isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
+      meta.textContent=isTemplate?"":(cfg.active===false?"Inaktiv":"Aktiv");
+      if(isTemplate) meta.setAttribute("aria-hidden","true");
       btn.append(name,meta);
       btn.addEventListener("click",()=>{
         const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);

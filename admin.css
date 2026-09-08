@@ -2721,3 +2721,139 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
   /* alte Typ-Badges werden für diese Ansicht nicht mehr benötigt */
   .v2958-type-badge{display:none!important}
 }
+
+/* ============================================================
+   v29.6.0 – helle Navigation, Vorlagen zuerst, kompakte Bestellungen
+   ============================================================ */
+
+/* Helle, ruhigere Sidebar auf Desktop */
+body.v2853-reference .v284-sidebar.v2853-dark-sidebar,
+body.v284-admin .v284-sidebar{
+  background:#f9fafc!important;
+  color:#222831!important;
+  border-right:1px solid #e2e6ec!important;
+  box-shadow:8px 0 26px rgba(15,23,42,.045)!important;
+}
+body.v2853-reference .v284-sidebar.v2853-dark-sidebar .v284-brand-copy strong,
+body.v284-admin .v284-sidebar .v284-brand-copy strong{color:#20252b!important}
+body.v2853-reference .v284-sidebar.v2853-dark-sidebar .v284-brand-copy span,
+body.v284-admin .v284-sidebar .v284-brand-copy span{color:#7a838e!important}
+body.v284-admin .v284-brand-mark{
+  background:#fff8d8!important;
+  border-color:#ead06a!important;
+  color:#9a7300!important;
+  box-shadow:0 0 0 4px rgba(234,208,106,.12)!important;
+}
+body.v284-admin .v2949-shops-folder{
+  background:#fff!important;
+  border-color:#e1e6ec!important;
+  box-shadow:0 3px 12px rgba(15,23,42,.025)!important;
+}
+body.v284-admin .v2949-shops-toggle{background:#f3f5f8!important;color:#252b32!important}
+body.v284-admin .v2949-shop-count{background:#e9edf2!important;color:#69737f!important}
+body.v284-admin .v2949-shop-item{color:#343a43!important}
+body.v284-admin .v2949-shop-item:hover{background:#f5f7f9!important}
+body.v284-admin .v2949-shop-item small{color:#8a929d!important}
+body.v284-admin .v284-nav button,
+body.v284-admin .v284-side-bottom button{color:#4b5561!important}
+body.v284-admin .v284-nav button:hover,
+body.v284-admin .v284-side-bottom button:hover{background:#eef1f5!important}
+body.v284-admin .v284-nav button.active{
+  background:#fff7d6!important;
+  color:#735900!important;
+  box-shadow:inset 3px 0 0 #e2ba1c,inset 0 0 0 1px #f0dc87!important;
+}
+body.v284-admin .v284-side-bottom{border-top-color:#e1e6ec!important}
+
+/* Drei Shop-Typen: runder und dezenter */
+.v2959-shop-types{gap:7px!important;padding:8px!important}
+.v2959-shop-type{
+  height:32px!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+  font-size:9.5px!important;
+  letter-spacing:.01em!important;
+}
+.v2959-shop-type.active{transform:none!important;box-shadow:0 2px 7px rgba(15,23,42,.055)!important}
+.v2959-shop-type.v2959-simple{background:#fffaf0!important;border-color:#eadcab!important;color:#78651f!important}
+.v2959-shop-type.v2959-simple.active{background:#fff1bd!important;border-color:#dfc157!important;color:#624e00!important}
+.v2959-shop-type.v2959-motifs{background:#f5f9fd!important;border-color:#d6e3ef!important;color:#4f6e8b!important}
+.v2959-shop-type.v2959-motifs.active{background:#e7f2fc!important;border-color:#abcbe7!important;color:#315f86!important}
+.v2959-shop-type.v2959-designer{background:#faf7fd!important;border-color:#e3d9ec!important;color:#725f83!important}
+.v2959-shop-type.v2959-designer.active{background:#f0e8f8!important;border-color:#cbb6df!important;color:#63447f!important}
+
+/* Vorlage steht optisch zuerst und braucht rechts keinen Status */
+.v2949-shop-item small:empty{display:none!important}
+.v2949-shop-item:has(small:empty){grid-template-columns:minmax(0,1fr)!important}
+
+/* Bestellungen: kompakter, schmaler, aufgeräumter */
+body.v284-admin #ordersTab{
+  max-width:1180px!important;
+  margin:0 auto!important;
+}
+body.v284-admin #ordersTab .stats-grid{gap:10px!important;margin-bottom:10px!important}
+body.v284-admin #ordersTab .stat-card{padding:12px 14px!important;border-radius:13px!important}
+body.v284-admin #ordersTab .stat-card span{font-size:11px!important}
+body.v284-admin #ordersTab .stat-card strong{margin-top:3px!important;font-size:21px!important;line-height:1.05!important}
+body.v284-admin #ordersTab .toolbar{
+  min-height:58px!important;
+  padding:10px 14px!important;
+  margin-bottom:10px!important;
+  border-radius:13px!important;
+}
+body.v284-admin #ordersTab .toolbar h2{font-size:18px!important;letter-spacing:-.02em!important}
+body.v284-admin #ordersTab .toolbar p{font-size:10px!important;margin-top:2px!important}
+body.v284-admin #ordersTab .toolbar .ghost-btn{padding:8px 12px!important;font-size:11px!important;border-radius:9px!important}
+body.v284-admin #ordersTab .filters{
+  grid-template-columns:minmax(180px,1.15fr) minmax(220px,1.4fr) minmax(150px,.8fr)!important;
+  gap:9px!important;
+  padding:10px 12px!important;
+  margin-bottom:10px!important;
+  border-radius:13px!important;
+}
+body.v284-admin #ordersTab .filters label span{font-size:10px!important;margin-bottom:4px!important}
+body.v284-admin #ordersTab .filters input,
+body.v284-admin #ordersTab .filters select{height:38px!important;padding:7px 10px!important;font-size:11px!important;border-radius:9px!important}
+body.v284-admin #ordersTab .orders-list{gap:9px!important}
+body.v284-admin #ordersTab .order-card{padding:12px 14px!important;border-radius:13px!important}
+body.v284-admin #ordersTab .order-top{gap:10px!important;align-items:center!important}
+body.v284-admin #ordersTab .order-number{font-size:15px!important;line-height:1.15!important}
+body.v284-admin #ordersTab .order-customer{margin-top:3px!important;padding:3px 7px!important;font-size:9px!important}
+body.v284-admin #ordersTab .order-date{font-size:10px!important;margin-top:2px!important}
+body.v284-admin #ordersTab .order-actions{gap:6px!important}
+body.v284-admin #ordersTab .status-select{min-width:135px!important;height:36px!important;padding:6px 9px!important;font-size:10px!important}
+body.v284-admin #ordersTab .print-order-btn,
+body.v284-admin #ordersTab .production-order-btn{height:36px!important;padding:6px 10px!important;font-size:10px!important;border-radius:8px!important}
+body.v284-admin #ordersTab .customer-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:7px 14px!important;
+  padding:9px 0!important;
+  margin-bottom:8px!important;
+}
+body.v284-admin #ordersTab .customer-grid span{font-size:9px!important}
+body.v284-admin #ordersTab .customer-grid strong{font-size:11px!important}
+body.v284-admin #ordersTab .items{gap:5px!important}
+body.v284-admin #ordersTab .item-row{padding:7px 9px!important;border-radius:8px!important}
+body.v284-admin #ordersTab .item-row strong{font-size:11px!important}
+body.v284-admin #ordersTab .item-row span{font-size:9.5px!important;margin-top:2px!important}
+body.v284-admin #ordersTab .order-footer{margin-top:8px!important;padding-top:8px!important;font-size:11px!important}
+
+@media(max-width:720px){
+  body.v284-admin .v284-sidebar{background:#fff!important;border-bottom:1px solid #e4e8ed!important}
+  .v2959-shop-type{height:38px!important;border-radius:13px!important;font-size:10px!important}
+  body.v284-admin #ordersTab{max-width:none!important}
+  body.v284-admin #ordersTab .stats-grid{gap:7px!important}
+  body.v284-admin #ordersTab .stat-card{padding:10px 12px!important}
+  body.v284-admin #ordersTab .toolbar{min-height:52px!important;padding:9px 11px!important}
+  body.v284-admin #ordersTab .toolbar h2{font-size:16px!important}
+  body.v284-admin #ordersTab .filters{grid-template-columns:1fr!important;padding:9px 10px!important;gap:7px!important}
+  body.v284-admin #ordersTab .filters input,
+  body.v284-admin #ordersTab .filters select{height:36px!important}
+  body.v284-admin #ordersTab .order-card{padding:10px 11px!important}
+  body.v284-admin #ordersTab .order-top{align-items:flex-start!important}
+  body.v284-admin #ordersTab .customer-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;padding:8px 0!important}
+  body.v284-admin #ordersTab .order-actions{width:100%!important}
+  body.v284-admin #ordersTab .status-select,
+  body.v284-admin #ordersTab .print-order-btn,
+  body.v284-admin #ordersTab .production-order-btn{height:34px!important;font-size:9.5px!important}
+}
