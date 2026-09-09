@@ -17,13 +17,16 @@ const statRevenue = document.getElementById("statRevenue");
 const lastUpdate = document.getElementById("lastUpdate");
 const searchInput = document.getElementById("searchInput");
 const statusFilter = document.getElementById("statusFilter");
-const customerFilter = document.getElementById("customerFilter");
+const customerFilter = null;
+const customerChips = document.getElementById("customerChips"); // legacy, may be absent
+const buyerFilter = document.getElementById("buyerFilter");
 let loadedOrders = [];
 
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
 
 function euro(value){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(value)||0)}
 function dateText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleString("de-DE",{dateStyle:"medium",timeStyle:"short"})}
+function dateOnlyText(ts){if(!ts||!ts.toDate)return "Datum wird geladen";return ts.toDate().toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"})}
 function text(value,fallback="–"){return value===undefined||value===null||value===""?fallback:String(value)}
 
 async function loadOrders(){
@@ -36,6 +39,7 @@ async function loadOrders(){
     refreshCustomerFilter();
     applyFilters();
     lastUpdate.textContent = `Aktualisiert: ${new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`;
+    if(productionTab && !productionTab.hidden) renderProductionDashboard();
   }catch(err){
     console.error(err);
     ordersMessage.textContent = "Bestellungen konnten nicht geladen werden.";
@@ -64,29 +68,59 @@ function searchableText(entry){
 }
 
 function refreshCustomerFilter(){
-  if(!customerFilter)return;
-  const previous=customerFilter.value||"Alle";
-  const customers=new Map();
+  refreshBuyerFilter();
+}
+
+function refreshBuyerFilter(){
+  if(!buyerFilter) return;
+  const previous=buyerFilter.value||"Alle";
+  const buyers=new Map();
   loadedOrders.forEach(({order})=>{
-    const id=order.customerId||"ohne-kunde";
-    customers.set(id,order.customerName||id);
+    const name=String(order.name||"").trim();
+    if(!name) return;
+    const key=name.toLocaleLowerCase("de");
+    if(!buyers.has(key)) buyers.set(key,name);
   });
-  customerFilter.replaceChildren();
-  const all=document.createElement("option");all.value="Alle";all.textContent="Alle Kunden";customerFilter.appendChild(all);
-  [...customers.entries()].sort((x,y)=>x[1].localeCompare(y[1],"de")).forEach(([id,name])=>{const o=document.createElement("option");o.value=id;o.textContent=name;customerFilter.appendChild(o)});
-  customerFilter.value=[...customerFilter.options].some(o=>o.value===previous)?previous:"Alle";
+  buyerFilter.replaceChildren();
+  const all=document.createElement("option"); all.value="Alle"; all.textContent="Alle Kunden"; buyerFilter.appendChild(all);
+  [...buyers.entries()].sort((a,b)=>a[1].localeCompare(b[1],"de")).forEach(([key,name])=>{
+    const o=document.createElement("option"); o.value=key; o.textContent=name; buyerFilter.appendChild(o);
+  });
+  buyerFilter.value=[...buyerFilter.options].some(o=>o.value===previous)?previous:"Alle";
+  if(customerChips) renderCustomerChips(buyers);
+}
+
+function renderCustomerChips(buyers){
+  if(!customerChips || !buyerFilter) return;
+  customerChips.replaceChildren();
+  const entries=[["Alle","Alle"], ...[...buyers.entries()].sort((a,b)=>a[1].localeCompare(b[1],"de"))];
+  entries.forEach(([id,name])=>{
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="customer-chip";
+    button.dataset.customerId=id;
+    button.textContent=name;
+    button.classList.toggle("active", buyerFilter.value===id);
+    button.addEventListener("click",()=>{
+      buyerFilter.value=id;
+      customerChips.querySelectorAll(".customer-chip").forEach(chip=>chip.classList.toggle("active",chip.dataset.customerId===id));
+      applyFilters();
+    });
+    customerChips.appendChild(button);
+  });
 }
 
 function applyFilters(){
   const query = (searchInput.value || "").trim().toLowerCase();
   const selectedStatus = statusFilter.value || "Alle";
-  const selectedCustomer = customerFilter ? (customerFilter.value || "Alle") : "Alle";
+  const selectedBuyer = buyerFilter ? (buyerFilter.value || "Alle") : "Alle";
   const filtered = loadedOrders.filter(entry => {
     const status = entry.order.status || "Neu";
     const statusMatch = selectedStatus === "Alle" || status === selectedStatus;
-    const customerMatch = selectedCustomer === "Alle" || (entry.order.customerId || "ohne-kunde") === selectedCustomer;
+    const buyerKey = String(entry.order.name||"").trim().toLocaleLowerCase("de");
+    const buyerMatch = selectedBuyer === "Alle" || buyerKey === selectedBuyer;
     const searchMatch = !query || searchableText(entry).includes(query);
-    return statusMatch && customerMatch && searchMatch;
+    return statusMatch && buyerMatch && searchMatch;
   });
 
   updateStats(filtered);
@@ -126,7 +160,7 @@ function printOrderSlip(order){
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
     *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#18181b;margin:0;background:#fff}.sheet{width:190mm;max-width:100%;margin:0 auto;padding:14mm}.head{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:2px solid #18181b;padding-bottom:14px}.brand{display:flex;align-items:center;gap:16px}.brand img{width:82px;height:82px;object-fit:contain}.brand h1{font-size:20px;margin:0 0 4px}.brand p{margin:0;color:#666}.number{text-align:right}.number strong{display:block;font-size:19px}.number span{font-size:12px;color:#666}.section{margin-top:20px}.section h2{font-size:14px;margin:0 0 9px;text-transform:uppercase;letter-spacing:.04em}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}.field{border-bottom:1px solid #ddd;padding:7px 0}.field span{display:block;font-size:10px;color:#777}.field strong{font-size:13px}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f3f3f4}.total{display:flex;justify-content:flex-end;gap:28px;margin-top:14px;font-size:15px;font-weight:700}.footer{margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#777}.actions{display:flex;gap:10px;margin:18px auto 0;width:190mm;max-width:calc(100% - 20px)}button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}@media print{.actions{display:none}.sheet{padding:8mm}body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
   </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div><div class="number"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Klasse / Abteilung</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
+  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Verein / Mannschaft / Klasse / Abteilung</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
   <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Größe</th><th>Shirtfarbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Shirts</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
   ${printSection}
   <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
@@ -182,15 +216,40 @@ function printProductionSlip(order){
 }
 
 function renderOrder(id,order){
-  const card=document.createElement("article");card.className="order-card";
+  const card=document.createElement("article");card.className="order-card v2966-order-card collapsed";
+
+  const summary=document.createElement("button");
+  summary.type="button";
+  summary.className="v2966-order-summary";
+  summary.setAttribute("aria-expanded","false");
+
+  const main=document.createElement("div");main.className="v2966-order-main v2967-order-main";
+  const headline=document.createElement("div");headline.className="v2967-order-headline";
+  const summaryDate=document.createElement("span");summaryDate.className="v2967-order-date";summaryDate.textContent=dateOnlyText(order.createdAt);
+  const shop=document.createElement("strong");shop.className="v2967-order-shop";shop.textContent=text(order.customerName||order.customerId,"Unbekannter Shop");
+  const buyer=document.createElement("strong");buyer.className="v2967-order-buyer";buyer.textContent=text(order.name,"Unbekannter Besteller");
+  headline.append(summaryDate,shop,buyer);
+  main.append(headline);
+
+  const quick=document.createElement("div");quick.className="v2966-order-quick";
+  const qty=document.createElement("span");qty.textContent=`${text(order.totalQuantity,"0")} Artikel`;
+  const total=document.createElement("strong");total.textContent=euro(order.totalPrice);
+  const arrow=document.createElement("span");arrow.className="v2966-order-arrow";arrow.textContent="⌄";
+  quick.append(qty,total,arrow);
+  summary.append(main,quick);
+  card.appendChild(summary);
+
+  const body=document.createElement("div");body.className="v2966-order-body";
   const top=document.createElement("div");top.className="order-top";
   const title=document.createElement("div");
   const number=document.createElement("div");number.className="order-number";number.textContent=text(order.orderNumber,id);
   const customerTag=document.createElement("div");customerTag.className="order-customer";customerTag.textContent=text(order.customerName||order.customerId,"Unbekannter Kunde");
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
   title.append(number,customerTag,date);
+
   const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
   STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
+  status.addEventListener("click",e=>e.stopPropagation());
   status.addEventListener("change",async()=>{
     const previousStatus = order.status || "Neu";
     status.disabled=true;
@@ -205,21 +264,100 @@ function renderOrder(id,order){
     }finally{status.disabled=false}
   });
   const actions=document.createElement("div");actions.className="order-actions";
-  const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",()=>printOrderSlip(order));
-  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",()=>printProductionSlip(order));
+  const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",e=>{e.stopPropagation();printOrderSlip(order)});
+  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",e=>{e.stopPropagation();printProductionSlip(order)});
   actions.append(status,printBtn,productionBtn);
-  top.append(title,actions);card.appendChild(top);
+  top.append(title,actions);body.appendChild(top);
 
   const customer=document.createElement("div");customer.className="customer-grid";
-  [["Name",order.name],["Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
-  card.appendChild(customer);
+  [["Name",order.name],["Verein / Mannschaft / Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
+  body.appendChild(customer);
 
   const items=document.createElement("div");items.className="items";
-  (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{const row=document.createElement("div");row.className="item-row";const a=document.createElement("strong");a.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)))}`;const b=document.createElement("span");b.textContent=`${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;row.append(a,b);items.appendChild(row)});
-  card.appendChild(items);
-  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Shirts</span><span>${euro(order.totalPrice)}</span>`;card.appendChild(footer);
+  (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
+    const row=document.createElement("div");row.className="item-row v2971-item-row";
+    const info=document.createElement("div");info.className="v2971-item-info";
+    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
+    const amount=document.createElement("strong");amount.className="v2971-item-amount";amount.textContent=euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)));
+    info.appendChild(main);row.append(info,amount);items.appendChild(row);
+  });
+  body.appendChild(items);
+  const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Artikel</span><span>${euro(order.totalPrice)}</span>`;body.appendChild(footer);
+  card.appendChild(body);
+
+  summary.addEventListener("click",()=>{
+    const isOpen=card.classList.toggle("open");
+    card.classList.toggle("collapsed",!isOpen);
+    summary.setAttribute("aria-expanded",String(isOpen));
+  });
   return card;
 }
+
+
+function productLabel(item){
+  return text(item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt"),"T-Shirt");
+}
+function renderProductionDashboard(){
+  const root=document.getElementById("productionTab");
+  if(!root) return;
+  const openEntries=loadedOrders.filter(({order})=>!["Fertig","Abgeholt"].includes(order.status||"Neu"));
+  const textileMap=new Map();
+  const printMap=new Map();
+  let totalItems=0;
+  openEntries.forEach(({order})=>{
+    (Array.isArray(order.items)?order.items:[]).forEach(item=>{
+      const qty=Number(item.quantity)||1;
+      totalItems+=qty;
+      const product=productLabel(item);
+      const article=String(item.articleNo||"").trim();
+      const color=text(item.shirtColor,"–");
+      const size=text(item.size,"–");
+      const tkey=[product,article,color,size].join("|");
+      const t=textileMap.get(tkey)||{product,article,color,size,qty:0}; t.qty+=qty; textileMap.set(tkey,t);
+      const motif=text(item.motif,"Ohne Motiv");
+      const motifColor=text(item.motifColor,"–");
+      const pkey=[motif,motifColor].join("|");
+      const pr=printMap.get(pkey)||{motif,motifColor,qty:0}; pr.qty+=qty; printMap.set(pkey,pr);
+    });
+  });
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=String(val)};
+  set("prodStatOrders",openEntries.length); set("prodStatItems",totalItems); set("prodStatVariants",textileMap.size); set("prodStatPrints",printMap.size);
+  const textileHost=document.getElementById("productionTextiles");
+  if(textileHost){
+    textileHost.replaceChildren();
+    const rows=[...textileMap.values()].sort((a,b)=>a.product.localeCompare(b.product,"de")||a.color.localeCompare(b.color,"de")||a.size.localeCompare(b.size,"de"));
+    if(!rows.length){ textileHost.innerHTML='<p class="production-empty">Aktuell kein Textilienbedarf.</p>'; }
+    rows.forEach(row=>{
+      const el=document.createElement("div"); el.className="production-row";
+      el.innerHTML=`<div><strong>${htmlEscape(row.product)}${row.article?` <small>${htmlEscape(row.article)}</small>`:""}</strong><span>${htmlEscape(row.color)} · Größe ${htmlEscape(row.size)}</span></div><b>${row.qty}×</b>`;
+      textileHost.appendChild(el);
+    });
+  }
+  const printHost=document.getElementById("productionPrints");
+  if(printHost){
+    printHost.replaceChildren();
+    const rows=[...printMap.values()].sort((a,b)=>b.qty-a.qty||a.motif.localeCompare(b.motif,"de"));
+    if(!rows.length){ printHost.innerHTML='<p class="production-empty">Aktuell kein Druckbedarf.</p>'; }
+    rows.forEach(row=>{
+      const el=document.createElement("div"); el.className="production-row";
+      el.innerHTML=`<div><strong>${htmlEscape(row.motif)}</strong><span>Druckfarbe: ${htmlEscape(row.motifColor)}</span></div><b>${row.qty}×</b>`;
+      printHost.appendChild(el);
+    });
+  }
+  const orderHost=document.getElementById("productionOrders");
+  if(orderHost){
+    orderHost.replaceChildren();
+    if(!openEntries.length){ orderHost.innerHTML='<p class="production-empty">Keine offenen Aufträge.</p>'; }
+    openEntries.forEach(({id,order})=>{
+      const row=document.createElement("button"); row.type="button"; row.className="production-order-row";
+      row.innerHTML=`<span class="prod-date">${htmlEscape(dateOnlyText(order.createdAt))}</span><strong>${htmlEscape(text(order.customerName||order.customerId,"Shop"))}</strong><span>${htmlEscape(text(order.name,"Besteller"))}</span><b>${htmlEscape(text(order.totalQuantity,"0"))} Artikel</b><em>${htmlEscape(order.status||"Neu")}</em>`;
+      row.addEventListener("click",()=>{switchAdminTab("orders"); const card=document.querySelector(`.order-card[data-order-id="${CSS.escape(id)}"]`); if(card){card.scrollIntoView({behavior:"smooth",block:"center"});}});
+      orderHost.appendChild(row);
+    });
+  }
+}
+const productionRefreshBtn=document.getElementById("productionRefreshBtn");
+productionRefreshBtn?.addEventListener("click",async()=>{await loadOrders();renderProductionDashboard();});
 
 loginForm.addEventListener("submit",async e=>{
   e.preventDefault();loginMessage.textContent="";
@@ -231,7 +369,7 @@ logoutBtn.addEventListener("click",()=>auth.signOut());
 refreshBtn.addEventListener("click",loadOrders);
 searchInput.addEventListener("input", applyFilters);
 statusFilter.addEventListener("change", applyFilters);
-if(customerFilter)customerFilter.addEventListener("change", applyFilters);
+if(buyerFilter)buyerFilter.addEventListener("change",applyFilters);
 
 auth.onAuthStateChanged(user=>{
   const admin = user && (user.email||"").toLowerCase()===ADMIN_EMAIL;
@@ -248,6 +386,7 @@ const seedShops = (CENTRAL && CENTRAL.seedShops) || {};
 const tabButtons = [...document.querySelectorAll(".tab-btn")];
 const ordersTab = document.getElementById("ordersTab");
 const shopsTab = document.getElementById("shopsTab");
+const productionTab = document.getElementById("productionTab");
 const shopList = document.getElementById("shopList");
 const shopForm = document.getElementById("shopForm");
 const shopEditorTitle = document.getElementById("shopEditorTitle");
@@ -416,6 +555,26 @@ function refreshPositionEditor(){
   if(positionXValue) positionXValue.textContent = "";
   if(positionYValue) positionYValue.textContent = "";
   if(positionWValue) positionWValue.textContent = friendlySizeLabel(w);
+
+  // v29.8.6: Artikel-Metadaten immer direkt mit der echten Vorschau synchronisieren.
+  // Das greift unabhängig davon, ob die Artikel-Karte später im DOM umgebaut wurde.
+  const articleModel = document.getElementById("v2853Model");
+  const articleTitle = document.getElementById("v2853PreviewTitle");
+  const articleColorName = document.getElementById("v2853ColorName");
+  const articleColorDot = document.querySelector(".v2853-color-readonly i");
+  const modelMap = {
+    tshirt: "F140 · T-Shirt",
+    polo: "F502 · Polo-Shirt",
+    hoodie: "F421 · Hoodie"
+  };
+  if(articleModel) articleModel.textContent = modelMap[product] || "Textil";
+  const articlePrice = document.getElementById("v2987ProductPrice");
+  const priceMap = { tshirt: "15,00 €", polo: "25,00 €", hoodie: "30,00 €" };
+  if(articlePrice) articlePrice.textContent = priceMap[product] || "";
+  if(articleTitle) articleTitle.textContent = `Vorschau – ${side === "back" ? "Rückseite" : "Vorderseite"}`;
+  if(articleColorName) articleColorName.textContent = shopFields.fixedShirtName?.value || "Royal Blue";
+  if(articleColorDot) articleColorDot.style.background = shopFields.fixedShirtHex?.value || "#0758b2";
+
   window.updateV284PrintTable?.();
   window.updateV2856PrintTable?.();
 }
@@ -463,6 +622,14 @@ function bindPositionEditor(){
     saveShopBtn?.click();
   });
 }
+
+// v29.8.6: robuster Fallback für die Artikelzeile (Kategorie/Modell/Ansicht).
+document.addEventListener("change", (ev) => {
+  if(ev.target?.id === "positionProduct" || ev.target?.id === "positionSide"){
+    requestAnimationFrame(() => refreshPositionEditor());
+  }
+}, true);
+
 function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
@@ -497,7 +664,8 @@ function flashSavedButton(btn, normalText){
 
 function switchAdminTab(name){
   tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
-  ordersTab.hidden=name!=="orders"; shopsTab.hidden=name!=="shops";
+  ordersTab.hidden=name!=="orders"; shopsTab.hidden=name!=="shops"; if(productionTab) productionTab.hidden=name!=="production";
+  if(name==="production") renderProductionDashboard();
 }
 tabButtons.forEach(btn=>btn.addEventListener("click",()=>switchAdminTab(btn.dataset.tab)));
 
@@ -505,6 +673,8 @@ async function initShopAdmin(){
   if(shopAdminInitialized) return;
   shopAdminInitialized=true;
   await loadShopConfigs();
+  // v29.6.0: Admin startet grundsätzlich in der Shop-Verwaltung.
+  switchAdminTab("shops");
 }
 
 async function loadShopConfigs(){
@@ -557,7 +727,7 @@ function selectShop(id){
   shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
   shopFields.hoodieFrontX.value=Number(hoodie.front?.xPct ?? 68); shopFields.hoodieFrontY.value=Number(hoodie.front?.yPct ?? 22); shopFields.hoodieFrontW.value=Number(hoodie.front?.widthPct ?? 36);
-  shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); { const hb=Number(hoodie.back?.widthPct ?? 50); shopFields.hoodieBackW.value=(hb===46?50:hb); }
+  shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); { const hb=Number(hoodie.back?.widthPct ?? 78); shopFields.hoodieBackW.value=([46,54,58,62,72].includes(hb)?78:hb); }
   fillPrintData(cfg);
   if(productionFileUrl) productionFileUrl.value = cfg.productionFile || cfg.printData?.productionFile || "";
   updateFeatureVisibility(cfg.shopType||"simple");
@@ -635,7 +805,7 @@ newShopBtn.addEventListener("click",()=>{
   const pp=template.productPrint||{};
   shopFields.tshirtFrontX.value=Number(pp.tshirt?.front?.xPct??68); shopFields.tshirtFrontY.value=Number(pp.tshirt?.front?.yPct??16); shopFields.tshirtFrontW.value=Number(pp.tshirt?.front?.widthPct??28); shopFields.tshirtBackX.value=Number(pp.tshirt?.back?.xPct??50); shopFields.tshirtBackY.value=Number(pp.tshirt?.back?.yPct??36); shopFields.tshirtBackW.value=Number(pp.tshirt?.back?.widthPct??50);
   shopFields.poloFrontX.value=Number(pp.polo?.front?.xPct??68); shopFields.poloFrontY.value=Number(pp.polo?.front?.yPct??22); shopFields.poloFrontW.value=Number(pp.polo?.front?.widthPct??28); shopFields.poloBackX.value=Number(pp.polo?.back?.xPct??50); shopFields.poloBackY.value=Number(pp.polo?.back?.yPct??36); shopFields.poloBackW.value=Number(pp.polo?.back?.widthPct??50);
-  shopFields.hoodieFrontX.value=Number(pp.hoodie?.front?.xPct??68); shopFields.hoodieFrontY.value=Number(pp.hoodie?.front?.yPct??22); shopFields.hoodieFrontW.value=Number(pp.hoodie?.front?.widthPct??36); shopFields.hoodieBackX.value=Number(pp.hoodie?.back?.xPct??50); shopFields.hoodieBackY.value=Number(pp.hoodie?.back?.yPct??34); shopFields.hoodieBackW.value=Number(pp.hoodie?.back?.widthPct??54);
+  shopFields.hoodieFrontX.value=Number(pp.hoodie?.front?.xPct??68); shopFields.hoodieFrontY.value=Number(pp.hoodie?.front?.yPct??22); shopFields.hoodieFrontW.value=Number(pp.hoodie?.front?.widthPct??36); shopFields.hoodieBackX.value=Number(pp.hoodie?.back?.xPct??50); shopFields.hoodieBackY.value=Number(pp.hoodie?.back?.yPct??34); shopFields.hoodieBackW.value=Number(pp.hoodie?.back?.widthPct??78);
   fillPrintData(template); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("SIMPLE-Mastervorlage geladen – Shop-ID und Kundendaten eintragen."); renderShopList();
 });
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
@@ -656,12 +826,12 @@ function buildShopConfig(){
     ...(old.productPrint||{}),
     tshirt:{front:{xPct:clamp(shopFields.tshirtFrontX.value,10,90,68),yPct:clamp(shopFields.tshirtFrontY.value,10,70,20),widthPct:clamp(shopFields.tshirtFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.tshirtBackX.value,10,90,50),yPct:clamp(shopFields.tshirtBackY.value,10,70,36),widthPct:clamp(shopFields.tshirtBackW.value,10,80,50)}},
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}},
-    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,80,50)}}
+    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,90,78)}}
   };
   cfg.printData=collectPrintData();
   cfg.productionFile=(productionFileUrl?.value||"").trim();
   if(id === "tg-solingen") {
-    cfg.hoodieSizingVersion = 1;
+    cfg.hoodieSizingVersion = 5;
     const oldProducts = Array.isArray(old.products) ? old.products : [];
     const byId = Object.fromEntries(oldProducts.map(p => [p.id, p]));
     cfg.products = [
@@ -781,14 +951,17 @@ saveShopBtn.addEventListener("click",async()=>{
       <button type="button" id="v2949ShopsToggle" class="v2949-shops-toggle" aria-expanded="true">
         <span class="v2949-folder-icon">▾</span><strong>Shops</strong><span id="v2949ShopCount" class="v2949-shop-count">0</span>
       </button>
+      <div id="v2959ShopTypes" class="v2959-shop-types" role="tablist" aria-label="Shop-Typen">
+        <button type="button" class="v2959-shop-type v2959-simple active" data-shop-type="simple" role="tab" aria-selected="true">Simple</button>
+        <button type="button" class="v2959-shop-type v2959-motifs" data-shop-type="motifs" role="tab" aria-selected="false">Motive</button>
+        <button type="button" class="v2959-shop-type v2959-designer" data-shop-type="designer" role="tab" aria-selected="false">Designer</button>
+      </div>
       <div id="v2949ShopsTree" class="v2949-shops-tree"></div>
     </section>
     <nav class="v284-nav" aria-label="Admin Navigation">
       <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
       <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
-      <button type="button" data-jump="motif"><span>✥</span>Motive / Logos</button>
-      <button type="button" data-jump="production"><span>▤</span>Produktionsdaten</button>
-      <button type="button" data-jump="functions"><span>◉</span>Funktionen</button>
+      <button type="button" data-main="production"><span>▤</span>Produktion</button>
     </nav>
     <div class="v284-side-bottom">
       <button type="button" id="v284NewShop">＋ Neuer Shop</button>
@@ -800,6 +973,8 @@ saveShopBtn.addEventListener("click",async()=>{
   const shopsTree=sidebar.querySelector("#v2949ShopsTree");
   const shopsToggle=sidebar.querySelector("#v2949ShopsToggle");
   const shopCount=sidebar.querySelector("#v2949ShopCount");
+  const shopTypeTabs=[...sidebar.querySelectorAll(".v2959-shop-type")];
+  let activeShopType="simple";
   const SHOP_TYPE_GROUPS=[
     {key:"simple",label:"1 · SIMPLE"},
     {key:"motifs",label:"2 · MOTIVE"},
@@ -819,46 +994,59 @@ saveShopBtn.addEventListener("click",async()=>{
       return true;
     }).sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de"));
     if(shopCount) shopCount.textContent=String(entries.length);
-    SHOP_TYPE_GROUPS.forEach(group=>{
-      const matches=entries.filter(([,cfg])=>(cfg.shopType||"simple")===group.key);
-      const block=document.createElement("div");
-      block.className="v2949-shop-group";
-      matches.forEach(([id,cfg])=>{
-        const btn=document.createElement("button");
-        btn.type="button";
-        btn.className="v2949-shop-item";
-        btn.dataset.shopId=id;
-        btn.classList.toggle("active",id===selectedShopId);
-        const main=document.createElement("span");
-        main.className="v2958-shop-main";
-        const name=document.createElement("span");
-        name.className="v2949-shop-item-name";
-        name.textContent=cfg.customerName||id;
-        const badge=document.createElement("span");
-        badge.className=`v2958-type-badge v2958-type-${group.key}`;
-        badge.textContent=group.key==="motifs"?"Motive":(group.key==="designer"?"Designer":"Simple");
-        main.append(name,badge);
-        const meta=document.createElement("small");
-        const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
-        const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
-        meta.textContent=isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
-        btn.append(main,meta);
-        btn.addEventListener("click",()=>{
-          const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
-          original?.click();
-          switchAdminTab("shops");
-          setNavActive("shops");
-          renderV2949ShopTree();
-          if(window.matchMedia("(max-width:720px)").matches){
-            sidebar.classList.remove("mobile-menu-open");
-            if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
-          }
-        });
-        block.appendChild(btn);
+    const group=SHOP_TYPE_GROUPS.find(g=>g.key===activeShopType) || SHOP_TYPE_GROUPS[0];
+    const matches=entries
+      .filter(([,cfg])=>(cfg.shopType||"simple")===group.key)
+      .sort((a,b)=>{
+        const isTemplateA=a[0].startsWith("_") || String(a[1]?.customerName||"").trim().toLowerCase().startsWith("vorlage ");
+        const isTemplateB=b[0].startsWith("_") || String(b[1]?.customerName||"").trim().toLowerCase().startsWith("vorlage ");
+        if(isTemplateA!==isTemplateB) return isTemplateA?-1:1;
+        return String(a[1]?.customerName||a[0]).localeCompare(String(b[1]?.customerName||b[0]),"de");
       });
-      shopsTree.appendChild(block);
+    const block=document.createElement("div");
+    block.className=`v2949-shop-group v2959-active-group v2959-group-${group.key}`;
+    matches.forEach(([id,cfg])=>{
+      const btn=document.createElement("button");
+      btn.type="button";
+      btn.className="v2949-shop-item";
+      btn.dataset.shopId=id;
+      btn.classList.toggle("active",id===selectedShopId);
+      const name=document.createElement("span");
+      name.className="v2949-shop-item-name";
+      name.textContent=cfg.customerName||id;
+      const meta=document.createElement("small");
+      const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
+      const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ");
+      meta.textContent=isTemplate?"":(cfg.active===false?"Inaktiv":"Aktiv");
+      if(isTemplate) meta.setAttribute("aria-hidden","true");
+      btn.append(name,meta);
+      btn.addEventListener("click",()=>{
+        const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
+        original?.click();
+        switchAdminTab("shops");
+        setNavActive("shops");
+        renderV2949ShopTree();
+        if(window.matchMedia("(max-width:720px)").matches){
+          sidebar.classList.remove("mobile-menu-open");
+          if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+        }
+      });
+      block.appendChild(btn);
+    });
+    if(!matches.length){
+      const empty=document.createElement("div");
+      empty.className="v2959-shop-empty";
+      empty.textContent="Noch kein Shop in dieser Kategorie";
+      block.appendChild(empty);
+    }
+    shopsTree.appendChild(block);
+    shopTypeTabs.forEach(tab=>{
+      const active=tab.dataset.shopType===activeShopType;
+      tab.classList.toggle("active",active);
+      tab.setAttribute("aria-selected",String(active));
     });
   }
+
   window.refreshV284ShopSelect=function(){
     if(!shopSelect || !list) return;
     const current=selectedShopId || "";
@@ -873,6 +1061,11 @@ saveShopBtn.addEventListener("click",async()=>{
     });
     renderV2949ShopTree();
   };
+  shopTypeTabs.forEach(tab=>tab.addEventListener("click",()=>{
+    activeShopType=tab.dataset.shopType||"simple";
+    renderV2949ShopTree();
+  }));
+
   shopsToggle?.addEventListener("click",()=>{
     const collapsed=sidebar.classList.toggle("v2949-shops-collapsed");
     shopsToggle.setAttribute("aria-expanded",String(!collapsed));
@@ -915,10 +1108,20 @@ saveShopBtn.addEventListener("click",async()=>{
     }
   }));
 
+  let v2959InitialMobileStartDone=false;
   const dashObserver=new MutationObserver(()=>{
     sidebar.hidden=dashboardEl.hidden;
     if(!dashboardEl.hidden){
-      setNavActive(ordersTab.hidden?"shops":"orders");
+      if(window.matchMedia("(max-width:720px)").matches && !v2959InitialMobileStartDone){
+        v2959InitialMobileStartDone=true;
+        switchAdminTab("shops");
+        setNavActive("shops");
+        activeShopType="simple";
+        sidebar.classList.add("mobile-menu-open");
+        if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","true"); mobileMenuBtn.textContent="×"; }
+      } else {
+        setNavActive(ordersTab.hidden?"shops":"orders");
+      }
       window.refreshV284ShopSelect?.();
     }
   });
@@ -998,7 +1201,7 @@ saveShopBtn.addEventListener("click",async()=>{
     card("Motive (Druckbereich)","motif",wrap,true);
   }
   if(fixed){ const body=fixed.querySelector(".accordion-body")||fixed; card("Fester Druck (vorne / hinten)","fixed",body,true); }
-  if(production){ const body=production.querySelector(".accordion-body")||production; card("Produktionsdaten","production",body,false); }
+  if(production){ const body=production.querySelector(".accordion-body")||production; card("Druckvorgaben","production",body,false); }
   if(technical){ technical.hidden=true; form.appendChild(technical); }
 
   // Alte Zwischen-Navigation/Wrapper entfernen, nachdem Inhalte umgezogen wurden.
@@ -1024,13 +1227,13 @@ saveShopBtn.addEventListener("click",async()=>{
     const sizeLabel=(p,s,w)=>{
       const n=Number(w?.value||0);
       if(p==="hoodie"&&s==="front") return n<33?"small":n<40?"medium":"large";
-      if(p==="hoodie"&&s==="back") return n<42?"small":n<50?"medium":"large";
+      if(p==="hoodie"&&s==="back") return n<60?"small":n<70?"medium":"large";
       if(s==="front") return n<24?"small":n<33?"medium":"large";
       return n<44?"small":n<56?"medium":"large";
     };
     const sizeValue=(p,s,label)=>{
       if(p==="hoodie"&&s==="front") return label==="small"?30:label==="medium"?36:42;
-      if(p==="hoodie"&&s==="back") return label==="small"?38:label==="medium"?46:54;
+      if(p==="hoodie"&&s==="back") return label==="small"?58:label==="medium"?68:78;
       if(s==="front") return label==="small"?20:label==="medium"?28:36;
       return label==="small"?38:label==="medium"?50:60;
     };
@@ -1173,7 +1376,7 @@ saveShopBtn.addEventListener("click",async()=>{
   articleControls.className='v2853-article-controls';
   if(productLabel){ productLabel.querySelector('span').textContent='Kategorie'; articleControls.appendChild(productLabel); }
   const model=document.createElement('label');
-  model.innerHTML='<span>Modell</span><input id="v2853Model" type="text" readonly value="F140 · T-Shirt">';
+  model.innerHTML='<span>Modell</span><div class="v2987-model-readonly"><strong id="v2853Model">F140 · T-Shirt</strong><b id="v2987ProductPrice">15,00 €</b></div>';
   articleControls.appendChild(model);
   const color=document.createElement('label');
   color.innerHTML='<span>Farbe</span><div class="v2853-color-readonly"><i></i><b id="v2853ColorName">Royal Blue</b></div>';
@@ -1276,13 +1479,13 @@ saveShopBtn.addEventListener("click",async()=>{
     const sizeLabel=(p,s,w)=>{
       const n=Number(w?.value||0);
       if(p==='hoodie'&&s==='front') return n<33?'small':n<40?'medium':'large';
-      if(p==='hoodie'&&s==='back') return n<42?'small':n<50?'medium':'large';
+      if(p==='hoodie'&&s==='back') return n<60?'small':n<70?'medium':'large';
       if(s==='front') return n<24?'small':n<33?'medium':'large';
       return n<44?'small':n<56?'medium':'large';
     };
     const sizeValue=(p,s,label)=>{
       if(p==='hoodie'&&s==='front') return label==='small'?30:label==='medium'?36:42;
-      if(p==='hoodie'&&s==='back') return label==='small'?38:label==='medium'?50:58;
+      if(p==='hoodie'&&s==='back') return label==='small'?58:label==='medium'?68:78;
       if(s==='front') return label==='small'?20:label==='medium'?28:36;
       return label==='small'?38:label==='medium'?50:60;
     };
@@ -1359,7 +1562,10 @@ saveShopBtn.addEventListener("click",async()=>{
       polo:'F502 · Polo-Shirt',
       hoodie:'F421 · Hoodie'
     };
-    if(modelInput) modelInput.value=map[product?.value]||'Textil';
+    if(modelInput) modelInput.textContent=map[product?.value]||'Textil';
+    const productPrice=document.getElementById('v2987ProductPrice');
+    const priceMap={tshirt:'15,00 €',polo:'25,00 €',hoodie:'30,00 €'};
+    if(productPrice) productPrice.textContent=priceMap[product?.value]||'';
     if(previewTitle) previewTitle.textContent=`Vorschau – ${side?.value==='back'?'Rückseite':'Vorderseite'}`;
     if(colorName) colorName.textContent=document.getElementById('fixedShirtName')?.value || 'Royal Blue';
     if(colorDot) colorDot.style.background=document.getElementById('fixedShirtHex')?.value || '#0758b2';
@@ -1374,5 +1580,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.2.6');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.8.7');
 })();

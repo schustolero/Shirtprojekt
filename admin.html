@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=29.5.8">
+  <link rel="stylesheet" href="admin.css?v=29.8.7">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -738,6 +738,7 @@
       <nav class="admin-tabs panel" aria-label="Adminbereiche">
         <button type="button" class="tab-btn active" data-tab="orders">Bestellungen</button>
         <button type="button" class="tab-btn" data-tab="shops">Shops verwalten</button>
+        <button type="button" class="tab-btn" data-tab="production">Produktion</button>
       </nav>
 
       <section id="ordersTab" class="tab-panel">
@@ -746,14 +747,44 @@
           <article class="stat-card"><span>Shirts</span><strong id="statShirts">0</strong></article>
           <article class="stat-card"><span>Umsatz</span><strong id="statRevenue">0,00 €</strong></article>
         </div>
-        <div class="toolbar panel"><div><h2>Bestellübersicht</h2><p id="lastUpdate">Noch nicht geladen</p></div><button id="refreshBtn" class="ghost-btn" type="button">Aktualisieren</button></div>
-        <div class="filters panel">
-          <label class="status-filter-field"><span>Kunde / Verein</span><select id="customerFilter"><option value="Alle">Alle Kunden</option></select></label>
-          <label class="search-field"><span>Suche</span><input id="searchInput" type="search" placeholder="Bestellnummer, Name, Klasse …" autocomplete="off"></label>
-          <label class="status-filter-field"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option></select></label>
+        <div class="toolbar panel orders-toolbar v2963-orders-toolbar">
+          <div class="orders-toolbar-title"><h2>Bestellübersicht</h2><p id="lastUpdate">Noch nicht geladen</p></div>
+          <label class="customer-filter-field v2965-customer"><span>Kunde</span><select id="buyerFilter"><option value="Alle">Alle Kunden</option></select></label>
+          <label class="search-field v2963-search"><span>Suche</span><input id="searchInput" type="search" placeholder="Bestellnummer, Name …" autocomplete="off"></label>
+          <label class="status-filter-field v2963-status"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option></select></label>
+          <button id="refreshBtn" class="ghost-btn v2963-refresh" type="button">Aktualisieren</button>
         </div>
         <div id="ordersList" class="orders-list"></div>
         <p id="ordersMessage" class="empty-message" hidden>Keine Bestellungen vorhanden.</p>
+      </section>
+
+      <section id="productionTab" class="tab-panel" hidden>
+        <div class="production-dashboard">
+          <div class="production-head panel">
+            <div><span class="eyebrow">PRODUKTION</span><h2>Offene Produktion</h2><p>Automatisch aus allen noch offenen Bestellungen zusammengefasst.</p></div>
+            <button id="productionRefreshBtn" class="ghost-btn" type="button">Aktualisieren</button>
+          </div>
+          <div class="production-stats">
+            <article class="production-stat panel"><span>Offene Aufträge</span><strong id="prodStatOrders">0</strong></article>
+            <article class="production-stat panel"><span>Artikel</span><strong id="prodStatItems">0</strong></article>
+            <article class="production-stat panel"><span>Textil-Varianten</span><strong id="prodStatVariants">0</strong></article>
+            <article class="production-stat panel"><span>Druck-Varianten</span><strong id="prodStatPrints">0</strong></article>
+          </div>
+          <div class="production-grid">
+            <section class="panel production-block">
+              <div class="production-block-head"><div><h3>Textilienbedarf</h3><p>Zusammengefasst nach Artikel, Farbe und Größe.</p></div></div>
+              <div id="productionTextiles" class="production-list"></div>
+            </section>
+            <section class="panel production-block">
+              <div class="production-block-head"><div><h3>Druckbedarf</h3><p>Zusammengefasst nach Motiv und Druckfarbe.</p></div></div>
+              <div id="productionPrints" class="production-list"></div>
+            </section>
+          </div>
+          <section class="panel production-block production-orders-block">
+            <div class="production-block-head"><div><h3>Offene Aufträge</h3><p>Nur Neu und In Bearbeitung.</p></div></div>
+            <div id="productionOrders" class="production-order-list"></div>
+          </section>
+        </div>
       </section>
 
       <section id="shopsTab" class="tab-panel" hidden>
@@ -773,7 +804,24 @@
                 <label class="wide v2850-name-field"><span>Name</span><input id="shopName" type="text" required></label>
                 <label><span>Shop-Typ</span><select id="shopType"><option value="simple">Simple</option><option value="motifs">Motiv</option><option value="designer">Designer</option></select></label>
                 <label><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
-                <label class="check-row v2850-active-field"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
+                <div class="v2972-status-functions wide">
+                  <label class="check-row v2850-active-field"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
+                  <div class="v2972-inline-functions" aria-label="Funktionen">
+                    <span class="v2972-functions-label">Funktionen</span>
+                    <label><input id="allowBack" type="checkbox"><span>Rückseite</span></label>
+                    <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben</span></label>
+                    <label><input id="showMotifs" type="checkbox"><span>Motive</span></label>
+                    <label><input id="showMotifColors" type="checkbox"><span>Motivfarben</span></label>
+                    <label><input id="allowUpload" type="checkbox"><span>Upload</span></label>
+                    <label><input id="allowText" type="checkbox"><span>Text</span></label>
+                    <div id="designerFeatureTools" class="designer-feature-tools v2972-designer-tools" hidden>
+                      <label><input id="allowMove" type="checkbox"><span>Verschieben</span></label>
+                      <label><input id="allowResize" type="checkbox"><span>Skalieren</span></label>
+                      <label><input id="allowRotate" type="checkbox"><span>Drehen</span></label>
+                    </div>
+                    <div id="hiddenDesignerFeatureInputs" hidden></div>
+                  </div>
+                </div>
 
                 <input id="shopId" type="hidden" required>
                 <input id="shopPrice" type="hidden" value="15">
@@ -869,7 +917,7 @@
                 <div class="position-editor-toolbar">
                   <label><span>Textil</span><select id="positionProduct"><option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option></select></label>
                   <label><span>Seite</span><select id="positionSide"><option value="front">Vorderseite</option><option value="back">Rückseite</option></select></label>
-                  <label class="position-size-control"><span>Motivgröße</span><input id="positionSize" type="range" min="18" max="65" step="1" value="36" aria-label="Motivgröße"><small class="size-scale"><span>Klein</span><span>Mittel</span><span>Groß</span></small></label>
+                  <label class="position-size-control"><span>Motivgröße</span><input id="positionSize" type="range" min="18" max="90" step="1" value="36" aria-label="Motivgröße"><small class="size-scale"><span>Klein</span><span>Mittel</span><span>Groß</span></small></label>
                 </div>
                 <div class="position-editor-layout">
                   <div class="position-stage" id="positionStage">
@@ -910,7 +958,7 @@
                   <label><span>Vorne Größe</span><input id="hoodieFrontW" type="number" min="8" max="70" step="0.5" value="36"></label>
                   <label><span>Hinten X</span><input id="hoodieBackX" type="number" min="10" max="90" step="0.5" value="50"><small>50 = exakt mittig.</small></label>
                   <label><span>Hinten Y</span><input id="hoodieBackY" type="number" min="10" max="70" step="0.5" value="34"></label>
-                  <label><span>Hinten Größe</span><input id="hoodieBackW" type="number" min="10" max="80" step="0.5" value="50"></label>
+                  <label><span>Hinten Größe</span><input id="hoodieBackW" type="number" min="10" max="90" step="0.5" value="50"></label>
                 </div>
               </div></div>
 
@@ -932,7 +980,7 @@
 
 
               <details class="form-section compact-accordion print-data-accordion" hidden aria-hidden="true">
-                <summary><span>Produktionsdaten</span><small>Einmal für alle Textilien</small></summary>
+                <summary><span>Druckvorgaben</span><small>Maße & Verfahren</small></summary>
                 <div class="accordion-body">
                   <div class="production-help">
                     <strong>Eine Druckvorgabe für T-Shirt, Polo und Hoodie</strong>
@@ -961,28 +1009,6 @@
                   </div>
                 </div>
               </details>
-              <details class="form-section compact-accordion functions-accordion">
-                <summary><span>Funktionen</span><small>Shop-Optionen</small></summary>
-                <div class="accordion-body">
-                  <div class="feature-grid compact-feature-grid core-features">
-                    <label><input id="allowBack" type="checkbox"><span>Rückseite</span></label>
-                    <label><input id="showShirtColors" type="checkbox"><span>Shirtfarben</span></label>
-                    <label><input id="showMotifs" type="checkbox"><span>Motivauswahl</span></label>
-                    <label><input id="showMotifColors" type="checkbox"><span>Motivfarben</span></label>
-                    <label><input id="allowUpload" type="checkbox"><span>Kunden-Upload</span></label>
-                    <label><input id="allowText" type="checkbox"><span>Eigener Text</span></label>
-                  </div>
-                  <div id="designerFeatureTools" class="designer-feature-tools" hidden>
-                    <span class="designer-feature-title">Nur Designer-Shop</span>
-                    <div class="feature-grid compact-feature-grid">
-                      <label><input id="allowMove" type="checkbox"><span>Verschieben</span></label>
-                      <label><input id="allowResize" type="checkbox"><span>Skalieren</span></label>
-                      <label><input id="allowRotate" type="checkbox"><span>Drehen</span></label>
-                    </div>
-                  </div>
-                  <div id="hiddenDesignerFeatureInputs" hidden></div>
-                </div>
-              </details>
 
               <details class="form-section compact-accordion legacy-motifs-accordion" hidden aria-hidden="true">
                 <summary><span>Motive</span><small>Bearbeiten / hinzufügen</small></summary>
@@ -997,12 +1023,12 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=28.6.9"></script>
+  <script src="/central-config.js?v=29.8.7"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=29.5.5"></script>
+  <script src="/admin.js?v=29.8.7"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1029,7 +1055,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.5.8';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v29.8.7';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

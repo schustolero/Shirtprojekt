@@ -242,7 +242,15 @@ function renderProductSelector() {
     btn.type = "button";
     btn.className = "product-btn";
     btn.dataset.product = product.id;
-    btn.textContent = product.name || product.id;
+    const productName = document.createElement("span");
+    productName.className = "product-btn-name";
+    productName.textContent = product.name || product.id;
+    const priceText = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
+    btn.dataset.price = priceText;
+    const productPrice = document.createElement("small");
+    productPrice.className = "product-btn-price";
+    productPrice.textContent = priceText;
+    btn.append(productName, productPrice);
     btn.classList.toggle("active", product.id === currentProductId);
     btn.addEventListener("click", async () => {
       if (product.id === currentProductId) return;
@@ -353,7 +361,7 @@ function getUnifiedPrintLayout(view, cfg) {
     return {
       xPct: Math.max(8, Math.min(92, Number(product.xPct) || 50)),
       yPct: Math.max(10, Math.min(70, Number(product.yPct) || (view === "front" ? 20 : 36))),
-      widthPct: Math.max(8, Math.min(80, Number(product.widthPct) || (view === "front" ? 22 : 50)))
+      widthPct: Math.max(8, Math.min((currentProductId === "hoodie" && view === "back") ? 90 : 80, Number(product.widthPct) || (view === "front" ? 22 : 50)))
     };
   }
   const size = cfg?.size || "medium";
@@ -386,7 +394,7 @@ function applyDualMotifLayout(img, view, cfg) {
   img.style.top = `${top}%`;
   img.style.width = `${width}%`;
   img.style.maxWidth = `${width}%`;
-  img.style.maxHeight = `${zone.height * 62}%`;
+  img.style.maxHeight = `${zone.height * ((currentProductId === "hoodie" && view === "back") ? 90 : 62)}%`;
 }
 
 async function getDualBaseImage() {
@@ -588,7 +596,7 @@ function getFixedPrintLayout(motifId) {
       left: unified.xPct / 100,
       top: unified.yPct / 100,
       maxWidth: unified.widthPct / 100,
-      maxHeight: Math.min(0.62, (unified.widthPct / 100) * 0.86)
+      maxHeight: (currentProductId === "hoodie" && currentView === "back") ? Math.min(0.90, (unified.widthPct / 100) * 1.18) : Math.min(0.62, (unified.widthPct / 100) * 0.86)
     };
   }
   return FIXED_MOTIF_LAYOUTS.default;
