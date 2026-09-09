@@ -270,9 +270,18 @@ function renderProductSelector() {
 }
 
 function updateProductPriceLabel() {
-  if (!currentProductPrice) return;
   const product = getCurrentProduct();
-  currentProductPrice.textContent = `${formatEuro(getCurrentUnitPrice())} pro ${product.name || "Shirt"}`;
+  const unitPrice = getCurrentUnitPrice();
+  const qty = Math.max(1, Number(document.getElementById("shirtQuantity")?.value || 1));
+  if (currentProductPrice) {
+    currentProductPrice.textContent = `${formatEuro(unitPrice)} / Stück · ${product.name || "Textil"}`;
+  }
+  if (addToOrderLabel) {
+    addToOrderLabel.textContent = `${product.name || "Textil"} hinzufügen`;
+  }
+  if (addToOrderPrice) {
+    addToOrderPrice.textContent = formatEuro(unitPrice * qty);
+  }
 }
 
 function enhanceMotifColorCards() {
@@ -800,6 +809,8 @@ canvas.on("object:modified", function(event) {
 const shirtSize = document.getElementById("shirtSize");
 const shirtQuantity = document.getElementById("shirtQuantity");
 const addToOrderBtn = document.getElementById("addToOrderBtn");
+const addToOrderLabel = document.getElementById("addToOrderLabel");
+const addToOrderPrice = document.getElementById("addToOrderPrice");
 const orderBtn = document.getElementById("orderBtn");
 const orderMessage = document.getElementById("orderMessage");
 const cartBox = document.getElementById("cartBox");
@@ -817,6 +828,8 @@ const formTotalPrice = document.getElementById("formTotalPrice");
 const SHIRT_PRICE = Number(SHOP.shirtPrice) || 15;
 const ORDER_PREFIX = SHOP.orderPrefix || String(SHOP.customerId || "SHOP").toUpperCase().replace(/[^A-Z0-9]+/g,"-").slice(0,12);
 const CUSTOMER_ID = SHOP.customerId || window.SHOP_SLUG || "unknown";
+shirtQuantity?.addEventListener("input", updateProductPriceLabel);
+shirtQuantity?.addEventListener("change", updateProductPriceLabel);
 let orderItems = [];
 let firestoreDb = null;
 

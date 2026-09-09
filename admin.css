@@ -3609,3 +3609,40 @@ body.v284-admin #ordersTab .v2971-item-amount{display:block!important;white-spac
   .v2853-basic-grid > .v2972-status-functions .v2972-inline-functions{width:100%!important;padding:8px!important}
   .v2853-basic-grid > .v2972-status-functions .v2972-functions-label{width:100%!important;flex-basis:100%!important;margin-bottom:2px!important}
 }
+
+/* v29.9.2 – Funktionsüberschrift entfernt */
+.shop-form .v2972-functions-label{display:none!important;}
+
+
+/* v29.9.4 – Logo-Höhe kompakt wie die Buttons daneben */
+.v2854-basic-logo .shop-logo-height,
+.shop-logo-inline .shop-logo-height{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  gap:0!important;
+  align-self:center!important;
+}
+.v2854-basic-logo .shop-logo-height > span,
+.shop-logo-inline .shop-logo-height > span{
+  display:none!important;
+}
+.v2854-basic-logo .shop-logo-height input,
+.shop-logo-inline .shop-logo-height input{
+  width:76px!important;
+  min-width:76px!important;
+  max-width:76px!important;
+  height:34px!important;
+  min-height:34px!important;
+  margin:0!important;
+  padding:0 9px!important;
+  border-radius:9px!important;
+  font-size:10px!important;
+  line-height:34px!important;
+  text-align:center!important;
+  box-sizing:border-box!important;
+}
+.shop-form .v2972-functions-label{
+  display:none!important;
+}

@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=29.9.1">
+  <link rel="stylesheet" href="/style.css?v=29.9.5">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -168,7 +168,7 @@
 
     <section class="tool-section order-section">
       <h3>Größe & Menge</h3>
-      <p class="order-price-info"><strong id="currentProductPrice">15,00 € pro Shirt</strong> · alle Größen und Motive</p>
+      <div class="order-price-info"><span>Aktuelles Textil</span><strong id="currentProductPrice">15,00 € pro T-Shirt</strong></div>
       <div class="order-fields">
         <label class="order-field">
           <span>Größe</span>
@@ -183,7 +183,7 @@
           <input id="shirtQuantity" type="number" min="1" max="99" value="1" inputmode="numeric">
         </label>
       </div>
-      <button type="button" id="addToOrderBtn" class="primary-btn">Shirt zur Bestellung hinzufügen</button>
+      <button type="button" id="addToOrderBtn" class="primary-btn"><span id="addToOrderLabel">T-Shirt hinzufügen</span><strong id="addToOrderPrice">15,00 €</strong></button>
       <p id="orderMessage" class="order-message" aria-live="polite"></p>
       <div id="cartBox" class="cart-box" hidden>
         <div class="cart-head">
@@ -306,16 +306,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=29.9.1"></script>
+<script src="/central-config.js?v=29.9.5"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=29.9.1"></script>
+<script src="/shop-loader.js?v=29.9.5"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=29.9.1";
+    app.src="/script.js?v=29.9.5";
     document.body.appendChild(app);
   });
 </script>

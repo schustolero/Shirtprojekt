@@ -627,6 +627,21 @@ document.addEventListener("change", (ev) => {
   }
 }, true);
 
+
+// v29.9.4 – Grunddaten: sichtbaren Titel "Funktionen" entfernen.
+function removeInlineFunctionsTitle(){
+  const box=document.querySelector(".v2972-inline-functions");
+  if(!box) return;
+  box.querySelectorAll(".v2972-functions-label").forEach(el=>el.remove());
+  [...box.childNodes].forEach(node=>{
+    if(node.nodeType===Node.TEXT_NODE && node.textContent.trim().toLowerCase()==="funktionen") node.remove();
+  });
+  box.querySelectorAll("span,strong,div").forEach(el=>{
+    if(el.children.length===0 && el.textContent.trim().toLowerCase()==="funktionen") el.remove();
+  });
+}
+document.addEventListener("DOMContentLoaded",()=>setTimeout(removeInlineFunctionsTitle,0));
+
 function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
@@ -731,7 +746,7 @@ function refreshFixedPrintMotifOptions(selectedFront="", selectedBack=""){
 }
 function selectShop(id){
   const cfg=deepClone(shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingLogo=cfg.logoFile||"";
-  shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent=cfg.customerName||id||"Neuer Shop";
+  shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=cfg.customerName||id||"Neuer Shop";
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
   shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(cfg.accentColor||"")?cfg.accentColor:"#111111"; shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=cfg.features?.previewMode||"single"; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
   shopFields.fixedShirtName.value=cleanVisibleColorName(cfg.fixedShirtColor?.name||cfg.fixedShirtColor?.id||""); shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
@@ -815,7 +830,7 @@ newShopBtn.addEventListener("click",()=>{
   // Damit werden Produktarten, Shirt-Positionen und alle weiteren Standardwerte zuverlässig übernommen.
   const template = deepClone(shopConfigs.get("_simple") || seedShops["_simple"] || {});
   selectedShopId=""; selectedShopOriginal=template; workingMotifs=deepClone(template.motifs||[{id:"motiv1",name:"Motiv 1",file:""}]); workingLogo=template.logoFile||"";
-  shopForm.hidden=false; saveShopBtn.disabled=false; shopEditorTitle.textContent="Neuen SIMPLE-Shop anlegen"; shopFields.id.disabled=false;
+  shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent="Neuen SIMPLE-Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=Number(template.shirtPrice??15); shopFields.prefix.value=""; shopFields.email.value=template.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=template.active!==false;
   shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(template.accentColor||"")?template.accentColor:"#111111"; shopFields.logoHeight.value=Number(template.logoHeight||90); shopFields.previewMode.value=template.features?.previewMode||"single"; shopFields.heading.value=template.designerHeading||"Shirt auswählen"; shopFields.intro.value=template.designerIntro||"";
   shopFields.fixedShirtName.value=cleanVisibleColorName(template.fixedShirtColor?.name||template.fixedShirtColor?.id||""); shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedShirtColor?.color||"")?template.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=template.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedMotifColor?.color||"")?template.fixedMotifColor.color:"#f6c951";

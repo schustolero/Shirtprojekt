@@ -1794,3 +1794,279 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     font-size:11px!important;
   }
 }
+
+
+/* v29.9.3 – FINAL Kundenseite: Textil-Cards sichtbar neu aufgebaut */
+.product-section .product-switch{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:9px!important;
+  width:100%!important;
+  align-items:stretch!important;
+}
+.product-section .product-switch .product-btn{
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  position:relative!important;
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:88px!important;
+  padding:12px 6px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:10px!important;
+  text-align:center!important;
+  border:1px solid #d9dfe7!important;
+  border-radius:16px!important;
+  background:#ffffff!important;
+  box-shadow:0 3px 10px rgba(16,24,40,.055)!important;
+  overflow:hidden!important;
+}
+.product-section .product-switch .product-btn::before,
+.product-section .product-switch .product-btn::after,
+.product-section .product-switch .product-btn.active::before,
+.product-section .product-switch .product-btn.active::after{
+  content:none!important;
+  display:none!important;
+  position:static!important;
+  width:0!important;
+  height:0!important;
+  background:transparent!important;
+  border:0!important;
+}
+.product-section .product-switch .product-btn .product-btn-name{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  align-self:center!important;
+  color:#17191e!important;
+  font-size:13px!important;
+  line-height:1.15!important;
+  font-weight:800!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+.product-section .product-switch .product-btn .product-btn-price{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  align-self:center!important;
+  min-width:62px!important;
+  width:auto!important;
+  height:30px!important;
+  min-height:30px!important;
+  margin:0 auto!important;
+  padding:0 10px!important;
+  border:1px solid #dde2e8!important;
+  border-radius:999px!important;
+  background:#f2f4f7!important;
+  color:#20242a!important;
+  box-shadow:none!important;
+  font-size:11.5px!important;
+  line-height:1!important;
+  font-weight:850!important;
+  font-variant-numeric:tabular-nums!important;
+  letter-spacing:.01em!important;
+  white-space:nowrap!important;
+  text-align:center!important;
+}
+.product-section .product-switch .product-btn.active{
+  border:2px solid #e2bd00!important;
+  background:linear-gradient(180deg,#fffef8 0%,#fff9dd 100%)!important;
+  box-shadow:0 5px 15px rgba(188,149,0,.15)!important;
+}
+.product-section .product-switch .product-btn.active .product-btn-price{
+  border-color:#dfb900!important;
+  background:#ffd928!important;
+  color:#211b00!important;
+  box-shadow:0 3px 8px rgba(188,149,0,.16)!important;
+}
+@media(max-width:900px){
+  .product-section .product-switch{gap:7px!important;}
+  .product-section .product-switch .product-btn{
+    min-height:82px!important;
+    padding:10px 4px!important;
+    gap:8px!important;
+    border-radius:14px!important;
+  }
+  .product-section .product-switch .product-btn .product-btn-name{
+    font-size:11.5px!important;
+  }
+  .product-section .product-switch .product-btn .product-btn-price{
+    min-width:58px!important;
+    height:28px!important;
+    min-height:28px!important;
+    padding:0 8px!important;
+    font-size:10.5px!important;
+  }
+}
+
+
+/* v29.9.5 – Kundenseite: Größe, Menge & Bestellbutton hochwertiger */
+.order-section{
+  padding-top:18px!important;
+  padding-bottom:20px!important;
+}
+.order-section h3{
+  margin:0 0 11px!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  color:#171a1f!important;
+}
+.order-price-info{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  margin:0 0 12px!important;
+  padding:10px 11px!important;
+  border:1px solid #e4e7eb!important;
+  border-radius:11px!important;
+  background:#f8f9fb!important;
+  color:#7b828d!important;
+  font-size:10.5px!important;
+  line-height:1.2!important;
+}
+.order-price-info span{
+  font-weight:650!important;
+}
+.order-price-info strong{
+  color:#1a1d22!important;
+  font-size:11.5px!important;
+  font-weight:800!important;
+  white-space:nowrap!important;
+}
+.order-fields{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 88px!important;
+  gap:9px!important;
+  margin:0 0 11px!important;
+}
+.order-field{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+}
+.order-field > span{
+  font-size:10.5px!important;
+  line-height:1!important;
+  font-weight:750!important;
+  color:#4f5661!important;
+}
+.order-field select,
+.order-field input{
+  width:100%!important;
+  height:44px!important;
+  min-height:44px!important;
+  padding:0 11px!important;
+  border:1px solid #d8dde4!important;
+  border-radius:11px!important;
+  background:#fff!important;
+  color:#171a1f!important;
+  font-size:12.5px!important;
+  font-weight:700!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.03)!important;
+}
+.order-field input{
+  text-align:center!important;
+  padding-left:7px!important;
+  padding-right:7px!important;
+  font-variant-numeric:tabular-nums!important;
+}
+.order-field select:focus,
+.order-field input:focus{
+  outline:none!important;
+  border-color:#e0bb00!important;
+  box-shadow:0 0 0 3px rgba(224,187,0,.12)!important;
+}
+#addToOrderBtn{
+  width:100%!important;
+  min-height:48px!important;
+  padding:8px 10px 8px 15px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  border:1px solid #dfbb00!important;
+  border-radius:12px!important;
+  background:linear-gradient(180deg,#ffe637 0%,#ffd900 100%)!important;
+  color:#211b00!important;
+  box-shadow:0 5px 14px rgba(196,154,0,.18)!important;
+  font-size:12px!important;
+  font-weight:800!important;
+  text-align:left!important;
+}
+#addToOrderBtn:hover{
+  filter:none!important;
+  background:linear-gradient(180deg,#ffe94d 0%,#ffdc12 100%)!important;
+  box-shadow:0 7px 17px rgba(196,154,0,.22)!important;
+}
+#addToOrderLabel{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#addToOrderPrice{
+  flex:0 0 auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:68px!important;
+  min-height:30px!important;
+  padding:0 10px!important;
+  border-radius:9px!important;
+  background:rgba(255,255,255,.72)!important;
+  border:1px solid rgba(149,116,0,.22)!important;
+  color:#1f1900!important;
+  font-size:11.5px!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+}
+.order-message{
+  margin-top:7px!important;
+}
+
+@media(max-width:900px){
+  .order-section{
+    padding:15px 16px 17px!important;
+  }
+  .order-price-info{
+    padding:9px 10px!important;
+    margin-bottom:10px!important;
+    font-size:10px!important;
+  }
+  .order-price-info strong{
+    font-size:10.5px!important;
+  }
+  .order-fields{
+    grid-template-columns:minmax(0,1fr) 82px!important;
+    gap:8px!important;
+    margin-bottom:10px!important;
+  }
+  .order-field select,
+  .order-field input{
+    height:42px!important;
+    min-height:42px!important;
+    font-size:12px!important;
+  }
+  #addToOrderBtn{
+    min-height:46px!important;
+    padding:7px 8px 7px 13px!important;
+    border-radius:11px!important;
+    font-size:11.5px!important;
+  }
+  #addToOrderPrice{
+    min-width:62px!important;
+    min-height:28px!important;
+    padding:0 8px!important;
+    font-size:10.5px!important;
+  }
+}
