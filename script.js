@@ -819,6 +819,8 @@ const orderMessage = document.getElementById("orderMessage");
 const cartBox = document.getElementById("cartBox");
 const cartItems = document.getElementById("cartItems");
 const cartCount = document.getElementById("cartCount");
+const cartTotal = document.getElementById("cartTotal");
+const checkoutTotal = document.getElementById("checkoutTotal");
 const orderModal = document.getElementById("orderModal");
 const orderSummary = document.getElementById("orderSummary");
 const orderForm = document.getElementById("orderForm");
@@ -930,8 +932,11 @@ function getCurrentShirtSelection() {
 
 function renderCart() {
   const total = orderItems.reduce((sum, item) => sum + item.quantity, 0);
+  const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
   cartBox.hidden = orderItems.length === 0;
   cartCount.textContent = `${total} ${total === 1 ? "Textil" : "Textilien"}`;
+  if (cartTotal) cartTotal.textContent = formatEuro(totalPrice);
+  if (checkoutTotal) checkoutTotal.textContent = formatEuro(totalPrice);
   cartItems.replaceChildren();
 
   orderItems.forEach((item, index) => {
@@ -940,11 +945,22 @@ function renderCart() {
 
     const info = document.createElement("div");
     info.className = "cart-item-info";
+
+    const top = document.createElement("div");
+    top.className = "cart-item-top";
+
     const title = document.createElement("strong");
-    title.textContent = `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`;
+    title.textContent = `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size}`;
+
+    const price = document.createElement("b");
+    price.className = "cart-item-price";
+    price.textContent = formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE));
+
+    top.append(title, price);
+
     const meta = document.createElement("span");
-    meta.textContent = `${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
-    info.append(title, meta);
+    meta.textContent = `${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
+    info.append(top, meta);
 
     const remove = document.createElement("button");
     remove.type = "button";

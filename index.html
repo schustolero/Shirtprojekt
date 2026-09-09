@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=29.9.6">
+  <link rel="stylesheet" href="/style.css?v=29.9.7">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -187,11 +187,17 @@
       <p id="orderMessage" class="order-message" aria-live="polite"></p>
       <div id="cartBox" class="cart-box" hidden>
         <div class="cart-head">
-          <strong>Bestellung</strong>
-          <span id="cartCount">0 Shirts</span>
+          <div>
+            <strong>Deine Auswahl</strong>
+            <span id="cartCount">0 Textilien</span>
+          </div>
+          <b id="cartTotal">0,00 €</b>
         </div>
         <div id="cartItems" class="cart-items"></div>
-        <button type="button" id="orderBtn" class="primary-btn checkout-btn">Bestellung abschließen</button>
+        <button type="button" id="orderBtn" class="primary-btn checkout-btn">
+          <span>Weiter zur Bestellung</span>
+          <strong id="checkoutTotal">0,00 €</strong>
+        </button>
       </div>
     </section>
 
@@ -267,7 +273,7 @@
   <div class="order-modal-backdrop" data-close-order></div>
   <div class="order-modal-card" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
     <button type="button" class="order-modal-close" data-close-order aria-label="Schließen">×</button>
-    <h2 id="orderModalTitle">Bestellung abschicken</h2>
+    <div class="order-modal-title"><span>Bestellabschluss</span><h2 id="orderModalTitle">Bestellung prüfen</h2></div>
     <div id="orderSummary" class="order-summary"></div>
 
     <form id="orderForm" class="contact-form" action="https://formsubmit.co/shirtzentrale@gmail.com" method="POST">
@@ -298,7 +304,7 @@
       </label>
 
       <p class="order-modal-note">Die Bestellung wird an <strong id="orderEmailDisplay">shirtzentrale@gmail.com</strong> gesendet.</p>
-      <button type="submit" class="primary-btn" id="sendOrderBtn">Bestellung absenden</button>
+      <button type="submit" class="primary-btn send-order-btn" id="sendOrderBtn"><span>Bestellung verbindlich absenden</span></button>
       <p id="sendOrderMessage" class="send-order-message" aria-live="polite"></p>
     </form>
 
@@ -306,16 +312,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=29.9.6"></script>
+<script src="/central-config.js?v=29.9.7"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=29.9.6"></script>
+<script src="/shop-loader.js?v=29.9.7"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=29.9.6";
+    app.src="/script.js?v=29.9.7";
     document.body.appendChild(app);
   });
 </script>
