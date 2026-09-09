@@ -63,12 +63,21 @@ function getAllowedMotifColorNames(){
   setText("brandSubtitle", cfg.brandSubtitle);
   setText("designerHeading", cfg.designerHeading);
   setText("designerIntro", cfg.designerIntro);
-  setText("customerExtraFieldLabel", `${cfg.customerExtraFieldLabel || "Team / Abteilung"} *`);
+  const isTGSolingen = String(cfg.customerId || window.SHOP_SLUG || "") === "tg-solingen";
+  setText("customerExtraFieldLabel", isTGSolingen ? "Verein / Firma *" : `${cfg.customerExtraFieldLabel || "Team / Abteilung"} *`);
+  if (isTGSolingen) {
+    const nameLabel = document.querySelector('#customerName')?.closest('label')?.querySelector('span');
+    const phoneLabel = document.querySelector('#customerPhone')?.closest('label')?.querySelector('span');
+    const extraField = document.getElementById("customerClass");
+    if (nameLabel) nameLabel.textContent = "Vor- und Nachname *";
+    if (phoneLabel) phoneLabel.innerHTML = 'WhatsApp <small>(optional)</small>';
+    if (extraField) extraField.name = "Verein / Firma";
+  }
   setText("orderEmailDisplay", cfg.orderEmail);
   if (cfg.accentColor) document.documentElement.style.setProperty("--accent", cfg.accentColor);
 
   const extraField = document.getElementById("customerClass");
-  if (extraField && cfg.customerExtraFieldName) extraField.name = cfg.customerExtraFieldName;
+  if (extraField && cfg.customerExtraFieldName && !isTGSolingen) extraField.name = cfg.customerExtraFieldName;
   const orderForm = document.getElementById("orderForm");
   if (orderForm && cfg.orderEmail) orderForm.action = `https://formsubmit.co/${encodeURIComponent(cfg.orderEmail)}`;
   const subject = document.getElementById("formSubject");
@@ -1067,7 +1076,7 @@ if (orderForm) {
       return;
     }
     if (!name || !customerClass || !email) {
-      sendOrderMessage.textContent = "Bitte Vor- und Nachname, Verein / Firma und E-Mail vollständig ausfüllen.";
+      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma und E-Mail vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"} und E-Mail vollständig ausfüllen.`;
       return;
     }
 

@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.0.2`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=29.9.8`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -87,10 +87,6 @@
           if (merged.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;
-          }
-          if (slug === "tg-solingen") {
-            merged.customerExtraFieldLabel = "Verein / Firma";
-            merged.customerExtraFieldName = "Verein / Firma";
           }
           window.SHOP_CONFIG = merged;
           callback && callback(merged);
