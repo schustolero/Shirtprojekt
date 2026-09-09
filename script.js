@@ -269,18 +269,21 @@ function renderProductSelector() {
   updateProductPriceLabel();
 }
 
+// v29.9.6: Produktwechsel darf vor der späteren Order-Initialisierung nicht abbrechen.
 function updateProductPriceLabel() {
   const product = getCurrentProduct();
   const unitPrice = getCurrentUnitPrice();
   const qty = Math.max(1, Number(document.getElementById("shirtQuantity")?.value || 1));
+  const liveAddLabel = document.getElementById("addToOrderLabel");
+  const liveAddPrice = document.getElementById("addToOrderPrice");
   if (currentProductPrice) {
     currentProductPrice.textContent = `${formatEuro(unitPrice)} / Stück · ${product.name || "Textil"}`;
   }
-  if (addToOrderLabel) {
-    addToOrderLabel.textContent = `${product.name || "Textil"} hinzufügen`;
+  if (liveAddLabel) {
+    liveAddLabel.textContent = `${product.name || "Textil"} hinzufügen`;
   }
-  if (addToOrderPrice) {
-    addToOrderPrice.textContent = formatEuro(unitPrice * qty);
+  if (liveAddPrice) {
+    liveAddPrice.textContent = formatEuro(unitPrice * qty);
   }
 }
 
