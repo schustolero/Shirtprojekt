@@ -567,10 +567,7 @@ function refreshPositionEditor(){
     polo: "F502 · Polo-Shirt",
     hoodie: "F421 · Hoodie"
   };
-  if(articleModel) articleModel.textContent = modelMap[product] || "Textil";
-  const articlePrice = document.getElementById("v2987ProductPrice");
-  const priceMap = { tshirt: "15,00 €", polo: "25,00 €", hoodie: "30,00 €" };
-  if(articlePrice) articlePrice.textContent = priceMap[product] || "";
+  if(articleModel) articleModel.value = modelMap[product] || "Textil";
   if(articleTitle) articleTitle.textContent = `Vorschau – ${side === "back" ? "Rückseite" : "Vorderseite"}`;
   if(articleColorName) articleColorName.textContent = shopFields.fixedShirtName?.value || "Royal Blue";
   if(articleColorDot) articleColorDot.style.background = shopFields.fixedShirtHex?.value || "#0758b2";
@@ -1376,7 +1373,7 @@ saveShopBtn.addEventListener("click",async()=>{
   articleControls.className='v2853-article-controls';
   if(productLabel){ productLabel.querySelector('span').textContent='Kategorie'; articleControls.appendChild(productLabel); }
   const model=document.createElement('label');
-  model.innerHTML='<span>Modell</span><div class="v2987-model-readonly"><strong id="v2853Model">F140 · T-Shirt</strong><b id="v2987ProductPrice">15,00 €</b></div>';
+  model.innerHTML='<span>Modell</span><input id="v2853Model" type="text" readonly value="F140 · T-Shirt">';
   articleControls.appendChild(model);
   const color=document.createElement('label');
   color.innerHTML='<span>Farbe</span><div class="v2853-color-readonly"><i></i><b id="v2853ColorName">Royal Blue</b></div>';
@@ -1562,10 +1559,7 @@ saveShopBtn.addEventListener("click",async()=>{
       polo:'F502 · Polo-Shirt',
       hoodie:'F421 · Hoodie'
     };
-    if(modelInput) modelInput.textContent=map[product?.value]||'Textil';
-    const productPrice=document.getElementById('v2987ProductPrice');
-    const priceMap={tshirt:'15,00 €',polo:'25,00 €',hoodie:'30,00 €'};
-    if(productPrice) productPrice.textContent=priceMap[product?.value]||'';
+    if(modelInput) modelInput.value=map[product?.value]||'Textil';
     if(previewTitle) previewTitle.textContent=`Vorschau – ${side?.value==='back'?'Rückseite':'Vorderseite'}`;
     if(colorName) colorName.textContent=document.getElementById('fixedShirtName')?.value || 'Royal Blue';
     if(colorDot) colorDot.style.background=document.getElementById('fixedShirtHex')?.value || '#0758b2';
@@ -1580,5 +1574,5 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v2853-dark-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.8.7');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.8.6');
 })();

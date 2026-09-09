@@ -1511,3 +1511,73 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     font-size:10.5px!important;
   }
 }
+
+/* v29.8.8 – NUR Kundenseite: Preis-Badges + weniger Weißraum */
+.product-switch{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+.product-btn{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-height:46px!important;
+  padding:7px 8px 7px 10px!important;
+  border-radius:11px!important;
+}
+.product-btn-name{
+  min-width:0!important;
+  font-size:12px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+  text-align:left!important;
+}
+.product-btn-price{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+  min-width:56px!important;
+  height:27px!important;
+  padding:0 8px!important;
+  margin:0!important;
+  border-radius:9px!important;
+  background:#fff8d6!important;
+  border:1px solid #e6c64a!important;
+  color:#2b2200!important;
+  font-size:11px!important;
+  line-height:1!important;
+  font-weight:850!important;
+  font-variant-numeric:tabular-nums!important;
+  white-space:nowrap!important;
+  box-shadow:0 2px 7px rgba(166,126,0,.12)!important;
+}
+.product-btn.active .product-btn-price{
+  background:#ffd84d!important;
+  border-color:#d8ad00!important;
+  color:#241d00!important;
+}
+@media(max-width:900px){
+  .product-btn{
+    min-height:44px!important;
+    padding:6px 7px!important;
+    gap:5px!important;
+  }
+  .product-btn-name{font-size:10.5px!important;}
+  .product-btn-price{
+    min-width:50px!important;
+    height:25px!important;
+    padding:0 6px!important;
+    font-size:10px!important;
+  }
+  .preview-area,
+  .preview-section,
+  .preview-wrap,
+  .preview-container{
+    padding-top:0!important;
+    padding-bottom:0!important;
+    margin-top:0!important;
+    margin-bottom:0!important;
+  }
+}
