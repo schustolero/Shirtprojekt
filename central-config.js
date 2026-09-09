@@ -16,7 +16,7 @@ window.CENTRAL_CONFIG = {
         {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}
       ],
       orderEmail:"shirtzentrale@gmail.com", orderSubject:"Neue Tanzgruppe Klingenstadt Solingen T-Shirt Bestellung",
-      customerExtraFieldLabel:"Mannschaft / Abteilung", customerExtraFieldName:"Mannschaft / Abteilung", orderPrefix:"TG", shopType:"simple", active:true, hoodieSizingVersion:5,
+      customerExtraFieldLabel:"Verein / Firma", customerExtraFieldName:"Verein / Firma", orderPrefix:"TG", shopType:"simple", active:true, hoodieSizingVersion:5,
       fixedShirtColor:{id:"royal-blue",name:"Royal Blue",color:"#0758b2"}, fixedMotifColor:{name:"Medium Yellow",color:"#F6C951"},
       features:{layout:"simple",motifMode:"single",allowCustomerUpload:false,allowText:false,allowMoveMotif:false,allowResizeMotif:false,allowRotateMotif:false,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:false,showMotifPicker:false,showMotifColorPicker:false,showResetButton:false,autoSelectSingleMotif:true,maxUploadMB:8,previewMode:"dual"},
       productPrint:{tshirt:{front:{xPct:68,yPct:20,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}}},

@@ -304,7 +304,9 @@ renderProductSelector();
 
 function getBaseSrc(view) {
   const product = getCurrentProduct();
-  return view === "back" ? (product.backTemplate || "shirt-back-template.png") : (product.frontTemplate || "shirt-front-template.png");
+  const raw = view === "back" ? (product.backTemplate || "shirt-back-template.png") : (product.frontTemplate || "shirt-front-template.png");
+  if (/^(https?:)?\/\//i.test(raw) || /^(data|blob):/i.test(raw) || raw.startsWith("/")) return raw;
+  return `/${raw.replace(/^\.\//, "")}`;
 }
 
 function getBaseImage(view) {
@@ -1065,7 +1067,7 @@ if (orderForm) {
       return;
     }
     if (!name || !customerClass || !email) {
-      sendOrderMessage.textContent = `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"} und E-Mail vollständig ausfüllen.`;
+      sendOrderMessage.textContent = "Bitte Vor- und Nachname, Verein / Firma und E-Mail vollständig ausfüllen.";
       return;
     }
 
@@ -1095,6 +1097,7 @@ if (orderForm) {
         customerClass,
         email,
         phone,
+        whatsapp: phone,
         totalQuantity,
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
@@ -1128,6 +1131,8 @@ if (orderForm) {
           name,
           customerClass,
           email,
+          phone,
+          whatsapp: phone,
           totalQuantity,
           unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
           totalPrice,

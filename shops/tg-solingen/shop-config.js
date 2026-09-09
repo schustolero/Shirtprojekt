@@ -19,8 +19,8 @@ window.SHOP_CONFIG = {
   ],
   orderEmail: "shirtzentrale@gmail.com",
   orderSubject: "Neue Tanzgruppe Klingenstadt Solingen T-Shirt Bestellung",
-  customerExtraFieldLabel: "Mannschaft / Abteilung",
-  customerExtraFieldName: "Mannschaft / Abteilung",
+  customerExtraFieldLabel: "Verein / Firma",
+  customerExtraFieldName: "Verein / Firma",
   orderPrefix: "TG",
   shopType: "simple",
 

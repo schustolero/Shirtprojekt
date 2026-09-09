@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=29.9.7">
+  <link rel="stylesheet" href="/style.css?v=30.0.2">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -287,20 +287,20 @@
       <input type="hidden" name="Gesamtpreis" id="formTotalPrice">
 
       <label class="contact-field">
-        <span>Name *</span>
-        <input type="text" name="Name" id="customerName" required autocomplete="name">
+        <span>Vor- und Nachname *</span>
+        <input type="text" name="Vor- und Nachname" id="customerName" required autocomplete="name">
       </label>
       <label class="contact-field">
-        <span id="customerExtraFieldLabel">Team / Abteilung *</span>
-        <input type="text" name="Team / Abteilung" id="customerClass" required>
+        <span id="customerExtraFieldLabel">Verein / Firma *</span>
+        <input type="text" name="Verein / Firma" id="customerClass" required>
       </label>
       <label class="contact-field">
         <span>E-Mail *</span>
         <input type="email" name="E-Mail" id="customerEmail" required autocomplete="email">
       </label>
       <label class="contact-field">
-        <span>Telefon <small>(optional)</small></span>
-        <input type="tel" name="Telefon" id="customerPhone" autocomplete="tel">
+        <span>WhatsApp <small>(optional)</small></span>
+        <input type="tel" name="WhatsApp" id="customerPhone" autocomplete="tel" inputmode="tel" placeholder="+49 …">
       </label>
 
       <p class="order-modal-note">Die Bestellung wird an <strong id="orderEmailDisplay">shirtzentrale@gmail.com</strong> gesendet.</p>
@@ -312,16 +312,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=29.9.7"></script>
+<script src="/central-config.js?v=30.0.2"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=29.9.7"></script>
+<script src="/shop-loader.js?v=30.0.2"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=29.9.7";
+    app.src="/script.js?v=30.0.2";
     document.body.appendChild(app);
   });
 </script>
