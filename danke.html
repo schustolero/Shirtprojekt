@@ -6,84 +6,91 @@
 <meta name="robots" content="noindex">
 <title>Bestellung bestätigt</title>
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600;700&family=Great+Vibes&display=swap");
 *{box-sizing:border-box}
 :root{
   --ink:#13202c;--muted:#697582;--line:#dde4e9;--soft:#f4f6f8;--soft2:#eef2f5;
   --green:#1fb86a;--green-soft:#d9f7e7;--teal:#239b91;--navy:#152431;--navy2:#203744;
 }
-html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-.page{width:min(1040px,calc(100% - 28px));margin:20px auto}
-.sheet{background:#fff;border:1px solid #e7ecef;border-radius:24px;padding:40px 42px 30px;box-shadow:0 24px 70px rgba(17,31,43,.09)}
-.top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:26px}
+html,body{margin:0;background:linear-gradient(180deg,#f8fafb 0%,#eef2f5 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.page{width:min(980px,calc(100% - 24px));margin:20px auto}
+.sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:26px;padding:34px 36px 24px;box-shadow:0 18px 56px rgba(17,31,43,.07)}
+.top{display:flex;justify-content:space-between;gap:22px;align-items:flex-start;margin-bottom:22px;padding-bottom:10px;border-bottom:1px solid #edf1f4}
 .brand{display:flex;gap:16px;align-items:center;min-width:0}
-.brand-logo{width:285px;min-height:86px;display:flex;align-items:center;gap:0}
+.brand-logo{width:300px;min-height:76px;display:flex;align-items:center;gap:0}
 .brand-text{line-height:.92}
-.brand-text .main{font-size:35px;font-weight:900;letter-spacing:.105em}
-.brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.42em;margin-top:6px}
-.brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#6e7983}
-.slogan{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;font-weight:700;letter-spacing:.01em;text-align:right;color:#202731;padding-right:2px;transform:rotate(-2deg)}
-.slogan:after{content:"";display:block;width:88px;height:3px;background:#6fc7c0;border-radius:999px;margin:8px 0 0 auto;transform:rotate(-3deg)}
-.hero{display:grid;grid-template-columns:86px 1fr 245px;gap:22px;align-items:center;margin-bottom:22px}
-.check{width:78px;height:78px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#32c875,#0fa05c);color:#fff;font-size:47px;font-weight:900}
-.hero h1{font-size:30px;line-height:1.05;margin:0;font-weight:850;letter-spacing:-.025em}
-.hero p{font-size:14px;margin:7px 0 0;color:#45525f}
-.orderbox{border-radius:12px;background:linear-gradient(180deg,#f5f7f9,#edf1f4);padding:15px 18px}
+.brand-text .main{font-size:35px;font-weight:900;letter-spacing:.12em}
+.brand-text .sub{display:block;font-size:13px;font-weight:850;letter-spacing:.42em;margin-top:4px}
+.brand-note{font-size:9px;font-weight:700;letter-spacing:.11em;margin-top:8px;white-space:nowrap;color:#74808a}
+.slogan{font-family:"Great Vibes","Snell Roundhand","Apple Chancery",cursive;font-size:38px;line-height:.92;font-weight:400;letter-spacing:0;text-align:right;color:#1b2832;padding-right:2px;transform:rotate(-3deg)}
+.slogan:after{content:"";display:block;width:102px;height:2px;background:#77c7bf;border-radius:999px;margin:10px 2px 0 auto;transform:rotate(-3deg)}
+.hero{display:grid;grid-template-columns:72px 1fr 220px;gap:18px;align-items:center;margin-bottom:18px}
+.check{width:68px;height:68px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:36px;font-weight:900;box-shadow:0 10px 20px rgba(28,166,112,.16)}
+.hero h1{font-size:34px;line-height:1;margin:0;font-weight:700;letter-spacing:-.02em;font-family:"Cormorant Garamond",Georgia,serif}
+.hero p{font-size:13px;margin:6px 0 0;color:#53606c}
+.orderbox{border:1px solid #dde5e9;border-radius:16px;background:linear-gradient(180deg,#fbfcfd,#f3f6f8);padding:14px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
 .orderbox .label{font-size:11px;color:var(--muted)}
 .orderbox .value{font-size:16px;font-weight:900;margin-top:2px;overflow-wrap:anywhere}
 .orderbox .block+.block{margin-top:10px}
-.info{display:grid;grid-template-columns:1.15fr 1fr;gap:16px;margin-bottom:18px}
-.card{border:1px solid #e1e7eb;border-radius:14px;overflow:hidden;background:#fff;box-shadow:0 6px 18px rgba(23,37,49,.035)}
-.card-head{display:flex;align-items:center;padding:13px 16px;background:linear-gradient(180deg,#fafbfc,#f1f4f6);font-size:16px;font-weight:800;letter-spacing:-.01em}
+.info{display:grid;grid-template-columns:1.12fr 1fr;gap:14px;margin-bottom:14px}
+.card{border:1px solid #e1e7eb;border-radius:16px;overflow:hidden;background:linear-gradient(180deg,#ffffff,#fbfcfd);box-shadow:0 8px 18px rgba(23,37,49,.035)}
+.card-head{display:flex;align-items:center;padding:12px 16px;background:linear-gradient(180deg,#fbfcfd,#f5f8fa);font-size:15px;font-weight:700;letter-spacing:-.01em;border-bottom:1px solid #e9eef2;position:relative;font-family:"Cormorant Garamond",Georgia,serif}.card-head:before{content:"";display:inline-block;width:4px;height:16px;border-radius:999px;background:linear-gradient(180deg,#79c9c1,#36a89d);margin-right:10px}
 .ico{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#dce4ea;font-size:15px}
-.rows{padding:3px 15px 9px}
-.row{display:grid;grid-template-columns:155px 1fr;gap:15px;padding:8px 0;border-bottom:1px solid #edf0f2;font-size:13px}
+.rows{padding:4px 16px 8px}
+.row{display:grid;grid-template-columns:145px 1fr;gap:14px;padding:8px 0;border-bottom:1px solid #edf0f2;font-size:12.5px}
 .row:last-child{border-bottom:0}
 .row span{color:#43505d}.row strong{font-weight:500;overflow-wrap:anywhere}
-.right-stack{display:grid;grid-template-rows:1fr 1fr;gap:16px}
+.right-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
 .status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:8px;background:var(--green-soft);color:#11944f;font-weight:900;width:max-content}
 .status:before{content:"";width:8px;height:8px;border-radius:50%;background:#17b25d}
-.table-wrap{border:1px solid #dfe5e9;border-radius:15px;overflow:hidden;margin-bottom:20px;box-shadow:0 8px 22px rgba(23,37,49,.04)}
+.table-wrap{border:1px solid #dfe5e9;border-radius:16px;overflow:hidden;margin-bottom:16px;box-shadow:0 8px 18px rgba(23,37,49,.035);background:#fff}
 .table-head,.item-row{display:grid;grid-template-columns:1.28fr .95fr .74fr 1.18fr .58fr .68fr .76fr;gap:12px;align-items:center}
-.table-head{background:linear-gradient(180deg,#182834,#12212c);color:#fff;padding:12px 15px;font-size:11px;font-weight:750;letter-spacing:.035em;text-transform:uppercase}
-.item-row{padding:12px 15px;border-bottom:1px solid #edf0f2;min-height:84px}
-.item-row:last-child{border-bottom:0}
-.product-cell{display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center}
-.product-cell img{width:70px;height:70px;object-fit:contain}
-.product-cell strong{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.01em}.product-cell small{display:none}
-.cell{font-size:12.5px;line-height:1.25}.positions div+div{margin-top:4px}.positions div{white-space:normal}
+.table-head{background:linear-gradient(180deg,#f8fafb,#eef3f6);color:#243543;padding:11px 14px;font-size:10px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border-bottom:1px solid #e4eaee}
+.item-row{padding:12px 14px;border-bottom:1px solid #edf0f2;min-height:76px;background:#fff}
+.item-row:last-child{border-bottom:0}.item-row:nth-child(even){background:#fbfcfd}
+.product-cell{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center}
+.product-cell img{width:56px;height:56px;object-fit:contain;background:linear-gradient(180deg,#ffffff,#f4f7f9);border:1px solid #e3e8ec;border-radius:12px;padding:5px}
+.product-cell strong{display:block;font-size:13px;font-weight:800;letter-spacing:-.01em}.product-cell small{display:none}
+.cell{font-size:12px;line-height:1.24}.positions div+div{margin-top:3px}.positions div{white-space:normal}
 .motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
-.money{font-size:12.5px}.money.total{font-weight:900}
-.bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
-.contact{border:1px solid #e1e7eb;border-radius:15px;background:linear-gradient(180deg,#fbfcfd,#f3f6f7);padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;box-shadow:0 6px 18px rgba(23,37,49,.03)}
-.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
-.contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:9px}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px}
-.thanks-note{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;text-align:right;margin-top:0;white-space:nowrap;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-2deg)}
-.thanks-note:after{content:"";display:block;width:78px;height:3px;background:#6fc7c0;border-radius:999px;margin:8px 0 0 auto;transform:rotate(-3deg)}
-.totalbox{border:1px solid #dfe6ea;border-radius:15px;background:linear-gradient(180deg,#fbfcfd,#f2f6f7);color:var(--ink);padding:19px 21px;box-shadow:0 6px 18px rgba(23,37,49,.035)}
-.totalbox h3{font-size:16px;margin:0 0 10px}
-.total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
-.total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
-.totalbox small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
-.btn{min-height:46px;border-radius:12px;border:1px solid #d5dde3;background:#fff;color:var(--ink);font:inherit;font-size:12px;font-weight:750;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;transition:.18s ease}
-.btn.primary{background:linear-gradient(180deg,#edf9f6,#d9efea);border-color:#a6d4cb;color:#18483f;box-shadow:0 5px 14px rgba(48,143,127,.09)}
-.footer{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-top:1px solid #e4e9ed;margin-top:24px;padding-top:18px}
-.trust{display:flex;align-items:flex-start;gap:8px;color:#52606c;font-size:10px;line-height:1.25}
+.money{font-size:12px}.money.total{font-weight:900}
+.bottom{display:grid;grid-template-columns:1.1fr .95fr;gap:14px}
+.contact{border:1px solid #e1e7eb;border-radius:16px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center;box-shadow:0 8px 18px rgba(23,37,49,.03)}
+.contact h3{margin:0 0 4px;font-size:15px;font-family:"Cormorant Garamond",Georgia,serif}.contact p{margin:0 0 8px;font-size:11.5px;color:#586470}
+.contact-line{display:flex;align-items:center;gap:10px;font-size:11.5px;margin-top:8px}.contact-ico{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:11px}
+.thanks-note{font-family:"Great Vibes","Snell Roundhand","Apple Chancery",cursive;font-size:34px;line-height:.92;text-align:right;margin-top:0;white-space:nowrap;font-weight:400;letter-spacing:0;color:#1b2832;transform:rotate(-3deg)}
+.thanks-note:after{content:"";display:block;width:96px;height:2px;background:#77c7bf;border-radius:999px;margin:10px 2px 0 auto;transform:rotate(-3deg)}
+.totalbox{border:1px solid #dfe6ea;border-radius:16px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:18px 20px;box-shadow:0 8px 18px rgba(23,37,49,.03)}
+.totalbox h3{font-size:15px;margin:0 0 8px;font-family:"Cormorant Garamond",Georgia,serif}
+.total-line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid #d9e0e5;font-size:12.5px}
+.total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:28px;line-height:1;font-weight:950;font-family:"Cormorant Garamond",Georgia,serif}
+.totalbox small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.btn{min-height:44px;border-radius:12px;border:1px solid #d5dde3;background:#fff;color:var(--ink);font:inherit;font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;transition:.18s ease;box-shadow:0 6px 14px rgba(23,37,49,.04)}
+.btn.primary{background:linear-gradient(180deg,#edf9f6,#d8efe9);border-color:#abd4cc;color:#18483f;box-shadow:0 8px 18px rgba(48,143,127,.12)}
+.footer{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;border-top:1px solid #e4e9ed;margin-top:20px;padding-top:14px}
+.trust{display:flex;align-items:flex-start;gap:8px;color:#52606c;font-size:9.5px;line-height:1.2}
 .trust i{font-style:normal;font-size:20px}.trust b{display:block;color:var(--ink);font-size:10px}
-.footer-brand{text-align:right;font-weight:900;letter-spacing:.11em}.footer-brand span{display:block;font-size:8.5px;color:#7a858e;font-weight:650;letter-spacing:.15em;margin-top:4px}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:44px;height:2px;background:#9ccfc6;border-radius:999px;margin-bottom:9px}.footer-signature strong{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:18px;line-height:1.1;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-1.5deg)}
+ .footer-brand{text-align:right;font-weight:900;letter-spacing:.11em;color:#22303c}.footer-brand span{display:block;font-size:8.5px;color:#7a858e;font-weight:650;letter-spacing:.15em;margin-top:4px}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:56px;height:2px;background:#9ccfc6;border-radius:999px;margin-bottom:10px}.footer-signature strong{font-family:"Great Vibes","Snell Roundhand","Apple Chancery",cursive;font-size:28px;line-height:.95;font-weight:400;letter-spacing:0;color:#1b2832;transform:rotate(-2deg)}
 @media(max-width:760px){
  .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
- .top{margin-bottom:18px}.brand-logo{width:auto}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:none}
- .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;text-align:right;margin-top:0;white-space:nowrap;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-2deg)}
+ .top{margin-bottom:16px}.brand-logo{width:auto}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:none}
+ .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:28px}.hero .orderbox{grid-column:1/-1}
+ .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{font-family:"Great Vibes","Snell Roundhand","Apple Chancery",cursive;font-size:34px;line-height:.92;text-align:right;margin-top:0;white-space:nowrap;font-weight:400;letter-spacing:0;color:#1b2832;transform:rotate(-3deg)}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
  .actions{grid-template-columns:1fr}
 }
 @media print{
- @page{size:A4;margin:8mm}
- html,body{background:#fff}.page{width:100%;margin:0}.sheet{border-radius:0;box-shadow:none;padding:0}
- .actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
+ @page{size:A4 portrait;margin:7mm}
+ html,body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{width:100%;margin:0}.sheet{border-radius:0;box-shadow:none;border:none;padding:0}
+ .top{margin-bottom:14px;padding-bottom:8px}.brand-logo{min-height:62px}.brand-text .main{font-size:30px}.brand-text .sub{font-size:11px}.brand-note{font-size:8px}
+ .slogan{font-size:30px}.slogan:after{width:82px}.hero{grid-template-columns:62px 1fr 198px;gap:14px;margin-bottom:14px}.check{width:58px;height:58px;font-size:31px;border-radius:16px}.hero h1{font-size:28px}.hero p{font-size:12px}.orderbox{padding:10px 12px}.orderbox .value{font-size:14px}
+ .info,.bottom{gap:12px;margin-bottom:12px}.right-stack{gap:12px}.card,.table-wrap,.contact,.totalbox,.orderbox{box-shadow:none}.card-head{padding:10px 14px;font-size:14px}.rows{padding:2px 14px 6px}.row{grid-template-columns:128px 1fr;gap:12px;padding:6px 0;font-size:11.5px}
+ .table-wrap{margin-bottom:12px}.table-head{padding:9px 12px;font-size:9px}.item-row{padding:8px 12px;min-height:62px}.product-cell{grid-template-columns:48px 1fr}.product-cell img{width:42px;height:42px;padding:4px;border-radius:10px}.product-cell strong{font-size:11.5px}.cell,.money{font-size:10.8px}
+ .contact{padding:14px 16px;gap:14px}.contact h3{font-size:14px}.contact p,.contact-line{font-size:10.5px}.contact-ico{width:18px;height:18px;font-size:9px}.thanks-note{font-size:26px}.thanks-note:after{width:72px}.totalbox{padding:14px 16px}.totalbox h3{font-size:14px}.total-line{padding:6px 0;font-size:11.5px}.grand strong{font-size:24px}
+ .actions{display:none}.footer{margin-top:12px;padding-top:10px}.footer-brand span{font-size:7.5px}.footer-signature strong{font-size:24px}
+ .card,.table-wrap,.contact,.totalbox,.orderbox{page-break-inside:avoid;break-inside:avoid}
 }
 </style>
 </head>
@@ -157,7 +164,7 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
   <div class="contact">
     <div class="contact-copy">
       <h3>Fragen zu deiner Bestellung?</h3>
-      <p>Wir sind gerne für dich da – auch per WhatsApp!</p>
+      <p>Wir sind gerne für dich da – schnell, unkompliziert und auch per WhatsApp.</p>
       <div class="contact-line" id="contactPhone" hidden><span class="contact-ico">☎</span><strong id="contactPhoneValue"></strong></div>
       <div class="contact-line"><span class="contact-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
     </div>
@@ -165,7 +172,7 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
   </div>
 
   <div class="totalbox">
-    <h3>◆ Gesamtübersicht</h3>
+    <h3>Gesamtübersicht</h3>
     <div class="total-line"><span>Artikel gesamt</span><strong id="totalQty">0</strong></div>
     <div class="total-line grand"><span>Gesamtpreis</span><strong id="grandTotal">0,00 €</strong></div>
     <small>Alle Preise inkl. MwSt.</small>
@@ -189,8 +196,8 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.4"></script>
-<script src="/shop-loader.js?v=30.1.4"></script>
+<script src="/central-config.js?v=30.1.6"></script>
+<script src="/shop-loader.js?v=30.1.6"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
