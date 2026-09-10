@@ -21,11 +21,9 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .brand-text .main{font-size:36px;font-weight:900;letter-spacing:.11em}
 .brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.46em;margin-top:6px}
 .brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#74808a}
-.slogan{position:relative;text-align:right;padding:0 6px 12px 0;line-height:.9;min-width:190px;transform:rotate(-2deg);font-family:"Brush Script MT","Segoe Script","Snell Roundhand",cursive;font-weight:700}
-.slogan .line1{display:block;color:#0753a7;font-size:36px;letter-spacing:-.02em;transform:translateX(-10px) rotate(-2deg)}
-.slogan .line2{display:block;color:#f3b400;font-size:38px;letter-spacing:-.03em;margin-top:2px;transform:translateX(7px) rotate(-3deg)}
-.slogan:after{content:"";position:absolute;right:1px;bottom:1px;width:128px;height:4px;border-radius:999px;background:#f3b400;transform:rotate(-8deg);box-shadow:0 7px 0 -1px #f3b400}
-.hero{display:grid;grid-template-columns:86px 1fr 260px;gap:24px;align-items:center;margin-bottom:24px}
+.slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:190px;padding:0;margin:0}
+.slogan:after{display:none}
+.slogan img{display:block;width:150px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr 260px;gap:24px;align-items:center;margin-bottom:24px}
 .check{width:82px;height:82px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:44px;font-weight:900;box-shadow:0 12px 26px rgba(28,166,112,.18)}
 .hero h1{font-size:32px;line-height:1.04;margin:0;font-weight:850;letter-spacing:-.03em}
 .hero p{font-size:14px;margin:8px 0 0;color:#4f5b67}
@@ -59,9 +57,9 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
 .contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:9px}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px}
-.thanks-note{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;text-align:right;margin-top:0;white-space:nowrap;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-2deg)}
-.thanks-note:after{content:"";display:block;width:78px;height:3px;background:#6fc7c0;border-radius:999px;margin:8px 0 0 auto;transform:rotate(-3deg)}
-.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:220px;transform:none}
+.thanks-note:after{display:none}
+.thanks-note img{display:block;width:220px;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .totalbox h3{font-size:16px;margin:0 0 10px}
 .total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
 .total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
@@ -72,12 +70,12 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .footer{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-top:1px solid #e4e9ed;margin-top:26px;padding-top:20px}
 .trust{display:flex;align-items:flex-start;gap:8px;color:#52606c;font-size:10px;line-height:1.25}
 .trust i{font-style:normal;font-size:20px}.trust b{display:block;color:var(--ink);font-size:10px}
- .footer-brand{text-align:right;font-weight:900;letter-spacing:.11em;color:#22303c}.footer-brand span{display:block;font-size:8.5px;color:#7a858e;font-weight:650;letter-spacing:.15em;margin-top:4px}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:44px;height:2px;background:#9ccfc6;border-radius:999px;margin-bottom:9px}.footer-signature strong{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:18px;line-height:1.1;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-1.5deg)}
+ .footer-brand{text-align:right;font-weight:900;letter-spacing:.11em;color:#22303c}.footer-brand span{display:block;font-size:8.5px;color:#7a858e;font-weight:650;letter-spacing:.15em;margin-top:4px}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:44px;height:2px;background:#9ccfc6;border-radius:999px;margin-bottom:9px}.footer-signature strong{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.25;font-weight:600;letter-spacing:0;color:#22313d;transform:none}
 @media(max-width:760px){
  .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
- .top{margin-bottom:18px}.brand-logo{width:auto}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:none}
+ .top{margin-bottom:18px}.brand-logo{width:auto}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:190px;padding:0;margin:0}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;text-align:right;margin-top:0;white-space:nowrap;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-2deg)}
+ .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:220px;transform:none}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
  .actions{grid-template-columns:1fr}
@@ -85,7 +83,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 @media print{
  @page{size:A4;margin:8mm}
  html,body{background:#fff}.page{width:100%;margin:0}.sheet{border-radius:0;box-shadow:none;padding:0}
- .actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
+ .slogan img{width:125px}.thanks-note img{width:180px}.actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
 }
 </style>
 </head>
@@ -102,7 +100,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><span class="line1">Ein Team.</span><span class="line2">Ein Style.</span></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.10" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -163,7 +161,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       <div class="contact-line" id="contactPhone" hidden><span class="contact-ico">☎</span><strong id="contactPhoneValue"></strong></div>
       <div class="contact-line"><span class="contact-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
     </div>
-    <div class="thanks-note">Vielen Dank<br>für dein Vertrauen!</div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.10" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -191,8 +189,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.9"></script>
-<script src="/shop-loader.js?v=30.1.9"></script>
+<script src="/central-config.js?v=30.1.10"></script>
+<script src="/shop-loader.js?v=30.1.10"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
