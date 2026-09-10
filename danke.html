@@ -55,16 +55,16 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
 .motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
 .money{font-size:12.5px}.money.total{font-weight:900}
 .bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:16px}
-.contact{border-radius:12px;background:linear-gradient(180deg,#f7f9fa,#eef2f4);padding:16px 18px}
+.contact{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#f8fafb,#f0f3f5);padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:20px;align-items:center}
 .contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
-.contact-line{display:flex;align-items:center;gap:9px;font-size:12px;margin-top:8px}
-.thanks-note{font-family:"Segoe Print","Bradley Hand",cursive;font-size:20px;line-height:1.05;text-align:right;margin-top:8px;transform:rotate(-5deg)}
+.contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:9px}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px}
+.thanks-note{font-family:"Segoe Print","Bradley Hand",cursive;font-size:21px;line-height:1.05;text-align:right;margin-top:0;transform:rotate(-5deg);white-space:nowrap}
 .thanks-note:after{content:"";display:block;width:105px;height:2px;background:var(--teal);margin:5px 0 0 auto;transform:rotate(-5deg)}
-.totalbox{border-radius:12px;background:linear-gradient(150deg,#172633,#203845);color:#fff;padding:17px 20px}
+.totalbox{border:1px solid var(--line);border-radius:12px;background:linear-gradient(180deg,#f8fafb,#eef3f5);color:var(--ink);padding:17px 20px}
 .totalbox h3{font-size:16px;margin:0 0 10px}
-.total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid rgba(255,255,255,.35);font-size:13px}
+.total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
 .total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
-.totalbox small{display:block;color:#c2ccd4;font-size:11px;margin-top:4px}
+.totalbox small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
 .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
 .btn{min-height:44px;border-radius:10px;border:1px solid #cfd7de;background:#fff;color:var(--ink);font:inherit;font-size:12px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:7px;text-decoration:none;cursor:pointer}
 .btn.primary{background:linear-gradient(180deg,#e8f8f5,#cdebe5);border-color:#83cbbf;color:#15483f}
@@ -76,7 +76,7 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
  .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
  .top{margin-bottom:18px}.brand-logo{width:auto}.brand-logo img{max-width:76px;max-height:58px}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:none}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}
+ .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{text-align:left;white-space:normal}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr 1fr}.footer-brand{grid-column:1/-1;text-align:left}
  .actions{grid-template-columns:1fr}
@@ -102,7 +102,7 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
       </div>
     </div>
   </div>
-  <div class="slogan">Deine Idee.<br>Unser Druck.<br>Teamwear, die verbindet.</div>
+  <div class="slogan">Ein Team.<br>Ein Style.</div>
 </header>
 
 <section class="hero">
@@ -136,7 +136,7 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
       <div class="card-head"><span class="ico">▣</span>Zahlung</div>
       <div class="rows">
         <div class="row"><span>Zahlungsart</span><strong id="paymentMethod">Vor Ort</strong></div>
-        <div class="row"><span>Status</span><strong><span class="status">Bestellt</span></strong></div>
+        
       </div>
     </div>
   </div>
@@ -157,10 +157,12 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
 
 <section class="bottom">
   <div class="contact">
-    <h3>Fragen zu deiner Bestellung?</h3>
-    <p>Wir sind gerne für dich da – auch per WhatsApp!</p>
-    <div class="contact-line" id="contactPhone" hidden>☎ <strong id="contactPhoneValue"></strong></div>
-    <div class="contact-line">✉ <strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
+    <div class="contact-copy">
+      <h3>Fragen zu deiner Bestellung?</h3>
+      <p>Wir sind gerne für dich da – auch per WhatsApp!</p>
+      <div class="contact-line" id="contactPhone" hidden><span class="contact-ico">☎</span><strong id="contactPhoneValue"></strong></div>
+      <div class="contact-line"><span class="contact-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
+    </div>
     <div class="thanks-note">Vielen Dank<br>für dein Vertrauen!</div>
   </div>
 
@@ -188,8 +190,8 @@ html,body{margin:0;background:#f2f4f6;color:var(--ink);font-family:-apple-system
 </section>
 </main>
 
-<script src="/central-config.js?v=30.0.7"></script>
-<script src="/shop-loader.js?v=30.0.7"></script>
+<script src="/central-config.js?v=30.0.8"></script>
+<script src="/shop-loader.js?v=30.0.8"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
