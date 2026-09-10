@@ -141,28 +141,19 @@ function printOrderSlip(order){
   const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
   const rows = (Array.isArray(order.items) ? order.items : []).map((item,index)=>{
     const qty = Number(item.quantity)||1;
-    const linePrice = item.linePrice ?? (qty*(Number(order.unitPrice)||15));
-    return `<tr><td>${index+1}</td><td>${htmlEscape(item.size)}</td><td>${htmlEscape(item.shirtColor)}</td><td>${htmlEscape(item.motif)}</td><td>${htmlEscape(item.motifColor)}</td><td>${qty}</td><td>${htmlEscape(euro(linePrice))}</td></tr>`;
+    const unit = Number(item.unitPrice)||Number(order.unitPrice)||15;
+    const linePrice = Number(item.linePrice)||qty*unit;
+    const product = item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+    return `<tr><td>${index+1}</td><td>${htmlEscape(product)}</td><td>${htmlEscape(item.size)}</td><td>${htmlEscape(item.shirtColor)}</td><td>${htmlEscape(item.motif)}</td><td>${htmlEscape(item.motifColor)}</td><td>${qty}</td><td>${htmlEscape(euro(linePrice))}</td></tr>`;
   }).join("");
 
-  const printData = order.printData || {};
-  const globalPrint = printData.global || {front:printData.tshirt?.front||printData.polo?.front||printData.hoodie?.front||{},back:printData.tshirt?.back||printData.polo?.back||printData.hoodie?.back||{}};
-  const printRows = ["front","back"].map(side=>{
-    const d=globalPrint[side]||{};
-    const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
-    if(!has) return "";
-    const size=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"-";
-    return `<tr><td>${side==="front"?"Vorne":"Hinten"}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(size)}</td></tr>`;
-  }).filter(Boolean);
-  const printSection = printRows.length ? `<div class="section"><h2>Produktionsdaten</h2><table><thead><tr><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th></tr></thead><tbody>${printRows.join("")}</tbody></table></div>` : "";
   const w = window.open("", "_blank", "width=900,height=900");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
   w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
     *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#18181b;margin:0;background:#fff}.sheet{width:190mm;max-width:100%;margin:0 auto;padding:14mm}.head{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:2px solid #18181b;padding-bottom:14px}.brand{display:flex;align-items:center;gap:16px}.brand img{width:82px;height:82px;object-fit:contain}.brand h1{font-size:20px;margin:0 0 4px}.brand p{margin:0;color:#666}.number{text-align:right}.number strong{display:block;font-size:19px}.number span{font-size:12px;color:#666}.section{margin-top:20px}.section h2{font-size:14px;margin:0 0 9px;text-transform:uppercase;letter-spacing:.04em}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}.field{border-bottom:1px solid #ddd;padding:7px 0}.field span{display:block;font-size:10px;color:#777}.field strong{font-size:13px}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f3f3f4}.total{display:flex;justify-content:flex-end;gap:28px;margin-top:14px;font-size:15px;font-weight:700}.footer{margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#777}.actions{display:flex;gap:10px;margin:18px auto 0;width:190mm;max-width:calc(100% - 20px)}button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}@media print{.actions{display:none}.sheet{padding:8mm}body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
   </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div><div class="number"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Name</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Verein / Mannschaft / Klasse / Abteilung</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>Telefon</span><strong>${htmlEscape(order.phone||"-")}</strong></div></div></div>
-  <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Größe</th><th>Shirtfarbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Shirts</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
-  ${printSection}
+  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Vor- und Nachname</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Verein / Firma</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>WhatsApp</span><strong>${htmlEscape(order.whatsapp||order.phone||"-")}</strong></div></div></div>
+  <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Farbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Artikel</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
   <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
   w.document.close();
 }
@@ -270,14 +261,14 @@ function renderOrder(id,order){
   top.append(title,actions);body.appendChild(top);
 
   const customer=document.createElement("div");customer.className="customer-grid";
-  [["Name",order.name],["Verein / Mannschaft / Klasse / Abteilung",order.customerClass],["E-Mail",order.email],["Telefon",order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
+  [["Vor- und Nachname",order.name],["Verein / Firma",order.customerClass],["E-Mail",order.email],["WhatsApp",order.whatsapp||order.phone]].forEach(([label,value])=>{const box=document.createElement("div");const l=document.createElement("span");l.textContent=label;const v=document.createElement("strong");v.textContent=text(value);box.append(l,v);customer.appendChild(box)});
   body.appendChild(customer);
 
   const items=document.createElement("div");items.className="items";
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
     const row=document.createElement("div");row.className="item-row v2971-item-row";
     const info=document.createElement("div");info.className="v2971-item-info";
-    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${text(item.size)} · ${text(item.shirtColor)} · ${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
+    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
     const amount=document.createElement("strong");amount.className="v2971-item-amount";amount.textContent=euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)));
     info.appendChild(main);row.append(info,amount);items.appendChild(row);
   });
