@@ -7,71 +7,238 @@
   <title>Bestellung bestätigt</title>
   <style>
     *{box-sizing:border-box}
-    :root{--accent:#f28c00;--text:#202024;--muted:#76767f;--line:#e8e8ec;--bg:#f7f7f8}
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--text);background:var(--bg)}
-    .page{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
-    .card{width:min(620px,100%);background:#fff;border-radius:22px;padding:30px;box-shadow:0 18px 55px rgba(0,0,0,.09)}
-    .brand{display:flex;align-items:center;gap:14px;margin-bottom:24px}
-    .brand img{width:88px;height:88px;object-fit:contain;filter:grayscale(1) brightness(0);-webkit-filter:grayscale(1) brightness(0)}
-    .brand strong{display:block;font-size:20px}.brand span{display:block;color:var(--muted);font-size:13px;margin-top:3px}
-    .check{width:62px;height:62px;border-radius:50%;display:grid;place-items:center;background:#eaf7ef;color:#18794e;font-size:34px;font-weight:900;margin-bottom:18px}
-    h1{margin:0 0 10px;font-size:30px;line-height:1.1}p{line-height:1.55}.lead{margin:0 0 22px;color:var(--muted)}
-    .summary{border:1px solid var(--line);border-radius:14px;padding:16px;margin:18px 0;background:#fcfcfd}.summary h2{font-size:16px;margin:0 0 12px}
-    .row{display:flex;justify-content:space-between;gap:18px;padding:9px 0;border-bottom:1px solid var(--line);font-size:13px}.row:last-child{border-bottom:0}.row span{color:var(--muted)}.row strong{text-align:right}
-    .items{display:grid;gap:9px;margin-top:12px}.item{padding:11px;border-radius:10px;background:#f5f5f7;font-size:12px;line-height:1.45}.item strong{display:block;margin-bottom:2px}
-    .mailnote{font-size:13px;color:var(--muted);margin:18px 0}
-    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.btn{display:block;width:100%;padding:13px 16px;border-radius:10px;background:var(--accent);color:#fff;text-decoration:none;text-align:center;font-weight:800;border:0;font:inherit;cursor:pointer}.btn.secondary{background:#f0f0f2;color:#202024}
-    @media(max-width:600px){.page{padding:14px;align-items:flex-start}.card{margin-top:24px;padding:22px;border-radius:18px}h1{font-size:25px}.brand img{width:58px;height:58px}.row{font-size:12px}}
-  @media print{body{background:#fff}.page{padding:0;display:block}.card{box-shadow:none;border-radius:0;width:100%;padding:12mm}.check,.lead,.mailnote,.actions{display:none}.brand{border-bottom:2px solid #222;padding-bottom:14px}.summary{border-color:#bbb}}
+    :root{
+      --ink:#14202b;--muted:#687482;--line:#e3e8ed;--soft:#f4f6f8;--soft2:#eef2f5;
+      --teal:#2f9c90;--teal-soft:#e7f6f3;--green:#1f9d64;--green-soft:#e7f7ef;--accent:#f2c200;
+    }
+    html,body{margin:0;padding:0;background:#eef1f4;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+    body{min-height:100vh}
+    .page{width:min(980px,calc(100% - 28px));margin:24px auto;padding:0}
+    .sheet{background:#fff;border:1px solid #e1e6ea;border-radius:22px;box-shadow:0 18px 50px rgba(24,39,55,.08);padding:34px}
+    .topbar{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:28px}
+    .brand{display:flex;gap:16px;align-items:center;min-width:0}
+    .brand img{width:92px;height:72px;object-fit:contain;filter:grayscale(1) brightness(0);-webkit-filter:grayscale(1) brightness(0)}
+    .brand-copy strong{display:block;font-size:25px;line-height:1.05;font-weight:850;letter-spacing:-.02em}
+    .brand-copy span{display:block;margin-top:6px;color:var(--muted);font-size:13px}
+    .tagline{text-align:right;font-family:"Segoe Print","Bradley Hand",cursive;font-size:23px;line-height:1.08;font-weight:700;transform:rotate(-2deg);max-width:230px}
+    .tagline:after{content:"";display:block;width:120px;height:3px;margin:8px 0 0 auto;background:var(--teal);border-radius:10px;transform:rotate(-7deg)}
+    .hero{display:grid;grid-template-columns:76px 1fr 230px;gap:18px;align-items:center;margin-bottom:24px}
+    .check{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#31bb70,#0d8e56);color:#fff;font-size:40px;font-weight:900;box-shadow:0 10px 24px rgba(29,157,100,.18)}
+    .hero h1{margin:0;font-size:34px;line-height:1;font-weight:900;letter-spacing:-.03em}
+    .hero p{margin:8px 0 0;color:var(--muted);font-size:14px}
+    .order-meta{background:linear-gradient(180deg,#f7f9fb,#eef2f5);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+    .meta-label{font-size:11px;color:var(--muted);margin-bottom:3px}
+    .meta-value{font-size:15px;font-weight:850;overflow-wrap:anywhere}
+    .meta-row+.meta-row{margin-top:11px}
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:18px}
+    .panel{border:1px solid var(--line);border-radius:15px;overflow:hidden;background:#fff}
+    .panel-head{display:flex;align-items:center;gap:10px;padding:13px 15px;background:linear-gradient(180deg,#f7f9fb,#f0f3f6);font-size:16px;font-weight:850}
+    .panel-icon{width:31px;height:31px;border-radius:50%;display:grid;place-items:center;background:#dfe6ec;font-size:16px}
+    .rows{padding:3px 15px 10px}
+    .row{display:grid;grid-template-columns:145px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid #edf0f2;font-size:13px}
+    .row:last-child{border-bottom:0}
+    .row span{color:var(--muted)}
+    .row strong{font-weight:750;overflow-wrap:anywhere}
+    .status{display:inline-flex;align-items:center;gap:7px;width:max-content;padding:5px 10px;border-radius:999px;background:var(--green-soft);color:var(--green);font-size:12px;font-weight:850}
+    .status:before{content:"";width:8px;height:8px;border-radius:50%;background:var(--green)}
+    .article-panel{border:1px solid var(--line);border-radius:15px;overflow:hidden;margin-bottom:18px}
+    .article-title{display:flex;align-items:center;gap:10px;padding:13px 15px;background:linear-gradient(180deg,#f7f9fb,#f0f3f6);font-size:17px;font-weight:850}
+    .table-head,.article-row{display:grid;grid-template-columns:74px 1.65fr 1fr .75fr .72fr .86fr;gap:12px;align-items:center}
+    .table-head{padding:10px 14px;background:#17232f;color:#fff;font-size:11px;font-weight:800}
+    .article-row{padding:13px 14px;border-bottom:1px solid #edf0f2}
+    .article-row:last-child{border-bottom:0}
+    .qty{display:flex;align-items:center;justify-content:center;width:44px;height:34px;border-radius:9px;background:#f0f3f6;font-weight:850;font-size:12px}
+    .product strong{display:block;font-size:13px}
+    .product small{display:block;margin-top:4px;color:var(--muted);font-size:10.5px;line-height:1.25}
+    .cell{font-size:12px}
+    .price{font-size:12px}
+    .total-price{font-size:13px;font-weight:900}
+    .bottom-grid{display:grid;grid-template-columns:1.2fr .9fr;gap:16px}
+    .contact{border:1px solid var(--line);border-radius:15px;padding:16px;background:linear-gradient(180deg,#fbfcfd,#f4f6f8)}
+    .contact h3{margin:0 0 6px;font-size:16px}
+    .contact p{margin:0 0 12px;color:var(--muted);font-size:12px}
+    .contact-line{display:flex;gap:10px;align-items:center;font-size:12px;margin-top:8px}
+    .contact-line b{font-weight:800}
+    .summary-total{border-radius:15px;padding:18px;background:linear-gradient(160deg,#172532,#203543);color:#fff;display:flex;flex-direction:column;justify-content:center}
+    .summary-total .mini{font-size:12px;color:#c5d0d8}
+    .summary-total .count{font-size:14px;font-weight:800;margin:4px 0 14px;padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.28)}
+    .summary-total .grand{display:flex;justify-content:space-between;gap:14px;align-items:end}
+    .summary-total .grand span{font-size:13px}
+    .summary-total .grand strong{font-size:32px;line-height:1;font-weight:900}
+    .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:18px}
+    .btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:46px;border-radius:11px;border:1px solid #cfd6dd;background:#fff;color:var(--ink);font:inherit;font-size:13px;font-weight:850;text-decoration:none;cursor:pointer}
+    .btn.primary{background:linear-gradient(180deg,#e9f7f4,#cfece6);border-color:#8ccdc2;color:#16483f}
+    .footer{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line)}
+    .trust{display:flex;gap:8px;align-items:center;font-size:10.5px;color:#56616d}
+    .trust b{display:block;color:var(--ink);font-size:10.5px}
+    .trust i{font-style:normal;font-size:20px}
+    @media(max-width:760px){
+      .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
+      .topbar{gap:10px;margin-bottom:18px}.brand img{width:64px;height:52px}.brand-copy strong{font-size:19px}.tagline{display:none}
+      .hero{grid-template-columns:52px 1fr;gap:12px}.hero .order-meta{grid-column:1/-1}.check{width:50px;height:50px;font-size:28px}.hero h1{font-size:27px}
+      .info-grid,.bottom-grid{grid-template-columns:1fr}
+      .row{grid-template-columns:125px 1fr;font-size:12px}
+      .table-head{display:none}
+      .article-row{grid-template-columns:48px 1fr 78px;gap:8px}
+      .article-row .cell.color{display:none}.article-row .cell.size{grid-column:3}.article-row .price{grid-column:2}.article-row .total-price{grid-column:3;text-align:right}
+      .footer{grid-template-columns:1fr 1fr}
+      .actions{grid-template-columns:1fr}
+    }
+    @media print{
+      @page{size:A4;margin:9mm}
+      html,body{background:#fff}
+      .page{width:100%;margin:0}.sheet{border:0;box-shadow:none;border-radius:0;padding:0}
+      .actions{display:none}.footer{margin-top:14px}.topbar{margin-bottom:18px}.hero{margin-bottom:16px}
+    }
   </style>
 </head>
 <body>
   <main class="page">
-    <section class="card">
-      <div class="brand">
-        <img id="thanksLogo" src="" alt="Shop Logo">
-        <div><strong id="thanksBrand">Kundenname</strong><span id="thanksSubtitle">T-Shirt Konfigurator</span></div>
+    <section class="sheet">
+      <header class="topbar">
+        <div class="brand">
+          <img id="thanksLogo" src="" alt="Shop Logo">
+          <div class="brand-copy">
+            <strong id="thanksBrand">Kundenname</strong>
+            <span id="thanksSubtitle">T-Shirt Bestellung</span>
+          </div>
+        </div>
+        <div class="tagline">Deine Idee.<br>Unser Druck.</div>
+      </header>
+
+      <section class="hero">
+        <div class="check" aria-hidden="true">✓</div>
+        <div>
+          <h1>Vielen Dank für deine Bestellung!</h1>
+          <p>Deine Bestellung wurde erfolgreich bei uns eingereicht.</p>
+        </div>
+        <div class="order-meta">
+          <div class="meta-row"><div class="meta-label">Bestellnummer</div><div class="meta-value" id="orderNumber">–</div></div>
+          <div class="meta-row"><div class="meta-label">Datum</div><div class="meta-value" id="orderDate">–</div></div>
+        </div>
+      </section>
+
+      <section class="info-grid">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-icon">👤</span>Kundendaten</div>
+          <div class="rows" id="customerRows"></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><span class="panel-icon">📋</span>Bestellstatus</div>
+          <div class="rows">
+            <div class="row"><span>Shop</span><strong id="shopName">–</strong></div>
+            <div class="row"><span>Status</span><strong><span class="status">Bestellt</span></strong></div>
+            <div class="row"><span>Artikel gesamt</span><strong id="totalQtyTop">0</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="article-panel" id="confirmationSummary" hidden>
+        <div class="article-title"><span class="panel-icon">🛒</span>Artikelübersicht</div>
+        <div class="table-head"><span>Menge</span><span>Artikel</span><span>Farbe</span><span>Größe</span><span>Einzelpreis</span><span>Gesamt</span></div>
+        <div id="confirmationItems"></div>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="contact">
+          <h3>Fragen zu deiner Bestellung?</h3>
+          <p>Wir sind gerne für dich da.</p>
+          <div class="contact-line">✉️ <b id="thanksEmail">shirtzentrale@gmail.com</b></div>
+          <div class="contact-line" id="whatsappContact" hidden>💬 <b id="whatsappValue"></b></div>
+        </div>
+        <div class="summary-total">
+          <div class="mini">Gesamtübersicht</div>
+          <div class="count"><span id="totalQtyBottom">0 Artikel</span></div>
+          <div class="grand"><span>Gesamtpreis</span><strong id="grandTotal">0,00 €</strong></div>
+        </div>
+      </section>
+
+      <div class="actions">
+        <button class="btn primary" type="button" onclick="window.print()">🖨️ Bestellschein drucken / PDF</button>
+        <a class="btn" id="newOrderLink" href="/">↻ Neue Bestellung</a>
       </div>
-      <div class="check" aria-hidden="true">✓</div>
-      <h1>Bestellschein</h1>
-      <p class="lead">Deine Bestellung wurde erfolgreich übermittelt. Dies ist dein Bestellschein.</p>
-      <div id="confirmationSummary" class="summary" hidden>
-        <h2>Bestelldaten</h2>
-        <div id="customerRows"></div>
-        <div id="confirmationItems" class="items"></div>
-      </div>
-      <p class="mailnote">Die Bestellung wurde an <strong id="thanksEmail">shirtzentrale@gmail.com</strong> gesendet.</p>
-      <div class="actions"><button class="btn" type="button" onclick="window.print()">Bestellschein drucken / PDF</button><a class="btn secondary" id="newOrderLink" href="/">Neue Bestellung</a></div>
+
+      <footer class="footer">
+        <div class="trust"><i>🛡️</i><span><b>Hochwertige Textilien</b>Langlebig & angenehm</span></div>
+        <div class="trust"><i>★</i><span><b>Saubere Veredelung</b>Für Verein & Firma</span></div>
+        <div class="trust"><i>♥</i><span><b>Persönlicher Service</b>Direkter Kontakt</span></div>
+        <div class="trust"><i>👥</i><span><b>Teamwear</b>Zuverlässig umgesetzt</span></div>
+      </footer>
     </section>
   </main>
-  <script src="/central-config.js?v=30.0.4"></script>
-  <script src="/shop-loader.js?v=30.0.4"></script>
+
+  <script src="/central-config.js?v=30.0.6"></script>
+  <script src="/shop-loader.js?v=30.0.6"></script>
   <script>
     loadShopConfig(function(cfg){
-      if(cfg.pageTitle)document.title="Bestellung bestätigt – "+(cfg.customerName||cfg.brandTitle||cfg.customerId||"");
+      const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
+      const text=v=>String(v??"").trim();
+      document.title="Bestellung bestätigt – "+(cfg.customerName||cfg.brandTitle||cfg.customerId||"");
       document.getElementById("thanksBrand").textContent=cfg.customerName||cfg.brandTitle||"";
+      document.getElementById("shopName").textContent=cfg.customerName||cfg.brandTitle||"";
       if(cfg.brandSubtitle)document.getElementById("thanksSubtitle").textContent=cfg.brandSubtitle;
-      if(cfg.logoFile){const l=document.getElementById("thanksLogo");l.src=window.shopAssetUrl(cfg.logoFile);l.alt=cfg.customerName||cfg.brandTitle||"Shop Logo";}
+      if(cfg.logoFile){
+        const l=document.getElementById("thanksLogo");
+        l.src=window.shopAssetUrl(cfg.logoFile);
+        l.alt=cfg.customerName||cfg.brandTitle||"Shop Logo";
+      }
       if(cfg.orderEmail)document.getElementById("thanksEmail").textContent=cfg.orderEmail;
-      if(cfg.accentColor)document.documentElement.style.setProperty("--accent",cfg.accentColor);
       document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
+
       try{
         const storageKey=`shirtOrderConfirmation:${cfg.customerId||window.SHOP_SLUG||"shop"}`;
         const raw=sessionStorage.getItem(storageKey);
         if(!raw)return;
         const data=JSON.parse(raw);
-        const box=document.getElementById('confirmationSummary');
-        const rows=document.getElementById('customerRows');
-        const items=document.getElementById('confirmationItems');
-        const makeRow=(label,value)=>{const row=document.createElement('div');row.className='row';const a=document.createElement('span');a.textContent=label;const b=document.createElement('strong');b.textContent=value;row.append(a,b);return row;};
-        if(data.orderNumber)rows.appendChild(makeRow('Bestellnummer',data.orderNumber));
-        if(data.name)rows.appendChild(makeRow('Vor- und Nachname',data.name));
-        if(data.customerClass)rows.appendChild(makeRow((cfg.customerId||window.SHOP_SLUG)==='tg-solingen'?'Verein / Firma':(cfg.customerExtraFieldLabel||'Team / Abteilung'),data.customerClass));
-        if(data.whatsapp||data.phone)rows.appendChild(makeRow('WhatsApp',data.whatsapp||data.phone));
-        if(data.totalQuantity)rows.appendChild(makeRow('Gesamtmenge',String(data.totalQuantity)+' '+(data.totalQuantity===1?'Artikel':'Artikel')));
-        if(typeof data.totalPrice==='number')rows.appendChild(makeRow('Gesamtpreis',new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(data.totalPrice)));
-        if(Array.isArray(data.items))data.items.forEach((item,i)=>{const el=document.createElement('div');el.className='item';const t=document.createElement('strong');const qty=Number(item.quantity)||1;const unit=Number(item.unitPrice)||Number(cfg.shirtPrice)||15;const linePrice=Number(item.linePrice)||qty*unit;const product=item.productName||(item.productId==='polo'?'Polo-Shirt':item.productId==='hoodie'?'Hoodie':'T-Shirt');t.textContent=`${i+1}. ${qty}× ${product} · ${item.size} · ${item.shirtColor} · ${new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(linePrice)}`;const m=document.createElement('span');m.textContent=`${item.motif} · Motivfarbe: ${item.motifColor}`;el.append(t,m);items.appendChild(el)});
-        box.hidden=false;
+
+        document.getElementById("orderNumber").textContent=text(data.orderNumber)||"–";
+        document.getElementById("orderDate").textContent=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
+
+        const rows=document.getElementById("customerRows");
+        const addRow=(label,value)=>{
+          if(!text(value))return;
+          const row=document.createElement("div"); row.className="row";
+          const a=document.createElement("span"); a.textContent=label;
+          const b=document.createElement("strong"); b.textContent=value;
+          row.append(a,b); rows.appendChild(row);
+        };
+        addRow("Vor- und Nachname",data.name);
+        addRow("Verein / Firma",data.customerClass);
+        addRow("E-Mail",data.email);
+        addRow("WhatsApp",data.whatsapp||data.phone);
+
+        const totalQty=Number(data.totalQuantity)||0;
+        document.getElementById("totalQtyTop").textContent=totalQty+" "+(totalQty===1?"Artikel":"Artikel");
+        document.getElementById("totalQtyBottom").textContent=totalQty+" "+(totalQty===1?"Artikel":"Artikel");
+        document.getElementById("grandTotal").textContent=euro(data.totalPrice);
+
+        if(data.whatsapp||data.phone){
+          document.getElementById("whatsappValue").textContent=data.whatsapp||data.phone;
+          document.getElementById("whatsappContact").hidden=false;
+        }
+
+        const items=document.getElementById("confirmationItems");
+        if(Array.isArray(data.items)){
+          data.items.forEach(item=>{
+            const qty=Number(item.quantity)||1;
+            const unit=Number(item.unitPrice)||Number(cfg.shirtPrice)||15;
+            const linePrice=Number(item.linePrice)||qty*unit;
+            const product=item.productName||(item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+
+            const row=document.createElement("div"); row.className="article-row";
+            const q=document.createElement("div"); q.className="qty"; q.textContent=qty+"×";
+            const p=document.createElement("div"); p.className="product";
+            const ps=document.createElement("strong"); ps.textContent=product;
+            const psmall=document.createElement("small"); psmall.textContent=`${item.motif||"Motiv"} · Motivfarbe: ${item.motifColor||"-"}`;
+            p.append(ps,psmall);
+            const color=document.createElement("div"); color.className="cell color"; color.textContent=item.shirtColor||"-";
+            const size=document.createElement("div"); size.className="cell size"; size.textContent=item.size||"-";
+            const price=document.createElement("div"); price.className="price"; price.textContent=euro(unit);
+            const total=document.createElement("div"); total.className="total-price"; total.textContent=euro(linePrice);
+            row.append(q,p,color,size,price,total); items.appendChild(row);
+          });
+        }
+        document.getElementById("confirmationSummary").hidden=false;
         sessionStorage.removeItem(storageKey);
       }catch(e){console.error(e)}
     });
