@@ -8,97 +8,82 @@
 <style>
 *{box-sizing:border-box}
 :root{
-  --blue:#0f4f96;
-  --blue2:#0a3f7c;
-  --blue3:#082f61;
-  --yellow:#f6c400;
-  --ink:#11233d;
-  --muted:#53657c;
-  --line:#d8e2ec;
-  --soft:#f4f8fb;
-  --soft2:#eaf1f7;
-  --green:#20a85d;
+  --ink:#13202c;--muted:#697582;--line:#dde4e9;--soft:#f4f6f8;--soft2:#eef2f5;
+  --green:#1fb86a;--green-soft:#d9f7e7;--teal:#239b91;--navy:#152431;--navy2:#203744;
 }
-html,body{margin:0;background:#eef3f8;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
-body{background:
-  linear-gradient(135deg,rgba(15,79,150,.035) 0 11%,transparent 11% 100%),
-  linear-gradient(180deg,#f7f9fb 0%,#eef3f8 100%)}
-.page{width:min(1030px,calc(100% - 28px));margin:20px auto}
-.sheet{position:relative;overflow:hidden;background:#fff;border:1px solid #dfe7ef;border-radius:20px;padding:28px 30px 22px;box-shadow:0 22px 60px rgba(21,55,88,.10)}
-.sheet:before,.sheet:after{content:"";position:absolute;pointer-events:none;z-index:0}
-.sheet:before{right:-78px;top:155px;width:270px;height:14px;background:var(--blue);transform:rotate(-41deg);box-shadow:0 24px 0 var(--yellow),0 48px 0 #dfe9f2}
-.sheet:after{left:-92px;bottom:210px;width:220px;height:10px;background:#e5edf5;transform:rotate(-44deg);box-shadow:0 24px 0 var(--yellow)}
-.sheet>*{position:relative;z-index:1}
-.top{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;margin-bottom:18px}
+html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.page{width:min(1080px,calc(100% - 28px));margin:24px auto}
+.sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:28px;padding:42px 44px 32px;box-shadow:0 26px 80px rgba(17,31,43,.08)}
+.top{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;margin-bottom:30px;padding-bottom:12px;border-bottom:1px solid #edf1f4}
 .brand{display:flex;gap:16px;align-items:center;min-width:0}
-.brand-logo{width:300px;min-height:76px;display:flex;align-items:center}
+.brand-logo{width:310px;min-height:88px;display:flex;align-items:center;gap:0}
 .brand-text{line-height:.92}
-.brand-text .main{font-size:36px;font-weight:950;letter-spacing:.09em;color:var(--blue3)}
-.brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.40em;margin-top:5px;color:var(--blue)}
-.brand-note{font-size:9.5px;font-weight:800;letter-spacing:.11em;margin-top:9px;white-space:nowrap;color:#5a6c82}
-.slogan{font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;font-size:31px;line-height:.98;font-weight:800;text-align:right;color:var(--blue);padding-right:4px;transform:rotate(-2deg)}
-.slogan br+*{color:var(--yellow)}
-.slogan:after{content:"";display:block;width:112px;height:4px;background:var(--yellow);border-radius:999px;margin:8px 0 0 auto;transform:rotate(-4deg)}
-.hero{display:grid;grid-template-columns:74px 1fr 230px;gap:18px;align-items:center;margin-bottom:18px}
-.check{width:68px;height:68px;border-radius:50%;display:grid;place-items:center;background:var(--yellow);color:#fff;font-size:38px;font-weight:900;box-shadow:0 9px 20px rgba(246,196,0,.24)}
-.hero h1{font-size:34px;line-height:1;margin:0;font-weight:950;letter-spacing:-.035em;color:var(--blue3)}
-.hero p{font-size:13.5px;margin:6px 0 0;color:#294c78}
-.orderbox{border:1px solid #d9e3ed;border-radius:12px;background:linear-gradient(180deg,#f8fbfd,#eff4f8);padding:12px 14px}
-.orderbox .label{font-size:10px;color:#607389;font-weight:700;text-transform:uppercase;letter-spacing:.04em}
-.orderbox .value{font-size:15px;font-weight:900;margin-top:2px;overflow-wrap:anywhere;color:var(--blue3)}
-.orderbox .block+.block{margin-top:8px}
-.info{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
-.card{border:1px solid #d8e3ed;border-radius:14px;overflow:hidden;background:rgba(255,255,255,.97);box-shadow:0 6px 16px rgba(13,58,102,.04)}
-.card-head{padding:12px 16px;background:linear-gradient(180deg,var(--blue),var(--blue2));color:#fff;font-size:17px;font-weight:900;letter-spacing:-.01em}
-.rows{padding:4px 14px 9px}
-.row{display:grid;grid-template-columns:150px 1fr;gap:14px;padding:8px 0;border-bottom:1px solid #e4ebf2;font-size:12.5px}
+.brand-text .main{font-size:36px;font-weight:900;letter-spacing:.11em}
+.brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.46em;margin-top:6px}
+.brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#74808a}
+.slogan{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;font-weight:700;letter-spacing:.01em;text-align:right;color:#202731;padding-right:2px;transform:rotate(-2deg)}
+.slogan:after{content:"";display:block;width:88px;height:3px;background:#6fc7c0;border-radius:999px;margin:8px 0 0 auto;transform:rotate(-3deg)}
+.hero{display:grid;grid-template-columns:86px 1fr 260px;gap:24px;align-items:center;margin-bottom:24px}
+.check{width:82px;height:82px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:44px;font-weight:900;box-shadow:0 12px 26px rgba(28,166,112,.18)}
+.hero h1{font-size:32px;line-height:1.04;margin:0;font-weight:850;letter-spacing:-.03em}
+.hero p{font-size:14px;margin:8px 0 0;color:#4f5b67}
+.orderbox{border:1px solid #dfe7eb;border-radius:16px;background:linear-gradient(180deg,#fbfcfd,#f1f5f7);padding:16px 18px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9)}
+.orderbox .label{font-size:11px;color:var(--muted)}
+.orderbox .value{font-size:16px;font-weight:900;margin-top:2px;overflow-wrap:anywhere}
+.orderbox .block+.block{margin-top:10px}
+.info{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;margin-bottom:20px}
+.card{border:1px solid #e1e7eb;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#ffffff,#fbfcfd);box-shadow:0 10px 24px rgba(23,37,49,.04)}
+.card-head{display:flex;align-items:center;padding:14px 18px;background:linear-gradient(180deg,#fbfcfd,#f4f7f9);font-size:16px;font-weight:800;letter-spacing:-.01em;border-bottom:1px solid #e9eef2;position:relative}.card-head:before{content:"";display:inline-block;width:4px;height:18px;border-radius:999px;background:linear-gradient(180deg,#79c9c1,#36a89d);margin-right:10px}
+.ico{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#dce4ea;font-size:15px}
+.rows{padding:6px 18px 12px}
+.row{display:grid;grid-template-columns:155px 1fr;gap:16px;padding:10px 0;border-bottom:1px solid #edf0f2;font-size:13px}
 .row:last-child{border-bottom:0}
-.row span{color:#37577d}.row strong{font-weight:600;color:#162f52;overflow-wrap:anywhere}
-.right-stack{display:grid;grid-template-rows:1fr 1fr;gap:14px}
-.table-wrap{border:1px solid #d8e3ed;border-radius:14px;overflow:hidden;margin-bottom:14px;box-shadow:0 6px 16px rgba(13,58,102,.04);background:#fff}
-.table-wrap:before{content:"Artikelübersicht";display:block;background:linear-gradient(180deg,var(--blue),var(--blue2));color:#fff;padding:12px 16px;font-size:18px;font-weight:900}
-.table-head,.item-row{display:grid;grid-template-columns:1.32fr .86fr .60fr 1.12fr .52fr .68fr .76fr;gap:10px;align-items:center}
-.table-head{background:#eef4f8;color:#294f7c;padding:9px 14px;font-size:10px;font-weight:850;letter-spacing:.025em;text-transform:none}
-.item-row{padding:10px 14px;border-bottom:1px solid #e3ebf2;min-height:74px}
-.item-row:last-child{border-bottom:0}
-.product-cell{display:grid;grid-template-columns:64px 1fr;gap:10px;align-items:center}
-.product-cell img{width:58px;height:58px;object-fit:contain}
-.product-cell strong{display:block;font-size:13.5px;font-weight:900;color:#17365d}.product-cell small{display:none}
-.cell{font-size:12px;line-height:1.25;color:#233e63}.positions div+div{margin-top:3px}
-.money{font-size:12px;color:#233e63}.money.total{font-weight:900;color:#132f55}
-.bottom{display:grid;grid-template-columns:1.18fr .82fr;gap:14px}
-.contact{border:1px solid #d8e3ed;border-radius:14px;background:linear-gradient(180deg,#fbfdff,#f2f7fb);padding:16px 18px;display:grid;grid-template-columns:1fr auto;gap:18px;align-items:center}
-.contact h3{margin:0 0 5px;font-size:16px;color:var(--blue3)}.contact p{margin:0 0 8px;font-size:11.5px;color:#416083}
-.contact-line{display:flex;align-items:center;gap:9px;font-size:11.5px;margin-top:7px}.contact-ico{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--blue);color:#fff;font-size:10px}
-.thanks-note{font-family:"Segoe Print","Bradley Hand","Comic Sans MS",cursive;font-size:20px;line-height:1.05;text-align:right;margin-top:0;white-space:nowrap;font-weight:800;color:var(--blue3);transform:rotate(-3deg)}
-.thanks-note:after{content:"";display:block;width:86px;height:4px;background:var(--yellow);border-radius:999px;margin:7px 0 0 auto;transform:rotate(-4deg)}
-.totalbox{border:1px solid #f3d56a;border-radius:14px;background:linear-gradient(135deg,#fffdf3,#fff3bb);color:var(--ink);padding:16px 18px}
-.totalbox h3{font-size:16px;margin:0 0 8px;color:var(--blue3)}
-.total-line{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid rgba(214,177,34,.45);font-size:12.5px}
-.total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:31px;line-height:1;font-weight:950;color:var(--blue3)}
-.totalbox small{display:block;color:#617086;font-size:10px;margin-top:3px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.btn{min-height:44px;border-radius:11px;border:1px solid #cad8e6;background:#fff;color:var(--blue3);font:inherit;font-size:12px;font-weight:850;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer}
-.btn.primary{background:linear-gradient(180deg,#edf5fb,#dfeefa);border-color:#b6d1e8;color:var(--blue3)}
-.footer{display:grid;grid-template-columns:1fr auto;gap:20px;align-items:end;border-top:1px solid #cdd9e5;margin-top:16px;padding-top:12px}
-.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:48px;height:3px;background:var(--yellow);border-radius:999px;margin-bottom:7px}.footer-signature strong{font-size:13px;font-weight:850;color:var(--blue3)}
-.footer-brand{text-align:right;font-weight:950;letter-spacing:.10em;color:var(--blue3)}.footer-brand span{display:block;font-size:8px;color:#607389;font-weight:700;letter-spacing:.13em;margin-top:3px}
+.row span{color:#43505d}.row strong{font-weight:500;overflow-wrap:anywhere}
+.right-stack{display:grid;grid-template-rows:1fr 1fr;gap:16px}
+.status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:8px;background:var(--green-soft);color:#11944f;font-weight:900;width:max-content}
+.status:before{content:"";width:8px;height:8px;border-radius:50%;background:#17b25d}
+.table-wrap{border:1px solid #dfe5e9;border-radius:18px;overflow:hidden;margin-bottom:22px;box-shadow:0 10px 24px rgba(23,37,49,.04);background:#fff}
+.table-head,.item-row{display:grid;grid-template-columns:1.28fr .95fr .74fr 1.18fr .58fr .68fr .76fr;gap:12px;align-items:center}
+.table-head{background:linear-gradient(180deg,#f8fafb,#eef3f6);color:#243543;padding:13px 16px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid #e4eaee}
+.item-row{padding:14px 16px;border-bottom:1px solid #edf0f2;min-height:88px;background:#fff}
+.item-row:last-child{border-bottom:0}.item-row:nth-child(even){background:#fbfcfd}
+.product-cell{display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center}
+.product-cell img{width:70px;height:70px;object-fit:contain;background:linear-gradient(180deg,#ffffff,#f4f7f9);border:1px solid #e3e8ec;border-radius:14px;padding:6px}
+.product-cell strong{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.01em}.product-cell small{display:none}
+.cell{font-size:12.5px;line-height:1.25}.positions div+div{margin-top:4px}.positions div{white-space:normal}
+.motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
+.money{font-size:12.5px}.money.total{font-weight:900}
+.bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
+.contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
+.contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:9px}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px}
+.thanks-note{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;text-align:right;margin-top:0;white-space:nowrap;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-2deg)}
+.thanks-note:after{content:"";display:block;width:78px;height:3px;background:#6fc7c0;border-radius:999px;margin:8px 0 0 auto;transform:rotate(-3deg)}
+.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.totalbox h3{font-size:16px;margin:0 0 10px}
+.total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
+.total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
+.totalbox small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.btn{min-height:48px;border-radius:14px;border:1px solid #d5dde3;background:#fff;color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;transition:.18s ease;box-shadow:0 8px 18px rgba(23,37,49,.04)}
+.btn.primary{background:linear-gradient(180deg,#edf9f6,#d8efe9);border-color:#abd4cc;color:#18483f;box-shadow:0 8px 18px rgba(48,143,127,.12)}
+.footer{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:end;border-top:1px solid #e4e9ed;margin-top:26px;padding-top:20px}
+.trust{display:flex;align-items:flex-start;gap:8px;color:#52606c;font-size:10px;line-height:1.25}
+.trust i{font-style:normal;font-size:20px}.trust b{display:block;color:var(--ink);font-size:10px}
+ .footer-brand{text-align:right;font-weight:900;letter-spacing:.11em;color:#22303c}.footer-brand span{display:block;font-size:8.5px;color:#7a858e;font-weight:650;letter-spacing:.15em;margin-top:4px}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:44px;height:2px;background:#9ccfc6;border-radius:999px;margin-bottom:9px}.footer-signature strong{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:18px;line-height:1.1;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-1.5deg)}
 @media(max-width:760px){
- .page{width:100%;margin:0}.sheet{border-radius:0;padding:16px 12px}
- .sheet:before,.sheet:after{display:none}.top{margin-bottom:14px}.brand-logo{width:auto;min-height:auto}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:none}
- .hero{grid-template-columns:50px 1fr;gap:10px}.check{width:46px;height:46px;font-size:27px}.hero h1{font-size:25px}.hero .orderbox{grid-column:1/-1}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:122px 1fr}.contact{grid-template-columns:1fr}.thanks-note{text-align:left;white-space:normal}
- .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}.product-cell{grid-column:1/-1}
- .footer{grid-template-columns:1fr}.footer-brand{text-align:left}.actions{grid-template-columns:1fr}
+ .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
+ .top{margin-bottom:18px}.brand-logo{width:auto}.brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}.brand-note,.slogan{display:none}
+ .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1}
+ .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{font-family:"Segoe Script","Snell Roundhand","Brush Script MT","Segoe Print",cursive;font-size:24px;line-height:1.08;text-align:right;margin-top:0;white-space:nowrap;font-weight:700;letter-spacing:.01em;color:#202731;transform:rotate(-2deg)}
+ .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+ .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
+ .actions{grid-template-columns:1fr}
 }
 @media print{
- @page{size:A4 portrait;margin:7mm}
- html,body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}.page{width:100%;margin:0}.sheet{border:0;border-radius:0;box-shadow:none;padding:0}
- .sheet:before,.sheet:after{opacity:.7}.top{margin-bottom:12px}.hero{margin-bottom:12px}.info,.table-wrap{margin-bottom:10px}.bottom{gap:10px}
- .card,.table-wrap,.contact,.totalbox,.orderbox{box-shadow:none}.row{padding:6px 0;font-size:11.5px}.card-head{padding:9px 13px;font-size:15px}.rows{padding:2px 12px 6px}
- .table-wrap:before{padding:9px 13px;font-size:15px}.table-head{padding:7px 12px;font-size:9px}.item-row{padding:7px 12px;min-height:58px}.product-cell{grid-template-columns:48px 1fr}.product-cell img{width:44px;height:44px}.product-cell strong,.cell,.money{font-size:10.5px}
- .contact,.totalbox{padding:12px 14px}.grand strong{font-size:25px}.thanks-note{font-size:16px}.actions{display:none}.footer{margin-top:10px;padding-top:8px}
- .card,.table-wrap,.contact,.totalbox,.orderbox{page-break-inside:avoid;break-inside:avoid}
+ @page{size:A4;margin:8mm}
+ html,body{background:#fff}.page{width:100%;margin:0}.sheet{border-radius:0;box-shadow:none;padding:0}
+ .actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
 }
 </style>
 </head>
@@ -115,14 +100,14 @@ body{background:
       </div>
     </div>
   </div>
-  <div class="slogan"><span>Ein Team.</span><br><span style="color:var(--yellow)">Ein Style.</span></div>
+  <div class="slogan">Ein Team.<br>Ein Style.</div>
 </header>
 
 <section class="hero">
   <div class="check">✓</div>
   <div>
-    <h1>Bestellschein</h1>
-    <p>Deine Bestellung ist erfolgreich bei uns eingegangen.<br>Hier findest du alle Bestelldaten auf einen Blick.</p>
+    <h1>Vielen Dank für deine Bestellung!</h1>
+    <p>Deine Bestellung ist erfolgreich bei uns eingegangen.</p>
   </div>
   <div class="orderbox">
     <div class="block"><div class="label">Bestellnummer</div><div class="value" id="orderNumber">–</div></div>
@@ -132,19 +117,26 @@ body{background:
 
 <section class="info">
   <div class="card">
-    <div class="card-head">Bestelldaten</div>
-    <div class="rows">
-      <div class="row"><span>Bestellnummer</span><strong id="orderNumberMirror">–</strong></div>
-      <div class="row"><span>Datum</span><strong id="orderDateMirror">–</strong></div>
-      <div class="row"><span>Shop</span><strong id="shopName">–</strong></div>
-      <div class="row"><span>Zahlungsart</span><strong id="paymentMethod">Vor Ort</strong></div>
-      <div class="row"><span>Status</span><strong style="color:#138d4b">Bestätigt</strong></div>
-    </div>
-  </div>
-
-  <div class="card">
     <div class="card-head">Kundendaten</div>
     <div class="rows" id="customerRows"></div>
+  </div>
+
+  <div class="right-stack">
+    <div class="card">
+      <div class="card-head">Liefer & Abholung</div>
+      <div class="rows">
+        <div class="row"><span>Abholung / Versand</span><strong id="deliveryType">Abholung vor Ort</strong></div>
+        <div class="row"><span>Hinweis</span><strong id="deliveryNote">–</strong></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">Zahlung</div>
+      <div class="rows">
+        <div class="row"><span>Zahlungsart</span><strong id="paymentMethod">Vor Ort</strong></div>
+        
+      </div>
+    </div>
   </div>
 </section>
 
@@ -169,7 +161,7 @@ body{background:
       <div class="contact-line" id="contactPhone" hidden><span class="contact-ico">☎</span><strong id="contactPhoneValue"></strong></div>
       <div class="contact-line"><span class="contact-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
     </div>
-    <div class="thanks-note">Danke,<br>dass du Teil unseres Teams bist!</div>
+    <div class="thanks-note">Vielen Dank<br>für dein Vertrauen!</div>
   </div>
 
   <div class="totalbox">
@@ -197,8 +189,8 @@ body{background:
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.8"></script>
-<script src="/shop-loader.js?v=30.1.8"></script>
+<script src="/central-config.js?v=30.1.5"></script>
+<script src="/shop-loader.js?v=30.1.5"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -221,13 +213,8 @@ loadShopConfig(function(cfg){
     if(!raw)return;
     const data=JSON.parse(raw);
 
-    const orderNo=text(data.orderNumber)||"–";
-    const orderDate=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
-    document.getElementById("orderNumber").textContent=orderNo;
-    document.getElementById("orderDate").textContent=orderDate;
-    const orderNoMirror=document.getElementById("orderNumberMirror"); if(orderNoMirror) orderNoMirror.textContent=orderNo;
-    const orderDateMirror=document.getElementById("orderDateMirror"); if(orderDateMirror) orderDateMirror.textContent=orderDate;
-    const shopName=document.getElementById("shopName"); if(shopName) shopName.textContent=text(cfg.shopName||cfg.name||data.shopName)||"–";
+    document.getElementById("orderNumber").textContent=text(data.orderNumber)||"–";
+    document.getElementById("orderDate").textContent=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
 
     const customerRows=document.getElementById("customerRows");
     const addRow=(label,value)=>{
@@ -248,7 +235,9 @@ loadShopConfig(function(cfg){
     addRow("WhatsApp",data.whatsapp||data.phone);
     addRow("Adresse",data.address);
 
-    if(data.paymentMethod && document.getElementById("paymentMethod"))document.getElementById("paymentMethod").textContent=data.paymentMethod;
+    if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
+    if(data.deliveryNote)document.getElementById("deliveryNote").textContent=data.deliveryNote;
+    if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
 
     const phone=data.whatsapp||data.phone;
     if(phone){
