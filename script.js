@@ -1069,14 +1069,15 @@ if (orderForm) {
     const name = document.getElementById("customerName").value.trim();
     const customerClass = document.getElementById("customerClass").value.trim();
     const email = document.getElementById("customerEmail").value.trim();
+    const address = document.getElementById("customerAddress").value.trim();
     const sendOrderBtn = document.getElementById("sendOrderBtn");
 
     if (!orderItems.length) {
       sendOrderMessage.textContent = "Die Bestellung enthält noch keine Shirts.";
       return;
     }
-    if (!name || !customerClass || !email) {
-      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma und E-Mail vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"} und E-Mail vollständig ausfüllen.`;
+    if (!name || !customerClass || !email || !address) {
+      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma, E-Mail und Adresse vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"}, E-Mail und Adresse vollständig ausfüllen.`;
       return;
     }
 
@@ -1107,6 +1108,7 @@ if (orderForm) {
         email,
         phone,
         whatsapp: phone,
+        address,
         totalQuantity,
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
@@ -1142,6 +1144,7 @@ if (orderForm) {
           email,
           phone,
           whatsapp: phone,
+          address,
           totalQuantity,
           unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
           totalPrice,

@@ -2325,6 +2325,9 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   border-color:#e0bb00!important;
   box-shadow:0 0 0 3px rgba(224,187,0,.11)!important;
 }
+.contact-field.address-field{
+  grid-column:1/-1!important;
+}
 .order-modal-note,
 .send-order-btn,
 .send-order-message{
