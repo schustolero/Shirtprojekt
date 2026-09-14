@@ -79,7 +79,7 @@ function getAllowedMotifColorNames(){
   const extraField = document.getElementById("customerClass");
   if (extraField && cfg.customerExtraFieldName && !isTGSolingen) extraField.name = cfg.customerExtraFieldName;
   const orderForm = document.getElementById("orderForm");
-  if (orderForm && cfg.orderEmail) orderForm.action = `https://formsubmit.co/${encodeURIComponent(cfg.orderEmail)}`;
+  if (orderForm && cfg.orderEmail) orderForm.action = `https://formsubmit.co/${String(cfg.orderEmail).trim()}`;
   const subject = document.getElementById("formSubject");
   if (subject && cfg.orderSubject) subject.value = cfg.orderSubject;
   const next = document.getElementById("formNext");
@@ -1112,7 +1112,7 @@ if (orderForm) {
       sendOrderBtn.disabled = true;
       sendOrderBtn.setAttribute("aria-busy", "true");
     }
-    sendOrderMessage.textContent = "Bestellung wird verbindlich gespeichert …";
+    sendOrderMessage.textContent = "Bestellung wird gesendet …";
 
     try {
       const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -1124,6 +1124,8 @@ if (orderForm) {
       formTotalQuantity.value = String(totalQuantity);
       if (formOrderNumber) formOrderNumber.value = orderNumber;
       if (formTotalPrice) formTotalPrice.value = formatEuro(totalPrice);
+      const formAddress = document.getElementById("formAddress");
+      if (formAddress) formAddress.value = address;
 
       const orderPayload = {
         orderNumber,
@@ -1149,78 +1151,53 @@ if (orderForm) {
           articleNo: item.articleNo || "",
           unitPrice: Number(item.unitPrice) || SHIRT_PRICE,
           purchasePrice: Number(item.purchasePrice) || 0,
-          shirtColor: item.shirtColor,
-          motif: item.motif,
-          motifColor: item.motifColor,
+          shirtColor: item.shirtColor || "",
+          motif: item.motif || "",
+          motifColor: item.motifColor || "",
           printLayout: item.printLayout || "",
-          size: item.size,
-          quantity: item.quantity,
-          linePrice: item.quantity * (Number(item.unitPrice) || SHIRT_PRICE)
+          size: item.size || "",
+          quantity: Number(item.quantity) || 1,
+          linePrice: (Number(item.quantity) || 1) * (Number(item.unitPrice) || SHIRT_PRICE)
         }))
       };
 
-      // Bestätigung vor dem Netzwerkzugriff sichern.
-      sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify({
-        orderNumber,
-        customerId: CUSTOMER_ID,
-        customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
-        name,
-        customerClass,
-        email,
-        phone,
-        whatsapp: phone,
-        address,
-        deliveryType,
-        paymentMethod,
-        totalQuantity,
-        unitPrice: orderPayload.unitPrice,
-        totalPrice,
-        items: orderPayload.items
-      }));
+      // Bestätigung lokal sichern, damit danke.html unabhängig vom Netzwerk funktioniert.
+      sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify(orderPayload));
 
-      // Firestore ist die verbindliche Bestellung und wird vollständig abgewartet.
-      const db = getFirestoreDb();
-      if (!db) throw new Error("Firestore ist nicht verfügbar.");
-
-      const firestorePayload = { ...orderPayload };
-      if (window.firebase && firebase.firestore && firebase.firestore.FieldValue) {
-        firestorePayload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+      // Firestore zusätzlich speichern. Ein Firestore-Fehler darf den eigentlichen Versand NIE blockieren.
+      try {
+        const db = getFirestoreDb();
+        const firestorePayload = { ...orderPayload };
+        if (window.firebase && firebase.firestore && firebase.firestore.FieldValue) {
+          firestorePayload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+        }
+        const savePromise = db.collection("orders").doc(orderNumber).set(firestorePayload);
+        await Promise.race([
+          savePromise.catch(error => { console.warn("Firestore-Speicherung fehlgeschlagen:", error); }),
+          new Promise(resolve => setTimeout(resolve, 1200))
+        ]);
+      } catch (error) {
+        console.warn("Firestore ist nicht verfügbar – Bestellung wird trotzdem gesendet:", error);
       }
-      await db.collection("orders").doc(orderNumber).set(firestorePayload);
 
-      // E-Mail ist eine zusätzliche Benachrichtigung. Sie darf den bestätigten Auftrag nicht blockieren.
+      // WICHTIG: Native Formularübertragung ist der verbindliche Versandweg.
+      // Kein fetch/AJAX und keine weitere Abhängigkeit kann diesen Schritt blockieren.
       const targetEmail = String(SHOP.orderEmail || "shirtzentrale@gmail.com").trim();
-      if (targetEmail) {
-        const mailData = new FormData(orderForm);
-        mailData.set("Bestellnummer", orderNumber);
-        mailData.set("Gesamtmenge", String(totalQuantity));
-        mailData.set("Gesamtpreis", formatEuro(totalPrice));
-        mailData.set("Bestellung", orderItemsAsText());
-        mailData.set("Adresse", address);
-        mailData.set("Bestellart", deliveryType);
-        mailData.set("Zahlung", paymentMethod);
-        mailData.set("_subject", `Neue Bestellung ${orderNumber}`);
-        mailData.set("_captcha", "false");
-        mailData.delete("_next");
-
-        fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
-          method: "POST",
-          body: mailData,
-          headers: { Accept: "application/json" },
-          keepalive: true
-        }).catch(error => console.warn("E-Mail-Benachrichtigung konnte nicht gesendet werden:", error));
+      orderForm.action = `https://formsubmit.co/${targetEmail}`;
+      const next = document.getElementById("formNext");
+      if (next) {
+        const thanksUrl = new URL("/danke.html", window.location.origin);
+        thanksUrl.searchParams.set("shop", CUSTOMER_ID);
+        next.value = thanksUrl.href;
       }
 
       sendOrderMessage.classList.add("success");
-      sendOrderMessage.textContent = `Bestellung ${orderNumber} wurde verbindlich gespeichert.`;
-
-      const thanksUrl = new URL("/danke.html", window.location.origin);
-      thanksUrl.searchParams.set("shop", CUSTOMER_ID);
-      window.location.assign(thanksUrl.href);
+      sendOrderMessage.textContent = `Bestellung ${orderNumber} wird jetzt verbindlich gesendet …`;
+      HTMLFormElement.prototype.submit.call(orderForm);
     } catch (error) {
-      console.error("Verbindliche Bestellung fehlgeschlagen:", error);
+      console.error("Bestellung konnte nicht vorbereitet werden:", error);
       sendOrderMessage.classList.remove("success");
-      sendOrderMessage.textContent = "Die Bestellung konnte nicht gespeichert werden. Bitte erneut versuchen.";
+      sendOrderMessage.textContent = "Die Bestellung konnte nicht vorbereitet werden. Bitte erneut versuchen.";
       orderSubmitting = false;
       if (sendOrderBtn) {
         sendOrderBtn.disabled = false;
@@ -1229,7 +1206,6 @@ if (orderForm) {
     }
   });
 }
-
 
 // Startzustand. Feste Shopfarben haben Vorrang vor der allgemeinen Auswahl.
 const FIXED_SHIRT = SHOP.fixedShirtColor || null;
