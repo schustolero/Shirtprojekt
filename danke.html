@@ -38,7 +38,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .rows{padding:6px 18px 12px}
 .row{display:grid;grid-template-columns:155px 1fr;gap:16px;padding:10px 0;border-bottom:1px solid #edf0f2;font-size:13px}
 .row:last-child{border-bottom:0}
-.row span{color:#43505d}.row strong{font-weight:500;overflow-wrap:anywhere}
+.row span{color:#43505d}.row strong{font-weight:500;overflow-wrap:anywhere;white-space:pre-line}
 .right-stack{display:grid;grid-template-rows:1fr 1fr;gap:16px}
 .status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:8px;background:var(--green-soft);color:#11944f;font-weight:900;width:max-content}
 .status:before{content:"";width:8px;height:8px;border-radius:50%;background:#17b25d}
@@ -54,12 +54,12 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
 .money{font-size:12.5px}.money.total{font-weight:900}
 .bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
-.contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px;align-items:end;box-shadow:0 10px 24px rgba(23,37,49,.035)}
-.contact-copy{min-width:0}.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
-.contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:9px}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px}
+.contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 126px;gap:12px;align-items:center;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.contact-copy{min-width:0}.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}.contact-lines{display:grid;gap:9px}
+.contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:0}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px;flex:0 0 24px}.contact-ico svg{width:13px;height:13px;display:block}.contact-ico.whatsapp-ico{background:#25D366}.contact-ico.mail-ico{background:#172532}
 .thanks-note{display:flex;justify-content:flex-end;align-items:flex-end;margin:0;min-width:0;transform:none;align-self:end}
 .thanks-note:after{display:none}
-.thanks-note img{display:block;width:138px;max-width:100%;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.thanks-note img{display:block;width:120px;max-width:100%;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .totalbox h3{font-size:16px;margin:0 0 10px}
 .total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
 .total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
@@ -80,7 +80,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:0}
  .slogan img{width:136px;max-width:100%;height:auto}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{display:flex;justify-content:flex-end;align-items:flex-end;margin:0;min-width:0;transform:none;align-self:end}
+ .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:minmax(0,1fr) 96px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;transform:none;align-self:center}.thanks-note img{width:92px;max-width:100%;height:auto}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
  .actions{grid-template-columns:1fr}
@@ -88,7 +88,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 @media print{
  @page{size:A4;margin:8mm}
  html,body{background:#fff}.page{width:100%;margin:0}.sheet{border-radius:0;box-shadow:none;padding:0}
- .slogan img{width:125px}.thanks-note img{width:180px}.actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
+ .slogan img{width:125px}.thanks-note img{width:120px}.actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
 }
 </style>
 </head>
@@ -105,7 +105,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.14" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.16" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -163,10 +163,12 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
     <div class="contact-copy">
       <h3>Fragen zu deiner Bestellung?</h3>
       <p>Wir sind gerne für dich da – schnell, unkompliziert und auch per WhatsApp.</p>
-      <div class="contact-line" id="contactPhone" hidden><span class="contact-ico">☎</span><strong id="contactPhoneValue"></strong></div>
-      <div class="contact-line"><span class="contact-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
+      <div class="contact-lines">
+        <div class="contact-line" id="contactPhone" hidden><span class="contact-ico whatsapp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.8C20.5 16.4 16.8 20 12.2 20c-1.4 0-2.7-.3-3.8-.9L4 20l1-4.2c-.7-1.2-1-2.6-1-4 0-4.6 3.7-8.2 8.2-8.2 4.6 0 8.3 3.6 8.3 8.2Z" fill="currentColor" opacity=".22"/><path d="M12.2 3.6C7.7 3.6 4 7.2 4 11.8c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.1.6 2.4.9 3.7.9 4.6 0 8.3-3.6 8.3-8.2 0-4.8-3.7-8-7.9-8Zm0 14.8c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.4.6.6-2.3-.1-.2c-.7-1-.9-2.2-.9-3.4 0-3.6 2.9-6.6 6.4-6.6 3.6 0 6.4 2.9 6.4 6.5 0 3.7-2.9 6.4-6.4 6.4Zm3.5-4.8c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-1.1-.6-1.8-1.2-2.5-2.2-.2-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1 0-.3 0-.4 0-.1-.4-1-.6-1.4-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.1 1.5 2.3 3.7 3.2.5.2 1 .4 1.3.5.6.2 1.1.1 1.5.1.5-.1 1.5-.6 1.7-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.1-.4-.2Z" fill="white"/></svg></span><strong id="contactPhoneValue"></strong></div>
+              <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
+      </div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.14" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.16" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -233,11 +235,21 @@ loadShopConfig(function(cfg){
       customerRows.appendChild(row);
     };
 
+    const formatAddress=(value)=>{
+      const clean=text(value);
+      if(!clean) return clean;
+      if(clean.includes("\n")) return clean;
+      const parts=clean.split(",").map(v=>v.trim()).filter(Boolean);
+      if(parts.length >= 4) return `${parts[0]}, ${parts[1]}\n${parts.slice(2).join(", ")}`;
+      if(parts.length === 3) return `${parts[0]}, ${parts[1]}\n${parts[2]}`;
+      return clean;
+    };
+
     addRow("Vor- und Nachname",data.name);
     addRow("Verein / Firma",data.customerClass);
     addRow("E-Mail",data.email);
     addRow("WhatsApp",data.whatsapp||data.phone);
-    addRow("Adresse",data.address);
+    addRow("Adresse",formatAddress(data.address));
 
     if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
     if(data.deliveryNote)document.getElementById("deliveryNote").textContent=data.deliveryNote;
