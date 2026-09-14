@@ -1134,7 +1134,6 @@ if (orderForm) {
         totalPrice,
         status: "Neu",
         printData: SHOP.printData || {},
-        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
         items: orderItems.map(item => ({
           productId: item.productId || "tshirt",
           productName: item.productName || "T-Shirt",
@@ -1174,16 +1173,32 @@ if (orderForm) {
         console.warn("Bestellbestätigung konnte nicht lokal gespeichert werden:", storageError);
       }
 
-      // Bestellung zusätzlich zentral in Firestore speichern. Falls Firestore kurz nicht erreichbar ist,
-      // wird die Bestellung trotzdem per Formular/E-Mail versendet.
+      // Firestore darf den eigentlichen Bestellversand niemals blockieren.
+      // Nur versuchen, wenn Firebase/Firestore tatsächlich verfügbar ist, und maximal kurz warten.
       try {
-        await getFirestoreDb().collection("orders").doc(orderNumber).set(orderPayload);
+        const db = getFirestoreDb();
+        if (db) {
+          const firestorePayload = { ...orderPayload };
+          try {
+            if (window.firebase && firebase.firestore && firebase.firestore.FieldValue) {
+              firestorePayload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
+            }
+          } catch (_) {}
+          await Promise.race([
+            db.collection("orders").doc(orderNumber).set(firestorePayload),
+            new Promise(resolve => setTimeout(resolve, 1200))
+          ]);
+        }
       } catch (firestoreError) {
         console.warn("Firestore-Speicherung fehlgeschlagen; Bestellung wird trotzdem gesendet:", firestoreError);
       }
 
       sendOrderMessage.textContent = `Bestellnummer ${orderNumber} vergeben. Bestellung wird gesendet …`;
-      // Native Formularübermittlung garantiert aufrufen (auch falls eine Form-Eigenschaft namens submit existieren sollte).
+
+      // FormSubmit ist der eigentliche Bestellversand. Dieser Aufruf läuft unabhängig von Firebase.
+      const targetEmail = String(SHOP.orderEmail || "shirtzentrale@gmail.com").trim();
+      if (targetEmail) orderForm.action = `https://formsubmit.co/${targetEmail}`;
+      if (formNext) formNext.value = new URL(`/danke.html?shop=${encodeURIComponent(CUSTOMER_ID)}`, window.location.origin).href;
       HTMLFormElement.prototype.submit.call(orderForm);
     } catch (error) {
       console.error("Bestellung konnte nicht gespeichert werden:", error);

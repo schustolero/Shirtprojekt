@@ -2451,3 +2451,11 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
 @media(max-width:760px){
   .contact-field select{height:46px!important;min-height:46px!important;}
 }
+
+/* v30.1.20 – Checkout-CTA wie finaler Senden-Button */
+.primary-btn.checkout-btn{
+  border:1px solid #7fc8bd!important;
+  background:linear-gradient(180deg,#e8f8f5 0%,#cbeae4 100%)!important;
+  color:#16473f!important;
+  box-shadow:0 7px 18px rgba(69,151,138,.16)!important;
+}
