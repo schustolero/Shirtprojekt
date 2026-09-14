@@ -1077,8 +1077,11 @@ document.querySelectorAll("[data-close-order]").forEach(el => el.addEventListene
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !orderModal.hidden) closeOrderSummary(); });
 
 if (orderForm) {
+  let orderSubmitting = false;
+
   orderForm.addEventListener("submit", async (event) => {
     event.preventDefault();
+    if (orderSubmitting) return;
 
     const name = document.getElementById("customerName").value.trim();
     const customerClass = document.getElementById("customerClass").value.trim();
@@ -1090,32 +1093,38 @@ if (orderForm) {
     const paymentMethod = document.getElementById("customerPaymentMethod").value;
     const sendOrderBtn = document.getElementById("sendOrderBtn");
 
+    sendOrderMessage.classList.remove("success");
+
     if (!orderItems.length) {
       sendOrderMessage.textContent = "Die Bestellung enthält noch keine Shirts.";
       return;
     }
     if (!name || !customerClass || !email || !street || !city || !deliveryType || !paymentMethod) {
-      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma, E-Mail sowie Straße und PLZ / Ort vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"}, E-Mail und Adresse vollständig ausfüllen.`;
+      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen")
+        ? "Bitte Vor- und Nachname, Verein / Firma, E-Mail sowie Straße und PLZ / Ort vollständig ausfüllen."
+        : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"}, E-Mail und Adresse vollständig ausfüllen.`;
       return;
     }
-
     if (!orderForm.reportValidity()) return;
 
-    if (sendOrderBtn) sendOrderBtn.disabled = true;
-    sendOrderMessage.textContent = "Bestellung wird vorbereitet …";
-    sendOrderMessage.classList.add("success");
+    orderSubmitting = true;
+    if (sendOrderBtn) {
+      sendOrderBtn.disabled = true;
+      sendOrderBtn.setAttribute("aria-busy", "true");
+    }
+    sendOrderMessage.textContent = "Bestellung wird verbindlich gespeichert …";
 
     try {
       const totalQuantity = orderItems.reduce((sum, item) => sum + item.quantity, 0);
       const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
       const orderNumber = createOrderNumber();
+      const phone = document.getElementById("customerPhone").value.trim();
 
       formOrderItems.value = orderItemsAsText();
       formTotalQuantity.value = String(totalQuantity);
       if (formOrderNumber) formOrderNumber.value = orderNumber;
       if (formTotalPrice) formTotalPrice.value = formatEuro(totalPrice);
 
-      const phone = document.getElementById("customerPhone").value.trim();
       const orderPayload = {
         orderNumber,
         customerId: CUSTOMER_ID,
@@ -1150,61 +1159,73 @@ if (orderForm) {
         }))
       };
 
-      // Bestätigung zuerst sichern. Ein Firestore-Problem darf den Versand der Bestellung nicht blockieren.
-      try {
-        sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify({
-          orderNumber,
-          customerId: CUSTOMER_ID,
-          customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
-          name,
-          customerClass,
-          email,
-          phone,
-          whatsapp: phone,
-          address,
-          deliveryType,
-          paymentMethod,
-          totalQuantity,
-          unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
-          totalPrice,
-          items: orderPayload.items
-        }));
-      } catch (storageError) {
-        console.warn("Bestellbestätigung konnte nicht lokal gespeichert werden:", storageError);
+      // Bestätigung vor dem Netzwerkzugriff sichern.
+      sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify({
+        orderNumber,
+        customerId: CUSTOMER_ID,
+        customerName: SHOP.customerName || SHOP.brandTitle || CUSTOMER_ID,
+        name,
+        customerClass,
+        email,
+        phone,
+        whatsapp: phone,
+        address,
+        deliveryType,
+        paymentMethod,
+        totalQuantity,
+        unitPrice: orderPayload.unitPrice,
+        totalPrice,
+        items: orderPayload.items
+      }));
+
+      // Firestore ist die verbindliche Bestellung und wird vollständig abgewartet.
+      const db = getFirestoreDb();
+      if (!db) throw new Error("Firestore ist nicht verfügbar.");
+
+      const firestorePayload = { ...orderPayload };
+      if (window.firebase && firebase.firestore && firebase.firestore.FieldValue) {
+        firestorePayload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
       }
+      await db.collection("orders").doc(orderNumber).set(firestorePayload);
 
-      // Firestore darf den eigentlichen Bestellversand niemals blockieren.
-      // Nur versuchen, wenn Firebase/Firestore tatsächlich verfügbar ist, und maximal kurz warten.
-      try {
-        const db = getFirestoreDb();
-        if (db) {
-          const firestorePayload = { ...orderPayload };
-          try {
-            if (window.firebase && firebase.firestore && firebase.firestore.FieldValue) {
-              firestorePayload.createdAt = firebase.firestore.FieldValue.serverTimestamp();
-            }
-          } catch (_) {}
-          await Promise.race([
-            db.collection("orders").doc(orderNumber).set(firestorePayload),
-            new Promise(resolve => setTimeout(resolve, 1200))
-          ]);
-        }
-      } catch (firestoreError) {
-        console.warn("Firestore-Speicherung fehlgeschlagen; Bestellung wird trotzdem gesendet:", firestoreError);
-      }
-
-      sendOrderMessage.textContent = `Bestellnummer ${orderNumber} vergeben. Bestellung wird gesendet …`;
-
-      // FormSubmit ist der eigentliche Bestellversand. Dieser Aufruf läuft unabhängig von Firebase.
+      // E-Mail ist eine zusätzliche Benachrichtigung. Sie darf den bestätigten Auftrag nicht blockieren.
       const targetEmail = String(SHOP.orderEmail || "shirtzentrale@gmail.com").trim();
-      if (targetEmail) orderForm.action = `https://formsubmit.co/${targetEmail}`;
-      if (formNext) formNext.value = new URL(`/danke.html?shop=${encodeURIComponent(CUSTOMER_ID)}`, window.location.origin).href;
-      HTMLFormElement.prototype.submit.call(orderForm);
+      if (targetEmail) {
+        const mailData = new FormData(orderForm);
+        mailData.set("Bestellnummer", orderNumber);
+        mailData.set("Gesamtmenge", String(totalQuantity));
+        mailData.set("Gesamtpreis", formatEuro(totalPrice));
+        mailData.set("Bestellung", orderItemsAsText());
+        mailData.set("Adresse", address);
+        mailData.set("Bestellart", deliveryType);
+        mailData.set("Zahlung", paymentMethod);
+        mailData.set("_subject", `Neue Bestellung ${orderNumber}`);
+        mailData.set("_captcha", "false");
+        mailData.delete("_next");
+
+        fetch(`https://formsubmit.co/ajax/${targetEmail}`, {
+          method: "POST",
+          body: mailData,
+          headers: { Accept: "application/json" },
+          keepalive: true
+        }).catch(error => console.warn("E-Mail-Benachrichtigung konnte nicht gesendet werden:", error));
+      }
+
+      sendOrderMessage.classList.add("success");
+      sendOrderMessage.textContent = `Bestellung ${orderNumber} wurde verbindlich gespeichert.`;
+
+      const thanksUrl = new URL("/danke.html", window.location.origin);
+      thanksUrl.searchParams.set("shop", CUSTOMER_ID);
+      window.location.assign(thanksUrl.href);
     } catch (error) {
-      console.error("Bestellung konnte nicht gespeichert werden:", error);
+      console.error("Verbindliche Bestellung fehlgeschlagen:", error);
       sendOrderMessage.classList.remove("success");
-      sendOrderMessage.textContent = "Die Bestellung konnte nicht gespeichert werden. Bitte kurz erneut versuchen.";
-      if (sendOrderBtn) sendOrderBtn.disabled = false;
+      sendOrderMessage.textContent = "Die Bestellung konnte nicht gespeichert werden. Bitte erneut versuchen.";
+      orderSubmitting = false;
+      if (sendOrderBtn) {
+        sendOrderBtn.disabled = false;
+        sendOrderBtn.removeAttribute("aria-busy");
+      }
     }
   });
 }
