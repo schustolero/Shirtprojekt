@@ -54,12 +54,12 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
 .money{font-size:12.5px}.money.total{font-weight:900}
 .bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
-.contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 150px;gap:16px;align-items:end;box-shadow:0 10px 24px rgba(23,37,49,.035)}
-.contact-copy{min-width:0}.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
+.contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:20px 22px;display:grid;grid-template-columns:1fr auto;gap:22px;align-items:center;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}
 .contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:9px}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px}
-.thanks-note{display:flex;justify-content:flex-end;align-items:flex-end;margin:0;min-width:0;transform:none;align-self:end}
+.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:220px;transform:none}
 .thanks-note:after{display:none}
-.thanks-note img{display:block;width:138px;max-width:100%;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.thanks-note img{display:block;width:220px;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .totalbox h3{font-size:16px;margin:0 0 10px}
 .total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
 .total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
@@ -80,7 +80,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:0}
  .slogan img{width:136px;max-width:100%;height:auto}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{display:flex;justify-content:flex-end;align-items:flex-end;margin:0;min-width:0;transform:none;align-self:end}
+ .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:1fr}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:220px;transform:none}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
  .actions{grid-template-columns:1fr}
@@ -105,7 +105,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.14" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="slogan-team-style.png" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -166,7 +166,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       <div class="contact-line" id="contactPhone" hidden><span class="contact-ico">☎</span><strong id="contactPhoneValue"></strong></div>
       <div class="contact-line"><span class="contact-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.14" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="danke-team-style.png" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -194,141 +194,5 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.14"></script>
-<script src="/shop-loader.js?v=30.1.14"></script>
-<script>
-loadShopConfig(function(cfg){
-  const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
-  const text=v=>String(v??"").trim();
-  const storageKey=`shirtOrderConfirmation:${cfg.customerId||window.SHOP_SLUG||"shop"}`;
-
-  document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
-
-  // Logo oben links entfernt
-  if(cfg.logoFile){
-    const logo=document.getElementById("thanksLogo");
-    if(logo) logo.src=window.shopAssetUrl(cfg.logoFile);
-  }
-  if(cfg.orderEmail){
-    document.getElementById("thanksEmail").textContent=cfg.orderEmail;
-  }
-
-  try{
-    const raw=sessionStorage.getItem(storageKey);
-    if(!raw)return;
-    const data=JSON.parse(raw);
-
-    document.getElementById("orderNumber").textContent=text(data.orderNumber)||"–";
-    document.getElementById("orderDate").textContent=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
-
-    const customerRows=document.getElementById("customerRows");
-    const addRow=(label,value)=>{
-      const row=document.createElement("div");
-      row.className="row";
-      const a=document.createElement("span");
-      a.textContent=label;
-      const b=document.createElement("strong");
-      b.textContent=text(value)||"–";
-      row.append(a,b);
-      customerRows.appendChild(row);
-    };
-
-    addRow("Vor- und Nachname",data.name);
-    addRow("Verein / Firma",data.customerClass);
-    addRow("E-Mail",data.email);
-    addRow("WhatsApp",data.whatsapp||data.phone);
-    addRow("Adresse",data.address);
-
-    if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
-    if(data.deliveryNote)document.getElementById("deliveryNote").textContent=data.deliveryNote;
-    if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
-
-    const phone=data.whatsapp||data.phone;
-    if(phone){
-      document.getElementById("contactPhoneValue").textContent=phone;
-      document.getElementById("contactPhone").hidden=false;
-    }
-
-    const totalQty=Number(data.totalQuantity)||0;
-    document.getElementById("totalQty").textContent=totalQty;
-    document.getElementById("grandTotal").textContent=euro(data.totalPrice);
-
-    const items=document.getElementById("confirmationItems");
-    const imageFor=id=>id==="hoodie"?"/hoodie-front-template.png":id==="polo"?"/polo-front-template.png":"/shirt-front-template.png";
-
-    if(Array.isArray(data.items)){
-      data.items.forEach(item=>{
-        const qty=Number(item.quantity)||1;
-        const unit=Number(item.unitPrice)||Number(cfg.shirtPrice)||15;
-        const linePrice=Number(item.linePrice)||qty*unit;
-        const product=item.productName||(item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
-
-        const row=document.createElement("div");
-        row.className="item-row";
-
-        const prod=document.createElement("div");
-        prod.className="product-cell";
-
-        const img=document.createElement("img");
-        img.src=imageFor(item.productId);
-        img.alt=product;
-
-        const copy=document.createElement("div");
-        const strong=document.createElement("strong");
-        strong.textContent=product;
-        copy.append(strong);
-        prod.append(img,copy);
-
-        const color=document.createElement("div");
-        color.className="cell";
-        color.textContent=text(item.shirtColor)||"–";
-
-        const size=document.createElement("div");
-        size.className="cell";
-        size.textContent=text(item.size)||"–";
-
-        const pos=document.createElement("div");
-        pos.className="cell positions";
-        const layoutParts=(text(item.printLayout)||"")
-          .split("·")
-          .map(part=>part.trim())
-          .filter(Boolean);
-        const frontLine=layoutParts.find(part=>/^Vorne/i.test(part));
-        const backLine=layoutParts.find(part=>/^Hinten/i.test(part));
-        const positionLines=[];
-        if(frontLine) positionLines.push(frontLine);
-        if(backLine) positionLines.push(backLine);
-        if(!positionLines.length && layoutParts.length) positionLines.push(...layoutParts);
-        if(!positionLines.length) positionLines.push("Vorne: –","Hinten: –");
-        positionLines.forEach(line=>{
-          const div=document.createElement("div");
-          div.textContent=line;
-          pos.appendChild(div);
-        });
-
-        const q=document.createElement("div");
-        q.className="cell";
-        q.textContent=qty;
-
-        const price=document.createElement("div");
-        price.className="money";
-        price.textContent=euro(unit);
-
-        const total=document.createElement("div");
-        total.className="money total";
-        total.textContent=euro(linePrice);
-
-        row.append(prod,color,size,pos,q,price,total);
-        items.appendChild(row);
-      });
-    }
-
-    document.getElementById("confirmationSummary").hidden=false;
-    sessionStorage.removeItem(storageKey);
-  }catch(err){
-    console.error(err);
-  }
-});
-</script>
 </body>
 </html>
