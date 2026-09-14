@@ -2423,3 +2423,8 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   outline:3px solid rgba(74,166,151,.22)!important;
   outline-offset:2px!important;
 }
+
+/* v30.1.17 – Adresse klar zweizeilig */
+.contact-field.address-field .address-lines{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
+.contact-field.address-field .address-lines input{width:100%!important;height:44px!important;min-height:44px!important;}
+@media(max-width:760px){.contact-field.address-field .address-lines{gap:9px!important}.contact-field.address-field .address-lines input{height:48px!important;min-height:48px!important}}

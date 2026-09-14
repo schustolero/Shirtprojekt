@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
-  <link rel="stylesheet" href="/style.css?v=30.1.16">
+  <link rel="stylesheet" href="/style.css?v=30.1.17">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -13,21 +13,6 @@
   #shirtMockup,.shirt-mockup{display:block!important;margin:0 auto!important;object-position:center center!important;}
 }
 </style>
-<style id="v30116-order-form-fixes">
-  .contact-field.address-field textarea{
-    width:100%;
-    min-height:88px;
-    resize:vertical;
-    font:inherit;
-    line-height:1.35;
-    padding-top:16px;
-    padding-bottom:16px;
-  }
-  .contact-field.address-field textarea::placeholder{
-    white-space:pre-line;
-  }
-</style>
-
 </head>
 <body>
 
@@ -318,7 +303,10 @@
       </label>
       <label class="contact-field address-field">
         <span>Adresse *</span>
-        <textarea name="Adresse" id="customerAddress" rows="2" required autocomplete="street-address" placeholder="Straße, Hausnummer&#10;PLZ, Ort"></textarea>
+        <div class="address-lines">
+          <input type="text" name="Straße / Hausnummer" id="customerStreet" required autocomplete="address-line1" placeholder="Straße, Hausnummer">
+          <input type="text" name="PLZ / Ort" id="customerCity" required autocomplete="address-line2" placeholder="PLZ, Ort">
+        </div>
       </label>
 
       <p class="order-modal-note">Die Bestellung wird an <strong id="orderEmailDisplay">shirtzentrale@gmail.com</strong> gesendet.</p>
@@ -330,16 +318,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=30.1.16"></script>
+<script src="/central-config.js?v=30.1.17"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.1.16"></script>
+<script src="/shop-loader.js?v=30.1.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=30.1.16";
+    app.src="/script.js?v=30.1.17";
     document.body.appendChild(app);
   });
 </script>

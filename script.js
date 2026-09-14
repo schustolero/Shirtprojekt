@@ -1069,15 +1069,17 @@ if (orderForm) {
     const name = document.getElementById("customerName").value.trim();
     const customerClass = document.getElementById("customerClass").value.trim();
     const email = document.getElementById("customerEmail").value.trim();
-    const address = document.getElementById("customerAddress").value.trim();
+    const street = document.getElementById("customerStreet").value.trim();
+    const city = document.getElementById("customerCity").value.trim();
+    const address = [street, city].filter(Boolean).join("\n");
     const sendOrderBtn = document.getElementById("sendOrderBtn");
 
     if (!orderItems.length) {
       sendOrderMessage.textContent = "Die Bestellung enthält noch keine Shirts.";
       return;
     }
-    if (!name || !customerClass || !email || !address) {
-      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma, E-Mail und Adresse vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"}, E-Mail und Adresse vollständig ausfüllen.`;
+    if (!name || !customerClass || !email || !street || !city) {
+      sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma, E-Mail sowie Straße und PLZ / Ort vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"}, E-Mail und Adresse vollständig ausfüllen.`;
       return;
     }
 
