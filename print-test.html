@@ -124,7 +124,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.19" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="slogan-team-style.png" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -134,15 +134,22 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
     <p>Deine Bestellung ist erfolgreich bei uns eingegangen.</p>
   </div>
   <div class="orderbox">
-    <div class="block"><div class="label">Bestellnummer</div><div class="value" id="orderNumber">–</div></div>
-    <div class="block"><div class="label">Datum</div><div class="value" id="orderDate">–</div></div>
+    <div class="block"><div class="label">Bestellnummer</div><div class="value" id="orderNumber">TG-260914-101</div></div>
+    <div class="block"><div class="label">Datum</div><div class="value" id="orderDate">14.09.2026</div></div>
   </div>
 </section>
 
 <section class="info">
   <div class="card">
     <div class="card-head">Kundendaten</div>
-    <div class="rows" id="customerRows"></div>
+    <div class="rows" id="customerRows">
+<div class="row"><span>Vor- und Nachname</span><strong>Max Mustermann</strong></div>
+<div class="row"><span>Verein / Firma</span><strong>TG Solingen</strong></div>
+<div class="row"><span>E-Mail</span><strong>max@example.de</strong></div>
+<div class="row"><span>WhatsApp</span><strong>0176 12345678</strong></div>
+<div class="row"><span>Adresse</span><strong>Musterstraße 12
+42651 Solingen</strong></div>
+</div>
   </div>
 
   <div class="right-stack">
@@ -162,7 +169,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
   </div>
 </section>
 
-<section class="table-wrap" id="confirmationSummary" hidden>
+<section class="table-wrap" id="confirmationSummary">
   <div class="table-head">
     <span>Artikel</span>
     <span>Farbe</span>
@@ -172,7 +179,9 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
     <span>Preis</span>
     <span>Gesamt</span>
   </div>
-  <div id="confirmationItems"></div>
+  <div id="confirmationItems"><div class="item-row"><div class="product-cell"><img src="shirt-front-template.png"><div><strong>T-Shirt</strong></div></div><div class="cell">Royal Blue</div><div class="cell">M</div><div class="cell positions"><div>Vorne: Brust</div><div>Hinten: Rücken</div></div><div class="cell">2</div><div class="money">15,00 €</div><div class="money total">30,00 €</div></div>
+<div class="item-row"><div class="product-cell"><img src="polo-front-template.png"><div><strong>Polo-Shirt</strong></div></div><div class="cell">Royal Blue</div><div class="cell">L</div><div class="cell positions"><div>Vorne: Brust</div></div><div class="cell">1</div><div class="money">25,00 €</div><div class="money total">25,00 €</div></div>
+<div class="item-row"><div class="product-cell"><img src="hoodie-front-template.png"><div><strong>Hoodie</strong></div></div><div class="cell">Royal Blue</div><div class="cell">XL</div><div class="cell positions"><div>Vorne: Brust</div><div>Hinten: Rücken</div></div><div class="cell">1</div><div class="money">30,00 €</div><div class="money total">30,00 €</div></div></div>
 </section>
 
 <section class="bottom">
@@ -181,17 +190,17 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       <h3>Fragen zu deiner Bestellung?</h3>
       <p>Wir sind gerne für dich da – schnell, unkompliziert und auch per WhatsApp.</p>
       <div class="contact-lines">
-        <div class="contact-line" id="contactPhone" hidden><span class="contact-ico whatsapp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.8C20.5 16.4 16.8 20 12.2 20c-1.4 0-2.7-.3-3.8-.9L4 20l1-4.2c-.7-1.2-1-2.6-1-4 0-4.6 3.7-8.2 8.2-8.2 4.6 0 8.3 3.6 8.3 8.2Z" fill="currentColor" opacity=".22"/><path d="M12.2 3.6C7.7 3.6 4 7.2 4 11.8c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.1.6 2.4.9 3.7.9 4.6 0 8.3-3.6 8.3-8.2 0-4.8-3.7-8-7.9-8Zm0 14.8c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.4.6.6-2.3-.1-.2c-.7-1-.9-2.2-.9-3.4 0-3.6 2.9-6.6 6.4-6.6 3.6 0 6.4 2.9 6.4 6.5 0 3.7-2.9 6.4-6.4 6.4Zm3.5-4.8c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-1.1-.6-1.8-1.2-2.5-2.2-.2-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1 0-.3 0-.4 0-.1-.4-1-.6-1.4-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.1 1.5 2.3 3.7 3.2.5.2 1 .4 1.3.5.6.2 1.1.1 1.5.1.5-.1 1.5-.6 1.7-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.1-.4-.2Z" fill="white"/></svg></span><strong id="contactPhoneValue"></strong></div>
+        <div class="contact-line" id="contactPhone"><span class="contact-ico whatsapp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.8C20.5 16.4 16.8 20 12.2 20c-1.4 0-2.7-.3-3.8-.9L4 20l1-4.2c-.7-1.2-1-2.6-1-4 0-4.6 3.7-8.2 8.2-8.2 4.6 0 8.3 3.6 8.3 8.2Z" fill="currentColor" opacity=".22"/><path d="M12.2 3.6C7.7 3.6 4 7.2 4 11.8c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.1.6 2.4.9 3.7.9 4.6 0 8.3-3.6 8.3-8.2 0-4.8-3.7-8-7.9-8Zm0 14.8c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.4.6.6-2.3-.1-.2c-.7-1-.9-2.2-.9-3.4 0-3.6 2.9-6.6 6.4-6.6 3.6 0 6.4 2.9 6.4 6.5 0 3.7-2.9 6.4-6.4 6.4Zm3.5-4.8c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-1.1-.6-1.8-1.2-2.5-2.2-.2-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1 0-.3 0-.4 0-.1-.4-1-.6-1.4-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.1 1.5 2.3 3.7 3.2.5.2 1 .4 1.3.5.6.2 1.1.1 1.5.1.5-.1 1.5-.6 1.7-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.1-.4-.2Z" fill="white"/></svg></span><strong id="contactPhoneValue">0176 12345678</strong></div>
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.19" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="danke-team-style.png" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
     <h3>Gesamtübersicht</h3>
-    <div class="total-line"><span>Artikel gesamt</span><strong id="totalQty">0</strong></div>
-    <div class="total-line grand"><span>Gesamtpreis</span><strong id="grandTotal">0,00 €</strong></div>
+    <div class="total-line"><span>Artikel gesamt</span><strong id="totalQty">4</strong></div>
+    <div class="total-line grand"><span>Gesamtpreis</span><strong id="grandTotal">85,00 €</strong></div>
     <small>Alle Preise inkl. MwSt.</small>
   </div>
 </section>
@@ -213,150 +222,6 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.14"></script>
-<script src="/shop-loader.js?v=30.1.14"></script>
-<script>
-loadShopConfig(function(cfg){
-  const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
-  const text=v=>String(v??"").trim();
-  const storageKey=`shirtOrderConfirmation:${cfg.customerId||window.SHOP_SLUG||"shop"}`;
 
-  document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
-
-  // Logo oben links entfernt
-  if(cfg.logoFile){
-    const logo=document.getElementById("thanksLogo");
-    if(logo) logo.src=window.shopAssetUrl(cfg.logoFile);
-  }
-  if(cfg.orderEmail){
-    document.getElementById("thanksEmail").textContent=cfg.orderEmail;
-  }
-
-  try{
-    const raw=sessionStorage.getItem(storageKey);
-    if(!raw)return;
-    const data=JSON.parse(raw);
-
-    document.getElementById("orderNumber").textContent=text(data.orderNumber)||"–";
-    document.getElementById("orderDate").textContent=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
-
-    const customerRows=document.getElementById("customerRows");
-    const addRow=(label,value)=>{
-      const row=document.createElement("div");
-      row.className="row";
-      const a=document.createElement("span");
-      a.textContent=label;
-      const b=document.createElement("strong");
-      b.textContent=text(value)||"–";
-      row.append(a,b);
-      customerRows.appendChild(row);
-    };
-
-    const formatAddress=(value)=>{
-      const clean=text(value);
-      if(!clean) return clean;
-      if(clean.includes("\n")) return clean;
-      const parts=clean.split(",").map(v=>v.trim()).filter(Boolean);
-      if(parts.length >= 4) return `${parts[0]}, ${parts[1]}\n${parts.slice(2).join(", ")}`;
-      if(parts.length === 3) return `${parts[0]}, ${parts[1]}\n${parts[2]}`;
-      return clean;
-    };
-
-    addRow("Vor- und Nachname",data.name);
-    addRow("Verein / Firma",data.customerClass);
-    addRow("E-Mail",data.email);
-    addRow("WhatsApp",data.whatsapp||data.phone);
-    addRow("Adresse",formatAddress(data.address));
-
-    if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
-    if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
-
-    const phone=data.whatsapp||data.phone;
-    if(phone){
-      document.getElementById("contactPhoneValue").textContent=phone;
-      document.getElementById("contactPhone").hidden=false;
-    }
-
-    const totalQty=Number(data.totalQuantity)||0;
-    document.getElementById("totalQty").textContent=totalQty;
-    document.getElementById("grandTotal").textContent=euro(data.totalPrice);
-
-    const items=document.getElementById("confirmationItems");
-    const imageFor=id=>id==="hoodie"?"/hoodie-front-template.png":id==="polo"?"/polo-front-template.png":"/shirt-front-template.png";
-
-    if(Array.isArray(data.items)){
-      data.items.forEach(item=>{
-        const qty=Number(item.quantity)||1;
-        const unit=Number(item.unitPrice)||Number(cfg.shirtPrice)||15;
-        const linePrice=Number(item.linePrice)||qty*unit;
-        const product=item.productName||(item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
-
-        const row=document.createElement("div");
-        row.className="item-row";
-
-        const prod=document.createElement("div");
-        prod.className="product-cell";
-
-        const img=document.createElement("img");
-        img.src=imageFor(item.productId);
-        img.alt=product;
-
-        const copy=document.createElement("div");
-        const strong=document.createElement("strong");
-        strong.textContent=product;
-        copy.append(strong);
-        prod.append(img,copy);
-
-        const color=document.createElement("div");
-        color.className="cell";
-        color.textContent=text(item.shirtColor)||"–";
-
-        const size=document.createElement("div");
-        size.className="cell";
-        size.textContent=text(item.size)||"–";
-
-        const pos=document.createElement("div");
-        pos.className="cell positions";
-        const layoutParts=(text(item.printLayout)||"")
-          .split("·")
-          .map(part=>part.trim())
-          .filter(Boolean);
-        const frontLine=layoutParts.find(part=>/^Vorne/i.test(part));
-        const backLine=layoutParts.find(part=>/^Hinten/i.test(part));
-        const positionLines=[];
-        if(frontLine) positionLines.push(frontLine);
-        if(backLine) positionLines.push(backLine);
-        if(!positionLines.length && layoutParts.length) positionLines.push(...layoutParts);
-        if(!positionLines.length) positionLines.push("Vorne: –","Hinten: –");
-        positionLines.forEach(line=>{
-          const div=document.createElement("div");
-          div.textContent=line;
-          pos.appendChild(div);
-        });
-
-        const q=document.createElement("div");
-        q.className="cell";
-        q.textContent=qty;
-
-        const price=document.createElement("div");
-        price.className="money";
-        price.textContent=euro(unit);
-
-        const total=document.createElement("div");
-        total.className="money total";
-        total.textContent=euro(linePrice);
-
-        row.append(prod,color,size,pos,q,price,total);
-        items.appendChild(row);
-      });
-    }
-
-    document.getElementById("confirmationSummary").hidden=false;
-    sessionStorage.removeItem(storageKey);
-  }catch(err){
-    console.error(err);
-  }
-});
-</script>
 </body>
 </html>

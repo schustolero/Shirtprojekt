@@ -1151,9 +1151,7 @@ if (orderForm) {
         }))
       };
 
-      // Bestellung zusätzlich zentral in Firestore speichern, damit sie im Admin-Bereich erscheint.
-      await getFirestoreDb().collection("orders").doc(orderNumber).set(orderPayload);
-
+      // Bestätigung zuerst sichern. Ein Firestore-Problem darf den Versand der Bestellung nicht blockieren.
       try {
         sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify({
           orderNumber,
@@ -1172,10 +1170,21 @@ if (orderForm) {
           totalPrice,
           items: orderPayload.items
         }));
-      } catch (error) {}
+      } catch (storageError) {
+        console.warn("Bestellbestätigung konnte nicht lokal gespeichert werden:", storageError);
+      }
+
+      // Bestellung zusätzlich zentral in Firestore speichern. Falls Firestore kurz nicht erreichbar ist,
+      // wird die Bestellung trotzdem per Formular/E-Mail versendet.
+      try {
+        await getFirestoreDb().collection("orders").doc(orderNumber).set(orderPayload);
+      } catch (firestoreError) {
+        console.warn("Firestore-Speicherung fehlgeschlagen; Bestellung wird trotzdem gesendet:", firestoreError);
+      }
 
       sendOrderMessage.textContent = `Bestellnummer ${orderNumber} vergeben. Bestellung wird gesendet …`;
-      orderForm.submit();
+      // Native Formularübermittlung garantiert aufrufen (auch falls eine Form-Eigenschaft namens submit existieren sollte).
+      HTMLFormElement.prototype.submit.call(orderForm);
     } catch (error) {
       console.error("Bestellung konnte nicht gespeichert werden:", error);
       sendOrderMessage.classList.remove("success");
