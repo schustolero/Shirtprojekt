@@ -2428,3 +2428,26 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
 .contact-field.address-field .address-lines{display:grid!important;grid-template-columns:1fr!important;gap:8px!important;}
 .contact-field.address-field .address-lines input{width:100%!important;height:44px!important;min-height:44px!important;}
 @media(max-width:760px){.contact-field.address-field .address-lines{gap:9px!important}.contact-field.address-field .address-lines input{height:48px!important;min-height:48px!important}}
+
+/* v30.1.18 – Bestellart & Zahlung */
+.contact-field select{
+  width:100%!important;
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 34px 0 10px!important;
+  border:1px solid #d9dee5!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  color:#171a1f!important;
+  font:inherit!important;
+  font-size:12px!important;
+  appearance:auto!important;
+}
+.contact-field select:focus{
+  outline:none!important;
+  border-color:#e0bb00!important;
+  box-shadow:0 0 0 3px rgba(224,187,0,.11)!important;
+}
+@media(max-width:760px){
+  .contact-field select{height:46px!important;min-height:46px!important;}
+}

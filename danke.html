@@ -71,6 +71,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .trust{display:flex;align-items:flex-start;gap:8px;color:#52606c;font-size:10px;line-height:1.25}
 .trust i{font-style:normal;font-size:20px}.trust b{display:block;color:var(--ink);font-size:10px}
  .footer-brand{text-align:right;font-weight:900;letter-spacing:.11em;color:#22303c}.footer-brand span{display:block;font-size:8.5px;color:#7a858e;font-weight:650;letter-spacing:.15em;margin-top:4px}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:44px;height:2px;background:#9ccfc6;border-radius:999px;margin-bottom:9px}.footer-signature strong{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;font-size:15px;line-height:1.25;font-weight:600;letter-spacing:0;color:#22313d;transform:none}
+.compact-card .rows{padding-bottom:8px}.compact-card .row{padding:8px 0}
 @media(max-width:760px){
  .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
  .top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;align-items:start;margin-bottom:18px}
@@ -86,10 +87,28 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .actions{grid-template-columns:1fr}
 }
 @media print{
- @page{size:A4;margin:8mm}
- html,body{background:#fff}.page{width:100%;margin:0}.sheet{border-radius:0;box-shadow:none;padding:0}
- .slogan img{width:125px}.thanks-note img{width:120px}.actions{display:none}.footer{margin-top:14px}.hero{margin-bottom:15px}.info,.table-wrap,.bottom{margin-bottom:12px}
+ @page{size:A4 portrait;margin:5mm}
+ html,body{background:#fff!important;width:210mm;min-height:297mm;margin:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .page{width:200mm!important;margin:0 auto!important}
+ .sheet{width:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82}
+ .top{margin-bottom:10px!important;padding-bottom:7px!important;gap:18px!important}
+ .brand-logo{min-height:58px!important;width:250px!important}.brand-text .main{font-size:29px!important}.brand-text .sub{font-size:10px!important}.brand-note{font-size:7.5px!important;margin-top:5px!important}
+ .slogan img{width:108px!important}
+ .hero{grid-template-columns:54px 1fr 190px!important;gap:12px!important;margin-bottom:10px!important}
+ .check{width:50px!important;height:50px!important;border-radius:15px!important;font-size:29px!important;box-shadow:none!important}
+ .hero h1{font-size:24px!important}.hero p{font-size:11px!important;margin-top:4px!important}
+ .orderbox{padding:8px 11px!important;border-radius:10px!important}.orderbox .label{font-size:8.5px!important}.orderbox .value{font-size:12px!important}.orderbox .block+.block{margin-top:5px!important}
+ .info{gap:10px!important;margin-bottom:10px!important}.right-stack{gap:8px!important}
+ .card{border-radius:10px!important;box-shadow:none!important}.card-head{padding:8px 12px!important;font-size:12px!important}.card-head:before{height:12px!important;margin-right:7px!important}
+ .rows{padding:2px 12px 5px!important}.row{grid-template-columns:115px 1fr!important;gap:10px!important;padding:5px 0!important;font-size:10.2px!important}
+ .table-wrap{border-radius:10px!important;box-shadow:none!important;margin-bottom:9px!important}.table-head{padding:8px 10px!important;font-size:8.5px!important;gap:8px!important}.item-row{padding:7px 10px!important;min-height:56px!important;gap:8px!important}
+ .product-cell{grid-template-columns:44px 1fr!important;gap:7px!important}.product-cell img{width:40px!important;height:40px!important;border-radius:8px!important;padding:3px!important}.product-cell strong{font-size:10.5px!important}.cell,.money{font-size:9.8px!important}.positions div+div{margin-top:2px!important}
+ .bottom{gap:10px!important;margin-bottom:8px!important}.contact{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important;grid-template-columns:minmax(0,1fr) 95px!important;gap:8px!important}.contact h3{font-size:12px!important;margin-bottom:3px!important}.contact p{font-size:9px!important;margin-bottom:5px!important}.contact-lines{gap:5px!important}.contact-line{font-size:9.2px!important}.contact-ico{width:18px!important;height:18px!important;flex-basis:18px!important}.contact-ico svg{width:10px!important;height:10px!important}.thanks-note img{width:86px!important}
+ .totalbox{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important}.totalbox h3{font-size:12px!important;margin-bottom:5px!important}.total-line{padding:5px 0!important;font-size:10px!important}.grand strong{font-size:21px!important}.totalbox small{font-size:8px!important}
+ .actions{display:none!important}.footer{margin-top:8px!important;padding-top:7px!important;gap:12px!important}.footer-line{margin-bottom:5px!important}.footer-signature strong{font-size:11px!important}.footer-brand{font-size:10px!important}.footer-brand span{font-size:6.8px!important;margin-top:2px!important}
+ .card,.table-wrap,.contact,.totalbox,.footer{break-inside:avoid;page-break-inside:avoid}
 }
+
 </style>
 </head>
 <body>
@@ -105,7 +124,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.17" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.18" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -127,19 +146,17 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
   </div>
 
   <div class="right-stack">
-    <div class="card">
+    <div class="card compact-card">
       <div class="card-head">Bestellart</div>
       <div class="rows">
-        <div class="row"><span>Übergabe</span><strong id="deliveryType">Abholung vor Ort</strong></div>
-        <div class="row"><span>Hinweis</span><strong id="deliveryNote">–</strong></div>
+        <div class="row"><span>Art</span><strong id="deliveryType">Abholung</strong></div>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card compact-card">
       <div class="card-head">Zahlung</div>
       <div class="rows">
-        <div class="row"><span>Zahlungsart</span><strong id="paymentMethod">Vor Ort</strong></div>
-        
+        <div class="row"><span>Zahlungsart</span><strong id="paymentMethod">Bar bei Abholung</strong></div>
       </div>
     </div>
   </div>
@@ -168,7 +185,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.17" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.18" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -252,7 +269,6 @@ loadShopConfig(function(cfg){
     addRow("Adresse",formatAddress(data.address));
 
     if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
-    if(data.deliveryNote)document.getElementById("deliveryNote").textContent=data.deliveryNote;
     if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
 
     const phone=data.whatsapp||data.phone;

@@ -1059,6 +1059,20 @@ function closeOrderSummary() {
 
 if (addToOrderBtn) addToOrderBtn.addEventListener("click", addCurrentShirtToOrder);
 if (orderBtn) orderBtn.addEventListener("click", openOrderSummary);
+
+const deliveryTypeSelect = document.getElementById("customerDeliveryType");
+const paymentMethodSelect = document.getElementById("customerPaymentMethod");
+function syncPaymentWithDelivery(){
+  if(!deliveryTypeSelect || !paymentMethodSelect) return;
+  const cashOption = Array.from(paymentMethodSelect.options).find(option => option.value === "Bar bei Abholung");
+  const isShipping = deliveryTypeSelect.value === "Versand";
+  if(cashOption) cashOption.disabled = isShipping;
+  if(isShipping && paymentMethodSelect.value === "Bar bei Abholung") paymentMethodSelect.value = "Überweisung";
+}
+if(deliveryTypeSelect){
+  deliveryTypeSelect.addEventListener("change", syncPaymentWithDelivery);
+  syncPaymentWithDelivery();
+}
 document.querySelectorAll("[data-close-order]").forEach(el => el.addEventListener("click", closeOrderSummary));
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !orderModal.hidden) closeOrderSummary(); });
 
@@ -1072,13 +1086,15 @@ if (orderForm) {
     const street = document.getElementById("customerStreet").value.trim();
     const city = document.getElementById("customerCity").value.trim();
     const address = [street, city].filter(Boolean).join("\n");
+    const deliveryType = document.getElementById("customerDeliveryType").value;
+    const paymentMethod = document.getElementById("customerPaymentMethod").value;
     const sendOrderBtn = document.getElementById("sendOrderBtn");
 
     if (!orderItems.length) {
       sendOrderMessage.textContent = "Die Bestellung enthält noch keine Shirts.";
       return;
     }
-    if (!name || !customerClass || !email || !street || !city) {
+    if (!name || !customerClass || !email || !street || !city || !deliveryType || !paymentMethod) {
       sendOrderMessage.textContent = (CUSTOMER_ID === "tg-solingen") ? "Bitte Vor- und Nachname, Verein / Firma, E-Mail sowie Straße und PLZ / Ort vollständig ausfüllen." : `Bitte Name, ${SHOP.customerExtraFieldLabel || "Team / Abteilung"}, E-Mail und Adresse vollständig ausfüllen.`;
       return;
     }
@@ -1111,6 +1127,8 @@ if (orderForm) {
         phone,
         whatsapp: phone,
         address,
+        deliveryType,
+        paymentMethod,
         totalQuantity,
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,
@@ -1147,6 +1165,8 @@ if (orderForm) {
           phone,
           whatsapp: phone,
           address,
+          deliveryType,
+          paymentMethod,
           totalQuantity,
           unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
           totalPrice,
