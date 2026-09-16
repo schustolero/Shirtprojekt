@@ -2459,3 +2459,58 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
   color:#16473f!important;
   box-shadow:0 7px 18px rgba(69,151,138,.16)!important;
 }
+
+/* v30.1.26 – Kundenseite mobil kompakter, Header und Shirtgröße unverändert */
+@media(max-width:900px){
+  /* Vorschau bleibt gleich groß, wird nur im vorhandenen Weißraum höher gesetzt. */
+  .workspace{
+    height:350px!important;
+    padding:0 10px!important;
+    overflow:hidden!important;
+  }
+  .mockup-stage{
+    transform:translateY(-42px) scale(var(--mobile-preview-scale,.5568))!important;
+  }
+
+  /* Textilbereich näher an die Vorschau ziehen. */
+  .product-section{
+    padding-top:7px!important;
+    padding-bottom:10px!important;
+  }
+  .product-section h3{
+    margin-bottom:6px!important;
+  }
+  .product-section .product-switch{
+    gap:6px!important;
+  }
+  .product-section .product-switch .product-btn{
+    min-height:70px!important;
+    padding:8px 4px!important;
+    gap:6px!important;
+    border-radius:12px!important;
+  }
+  .product-section .product-switch .product-btn .product-btn-name{
+    font-size:11px!important;
+  }
+  .product-section .product-switch .product-btn .product-btn-price{
+    min-width:54px!important;
+    height:26px!important;
+    min-height:26px!important;
+    padding:0 7px!important;
+    font-size:10px!important;
+  }
+
+  /* Nachfolgende Kauf-Schritte enger, ohne Bedienbarkeit zu verlieren. */
+  .view-section,
+  .order-section{
+    padding-top:9px!important;
+    padding-bottom:9px!important;
+  }
+  .view-section h3,
+  .order-section h3{
+    margin-bottom:6px!important;
+  }
+  .order-price-info{
+    margin-bottom:6px!important;
+  }
+}
