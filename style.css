@@ -2542,3 +2542,21 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     max-height:352px!important;
   }
 }
+
+
+/* v30.1.30 – Kein Standard-Shirt/Farbflash beim Shop-Start */
+body.shop-loading .workspace,
+body.shop-loading .designer-header,
+body.shop-loading .designer-footer,
+body.shop-loading .sidebar .tool-section,
+body.shop-loading .sidebar-bottom{
+  visibility:hidden!important;
+}
+body:not(.shop-loading) .workspace,
+body:not(.shop-loading) .designer-header,
+body:not(.shop-loading) .designer-footer,
+body:not(.shop-loading) .sidebar .tool-section,
+body:not(.shop-loading) .sidebar-bottom{
+  animation:shopReadyFade .14s ease-out both;
+}
+@keyframes shopReadyFade{from{opacity:0}to{opacity:1}}

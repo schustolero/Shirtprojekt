@@ -1308,7 +1308,23 @@ async function initializeFixedPrints() {
   if (FEATURES.previewMode === "dual") await renderDualPreview();
 }
 applyPreviewMode();
-initializeFixedPrints();
+initializeFixedPrints()
+  .then(async () => {
+    // Die finale Shopfarbe noch einmal vollständig rendern und erst danach
+    // die Oberfläche freigeben. Dadurch blitzen weder das weiße
+    // Standard-Shirt noch die ungefilterte Farbauswahl kurz auf.
+    await renderShirt();
+    if (shirtMockup && typeof shirtMockup.decode === "function") {
+      try { await shirtMockup.decode(); } catch (e) {}
+    }
+    requestAnimationFrame(() => {
+      document.body.classList.remove("shop-loading");
+    });
+  })
+  .catch((error) => {
+    console.error("Shop-Start konnte nicht vollständig vorbereitet werden:", error);
+    document.body.classList.remove("shop-loading");
+  });
 
 // v29.1.5: Mobile Vorschau exakt wie Admin skalieren.
 // Die interne Geometrie bleibt immer 590px breit mit aspect-ratio .86;
