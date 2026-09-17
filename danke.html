@@ -23,7 +23,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#74808a}
 .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:190px;padding:0;margin:0}
 .slogan:after{display:none}
-.slogan img{display:block;width:150px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr 260px;gap:24px;align-items:center;margin-bottom:24px}
+.slogan img{display:block;width:150px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:center;margin-bottom:18px}
 .check{width:82px;height:82px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:44px;font-weight:900;box-shadow:0 12px 26px rgba(28,166,112,.18)}
 .hero h1{font-size:32px;line-height:1.04;margin:0;font-weight:850;letter-spacing:-.03em}
 .hero p{font-size:14px;margin:8px 0 0;color:#4f5b67}
@@ -36,20 +36,20 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .card-head{display:flex;align-items:center;padding:10px 14px;background:linear-gradient(180deg,#fbfcfd,#f4f7f9);font-size:14px;font-weight:800;letter-spacing:-.01em;border-bottom:1px solid #e9eef2;position:relative}.card-head:before{content:"";display:inline-block;width:4px;height:18px;border-radius:999px;background:linear-gradient(180deg,#79c9c1,#36a89d);margin-right:10px}
 .ico{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#dce4ea;font-size:15px}
 .rows{padding:8px 14px 10px}.customer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}.customer-grid .row{display:block;padding:8px 10px;border:1px solid #edf0f2;border-radius:10px;background:#fff;font-size:12px;min-width:0}.customer-grid .row span{display:block;color:#66727d;font-size:10px;margin-bottom:3px}.customer-grid .row strong{display:block;font-weight:650;overflow-wrap:anywhere;white-space:pre-line;line-height:1.25}.customer-grid .row.address-row{grid-column:1/-1}.customer-grid .row:last-child{border-bottom:1px solid #edf0f2}
-.order-details{display:grid;grid-template-columns:1fr 1fr;gap:0}.order-detail{padding:9px 12px}.order-detail+.order-detail{border-left:1px solid #e7ecef}.order-detail span{display:block;color:#66727d;font-size:10px;margin-bottom:3px}.order-detail strong{display:block;font-size:12px;font-weight:700;overflow-wrap:anywhere}
+.order-details{display:grid;grid-template-columns:1fr 1fr;gap:0}.order-detail{padding:8px 10px;border-top:1px solid #e7ecef}.order-detail:nth-child(-n+2){border-top:0}.order-detail:nth-child(even){border-left:1px solid #e7ecef}.order-detail span{display:block;color:#66727d;font-size:9.5px;margin-bottom:2px}.order-detail strong{display:block;font-size:11.5px;font-weight:700;overflow-wrap:anywhere}
 .status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:8px;background:var(--green-soft);color:#11944f;font-weight:900;width:max-content}
 .status:before{content:"";width:8px;height:8px;border-radius:50%;background:#17b25d}
-.table-wrap{border:1px solid #dfe5e9;border-radius:18px;overflow:hidden;margin-bottom:22px;box-shadow:0 10px 24px rgba(23,37,49,.04);background:#fff}
+.table-wrap{border:1px solid #dfe5e9;border-radius:18px;overflow:hidden;margin-bottom:14px;box-shadow:0 10px 24px rgba(23,37,49,.04);background:#fff}
 .table-head,.item-row{display:grid;grid-template-columns:1.28fr .95fr .74fr 1.18fr .58fr .68fr .76fr;gap:12px;align-items:center}
-.table-head{background:linear-gradient(180deg,#f8fafb,#eef3f6);color:#243543;padding:13px 16px;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid #e4eaee}
-.item-row{padding:14px 16px;border-bottom:1px solid #edf0f2;min-height:88px;background:#fff}
+.table-head{background:linear-gradient(180deg,#f8fafb,#eef3f6);color:#243543;padding:10px 12px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid #e4eaee}
+.item-row{padding:9px 12px;border-bottom:1px solid #edf0f2;min-height:64px;background:#fff}
 .item-row:last-child{border-bottom:0}.item-row:nth-child(even){background:#fbfcfd}
-.product-cell{display:grid;grid-template-columns:80px 1fr;gap:10px;align-items:center}
-.product-cell img{width:70px;height:70px;object-fit:contain;background:linear-gradient(180deg,#ffffff,#f4f7f9);border:1px solid #e3e8ec;border-radius:14px;padding:6px}
-.product-cell strong{display:block;font-size:13.5px;font-weight:800;letter-spacing:-.01em}.product-cell small{display:none}
-.cell{font-size:12.5px;line-height:1.25}.positions div+div{margin-top:4px}.positions div{white-space:normal}
+.product-cell{display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:center}
+.product-cell img{width:52px;height:52px;object-fit:contain;background:linear-gradient(180deg,#ffffff,#f4f7f9);border:1px solid #e3e8ec;border-radius:10px;padding:4px}
+.product-cell strong{display:block;font-size:12.5px;font-weight:800;letter-spacing:-.01em}.product-cell small{display:none}
+.cell{font-size:11.5px;line-height:1.2}.positions div+div{margin-top:2px}.positions div{white-space:normal}
 .motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
-.money{font-size:12.5px}.money.total{font-weight:900}
+.money{font-size:11.5px}.money.total{font-weight:900}
 .bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:18px}
 .contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 126px;gap:12px;align-items:center;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .contact-copy{min-width:0}.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}.contact-lines{display:grid;gap:9px}
@@ -77,7 +77,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .brand-note{display:block;font-size:8px;letter-spacing:.08em;line-height:1.25;margin-top:6px;white-space:normal;max-width:185px}
  .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:0}
  .slogan img{width:136px;max-width:100%;height:auto}
- .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1;grid-template-columns:1.4fr .7fr;gap:10px}.orderbox .block+.block{padding-left:10px}.order-details{grid-template-columns:1fr 1fr}.order-detail{padding:10px 12px}.order-detail strong{font-size:12px}
+ .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.order-details{grid-template-columns:1fr 1fr}.order-detail{padding:8px 10px}.order-detail strong{font-size:11.5px}
  .info,.bottom{grid-template-columns:1fr}.customer-grid{grid-template-columns:1fr 1fr}.customer-grid .row{padding:7px 8px}.customer-grid .row.address-row{grid-column:1/-1}.contact{grid-template-columns:minmax(0,1fr) 96px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;transform:none;align-self:center}.thanks-note img{width:92px;max-width:100%;height:auto}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
@@ -121,7 +121,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.29" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.35" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -130,10 +130,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
     <h1>Vielen Dank für deine Bestellung!</h1>
     <p>Deine Bestellung ist erfolgreich bei uns eingegangen.</p>
   </div>
-  <div class="orderbox">
-    <div class="block"><div class="label">Bestellnummer</div><div class="value" id="orderNumber">–</div></div>
-    <div class="block"><div class="label">Datum</div><div class="value" id="orderDate">–</div></div>
-  </div>
+
 </section>
 
 <section class="info">
@@ -147,6 +144,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
     <div class="order-details">
       <div class="order-detail"><span>Bestellart</span><strong id="deliveryType">Abholung</strong></div>
       <div class="order-detail"><span>Zahlung</span><strong id="paymentMethod">Bar bei Abholung</strong></div>
+      <div class="order-detail"><span>Bestellnummer</span><strong id="orderNumber">–</strong></div>
+      <div class="order-detail"><span>Datum</span><strong id="orderDate">–</strong></div>
     </div>
   </div>
 </section>
@@ -170,11 +169,11 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       <h3>Fragen zu deiner Bestellung?</h3>
       <p>Wir sind gerne für dich da – schnell, unkompliziert und auch per WhatsApp.</p>
       <div class="contact-lines">
-        <div class="contact-line" id="contactPhone"><span class="contact-ico whatsapp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.8C20.5 16.4 16.8 20 12.2 20c-1.4 0-2.7-.3-3.8-.9L4 20l1-4.2c-.7-1.2-1-2.6-1-4 0-4.6 3.7-8.2 8.2-8.2 4.6 0 8.3 3.6 8.3 8.2Z" fill="currentColor" opacity=".22"/><path d="M12.2 3.6C7.7 3.6 4 7.2 4 11.8c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.1.6 2.4.9 3.7.9 4.6 0 8.3-3.6 8.3-8.2 0-4.8-3.7-8-7.9-8Zm0 14.8c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.4.6.6-2.3-.1-.2c-.7-1-.9-2.2-.9-3.4 0-3.6 2.9-6.6 6.4-6.6 3.6 0 6.4 2.9 6.4 6.5 0 3.7-2.9 6.4-6.4 6.4Zm3.5-4.8c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-1.1-.6-1.8-1.2-2.5-2.2-.2-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1 0-.3 0-.4 0-.1-.4-1-.6-1.4-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.1 1.5 2.3 3.7 3.2.5.2 1 .4 1.3.5.6.2 1.1.1 1.5.1.5-.1 1.5-.6 1.7-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.1-.4-.2Z" fill="white"/></svg></span><strong id="contactPhoneValue">0160 26 55 220</strong></div>
+        <div class="contact-line" id="contactPhone"><span class="contact-ico whatsapp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.8C20.5 16.4 16.8 20 12.2 20c-1.4 0-2.7-.3-3.8-.9L4 20l1-4.2c-.7-1.2-1-2.6-1-4 0-4.6 3.7-8.2 8.2-8.2 4.6 0 8.3 3.6 8.3 8.2Z" fill="currentColor" opacity=".22"/><path d="M12.2 3.6C7.7 3.6 4 7.2 4 11.8c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.1.6 2.4.9 3.7.9 4.6 0 8.3-3.6 8.3-8.2 0-4.8-3.7-8-7.9-8Zm0 14.8c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.4.6.6-2.3-.1-.2c-.7-1-.9-2.2-.9-3.4 0-3.6 2.9-6.6 6.4-6.6 3.6 0 6.4 2.9 6.4 6.5 0 3.7-2.9 6.4-6.4 6.4Zm3.5-4.8c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-1.1-.6-1.8-1.2-2.5-2.2-.2-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1 0-.3 0-.4 0-.1-.4-1-.6-1.4-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.1 1.5 2.3 3.7 3.2.5.2 1 .4 1.3.5.6.2 1.1.1 1.5.1.5-.1 1.5-.6 1.7-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.1-.4-.2Z" fill="white"/></svg></span><strong id="contactPhoneValue">+49 160 26 55 220</strong></div>
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.29" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.35" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -202,8 +201,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.29"></script>
-<script src="/shop-loader.js?v=30.1.29"></script>
+<script src="/central-config.js?v=30.1.35"></script>
+<script src="/shop-loader.js?v=30.1.35"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -259,7 +258,7 @@ loadShopConfig(function(cfg){
 
     if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
     if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
-    document.getElementById("contactPhoneValue").textContent="0160 26 55 220";
+    document.getElementById("contactPhoneValue").textContent="+49 160 26 55 220";
 
     const totalQty=Number(data.totalQuantity)||0;
     document.getElementById("totalQty").textContent=totalQty;
