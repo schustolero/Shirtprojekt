@@ -4,6 +4,21 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title id="pageTitle">T-Shirt Designer</title>
+  <script>
+    // Vor dem ersten Paint den Shop aus der URL markieren. TG Solingen hat
+    // feste Shirt-/Motivfarben, daher werden die Farbauswahlen dort niemals
+    // sichtbar gerendert – auch nicht für einen kurzen Lade-Moment.
+    (function(){
+      try{
+        var shop=(new URLSearchParams(location.search).get("shop")||"").toLowerCase();
+        if(shop) document.documentElement.setAttribute("data-initial-shop",shop);
+      }catch(e){}
+    })();
+  </script>
+  <style id="critical-shop-fixed-colors">
+    html[data-initial-shop="tg-solingen"] .color-section,
+    html[data-initial-shop="tg-solingen"] .motif-color-section{display:none!important}
+  </style>
   <style id="critical-shop-loading">
     /* Sofortiger Schutz gegen FOUC/Farbflash noch vor dem externen CSS */
     body.shop-loading .sidebar .tool-section,
@@ -13,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.1.33">
+  <link rel="stylesheet" href="/style.css?v=30.1.34">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -342,16 +357,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=30.1.33"></script>
+<script src="/central-config.js?v=30.1.34"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.1.33"></script>
+<script src="/shop-loader.js?v=30.1.34"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=30.1.33";
+    app.src="/script.js?v=30.1.34";
     document.body.appendChild(app);
   });
 </script>

@@ -116,7 +116,7 @@ function getAllowedMotifColorNames(){
       if (!allowedShirtColorIds.includes(button.dataset.id)) button.remove();
     });
   }
-  if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
+  if (shirtColorSection) shirtColorSection.hidden = isTGSolingen || FEATURES.showShirtColorPicker === false;
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
@@ -124,7 +124,7 @@ function getAllowedMotifColorNames(){
       if (!allowedMotifColorNames.includes(button.dataset.name)) button.remove();
     });
   }
-  if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
+  if (motifColorSection) motifColorSection.hidden = isTGSolingen || !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
   if (backButton) backButton.hidden = !FEATURES.allowBackDesign;
   if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
   if (resetSection && FEATURES.showResetButton === false) resetSection.remove();
@@ -1044,9 +1044,24 @@ function openOrderSummary() {
   const toggle = document.createElement("button");
   toggle.type = "button";
   toggle.className = "order-summary-toggle";
-  toggle.textContent = "Details ›";
+  toggle.textContent = "Details";
   toggle.setAttribute("aria-expanded", "false");
   itemsHeader.append(itemsCount, toggle);
+  itemsHeader.style.display = "grid";
+  itemsHeader.style.gridTemplateColumns = "minmax(0,1fr) auto";
+  itemsHeader.style.alignItems = "center";
+  itemsHeader.style.columnGap = "14px";
+  itemsCount.style.minWidth = "0";
+  toggle.style.justifySelf = "end";
+  toggle.style.marginLeft = "0";
+  toggle.style.border = "1px solid #d7e3ec";
+  toggle.style.borderRadius = "999px";
+  toggle.style.background = "#f3f8fb";
+  toggle.style.padding = "5px 10px";
+  toggle.style.color = "#16638f";
+  toggle.style.fontSize = "10.5px";
+  toggle.style.fontWeight = "800";
+  toggle.style.lineHeight = "1";
   itemsBlock.appendChild(itemsHeader);
 
   const itemsWrap = document.createElement("div");
@@ -1079,7 +1094,7 @@ function openOrderSummary() {
   toggle.addEventListener("click", () => {
     const willOpen = itemsWrap.hidden;
     itemsWrap.hidden = !willOpen;
-    toggle.textContent = willOpen ? "Details ‹" : "Details ›";
+    toggle.textContent = willOpen ? "Schließen" : "Details";
     toggle.setAttribute("aria-expanded", String(willOpen));
   });
   orderSummary.appendChild(itemsBlock);
