@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.1.37">
+  <link rel="stylesheet" href="/style.css?v=30.1.38">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -38,54 +38,76 @@
 }
 </style>
 
-<style id="v30137-mobile-order-fix">
+<style id="v30138-mobile-order-fix">
 @media (max-width:760px){
   .order-modal{
-    padding:
-      max(8px, env(safe-area-inset-top))
-      8px
-      max(8px, env(safe-area-inset-bottom)) !important;
-    align-items:flex-start !important;
-    overflow:hidden !important;
+    padding:max(6px,env(safe-area-inset-top)) 6px max(6px,env(safe-area-inset-bottom))!important;
+    align-items:flex-start!important;
+    overflow:hidden!important;
   }
-
   .order-modal-card{
-    width:100% !important;
-    max-width:none !important;
-    height:auto !important;
-    max-height:calc(100dvh - 16px) !important;
-    overflow-y:auto !important;
-    overflow-x:hidden !important;
-    -webkit-overflow-scrolling:touch !important;
-    overscroll-behavior:contain !important;
-    padding-bottom:calc(16px + env(safe-area-inset-bottom)) !important;
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:calc(100dvh - 12px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom))!important;
   }
-
   .contact-form{
-    overflow:visible !important;
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    position:static!important;
   }
-
+  .contact-field,
+  .contact-field.address-field{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0 0 12px!important;
+    position:static!important;
+  }
+  .address-lines{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  .order-modal-note,
+  #sendOrderMessage,
   .send-order-btn{
-    position:relative !important;
-    inset:auto !important;
-    z-index:2 !important;
-    width:100% !important;
-    margin-top:10px !important;
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:100%!important;
+    max-width:none!important;
+    float:none!important;
   }
-
+  .order-modal-note{
+    margin:10px 0 8px!important;
+  }
+  .send-order-btn{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:auto!important;
+    margin:0!important;
+  }
+  /* Auf Mobil gibt es oben bereits das X zum Schließen. Der alte Zurück-Button
+     wird ausgeblendet, damit er den Absende-Button niemals überdecken kann. */
   .order-back-btn{
-    position:relative !important;
-    inset:auto !important;
-    bottom:auto !important;
-    left:auto !important;
-    right:auto !important;
-    z-index:1 !important;
-    width:100% !important;
-    margin-top:10px !important;
-  }
-
-  #sendOrderMessage{
-    min-height:0 !important;
+    display:none!important;
+    position:static!important;
+    inset:auto!important;
   }
 }
 </style>
@@ -410,16 +432,16 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=30.1.37"></script>
+<script src="/central-config.js?v=30.1.38"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.1.37"></script>
+<script src="/shop-loader.js?v=30.1.38"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=30.1.37";
+    app.src="/script.js?v=30.1.38";
     document.body.appendChild(app);
   });
 </script>
