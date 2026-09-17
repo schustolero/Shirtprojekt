@@ -1029,15 +1029,66 @@ function openOrderSummary() {
   const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
   orderSummary.replaceChildren();
 
-  orderSummary.appendChild(summaryRow("Bestellnummer", "wird beim Absenden vergeben"));
+  const meta = document.createElement("div");
+  meta.className = "order-summary-meta";
+  meta.appendChild(summaryRow("Bestellnummer", "wird beim Absenden vergeben"));
+  orderSummary.appendChild(meta);
+
+  const itemsBlock = document.createElement("div");
+  itemsBlock.className = "order-summary-items-block";
+
+  const itemsHeader = document.createElement("div");
+  itemsHeader.className = "order-summary-items-header";
+  const itemsCount = document.createElement("strong");
+  itemsCount.textContent = `${orderItems.length} ${orderItems.length === 1 ? "Position" : "Positionen"} · ${total} ${total === 1 ? "Artikel" : "Artikel"}`;
+  const toggle = document.createElement("button");
+  toggle.type = "button";
+  toggle.className = "order-summary-toggle";
+  toggle.textContent = "Details anzeigen";
+  toggle.setAttribute("aria-expanded", "false");
+  itemsHeader.append(itemsCount, toggle);
+  itemsBlock.appendChild(itemsHeader);
+
+  const itemsWrap = document.createElement("div");
+  itemsWrap.className = "order-summary-items";
+  itemsWrap.hidden = true;
   orderItems.forEach((item, i) => {
-    orderSummary.appendChild(summaryRow(
-      `Position ${i + 1}`,
-      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
-    ));
+    const line = document.createElement("div");
+    line.className = "order-summary-item";
+
+    const top = document.createElement("div");
+    top.className = "order-summary-item-top";
+    const title = document.createElement("strong");
+    title.textContent = `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor}`;
+    const price = document.createElement("b");
+    price.textContent = formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE));
+    top.append(title, price);
+
+    const detail = document.createElement("div");
+    detail.className = "order-summary-item-detail";
+    const detailParts = [];
+    if (item.printLayout) detailParts.push(item.printLayout);
+    if (item.motif) detailParts.push(item.motif);
+    if (item.motifColor) detailParts.push(item.motifColor);
+    detail.textContent = detailParts.join(" · ") || `Position ${i + 1}`;
+
+    line.append(top, detail);
+    itemsWrap.appendChild(line);
   });
-  orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
-  orderSummary.appendChild(summaryRow("Gesamtpreis", formatEuro(totalPrice)));
+  itemsBlock.appendChild(itemsWrap);
+  toggle.addEventListener("click", () => {
+    const willOpen = itemsWrap.hidden;
+    itemsWrap.hidden = !willOpen;
+    toggle.textContent = willOpen ? "Details schließen" : "Details anzeigen";
+    toggle.setAttribute("aria-expanded", String(willOpen));
+  });
+  orderSummary.appendChild(itemsBlock);
+
+  const totals = document.createElement("div");
+  totals.className = "order-summary-totals";
+  totals.appendChild(summaryRow("Gesamtmenge", String(total)));
+  totals.appendChild(summaryRow("Gesamtpreis", formatEuro(totalPrice)));
+  orderSummary.appendChild(totals);
 
   formOrderItems.value = orderItemsAsText();
   formTotalQuantity.value = String(total);
