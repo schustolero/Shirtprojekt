@@ -85,9 +85,9 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 }
 @media print{
  @page{size:A4 portrait;margin:5mm}
- html,body{background:#fff!important;width:210mm;min-height:297mm;margin:0!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
- .page{width:200mm!important;margin:0 auto!important}
- .sheet{width:100%!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82}
+ html,body{background:#fff!important;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .page{width:200mm!important;height:auto!important;min-height:0!important;margin:0 auto!important;break-after:auto!important;page-break-after:auto!important}
+ .sheet{width:100%!important;height:auto!important;min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82;break-after:auto!important;page-break-after:auto!important}
  .top{margin-bottom:10px!important;padding-bottom:7px!important;gap:18px!important}
  .brand-logo{min-height:58px!important;width:250px!important}.brand-text .main{font-size:29px!important}.brand-text .sub{font-size:10px!important}.brand-note{font-size:7.5px!important;margin-top:5px!important}
  .slogan img{width:108px!important}
@@ -121,7 +121,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.35" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.36" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -173,7 +173,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.35" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.36" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -201,8 +201,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.35"></script>
-<script src="/shop-loader.js?v=30.1.35"></script>
+<script src="/central-config.js?v=30.1.36"></script>
+<script src="/shop-loader.js?v=30.1.36"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
