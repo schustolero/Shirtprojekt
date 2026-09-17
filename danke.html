@@ -31,15 +31,12 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .orderbox .label{font-size:11px;color:var(--muted)}
 .orderbox .value{font-size:16px;font-weight:900;margin-top:2px;overflow-wrap:anywhere}
 .orderbox .block+.block{margin-top:0;padding-left:16px;border-left:1px solid #dfe7eb}
-.info{display:grid;grid-template-columns:1.15fr 1fr;gap:18px;margin-bottom:20px}
+.info{display:grid;grid-template-columns:1.35fr .85fr;gap:12px;margin-bottom:12px;align-items:start}
 .card{border:1px solid #e1e7eb;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#ffffff,#fbfcfd);box-shadow:0 10px 24px rgba(23,37,49,.04)}
-.card-head{display:flex;align-items:center;padding:14px 18px;background:linear-gradient(180deg,#fbfcfd,#f4f7f9);font-size:16px;font-weight:800;letter-spacing:-.01em;border-bottom:1px solid #e9eef2;position:relative}.card-head:before{content:"";display:inline-block;width:4px;height:18px;border-radius:999px;background:linear-gradient(180deg,#79c9c1,#36a89d);margin-right:10px}
+.card-head{display:flex;align-items:center;padding:10px 14px;background:linear-gradient(180deg,#fbfcfd,#f4f7f9);font-size:14px;font-weight:800;letter-spacing:-.01em;border-bottom:1px solid #e9eef2;position:relative}.card-head:before{content:"";display:inline-block;width:4px;height:18px;border-radius:999px;background:linear-gradient(180deg,#79c9c1,#36a89d);margin-right:10px}
 .ico{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#dce4ea;font-size:15px}
-.rows{padding:6px 18px 12px}
-.row{display:grid;grid-template-columns:155px 1fr;gap:16px;padding:10px 0;border-bottom:1px solid #edf0f2;font-size:13px}
-.row:last-child{border-bottom:0}
-.row span{color:#43505d}.row strong{font-weight:500;overflow-wrap:anywhere;white-space:pre-line}
-.order-details{display:grid;grid-template-columns:1fr 1.25fr;gap:0}.order-detail{padding:12px 16px}.order-detail+.order-detail{border-left:1px solid #e7ecef}.order-detail span{display:block;color:#66727d;font-size:11px;margin-bottom:4px}.order-detail strong{display:block;font-size:13px;font-weight:700;overflow-wrap:anywhere}
+.rows{padding:8px 14px 10px}.customer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}.customer-grid .row{display:block;padding:8px 10px;border:1px solid #edf0f2;border-radius:10px;background:#fff;font-size:12px;min-width:0}.customer-grid .row span{display:block;color:#66727d;font-size:10px;margin-bottom:3px}.customer-grid .row strong{display:block;font-weight:650;overflow-wrap:anywhere;white-space:pre-line;line-height:1.25}.customer-grid .row.address-row{grid-column:1/-1}.customer-grid .row:last-child{border-bottom:1px solid #edf0f2}
+.order-details{display:grid;grid-template-columns:1fr 1fr;gap:0}.order-detail{padding:9px 12px}.order-detail+.order-detail{border-left:1px solid #e7ecef}.order-detail span{display:block;color:#66727d;font-size:10px;margin-bottom:3px}.order-detail strong{display:block;font-size:12px;font-weight:700;overflow-wrap:anywhere}
 .status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:8px;background:var(--green-soft);color:#11944f;font-weight:900;width:max-content}
 .status:before{content:"";width:8px;height:8px;border-radius:50%;background:#17b25d}
 .table-wrap{border:1px solid #dfe5e9;border-radius:18px;overflow:hidden;margin-bottom:22px;box-shadow:0 10px 24px rgba(23,37,49,.04);background:#fff}
@@ -81,7 +78,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:0}
  .slogan img{width:136px;max-width:100%;height:auto}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.hero .orderbox{grid-column:1/-1;grid-template-columns:1.4fr .7fr;gap:10px}.orderbox .block+.block{padding-left:10px}.order-details{grid-template-columns:1fr 1fr}.order-detail{padding:10px 12px}.order-detail strong{font-size:12px}
- .info,.bottom{grid-template-columns:1fr}.row{grid-template-columns:125px 1fr}.contact{grid-template-columns:minmax(0,1fr) 96px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;transform:none;align-self:center}.thanks-note img{width:92px;max-width:100%;height:auto}
+ .info,.bottom{grid-template-columns:1fr}.customer-grid{grid-template-columns:1fr 1fr}.customer-grid .row{padding:7px 8px}.customer-grid .row.address-row{grid-column:1/-1}.contact{grid-template-columns:minmax(0,1fr) 96px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;transform:none;align-self:center}.thanks-note img{width:92px;max-width:100%;height:auto}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}.footer-brand{text-align:left}
  .actions{grid-template-columns:1fr}
@@ -100,7 +97,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .orderbox{padding:8px 11px!important;border-radius:10px!important;grid-template-columns:1.45fr .75fr!important;gap:10px!important}.orderbox .label{font-size:8.5px!important}.orderbox .value{font-size:12px!important}.orderbox .block+.block{margin-top:0!important;padding-left:10px!important}
  .info{gap:10px!important;margin-bottom:10px!important}.order-details{grid-template-columns:1fr 1.2fr!important}.order-detail{padding:7px 10px!important}.order-detail span{font-size:8.5px!important;margin-bottom:2px!important}.order-detail strong{font-size:10.2px!important}
  .card{border-radius:10px!important;box-shadow:none!important}.card-head{padding:8px 12px!important;font-size:12px!important}.card-head:before{height:12px!important;margin-right:7px!important}
- .rows{padding:2px 12px 5px!important}.row{grid-template-columns:115px 1fr!important;gap:10px!important;padding:5px 0!important;font-size:10.2px!important}
+ .rows{padding:4px 8px 6px!important}.customer-grid{grid-template-columns:1fr 1fr!important;gap:5px 6px!important}.customer-grid .row{padding:5px 7px!important;border-radius:6px!important;font-size:9.6px!important}.customer-grid .row span{font-size:7.8px!important;margin-bottom:1px!important}.customer-grid .row strong{font-size:9.4px!important;line-height:1.15!important}.customer-grid .row.address-row{grid-column:1/-1!important}
  .table-wrap{border-radius:10px!important;box-shadow:none!important;margin-bottom:9px!important}.table-head{padding:8px 10px!important;font-size:8.5px!important;gap:8px!important}.item-row{padding:7px 10px!important;min-height:56px!important;gap:8px!important}
  .product-cell{grid-template-columns:44px 1fr!important;gap:7px!important}.product-cell img{width:40px!important;height:40px!important;border-radius:8px!important;padding:3px!important}.product-cell strong{font-size:10.5px!important}.cell,.money{font-size:9.8px!important}.positions div+div{margin-top:2px!important}
  .bottom{gap:10px!important;margin-bottom:8px!important}.contact{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important;grid-template-columns:minmax(0,1fr) 95px!important;gap:8px!important}.contact h3{font-size:12px!important;margin-bottom:3px!important}.contact p{font-size:9px!important;margin-bottom:5px!important}.contact-lines{gap:5px!important}.contact-line{font-size:9.2px!important}.contact-ico{width:18px!important;height:18px!important;flex-basis:18px!important}.contact-ico svg{width:10px!important;height:10px!important}.thanks-note img{width:86px!important}
@@ -124,7 +121,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
       </div>
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.25" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.29" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -142,7 +139,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <section class="info">
   <div class="card">
     <div class="card-head">Kundendaten</div>
-    <div class="rows" id="customerRows"></div>
+    <div class="rows customer-grid" id="customerRows"></div>
   </div>
 
   <div class="card compact-card">
@@ -177,7 +174,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.25" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.29" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -205,8 +202,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.14"></script>
-<script src="/shop-loader.js?v=30.1.14"></script>
+<script src="/central-config.js?v=30.1.29"></script>
+<script src="/shop-loader.js?v=30.1.29"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -233,9 +230,9 @@ loadShopConfig(function(cfg){
     document.getElementById("orderDate").textContent=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
 
     const customerRows=document.getElementById("customerRows");
-    const addRow=(label,value)=>{
+    const addRow=(label,value,extraClass="")=>{
       const row=document.createElement("div");
-      row.className="row";
+      row.className=`row${extraClass?` ${extraClass}`:""}`;
       const a=document.createElement("span");
       a.textContent=label;
       const b=document.createElement("strong");
@@ -258,7 +255,7 @@ loadShopConfig(function(cfg){
     addRow("Verein / Firma",data.customerClass);
     addRow("E-Mail",data.email);
     addRow("WhatsApp",data.whatsapp||data.phone);
-    addRow("Adresse",formatAddress(data.address));
+    addRow("Adresse",formatAddress(data.address),"address-row");
 
     if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
     if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
