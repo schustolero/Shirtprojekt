@@ -1044,7 +1044,7 @@ function openOrderSummary() {
   const toggle = document.createElement("button");
   toggle.type = "button";
   toggle.className = "order-summary-toggle";
-  toggle.textContent = "Details anzeigen";
+  toggle.textContent = "Details ›";
   toggle.setAttribute("aria-expanded", "false");
   itemsHeader.append(itemsCount, toggle);
   itemsBlock.appendChild(itemsHeader);
@@ -1079,7 +1079,7 @@ function openOrderSummary() {
   toggle.addEventListener("click", () => {
     const willOpen = itemsWrap.hidden;
     itemsWrap.hidden = !willOpen;
-    toggle.textContent = willOpen ? "Details schließen" : "Details anzeigen";
+    toggle.textContent = willOpen ? "Details ‹" : "Details ›";
     toggle.setAttribute("aria-expanded", String(willOpen));
   });
   orderSummary.appendChild(itemsBlock);

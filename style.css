@@ -2688,3 +2688,32 @@ body:not(.shop-loading) .sidebar-bottom{
   .order-summary-toggle{font-size:10px!important;}
   .order-summary-items-block .order-summary-items{max-height:96px!important;}
 }
+
+
+/* v30.1.33 – Ladeflash endgültig verhindern + Details sauber platzieren */
+.order-summary-items-header{
+  width:100%!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;
+  column-gap:12px!important;
+}
+.order-summary-items-header strong{
+  min-width:0!important;
+}
+.order-summary-toggle{
+  justify-self:end!important;
+  margin-left:auto!important;
+  border:1px solid #d7e3ec!important;
+  border-radius:999px!important;
+  background:#f3f8fb!important;
+  padding:5px 9px!important;
+  color:#16638f!important;
+  line-height:1!important;
+  box-shadow:none!important;
+}
+.order-summary-toggle:hover{background:#eaf4f9!important;}
+@media(max-width:600px){
+  .order-summary-items-header{column-gap:8px!important;}
+  .order-summary-toggle{padding:5px 8px!important;}
+}
