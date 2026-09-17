@@ -2524,3 +2524,21 @@ body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.
     min-height:352px!important;
   }
 }
+
+/* v30.1.28 – Mobile: unteren Leerraum entfernen, obere Position unverändert */
+@media(max-width:900px){
+  .workspace{
+    flex:0 0 382px!important;
+    height:382px!important;
+    min-height:382px!important;
+    max-height:382px!important;
+  }
+}
+@media(max-width:390px){
+  .workspace{
+    flex:0 0 352px!important;
+    height:352px!important;
+    min-height:352px!important;
+    max-height:352px!important;
+  }
+}
