@@ -667,8 +667,13 @@ function flashSavedButton(btn, normalText){
 
 function switchAdminTab(name){
   tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
-  ordersTab.hidden=name!=="orders"; shopsTab.hidden=name!=="shops"; if(productionTab) productionTab.hidden=name!=="production";
-  if(name==="production") renderProductionDashboard();
+  ordersTab.hidden=name!=="orders";
+  shopsTab.hidden=name!=="shops";
+  if(productionTab) productionTab.hidden=name!=="production";
+  if(name==="production"){
+    if(typeof window.loadProductionV30145==="function") window.loadProductionV30145();
+    else renderProductionDashboard();
+  }
 }
 tabButtons.forEach(btn=>btn.addEventListener("click",()=>switchAdminTab(btn.dataset.tab)));
 
@@ -1146,7 +1151,8 @@ saveShopBtn.addEventListener("click",async()=>{
         sidebar.classList.add("mobile-menu-open");
         if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","true"); mobileMenuBtn.textContent="×"; }
       } else {
-        setNavActive(ordersTab.hidden?"shops":"orders");
+        if(productionTab && !productionTab.hidden) setNavActive("production");
+        else setNavActive(ordersTab.hidden?"shops":"orders");
       }
       window.refreshV284ShopSelect?.();
     }

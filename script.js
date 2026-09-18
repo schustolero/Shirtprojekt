@@ -116,7 +116,7 @@ function getAllowedMotifColorNames(){
       if (!allowedShirtColorIds.includes(button.dataset.id)) button.remove();
     });
   }
-  if (shirtColorSection) shirtColorSection.hidden = isTGSolingen || FEATURES.showShirtColorPicker === false;
+  if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
@@ -124,7 +124,7 @@ function getAllowedMotifColorNames(){
       if (!allowedMotifColorNames.includes(button.dataset.name)) button.remove();
     });
   }
-  if (motifColorSection) motifColorSection.hidden = isTGSolingen || !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
+  if (motifColorSection) motifColorSection.hidden = !FEATURES.allowMotifColor || FEATURES.showMotifColorPicker === false;
   if (backButton) backButton.hidden = !FEATURES.allowBackDesign;
   if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
   if (resetSection && FEATURES.showResetButton === false) resetSection.remove();
@@ -1029,81 +1029,15 @@ function openOrderSummary() {
   const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
   orderSummary.replaceChildren();
 
-  const meta = document.createElement("div");
-  meta.className = "order-summary-meta";
-  meta.appendChild(summaryRow("Bestellnummer", "wird beim Absenden vergeben"));
-  orderSummary.appendChild(meta);
-
-  const itemsBlock = document.createElement("div");
-  itemsBlock.className = "order-summary-items-block";
-
-  const itemsHeader = document.createElement("div");
-  itemsHeader.className = "order-summary-items-header";
-  const itemsCount = document.createElement("strong");
-  itemsCount.textContent = `${orderItems.length} ${orderItems.length === 1 ? "Position" : "Positionen"} · ${total} ${total === 1 ? "Artikel" : "Artikel"}`;
-  const toggle = document.createElement("button");
-  toggle.type = "button";
-  toggle.className = "order-summary-toggle";
-  toggle.textContent = "Details";
-  toggle.setAttribute("aria-expanded", "false");
-  itemsHeader.append(itemsCount, toggle);
-  itemsHeader.style.display = "grid";
-  itemsHeader.style.gridTemplateColumns = "minmax(0,1fr) auto";
-  itemsHeader.style.alignItems = "center";
-  itemsHeader.style.columnGap = "14px";
-  itemsCount.style.minWidth = "0";
-  toggle.style.justifySelf = "end";
-  toggle.style.marginLeft = "0";
-  toggle.style.border = "1px solid #d7e3ec";
-  toggle.style.borderRadius = "999px";
-  toggle.style.background = "#f3f8fb";
-  toggle.style.padding = "5px 10px";
-  toggle.style.color = "#16638f";
-  toggle.style.fontSize = "10.5px";
-  toggle.style.fontWeight = "800";
-  toggle.style.lineHeight = "1";
-  itemsBlock.appendChild(itemsHeader);
-
-  const itemsWrap = document.createElement("div");
-  itemsWrap.className = "order-summary-items";
-  itemsWrap.hidden = true;
+  orderSummary.appendChild(summaryRow("Bestellnummer", "wird beim Absenden vergeben"));
   orderItems.forEach((item, i) => {
-    const line = document.createElement("div");
-    line.className = "order-summary-item";
-
-    const top = document.createElement("div");
-    top.className = "order-summary-item-top";
-    const title = document.createElement("strong");
-    title.textContent = `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor}`;
-    const price = document.createElement("b");
-    price.textContent = formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE));
-    top.append(title, price);
-
-    const detail = document.createElement("div");
-    detail.className = "order-summary-item-detail";
-    const detailParts = [];
-    if (item.printLayout) detailParts.push(item.printLayout);
-    if (item.motif) detailParts.push(item.motif);
-    if (item.motifColor) detailParts.push(item.motifColor);
-    detail.textContent = detailParts.join(" · ") || `Position ${i + 1}`;
-
-    line.append(top, detail);
-    itemsWrap.appendChild(line);
+    orderSummary.appendChild(summaryRow(
+      `Position ${i + 1}`,
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
+    ));
   });
-  itemsBlock.appendChild(itemsWrap);
-  toggle.addEventListener("click", () => {
-    const willOpen = itemsWrap.hidden;
-    itemsWrap.hidden = !willOpen;
-    toggle.textContent = willOpen ? "Schließen" : "Details";
-    toggle.setAttribute("aria-expanded", String(willOpen));
-  });
-  orderSummary.appendChild(itemsBlock);
-
-  const totals = document.createElement("div");
-  totals.className = "order-summary-totals";
-  totals.appendChild(summaryRow("Gesamtmenge", String(total)));
-  totals.appendChild(summaryRow("Gesamtpreis", formatEuro(totalPrice)));
-  orderSummary.appendChild(totals);
+  orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
+  orderSummary.appendChild(summaryRow("Gesamtpreis", formatEuro(totalPrice)));
 
   formOrderItems.value = orderItemsAsText();
   formTotalQuantity.value = String(total);
