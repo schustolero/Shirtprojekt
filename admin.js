@@ -207,7 +207,7 @@ function printProductionSlip(order){
 }
 
 
-const PRODUCTION_STEPS = ["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
+const PRODUCTION_STEPS = ["Bestellt","Transfer","Abgeschlossen"];
 function deliveryLabel(order){
   return text(order.deliveryType || order.orderType || "Abholung","Abholung");
 }
@@ -216,12 +216,16 @@ function productionFinalStatus(order){
 }
 function productionStatus(order){
   const raw = String(order.productionStatus || "").trim();
-  if(raw) return raw;
+  const finalStatus = productionFinalStatus(order);
+  if(raw==="Abgeholt" || raw==="Versandt") return finalStatus;
+  if(raw==="Fertig" || raw==="Bereit zum Pressen" || raw==="Abgeschlossen") return "Abgeschlossen";
+  if(raw==="Transfer bestellt" || raw==="Transfer") return "Transfer";
+  if(raw==="Textil bestellt" || raw==="Bestellt") return "Bestellt";
+  if(raw==="Offen") return "Bestellt";
   const s = String(order.status || "Neu");
-  if(s==="Fertig") return "Fertig";
-  if(s==="Abgeholt") return "Abgeholt";
-  if(s==="Versandt") return "Versandt";
-  return "Offen";
+  if(s==="Abgeholt" || s==="Versandt") return finalStatus;
+  if(s==="Fertig") return "Abgeschlossen";
+  return "Bestellt";
 }
 function productionOptions(order){
   return [...PRODUCTION_STEPS, productionFinalStatus(order)];
@@ -231,10 +235,10 @@ async function saveProductionStatus(id, order, value){
     productionStatus:value,
     productionUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
   };
-  if(value==="Fertig") patch.status="Fertig";
+  if(value==="Abgeschlossen") patch.status="Fertig";
   else if(value==="Abgeholt") patch.status="Abgeholt";
   else if(value==="Versandt") patch.status="Versandt";
-  else if(["Textil bestellt","Transfer bestellt","Bereit zum Pressen"].includes(value) && (!order.status || order.status==="Neu")) {
+  else if(["Bestellt","Transfer"].includes(value) && (!order.status || order.status==="Neu")) {
     patch.status="In Bearbeitung";
   }
   await db.collection("orders").doc(id).update(patch);
@@ -260,12 +264,50 @@ function renderOrder(id,order){
   headline.append(summaryDate,shop,buyer,deliveryBadge);
   main.append(headline);
 
+  const stageWrap=document.createElement("div");
+  stageWrap.className="v30149-stage-wrap";
+  const currentStage=productionStatus(order);
+  const finalStage=productionFinalStatus(order);
+  const stageValues=["Bestellt","Transfer","Abgeschlossen",finalStage];
+  const currentIndex=Math.max(0,stageValues.indexOf(currentStage));
+  stageValues.forEach((value,index)=>{
+    const step=document.createElement("button");
+    step.type="button";
+    step.className=`v30149-stage v30149-stage-${index+1}`;
+    step.textContent=value;
+    step.classList.toggle("done",index<=currentIndex);
+    step.classList.toggle("current",index===currentIndex);
+    step.setAttribute("aria-label",`Produktionsstatus ${value}`);
+    step.addEventListener("click",async e=>{
+      e.preventDefault();
+      e.stopPropagation();
+      if(step.disabled || productionStatus(order)===value) return;
+      stageWrap.querySelectorAll("button").forEach(b=>b.disabled=true);
+      try{
+        await saveProductionStatus(id,order,value);
+        const newIndex=stageValues.indexOf(value);
+        stageWrap.querySelectorAll(".v30149-stage").forEach((b,i)=>{
+          b.classList.toggle("done",i<=newIndex);
+          b.classList.toggle("current",i===newIndex);
+          b.disabled=false;
+        });
+        const expandedSelect=card.querySelector(".v30147-production-select");
+        if(expandedSelect) expandedSelect.value=value;
+      }catch(err){
+        console.error(err);
+        alert("Produktionsstatus konnte nicht gespeichert werden.");
+        stageWrap.querySelectorAll("button").forEach(b=>b.disabled=false);
+      }
+    });
+    stageWrap.appendChild(step);
+  });
+
   const quick=document.createElement("div");quick.className="v2966-order-quick";
   const qty=document.createElement("span");qty.textContent=`${text(order.totalQuantity,"0")} Artikel`;
   const total=document.createElement("strong");total.textContent=euro(order.totalPrice);
   const arrow=document.createElement("span");arrow.className="v2966-order-arrow";arrow.textContent="⌄";
   quick.append(qty,total,arrow);
-  summary.append(main,quick);
+  summary.append(main,stageWrap,quick);
   card.appendChild(summary);
 
   const body=document.createElement("div");body.className="v2966-order-body";
