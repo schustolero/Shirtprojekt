@@ -946,6 +946,99 @@
   }
 </style>
 
+
+<style id="v30146-production-actions-clean">
+  #productionTab .v30140-prod-table-head,
+  #productionTab .v30140-prod-row{
+    grid-template-columns:76px minmax(240px,1fr) 48px 170px!important;
+    column-gap:10px!important;
+  }
+
+  #productionTab .v30142-customer strong{
+    margin-bottom:2px!important;
+  }
+
+  #productionTab .v30146-customerline{
+    display:flex!important;
+    align-items:center!important;
+    gap:6px!important;
+    min-width:0!important;
+    margin-top:0!important;
+    font-size:8.8px!important;
+    color:#7a8790!important;
+  }
+
+  #productionTab .v30146-customerline>span{
+    min-width:0!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+    white-space:nowrap!important;
+  }
+
+  #productionTab .v30146-delivery{
+    flex:0 0 auto!important;
+    display:inline-flex!important;
+    align-items:center!important;
+    padding:2px 6px!important;
+    border-radius:999px!important;
+    border:1px solid #d8e3e7!important;
+    background:#f5f8fa!important;
+    color:#53636d!important;
+    font-size:8px!important;
+    line-height:1!important;
+    font-weight:800!important;
+  }
+
+  #productionTab .v30146-status-wrap{
+    display:block!important;
+    min-width:0!important;
+  }
+
+  #productionTab .v30146-status-select{
+    width:100%!important;
+    height:27px!important;
+    min-height:27px!important;
+    padding:3px 24px 3px 8px!important;
+    border:1px solid #cfdde2!important;
+    border-radius:8px!important;
+    background:#f8fbfb!important;
+    color:#24564f!important;
+    font-size:9px!important;
+    font-weight:800!important;
+    outline:none!important;
+    cursor:pointer!important;
+  }
+
+  #productionTab .v30146-status-select:focus{
+    border-color:#8ecdc2!important;
+    box-shadow:0 0 0 2px rgba(142,205,194,.14)!important;
+  }
+
+  #productionTab .v30140-actions{display:none!important}
+
+  @media(max-width:800px){
+    #productionTab .v30140-prod-row{
+      grid-template-columns:52px minmax(0,1fr) 30px 118px!important;
+      column-gap:5px!important;
+    }
+    #productionTab .v30146-status-select{
+      height:25px!important;
+      min-height:25px!important;
+      font-size:8px!important;
+      padding-left:6px!important;
+    }
+    #productionTab .v30146-customerline{
+      display:flex!important;
+      font-size:8px!important;
+      gap:4px!important;
+    }
+    #productionTab .v30146-delivery{
+      font-size:7.5px!important;
+      padding:2px 5px!important;
+    }
+  }
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -1019,7 +1112,7 @@
           </details>
           <section class="panel production-block production-orders-block">
             <div class="production-block-head"><div><h3>Produktionsaufträge</h3><p>Status je Auftrag – vom Textil bis zur Übergabe.</p></div></div>
-            <div class="v30140-prod-table-head"><span>Datum</span><span>Kunde</span><span>Art.</span><span>Status</span><span>Aktion</span></div>
+            <div class="v30140-prod-table-head"><span>Datum</span><span>Kunde</span><span>Art.</span><span>Status</span></div>
             <div id="productionOrders" class="production-order-list"></div>
           </section>
         </div>
@@ -1261,14 +1354,14 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.45"></script>
+  <script src="/central-config.js?v=30.1.46"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
   
 
-  <script src="/admin.js?v=30.1.45"></script>
+  <script src="/admin.js?v=30.1.46"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1295,7 +1388,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.45';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.46';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1711,7 +1804,7 @@
 </script>
 
 
-<script id="v30145-production-status-logic">
+<script id="v30146-production-status-logic">
 (function(){
   const STEPS=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
   const FINAL=["Abgeholt","Versandt"];
@@ -1789,18 +1882,24 @@
     await loadProduction();
   }
   function orderCard(o){
-    const s=prodStatus(o), n=nextFor(o), p=prevFor(o);
+    const s=prodStatus(o);
     const customer=o.name||o.customerName||"–";
     const club=o.customerClass||o.company||o.club||"–";
+    const ship=delivery(o);
+    const finalStatus=finalFor(o);
+    const statusOptions=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig",finalStatus]
+      .map(v=>`<option value="${esc(v)}"${v===s?" selected":""}>${esc(v)}</option>`).join("");
     return `<article class="v30140-prod-row" data-id="${esc(o.id)}">
       <div class="v30142-date">${esc(orderDate(o))}</div>
       <div class="v30142-customer">
         <strong>${esc(club)}</strong>
-        <span>${esc(customer)} · ${esc(delivery(o))}</span>
+        <span class="v30146-customerline"><span>${esc(customer)}</span><b class="v30146-delivery">${esc(ship)}</b></span>
       </div>
       <div class="v30140-small">${qty(o)}</div>
-      <span class="v30140-badge">${esc(s)}</span>
-      <div class="v30140-actions">${p?`<button type="button" data-prod-prev="${esc(p)}" title="Zurück zu ${esc(p)}">←</button>`:''}${n?`<button class="v30140-next" type="button" data-prod-next="${esc(n)}" title="Weiter zu ${esc(n)}">›</button>`:'<button class="v30140-next" type="button" disabled>✓</button>'}</div>
+      <label class="v30146-status-wrap">
+        <span class="sr-only">Produktionsstatus</span>
+        <select class="v30146-status-select" data-prod-status aria-label="Produktionsstatus">${statusOptions}</select>
+      </label>
     </article>`;
   }
   let busy=false;
@@ -1835,19 +1934,25 @@
     });
   }
 
-  document.addEventListener("click",async e=>{
-    if(e.target.closest('#productionRefreshBtn')){loadProduction();return;}
-    const btn=e.target.closest('[data-prod-next],[data-prod-prev]'); if(!btn)return;
-    const card=btn.closest('[data-id]'); if(!card)return;
-    const target=btn.getAttribute('data-prod-next')||btn.getAttribute('data-prod-prev');
-    btn.disabled=true;
+  document.addEventListener("click",e=>{
+    if(e.target.closest('#productionRefreshBtn')){loadProduction();}
+  });
+  document.addEventListener("change",async e=>{
+    const select=e.target.closest('[data-prod-status]'); if(!select)return;
+    const card=select.closest('[data-id]'); if(!card)return;
+    const target=select.value;
+    select.disabled=true;
     try{
       const doc=await firebase.firestore().collection('orders').doc(card.dataset.id).get();
       if(doc.exists) await updateStatus(doc.id,{id:doc.id,...doc.data()},target);
-    }catch(err){alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));btn.disabled=false;}
+    }catch(err){
+      alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));
+      select.disabled=false;
+      loadProduction();
+    }
   });
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const t=$("productionTab");if(t&&!t.hidden)loadProduction();},800);});
-  window.loadProductionV30145=loadProduction;
+  window.loadProductionV30146=loadProduction;
 })();
 </script>
 
