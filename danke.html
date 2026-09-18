@@ -16,14 +16,14 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:28px;padding:42px 44px 32px;box-shadow:0 26px 80px rgba(17,31,43,.08)}
 .top{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;margin-bottom:30px;padding-bottom:12px;border-bottom:1px solid #edf1f4}.brand{flex:1 1 auto;min-width:0}.brand-logo{min-width:0}.brand-note{max-width:100%;white-space:normal}
 .brand{display:flex;gap:16px;align-items:center;min-width:0}
-.brand-logo{width:310px;min-height:88px;display:flex;align-items:center;gap:0}.brand-logo-image{width:420px;max-width:100%}.brand-mark{display:block;max-width:100%;width:100%;height:auto;object-fit:contain}
+.brand-logo{width:300px;min-height:72px;display:flex;align-items:center;gap:0}.brand-logo-image{width:300px;max-width:100%}.brand-mark{display:block;max-width:100%;width:100%;max-height:92px;height:auto;object-fit:contain;object-position:left center}
 .brand-text{line-height:.92}
 .brand-text .main{font-size:36px;font-weight:900;letter-spacing:.11em}
 .brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.46em;margin-top:6px}
 .brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#74808a}
 .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:190px;padding:0;margin:0}
 .slogan:after{display:none}
-.slogan img{display:block;width:150px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:center;margin-bottom:18px}
+.slogan img{display:block;width:112px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:center;margin-bottom:18px}
 .check{width:82px;height:82px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:44px;font-weight:900;box-shadow:0 12px 26px rgba(28,166,112,.18)}
 .hero h1{font-size:32px;line-height:1.04;margin:0;font-weight:850;letter-spacing:-.03em}
 .hero p{font-size:14px;margin:8px 0 0;color:#4f5b67}
@@ -76,7 +76,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}
  .brand-note{display:block;font-size:8px;letter-spacing:.08em;line-height:1.25;margin-top:6px;white-space:normal;max-width:185px}
  .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:0}
- .slogan img{width:136px;max-width:100%;height:auto}
+ .slogan img{width:120px;max-width:100%;height:auto}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.order-details{grid-template-columns:1fr 1fr}.order-detail{padding:8px 10px}.order-detail strong{font-size:11.5px}
  .info,.bottom{grid-template-columns:1fr}.customer-grid{grid-template-columns:1fr 1fr}.customer-grid .row{padding:7px 8px}.customer-grid .row.address-row{grid-column:1/-1}.contact{grid-template-columns:minmax(0,1fr) 96px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;transform:none;align-self:center}.thanks-note img{width:92px;max-width:100%;height:auto}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
@@ -89,8 +89,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .page{width:200mm!important;height:auto!important;min-height:0!important;margin:0 auto!important;break-after:auto!important;page-break-after:auto!important}
  .sheet{width:100%!important;height:auto!important;min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82;break-after:auto!important;page-break-after:auto!important}
  .top{margin-bottom:10px!important;padding-bottom:7px!important;gap:18px!important}
- .brand-logo{min-height:58px!important;width:250px!important}.brand-logo-image{width:290px!important}.brand-mark{width:100%!important;height:auto!important}
- .slogan img{width:108px!important}
+ .brand-logo{min-height:50px!important;width:205px!important}.brand-logo-image{width:220px!important}.brand-mark{width:100%!important;max-height:70px!important;height:auto!important}
+ .slogan img{width:84px!important}
  .hero{grid-template-columns:54px 1fr 190px!important;gap:12px!important;margin-bottom:10px!important}
  .check{width:50px!important;height:50px!important;border-radius:15px!important;font-size:29px!important;box-shadow:none!important}
  .hero h1{font-size:24px!important}.hero p{font-size:11px!important;margin-top:4px!important}
@@ -115,10 +115,10 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <header class="top">
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-sports-logo.jpg?v=30.1.54" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.56" alt="NEXARO SPORTS">
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.54" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-black-gold-v2.png?v=30.1.56" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -198,8 +198,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.54"></script>
-<script src="/shop-loader.js?v=30.1.54"></script>
+<script src="/central-config.js?v=30.1.56"></script>
+<script src="/shop-loader.js?v=30.1.56"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -211,14 +211,14 @@ loadShopConfig(function(cfg){
   // Logo oben links entfernt
   const logo=document.getElementById("thanksLogo");
   if(logo){
-    logo.src="/nexaro-sports-logo.jpg?v=30.1.54";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.56";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
   }
 
   try{
-    const raw=sessionStorage.getItem(storageKey);
+    const raw=sessionStorage.getItem(storageKey) || localStorage.getItem(storageKey);
     if(!raw)return;
     const data=JSON.parse(raw);
 
@@ -332,7 +332,7 @@ loadShopConfig(function(cfg){
     }
 
     document.getElementById("confirmationSummary").hidden=false;
-    sessionStorage.removeItem(storageKey);
+    /* Bestelldaten bleiben für Reload/PDF erhalten; nächste Bestellung überschreibt sie. */
   }catch(err){
     console.error(err);
   }

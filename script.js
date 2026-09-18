@@ -1198,7 +1198,10 @@ if (orderForm) {
         }))
       };
 
-      sessionStorage.setItem(`shirtOrderConfirmation:${CUSTOMER_ID}`, JSON.stringify(orderPayload));
+      const confirmationKey = `shirtOrderConfirmation:${CUSTOMER_ID}`;
+      const confirmationJson = JSON.stringify(orderPayload);
+      sessionStorage.setItem(confirmationKey, confirmationJson);
+      localStorage.setItem(confirmationKey, confirmationJson);
 
       // Firestore speichern. Fehler werden sichtbar und blockieren nicht still.
       const db = getFirestoreDb();
