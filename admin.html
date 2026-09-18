@@ -716,22 +716,60 @@
 }
 </style>
 
-<style id="v30139-production-status-ui">
-  .v30139-prod-card{border:1px solid #dfe6eb;border-radius:14px;background:#fff;padding:12px 14px;margin:10px 0;box-shadow:0 5px 16px rgba(22,37,49,.045)}
-  .v30139-prod-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
-  .v30139-prod-main{min-width:0}.v30139-prod-main strong{font-size:13px;color:#162633}.v30139-prod-main span{display:block;margin-top:3px;font-size:11px;color:#6b7680}
-  .v30139-prod-badge{white-space:nowrap;border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:800;background:#eef5f4;color:#24685f;border:1px solid #cee2df}
-  .v30139-prod-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
-  .v30139-prod-meta div{background:#f7f9fa;border:1px solid #e8edf0;border-radius:9px;padding:7px 8px;font-size:10.5px;color:#5d6872}
-  .v30139-prod-meta b{display:block;color:#1b2b37;font-size:11.5px;margin-top:2px;overflow-wrap:anywhere}
-  .v30139-prod-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;margin-top:10px;padding-top:9px;border-top:1px solid #edf1f3}
-  .v30139-prod-actions button{border:1px solid #cfd9de;border-radius:9px;background:#fff;color:#334550;font-weight:750;font-size:10.5px;padding:7px 9px;cursor:pointer}
-  .v30139-prod-actions .v30139-next{background:linear-gradient(180deg,#e8f8f5,#cbeae4);border-color:#8ecdc2;color:#194d45;min-width:160px}
-  .v30139-prod-actions button:disabled{opacity:.45;cursor:default}
-  .v30139-list-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #edf1f3;font-size:11px}.v30139-list-row:last-child{border-bottom:0}.v30139-list-row b{color:#142430}.v30139-list-row span{color:#68747e}
-  .v30139-empty{padding:14px 4px;color:#77828b;font-size:11px}
-  .v30139-prod-error{padding:10px;border-radius:10px;background:#fff5f5;color:#a53939;border:1px solid #f0cece;font-size:11px}
-  @media(max-width:760px){.v30139-prod-meta{grid-template-columns:1fr 1fr}.v30139-prod-head{gap:7px}.v30139-prod-actions{justify-content:stretch}.v30139-prod-actions .v30139-next{flex:1;min-width:0}.v30139-prod-card{padding:11px}}
+<style id="v30140-production-compact-ui">
+  /* Produktion – kompakte Arbeitsansicht */
+  #productionTab .production-dashboard{display:grid;gap:10px}
+  #productionTab .production-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px!important}
+  #productionTab .production-head .eyebrow{display:none}
+  #productionTab .production-head h2{margin:0!important;font-size:18px!important;line-height:1.1}
+  #productionTab .production-head p{display:none}
+  #productionTab #productionRefreshBtn{min-height:34px!important;padding:7px 10px!important;font-size:11px!important}
+
+  #productionTab .production-stats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin:0!important}
+  #productionTab .production-stat{min-height:0!important;padding:9px 11px!important;border-radius:11px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+  #productionTab .production-stat span{font-size:10px!important;line-height:1.1!important;color:#6b7680!important}
+  #productionTab .production-stat strong{font-size:17px!important;line-height:1!important;margin:0!important;color:#142430!important}
+
+  #productionTab .production-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;margin:0!important}
+  #productionTab .production-block{padding:0!important;border-radius:12px!important;overflow:hidden!important}
+  #productionTab .production-block-head{padding:9px 11px!important;margin:0!important;border-bottom:1px solid #e9eef1!important;background:#f8fafb!important}
+  #productionTab .production-block-head h3{margin:0!important;font-size:12.5px!important;line-height:1.1!important}
+  #productionTab .production-block-head p{display:none!important}
+  #productionTab .production-list{padding:0 11px!important;max-height:170px!important;overflow:auto!important}
+  .v30140-list-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;padding:7px 0;border-bottom:1px solid #edf1f3;font-size:10.5px}
+  .v30140-list-row:last-child{border-bottom:0}.v30140-list-row span{color:#52606b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v30140-list-row b{font-size:11px;color:#142430}
+
+  #productionTab .production-orders-block{margin-top:0!important}
+  #productionTab .production-order-list{padding:0!important}
+  .v30140-prod-table-head{display:grid;grid-template-columns:1.35fr 1.45fr .55fr .8fr 1.05fr auto;gap:8px;align-items:center;padding:7px 10px;background:#f5f8fa;border-bottom:1px solid #e7ecef;color:#77828b;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+  .v30140-prod-row{display:grid;grid-template-columns:1.35fr 1.45fr .55fr .8fr 1.05fr auto;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid #edf1f3;background:#fff;min-height:42px}
+  .v30140-prod-row:last-child{border-bottom:0}
+  .v30140-order{min-width:0}.v30140-order strong{display:block;font-size:11.5px;color:#152632;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v30140-order span{display:block;margin-top:1px;font-size:9.5px;color:#7a858e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .v30140-customer{min-width:0;font-size:10.5px;color:#344550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .v30140-small{font-size:10.5px;color:#4e5e69;white-space:nowrap}
+  .v30140-badge{justify-self:start;white-space:nowrap;border-radius:999px;padding:4px 7px;font-size:9.5px;font-weight:800;background:#eef5f4;color:#24685f;border:1px solid #cee2df}
+  .v30140-actions{display:flex;gap:4px;justify-content:flex-end;align-items:center}
+  .v30140-actions button{height:28px!important;min-height:28px!important;border:1px solid #cfd9de;border-radius:7px;background:#fff;color:#334550;font-weight:800;font-size:9.5px;padding:4px 7px;cursor:pointer;white-space:nowrap}
+  .v30140-actions .v30140-next{background:linear-gradient(180deg,#e8f8f5,#cbeae4);border-color:#8ecdc2;color:#194d45}
+  .v30140-actions button:disabled{opacity:.45;cursor:default}
+  .v30140-empty{padding:12px;color:#77828b;font-size:10.5px}
+  .v30140-prod-error{padding:9px;border-radius:9px;background:#fff5f5;color:#a53939;border:1px solid #f0cece;font-size:10.5px}
+
+  @media(max-width:900px){
+    #productionTab .production-stats{grid-template-columns:1fr 1fr!important}
+    #productionTab .production-grid{grid-template-columns:1fr!important}
+    .v30140-prod-table-head{display:none}
+    .v30140-prod-row{grid-template-columns:minmax(0,1fr) auto auto;gap:6px 8px;padding:9px 10px}
+    .v30140-order{grid-column:1/2}.v30140-customer{grid-column:1/2}.v30140-small{font-size:9.5px}.v30140-badge{grid-column:2/3;grid-row:1/3;align-self:center}.v30140-actions{grid-column:3/4;grid-row:1/3;align-self:center}
+    .v30140-prod-row>.v30140-small:nth-of-type(1),.v30140-prod-row>.v30140-small:nth-of-type(2){display:none}
+  }
+  @media(max-width:560px){
+    #productionTab .production-head{padding:10px 11px!important}
+    #productionTab .production-head h2{font-size:16px!important}
+    #productionTab .production-stat{padding:8px 9px!important}.production-stat strong{font-size:15px!important}
+    .v30140-prod-row{grid-template-columns:minmax(0,1fr) auto;gap:5px 8px}
+    .v30140-badge{grid-column:2/3;grid-row:1/2}.v30140-actions{grid-column:2/3;grid-row:2/3}.v30140-actions button{padding:4px 6px}
+  }
 </style>
 
 </head>
@@ -780,7 +818,7 @@
       <section id="productionTab" class="tab-panel" hidden>
         <div class="production-dashboard">
           <div class="production-head panel">
-            <div><span class="eyebrow">PRODUKTION</span><h2>Offene Produktion</h2><p>Automatisch aus allen noch offenen Bestellungen zusammengefasst.</p></div>
+            <div><span class="eyebrow">PRODUKTION</span><h2>Produktion</h2><p>Offene Aufträge und Bedarf.</p></div>
             <button id="productionRefreshBtn" class="ghost-btn" type="button">Aktualisieren</button>
           </div>
           <div class="production-stats">
@@ -801,6 +839,7 @@
           </div>
           <section class="panel production-block production-orders-block">
             <div class="production-block-head"><div><h3>Produktionsaufträge</h3><p>Status je Auftrag – vom Textil bis zur Übergabe.</p></div></div>
+            <div class="v30140-prod-table-head"><span>Auftrag</span><span>Kunde</span><span>Art.</span><span>Bestellart</span><span>Status</span><span>Aktion</span></div>
             <div id="productionOrders" class="production-order-list"></div>
           </section>
         </div>
@@ -1042,12 +1081,12 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.39"></script>
+  <script src="/central-config.js?v=30.1.40"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=30.1.39"></script>
+  <script src="/admin.js?v=30.1.40"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1074,7 +1113,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.39';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.40';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1490,7 +1529,7 @@
 </script>
 
 
-<script id="v30139-production-status-logic">
+<script id="v30140-production-status-logic">
 (function(){
   const STEPS=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
   const FINAL=["Abgeholt","Versandt"];
@@ -1548,7 +1587,7 @@
   }
   function renderList(el, rows){
     if(!el)return;
-    el.innerHTML=rows.length?rows.map(([k,v])=>`<div class="v30139-list-row"><span>${esc(k)}</span><b>${v}</b></div>`).join(""):'<div class="v30139-empty">Aktuell kein Bedarf.</div>';
+    el.innerHTML=rows.length?rows.map(([k,v])=>`<div class="v30140-list-row"><span title="${esc(k)}">${esc(k)}</span><b>${v}</b></div>`).join(""):'<div class="v30140-empty">Aktuell kein Bedarf.</div>';
   }
   async function updateStatus(id,o,newStatus){
     if(!window.firebase||!firebase.firestore) return;
@@ -1565,10 +1604,13 @@
     const orderNo=o.orderNumber||o.orderNo||o.id;
     const customer=o.name||o.customerName||"–";
     const club=o.customerClass||o.company||o.club||"–";
-    return `<article class="v30139-prod-card" data-id="${esc(o.id)}">
-      <div class="v30139-prod-head"><div class="v30139-prod-main"><strong>${esc(orderNo)}</strong><span>${esc(customer)} · ${esc(club)}</span></div><span class="v30139-prod-badge">${esc(s)}</span></div>
-      <div class="v30139-prod-meta"><div>Artikel<b>${qty(o)}</b></div><div>Bestellart<b>${esc(delivery(o))}</b></div><div>Gesamt<b>${new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(num(o.totalPrice))}</b></div></div>
-      <div class="v30139-prod-actions">${p?`<button type="button" data-prod-prev="${esc(p)}">← ${esc(p)}</button>`:''}${n?`<button class="v30139-next" type="button" data-prod-next="${esc(n)}">→ ${esc(n)}</button>`:'<button class="v30139-next" type="button" disabled>Abgeschlossen</button>'}</div>
+    return `<article class="v30140-prod-row" data-id="${esc(o.id)}">
+      <div class="v30140-order"><strong>${esc(orderNo)}</strong><span>${esc(club)}</span></div>
+      <div class="v30140-customer" title="${esc(customer)}">${esc(customer)}</div>
+      <div class="v30140-small">${qty(o)}</div>
+      <div class="v30140-small">${esc(delivery(o))}</div>
+      <span class="v30140-badge">${esc(s)}</span>
+      <div class="v30140-actions">${p?`<button type="button" data-prod-prev="${esc(p)}" title="Zurück zu ${esc(p)}">←</button>`:''}${n?`<button class="v30140-next" type="button" data-prod-next="${esc(n)}" title="Weiter zu ${esc(n)}">Weiter ›</button>`:'<button class="v30140-next" type="button" disabled>Fertig</button>'}</div>
     </article>`;
   }
   let busy=false;
@@ -1586,8 +1628,8 @@
       if($("prodStatVariants")) $("prodStatVariants").textContent=textiles.length;
       if($("prodStatPrints")) $("prodStatPrints").textContent=prints.length;
       renderList($("productionTextiles"),textiles); renderList($("productionPrints"),prints);
-      if(ordersEl) ordersEl.innerHTML=active.length?active.map(orderCard).join(""):'<div class="v30139-empty">Keine offenen Produktionsaufträge.</div>';
-    }catch(err){ if(ordersEl)ordersEl.innerHTML=`<div class="v30139-prod-error">Produktion konnte nicht geladen werden: ${esc(err&&err.message||err)}</div>`; }
+      if(ordersEl) ordersEl.innerHTML=active.length?active.map(orderCard).join(""):'<div class="v30140-empty">Keine offenen Produktionsaufträge.</div>';
+    }catch(err){ if(ordersEl)ordersEl.innerHTML=`<div class="v30140-prod-error">Produktion konnte nicht geladen werden: ${esc(err&&err.message||err)}</div>`; }
     busy=false;
   }
   document.addEventListener("click",async e=>{
@@ -1603,7 +1645,7 @@
     }catch(err){alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));btn.disabled=false;}
   });
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const t=$("productionTab");if(t&&!t.hidden)loadProduction();},800);});
-  window.loadProductionV30139=loadProduction;
+  window.loadProductionV30140=loadProduction;
 })();
 </script>
 
