@@ -1261,12 +1261,48 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.43"></script>
+  <script src="/central-config.js?v=30.1.44"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=30.1.43"></script>
+  
+<script id="v30144-production-tab-early-fix">
+(function(){
+  function openProduction(){
+    var orders=document.getElementById("ordersTab");
+    var shops=document.getElementById("shopsTab");
+    var production=document.getElementById("productionTab");
+
+    if(orders) orders.hidden=true;
+    if(shops) shops.hidden=true;
+    if(production) production.hidden=false;
+
+    document.querySelectorAll(".tab-btn").forEach(function(btn){
+      btn.classList.toggle("active", btn.getAttribute("data-tab")==="production");
+    });
+
+    if(typeof window.loadProductionV30144==="function"){
+      setTimeout(window.loadProductionV30144, 20);
+    }else if(typeof window.loadProductionV30143==="function"){
+      setTimeout(window.loadProductionV30143, 20);
+    }
+  }
+
+  document.addEventListener("click", function(ev){
+    var btn=ev.target && ev.target.closest ? ev.target.closest('[data-tab="production"]') : null;
+    if(!btn) return;
+
+    ev.preventDefault();
+    ev.stopPropagation();
+    ev.stopImmediatePropagation();
+
+    openProduction();
+  }, true);
+})();
+</script>
+
+  <script src="/admin.js?v=30.1.44"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1293,7 +1329,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.40';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.44';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1709,7 +1745,7 @@
 </script>
 
 
-<script id="v30143-production-status-logic">
+<script id="v30144-production-status-logic">
 (function(){
   const STEPS=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
   const FINAL=["Abgeholt","Versandt"];
@@ -1834,14 +1870,6 @@
   }
 
   document.addEventListener("click",async e=>{
-    const tab=e.target.closest('[data-tab="production"]');
-    if(tab){
-      /* Das bestehende admin.js kennt den nachträglich ergänzten Production-Tab
-         nicht zuverlässig und fällt sonst beim ersten Klick auf Bestellungen zurück. */
-      showProductionTab();
-      setTimeout(loadProduction,40);
-      return;
-    }
     if(e.target.closest('#productionRefreshBtn')){loadProduction();return;}
     const btn=e.target.closest('[data-prod-next],[data-prod-prev]'); if(!btn)return;
     const card=btn.closest('[data-id]'); if(!card)return;
@@ -1853,7 +1881,7 @@
     }catch(err){alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));btn.disabled=false;}
   });
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const t=$("productionTab");if(t&&!t.hidden)loadProduction();},800);});
-  window.loadProductionV30143=loadProduction;
+  window.loadProductionV30144=loadProduction;
 })();
 </script>
 
