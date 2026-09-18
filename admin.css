@@ -3831,3 +3831,180 @@ body.v284-admin #ordersTab .v2971-item-amount{display:block!important;white-spac
     max-width:none;
   }
 }
+
+
+/* v30.1.48 – Produktionsbereich bereinigt */
+.production-integrated{
+  margin:8px 0 10px!important;
+  padding:0!important;
+  border-radius:11px!important;
+  overflow:hidden!important;
+}
+.production-integrated-summary{
+  min-height:34px!important;
+  padding:6px 10px!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  list-style:none!important;
+  cursor:pointer!important;
+  background:#fff!important;
+}
+.production-integrated-summary::-webkit-details-marker{display:none!important}
+.production-integrated-summary::after{
+  content:"⌄";
+  flex:0 0 auto;
+  color:#839098;
+  font-size:11px;
+  transition:transform .15s ease;
+}
+.production-integrated[open] .production-integrated-summary::after{transform:rotate(180deg)}
+.production-integrated-summary>strong{
+  font-size:11px!important;
+  line-height:1!important;
+  color:#273842!important;
+}
+.production-integrated-counts{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:5px!important;
+  margin-left:auto!important;
+  font-size:8.8px!important;
+  color:#73808a!important;
+  white-space:nowrap!important;
+}
+.production-integrated-counts b{
+  font-size:9.5px!important;
+  color:#263a46!important;
+}
+.production-integrated-counts i{
+  font-style:normal!important;
+  color:#b2bcc2!important;
+}
+.production-integrated-body{
+  display:block!important;
+  padding:0!important;
+  border-top:1px solid #e9eef0!important;
+  background:#fbfcfd!important;
+}
+.production-material-title{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  padding:6px 9px 4px!important;
+}
+.production-material-title strong{
+  font-size:8.5px!important;
+  color:#6e7c85!important;
+  text-transform:uppercase!important;
+  letter-spacing:.04em!important;
+}
+.production-material-title small{
+  font-size:8px!important;
+  color:#89959d!important;
+}
+.production-needs-inline-grid{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  border-top:1px solid #eef2f3!important;
+}
+.production-needs-inline-grid>section{
+  min-width:0!important;
+  padding:6px 9px!important;
+}
+.production-needs-inline-grid>section+section{
+  border-left:1px solid #eef2f3!important;
+}
+.production-needs-inline-grid>section>strong{
+  display:block!important;
+  margin:0 0 3px!important;
+  font-size:8px!important;
+  color:#7d8991!important;
+  text-transform:uppercase!important;
+}
+.production-mini-stats,.production-needs-inline{display:none!important}
+
+/* aufgeklappte Bestellung: nur EIN Status, kompakt */
+body.v284-admin #ordersTab .order-top{
+  align-items:flex-start!important;
+}
+body.v284-admin #ordersTab .order-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:5px!important;
+  flex-wrap:nowrap!important;
+}
+body.v284-admin #ordersTab .v30147-production-control{
+  display:flex!important;
+  align-items:center!important;
+  gap:5px!important;
+  margin:0!important;
+  min-width:0!important;
+}
+body.v284-admin #ordersTab .v30147-production-control>span{
+  display:inline!important;
+  margin:0!important;
+  font-size:8px!important;
+  line-height:1!important;
+  font-weight:800!important;
+  color:#76838b!important;
+  text-transform:uppercase!important;
+  letter-spacing:.03em!important;
+}
+body.v284-admin #ordersTab .v30147-production-select{
+  width:145px!important;
+  min-width:145px!important;
+  max-width:145px!important;
+  height:31px!important;
+  min-height:31px!important;
+  margin:0!important;
+  padding:4px 25px 4px 8px!important;
+  border-radius:8px!important;
+  font-size:9px!important;
+}
+body.v284-admin #ordersTab .order-actions .ghost-btn{
+  min-height:31px!important;
+  height:31px!important;
+  padding:5px 9px!important;
+  border-radius:8px!important;
+  font-size:8.5px!important;
+  white-space:nowrap!important;
+}
+body.v284-admin #ordersTab .status-select{display:none!important}
+
+/* Abholung/Versand kompakter direkt hinter Kunde */
+body.v284-admin #ordersTab .v30147-delivery-badge{
+  margin-left:1px!important;
+  padding:2px 5px!important;
+  font-size:7.5px!important;
+  line-height:1!important;
+}
+
+@media(max-width:760px){
+  .production-integrated-counts{
+    gap:3px!important;
+    font-size:8px!important;
+  }
+  .production-integrated-counts b{font-size:8.5px!important}
+  .production-integrated-counts i{display:none!important}
+  .production-needs-inline-grid{grid-template-columns:1fr!important}
+  .production-needs-inline-grid>section+section{
+    border-left:0!important;
+    border-top:1px solid #eef2f3!important;
+  }
+  body.v284-admin #ordersTab .order-actions{
+    width:100%!important;
+    flex-wrap:wrap!important;
+  }
+  body.v284-admin #ordersTab .v30147-production-control{
+    flex:1 1 100%!important;
+  }
+  body.v284-admin #ordersTab .v30147-production-select{
+    flex:1!important;
+    width:auto!important;
+    max-width:none!important;
+  }
+}

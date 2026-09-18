@@ -817,25 +817,28 @@
           <button id="refreshBtn" class="ghost-btn v2963-refresh" type="button">Aktualisieren</button>
         </div>
 
-        <details id="productionPanel" class="panel production-integrated" open>
+        <details id="productionPanel" class="panel production-integrated">
           <summary class="production-integrated-summary">
-            <span><strong>Produktion</strong><small>direkt aus den Bestellungen</small></span>
+            <strong>Produktion</strong>
             <span class="production-integrated-counts">
-              <b id="prodStatOrders">0</b> offen · <b id="prodStatItems">0</b> Artikel
+              <b id="prodStatOrders">0</b> offen
+              <i>·</i>
+              <b id="prodStatItems">0</b> Artikel
+              <i>·</i>
+              <b id="prodStatVariants">0</b> Textilien
+              <i>·</i>
+              <b id="prodStatPrints">0</b> Drucke
             </span>
           </summary>
           <div class="production-integrated-body">
-            <div class="production-mini-stats">
-              <span><b id="prodStatVariants">0</b> Textilien</span>
-              <span><b id="prodStatPrints">0</b> Drucke</span>
+            <div class="production-material-title">
+              <strong>Materialbedarf</strong>
+              <small id="prodNeedsSummary">0 Artikel · 0 Drucke</small>
             </div>
-            <details class="production-needs-inline" id="productionNeeds">
-              <summary>Materialbedarf <small id="prodNeedsSummary">0 Artikel · 0 Drucke</small></summary>
-              <div class="production-needs-inline-grid">
-                <section><strong>Textilien gesamt</strong><div id="productionTextiles" class="production-list"></div></section>
-                <section><strong>Drucke gesamt</strong><div id="productionPrints" class="production-list"></div></section>
-              </div>
-            </details>
+            <div class="production-needs-inline-grid">
+              <section><strong>Textilien gesamt</strong><div id="productionTextiles" class="production-list"></div></section>
+              <section><strong>Drucke gesamt</strong><div id="productionPrints" class="production-list"></div></section>
+            </div>
           </div>
         </details>
 
@@ -1079,14 +1082,14 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.47"></script>
+  <script src="/central-config.js?v=30.1.48"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
   
 
-  <script src="/admin.js?v=30.1.47"></script>
+  <script src="/admin.js?v=30.1.48"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1113,7 +1116,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.46';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.48';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

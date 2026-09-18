@@ -276,26 +276,10 @@ function renderOrder(id,order){
   const date=document.createElement("div");date.className="order-date";date.textContent=dateText(order.createdAt);
   title.append(number,customerTag,date);
 
-  const status=document.createElement("select");status.className="status-select";status.setAttribute("aria-label",`Status ${id}`);
-  STATUSES.forEach(value=>{const option=document.createElement("option");option.value=value;option.textContent=value;option.selected=(order.status||"Neu")===value;status.appendChild(option)});
-  status.addEventListener("click",e=>e.stopPropagation());
-  status.addEventListener("change",async()=>{
-    const previousStatus = order.status || "Neu";
-    status.disabled=true;
-    try{
-      await db.collection("orders").doc(id).update({status:status.value,statusUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()});
-      order.status = status.value;
-      if(statusFilter.value !== "Alle") applyFilters();
-    }catch(err){
-      status.value = previousStatus;
-      alert("Status konnte nicht gespeichert werden.");
-      console.error(err);
-    }finally{status.disabled=false}
-  });
   const actions=document.createElement("div");actions.className="order-actions";
 
   const productionWrap=document.createElement("label");productionWrap.className="v30147-production-control";
-  const productionLabel=document.createElement("span");productionLabel.textContent="Produktion";
+  const productionLabel=document.createElement("span");productionLabel.textContent="Status";
   const productionSelect=document.createElement("select");productionSelect.className="v30147-production-select";
   productionSelect.setAttribute("aria-label",`Produktionsstatus ${id}`);
   productionOptions(order).forEach(value=>{
@@ -320,8 +304,8 @@ function renderOrder(id,order){
   productionWrap.append(productionLabel,productionSelect);
 
   const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",e=>{e.stopPropagation();printOrderSlip(order)});
-  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",e=>{e.stopPropagation();printProductionSlip(order)});
-  actions.append(status,productionWrap,printBtn,productionBtn);
+  const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktion";productionBtn.addEventListener("click",e=>{e.stopPropagation();printProductionSlip(order)});
+  actions.append(productionWrap,printBtn,productionBtn);
   top.append(title,actions);body.appendChild(top);
 
   const customer=document.createElement("div");customer.className="customer-grid";
