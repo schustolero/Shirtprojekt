@@ -260,8 +260,7 @@ function renderOrder(id,order){
   const summaryDate=document.createElement("span");summaryDate.className="v2967-order-date";summaryDate.textContent=dateOnlyText(order.createdAt);
   const shop=document.createElement("strong");shop.className="v2967-order-shop";shop.textContent=text(order.customerName||order.customerId,"Unbekannter Shop");
   const buyer=document.createElement("strong");buyer.className="v2967-order-buyer";buyer.textContent=text(order.name,"Unbekannter Besteller");
-  const deliveryBadge=document.createElement("span");deliveryBadge.className="v30147-delivery-badge";deliveryBadge.textContent=deliveryLabel(order);
-  headline.append(summaryDate,shop,buyer,deliveryBadge);
+  headline.append(summaryDate,shop,buyer);
   main.append(headline);
 
   const stageWrap=document.createElement("div");
