@@ -715,6 +715,25 @@
   .v2953-title-toggle span{white-space:normal!important;}
 }
 </style>
+
+<style id="v30139-production-status-ui">
+  .v30139-prod-card{border:1px solid #dfe6eb;border-radius:14px;background:#fff;padding:12px 14px;margin:10px 0;box-shadow:0 5px 16px rgba(22,37,49,.045)}
+  .v30139-prod-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+  .v30139-prod-main{min-width:0}.v30139-prod-main strong{font-size:13px;color:#162633}.v30139-prod-main span{display:block;margin-top:3px;font-size:11px;color:#6b7680}
+  .v30139-prod-badge{white-space:nowrap;border-radius:999px;padding:5px 9px;font-size:10.5px;font-weight:800;background:#eef5f4;color:#24685f;border:1px solid #cee2df}
+  .v30139-prod-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px;margin-top:10px}
+  .v30139-prod-meta div{background:#f7f9fa;border:1px solid #e8edf0;border-radius:9px;padding:7px 8px;font-size:10.5px;color:#5d6872}
+  .v30139-prod-meta b{display:block;color:#1b2b37;font-size:11.5px;margin-top:2px;overflow-wrap:anywhere}
+  .v30139-prod-actions{display:flex;gap:7px;align-items:center;justify-content:flex-end;margin-top:10px;padding-top:9px;border-top:1px solid #edf1f3}
+  .v30139-prod-actions button{border:1px solid #cfd9de;border-radius:9px;background:#fff;color:#334550;font-weight:750;font-size:10.5px;padding:7px 9px;cursor:pointer}
+  .v30139-prod-actions .v30139-next{background:linear-gradient(180deg,#e8f8f5,#cbeae4);border-color:#8ecdc2;color:#194d45;min-width:160px}
+  .v30139-prod-actions button:disabled{opacity:.45;cursor:default}
+  .v30139-list-row{display:flex;justify-content:space-between;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid #edf1f3;font-size:11px}.v30139-list-row:last-child{border-bottom:0}.v30139-list-row b{color:#142430}.v30139-list-row span{color:#68747e}
+  .v30139-empty{padding:14px 4px;color:#77828b;font-size:11px}
+  .v30139-prod-error{padding:10px;border-radius:10px;background:#fff5f5;color:#a53939;border:1px solid #f0cece;font-size:11px}
+  @media(max-width:760px){.v30139-prod-meta{grid-template-columns:1fr 1fr}.v30139-prod-head{gap:7px}.v30139-prod-actions{justify-content:stretch}.v30139-prod-actions .v30139-next{flex:1;min-width:0}.v30139-prod-card{padding:11px}}
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -751,7 +770,7 @@
           <div class="orders-toolbar-title"><h2>Bestellübersicht</h2><p id="lastUpdate">Noch nicht geladen</p></div>
           <label class="customer-filter-field v2965-customer"><span>Kunde</span><select id="buyerFilter"><option value="Alle">Alle Kunden</option></select></label>
           <label class="search-field v2963-search"><span>Suche</span><input id="searchInput" type="search" placeholder="Bestellnummer, Name …" autocomplete="off"></label>
-          <label class="status-filter-field v2963-status"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option></select></label>
+          <label class="status-filter-field v2963-status"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option><option value="Versandt">Versandt</option></select></label>
           <button id="refreshBtn" class="ghost-btn v2963-refresh" type="button">Aktualisieren</button>
         </div>
         <div id="ordersList" class="orders-list"></div>
@@ -781,7 +800,7 @@
             </section>
           </div>
           <section class="panel production-block production-orders-block">
-            <div class="production-block-head"><div><h3>Offene Aufträge</h3><p>Nur Neu und In Bearbeitung.</p></div></div>
+            <div class="production-block-head"><div><h3>Produktionsaufträge</h3><p>Status je Auftrag – vom Textil bis zur Übergabe.</p></div></div>
             <div id="productionOrders" class="production-order-list"></div>
           </section>
         </div>
@@ -1023,12 +1042,12 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.25"></script>
+  <script src="/central-config.js?v=30.1.39"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
-  <script src="/admin.js?v=30.1.25"></script>
+  <script src="/admin.js?v=30.1.39"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1055,7 +1074,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.25';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.39';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1467,6 +1486,124 @@
   }
   document.addEventListener('DOMContentLoaded',function(){bind();setTimeout(apply,150);setTimeout(apply,900)});
   setInterval(apply,1200);
+})();
+</script>
+
+
+<script id="v30139-production-status-logic">
+(function(){
+  const STEPS=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
+  const FINAL=["Abgeholt","Versandt"];
+  const $=id=>document.getElementById(id);
+  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
+  const num=v=>Number(v)||0;
+  const qty=o=>(Array.isArray(o.items)?o.items:[]).reduce((s,i)=>s+Math.max(1,num(i.quantity)||1),0);
+  const delivery=o=>String(o.deliveryType||o.orderType||o.delivery||"Abholung");
+  function prodStatus(o){
+    const p=String(o.productionStatus||"").trim();
+    if(STEPS.includes(p)||FINAL.includes(p)) return p;
+    const s=String(o.status||"").trim();
+    if(s==="Fertig") return "Fertig";
+    if(s==="Abgeholt") return "Abgeholt";
+    if(s==="Versandt") return "Versandt";
+    return "Offen";
+  }
+  function finalFor(o){ return /versand/i.test(delivery(o))?"Versandt":"Abgeholt"; }
+  function nextFor(o){
+    const s=prodStatus(o);
+    if(FINAL.includes(s)) return null;
+    if(s==="Fertig") return finalFor(o);
+    const i=STEPS.indexOf(s); return STEPS[Math.min(i+1,STEPS.length-1)]||"Textil bestellt";
+  }
+  function prevFor(o){
+    const s=prodStatus(o);
+    if(FINAL.includes(s)) return "Fertig";
+    const i=STEPS.indexOf(s); return i>0?STEPS[i-1]:null;
+  }
+  function sortOrders(arr){
+    return arr.sort((a,b)=>{
+      const av=a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():Date.parse(a.createdAt||a.date||0)||0;
+      const bv=b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():Date.parse(b.createdAt||b.date||0)||0;
+      return av-bv;
+    });
+  }
+  function aggregateTextiles(orders){
+    const m=new Map();
+    orders.forEach(o=>(Array.isArray(o.items)?o.items:[]).forEach(i=>{
+      const product=i.productName||(i.productId==="polo"?"Polo-Shirt":i.productId==="hoodie"?"Hoodie":"T-Shirt");
+      const key=[product,i.shirtColor||i.color||"–",i.size||"–"].join(" · ");
+      m.set(key,(m.get(key)||0)+Math.max(1,num(i.quantity)||1));
+    }));
+    return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"de"));
+  }
+  function aggregatePrints(orders){
+    const m=new Map();
+    orders.forEach(o=>(Array.isArray(o.items)?o.items:[]).forEach(i=>{
+      const q=Math.max(1,num(i.quantity)||1);
+      const motif=i.motifName||i.motif||i.designName||"Motiv";
+      const color=i.motifColorName||i.motifColor||i.printColor||"–";
+      const key=[motif,color].join(" · "); m.set(key,(m.get(key)||0)+q);
+    }));
+    return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"de"));
+  }
+  function renderList(el, rows){
+    if(!el)return;
+    el.innerHTML=rows.length?rows.map(([k,v])=>`<div class="v30139-list-row"><span>${esc(k)}</span><b>${v}</b></div>`).join(""):'<div class="v30139-empty">Aktuell kein Bedarf.</div>';
+  }
+  async function updateStatus(id,o,newStatus){
+    if(!window.firebase||!firebase.firestore) return;
+    const patch={productionStatus:newStatus,productionUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()};
+    if(newStatus==="Fertig") patch.status="Fertig";
+    if(newStatus==="Abgeholt") patch.status="Abgeholt";
+    if(newStatus==="Versandt") patch.status="Versandt";
+    if(["Textil bestellt","Transfer bestellt","Bereit zum Pressen"].includes(newStatus) && (!o.status||o.status==="Neu")) patch.status="In Bearbeitung";
+    await firebase.firestore().collection("orders").doc(id).update(patch);
+    await loadProduction();
+  }
+  function orderCard(o){
+    const s=prodStatus(o), n=nextFor(o), p=prevFor(o);
+    const orderNo=o.orderNumber||o.orderNo||o.id;
+    const customer=o.name||o.customerName||"–";
+    const club=o.customerClass||o.company||o.club||"–";
+    return `<article class="v30139-prod-card" data-id="${esc(o.id)}">
+      <div class="v30139-prod-head"><div class="v30139-prod-main"><strong>${esc(orderNo)}</strong><span>${esc(customer)} · ${esc(club)}</span></div><span class="v30139-prod-badge">${esc(s)}</span></div>
+      <div class="v30139-prod-meta"><div>Artikel<b>${qty(o)}</b></div><div>Bestellart<b>${esc(delivery(o))}</b></div><div>Gesamt<b>${new Intl.NumberFormat('de-DE',{style:'currency',currency:'EUR'}).format(num(o.totalPrice))}</b></div></div>
+      <div class="v30139-prod-actions">${p?`<button type="button" data-prod-prev="${esc(p)}">← ${esc(p)}</button>`:''}${n?`<button class="v30139-next" type="button" data-prod-next="${esc(n)}">→ ${esc(n)}</button>`:'<button class="v30139-next" type="button" disabled>Abgeschlossen</button>'}</div>
+    </article>`;
+  }
+  let busy=false;
+  async function loadProduction(){
+    if(busy)return; busy=true;
+    const ordersEl=$("productionOrders");
+    try{
+      if(!window.firebase||!firebase.firestore){throw new Error("Firestore ist noch nicht geladen.");}
+      const snap=await firebase.firestore().collection("orders").get();
+      const all=[]; snap.forEach(doc=>all.push({id:doc.id,...doc.data()}));
+      const active=sortOrders(all.filter(o=>!FINAL.includes(prodStatus(o))));
+      if($("prodStatOrders")) $("prodStatOrders").textContent=active.length;
+      if($("prodStatItems")) $("prodStatItems").textContent=active.reduce((s,o)=>s+qty(o),0);
+      const textiles=aggregateTextiles(active), prints=aggregatePrints(active);
+      if($("prodStatVariants")) $("prodStatVariants").textContent=textiles.length;
+      if($("prodStatPrints")) $("prodStatPrints").textContent=prints.length;
+      renderList($("productionTextiles"),textiles); renderList($("productionPrints"),prints);
+      if(ordersEl) ordersEl.innerHTML=active.length?active.map(orderCard).join(""):'<div class="v30139-empty">Keine offenen Produktionsaufträge.</div>';
+    }catch(err){ if(ordersEl)ordersEl.innerHTML=`<div class="v30139-prod-error">Produktion konnte nicht geladen werden: ${esc(err&&err.message||err)}</div>`; }
+    busy=false;
+  }
+  document.addEventListener("click",async e=>{
+    const tab=e.target.closest('[data-tab="production"]'); if(tab){setTimeout(loadProduction,120);return;}
+    if(e.target.closest('#productionRefreshBtn')){loadProduction();return;}
+    const btn=e.target.closest('[data-prod-next],[data-prod-prev]'); if(!btn)return;
+    const card=btn.closest('[data-id]'); if(!card)return;
+    const target=btn.getAttribute('data-prod-next')||btn.getAttribute('data-prod-prev');
+    btn.disabled=true;
+    try{
+      const doc=await firebase.firestore().collection('orders').doc(card.dataset.id).get();
+      if(doc.exists) await updateStatus(doc.id,{id:doc.id,...doc.data()},target);
+    }catch(err){alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));btn.disabled=false;}
+  });
+  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const t=$("productionTab");if(t&&!t.hidden)loadProduction();},800);});
+  window.loadProductionV30139=loadProduction;
 })();
 </script>
 
