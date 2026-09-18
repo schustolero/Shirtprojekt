@@ -39,7 +39,7 @@ async function loadOrders(){
     refreshCustomerFilter();
     applyFilters();
     lastUpdate.textContent = `Aktualisiert: ${new Date().toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}`;
-    if(productionTab && !productionTab.hidden) renderProductionDashboard();
+    renderProductionDashboard();
   }catch(err){
     console.error(err);
     ordersMessage.textContent = "Bestellungen konnten nicht geladen werden.";
@@ -206,6 +206,43 @@ function printProductionSlip(order){
   w.document.close();
 }
 
+
+const PRODUCTION_STEPS = ["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
+function deliveryLabel(order){
+  return text(order.deliveryType || order.orderType || "Abholung","Abholung");
+}
+function productionFinalStatus(order){
+  return /versand/i.test(deliveryLabel(order)) ? "Versandt" : "Abgeholt";
+}
+function productionStatus(order){
+  const raw = String(order.productionStatus || "").trim();
+  if(raw) return raw;
+  const s = String(order.status || "Neu");
+  if(s==="Fertig") return "Fertig";
+  if(s==="Abgeholt") return "Abgeholt";
+  if(s==="Versandt") return "Versandt";
+  return "Offen";
+}
+function productionOptions(order){
+  return [...PRODUCTION_STEPS, productionFinalStatus(order)];
+}
+async function saveProductionStatus(id, order, value){
+  const patch={
+    productionStatus:value,
+    productionUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  };
+  if(value==="Fertig") patch.status="Fertig";
+  else if(value==="Abgeholt") patch.status="Abgeholt";
+  else if(value==="Versandt") patch.status="Versandt";
+  else if(["Textil bestellt","Transfer bestellt","Bereit zum Pressen"].includes(value) && (!order.status || order.status==="Neu")) {
+    patch.status="In Bearbeitung";
+  }
+  await db.collection("orders").doc(id).update(patch);
+  order.productionStatus=value;
+  if(patch.status) order.status=patch.status;
+  renderProductionDashboard();
+}
+
 function renderOrder(id,order){
   const card=document.createElement("article");card.className="order-card v2966-order-card collapsed";
 
@@ -219,7 +256,8 @@ function renderOrder(id,order){
   const summaryDate=document.createElement("span");summaryDate.className="v2967-order-date";summaryDate.textContent=dateOnlyText(order.createdAt);
   const shop=document.createElement("strong");shop.className="v2967-order-shop";shop.textContent=text(order.customerName||order.customerId,"Unbekannter Shop");
   const buyer=document.createElement("strong");buyer.className="v2967-order-buyer";buyer.textContent=text(order.name,"Unbekannter Besteller");
-  headline.append(summaryDate,shop,buyer);
+  const deliveryBadge=document.createElement("span");deliveryBadge.className="v30147-delivery-badge";deliveryBadge.textContent=deliveryLabel(order);
+  headline.append(summaryDate,shop,buyer,deliveryBadge);
   main.append(headline);
 
   const quick=document.createElement("div");quick.className="v2966-order-quick";
@@ -255,9 +293,35 @@ function renderOrder(id,order){
     }finally{status.disabled=false}
   });
   const actions=document.createElement("div");actions.className="order-actions";
+
+  const productionWrap=document.createElement("label");productionWrap.className="v30147-production-control";
+  const productionLabel=document.createElement("span");productionLabel.textContent="Produktion";
+  const productionSelect=document.createElement("select");productionSelect.className="v30147-production-select";
+  productionSelect.setAttribute("aria-label",`Produktionsstatus ${id}`);
+  productionOptions(order).forEach(value=>{
+    const option=document.createElement("option");
+    option.value=value; option.textContent=value;
+    option.selected=productionStatus(order)===value;
+    productionSelect.appendChild(option);
+  });
+  productionSelect.addEventListener("click",e=>e.stopPropagation());
+  productionSelect.addEventListener("change",async()=>{
+    const previous=productionStatus(order);
+    productionSelect.disabled=true;
+    try{
+      await saveProductionStatus(id,order,productionSelect.value);
+      if(statusFilter.value!=="Alle") applyFilters();
+    }catch(err){
+      productionSelect.value=previous;
+      alert("Produktionsstatus konnte nicht gespeichert werden.");
+      console.error(err);
+    }finally{productionSelect.disabled=false}
+  });
+  productionWrap.append(productionLabel,productionSelect);
+
   const printBtn=document.createElement("button");printBtn.type="button";printBtn.className="ghost-btn print-order-btn";printBtn.textContent="Bestellschein";printBtn.addEventListener("click",e=>{e.stopPropagation();printOrderSlip(order)});
   const productionBtn=document.createElement("button");productionBtn.type="button";productionBtn.className="ghost-btn production-order-btn";productionBtn.textContent="Produktionsschein";productionBtn.addEventListener("click",e=>{e.stopPropagation();printProductionSlip(order)});
-  actions.append(status,printBtn,productionBtn);
+  actions.append(status,productionWrap,printBtn,productionBtn);
   top.append(title,actions);body.appendChild(top);
 
   const customer=document.createElement("div");customer.className="customer-grid";
@@ -289,66 +353,55 @@ function productLabel(item){
   return text(item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt"),"T-Shirt");
 }
 function renderProductionDashboard(){
-  const root=document.getElementById("productionTab");
+  const root=document.getElementById("productionPanel");
   if(!root) return;
-  const openEntries=loadedOrders.filter(({order})=>!["Fertig","Abgeholt"].includes(order.status||"Neu"));
+
+  const openEntries=loadedOrders.filter(({order})=>!["Abgeholt","Versandt"].includes(productionStatus(order)));
   const textileMap=new Map();
   const printMap=new Map();
   let totalItems=0;
+
   openEntries.forEach(({order})=>{
     (Array.isArray(order.items)?order.items:[]).forEach(item=>{
       const qty=Number(item.quantity)||1;
       totalItems+=qty;
+
       const product=productLabel(item);
-      const article=String(item.articleNo||"").trim();
-      const color=text(item.shirtColor,"–");
-      const size=text(item.size,"–");
-      const tkey=[product,article,color,size].join("|");
-      const t=textileMap.get(tkey)||{product,article,color,size,qty:0}; t.qty+=qty; textileMap.set(tkey,t);
-      const motif=text(item.motif,"Ohne Motiv");
-      const motifColor=text(item.motifColor,"–");
-      const pkey=[motif,motifColor].join("|");
-      const pr=printMap.get(pkey)||{motif,motifColor,qty:0}; pr.qty+=qty; printMap.set(pkey,pr);
+      textileMap.set(product,(textileMap.get(product)||0)+qty);
+
+      const motif=text(item.motifName||item.motif||item.designName,"Motiv");
+      printMap.set(motif,(printMap.get(motif)||0)+qty);
     });
   });
+
   const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=String(val)};
-  set("prodStatOrders",openEntries.length); set("prodStatItems",totalItems); set("prodStatVariants",textileMap.size); set("prodStatPrints",printMap.size);
-  const textileHost=document.getElementById("productionTextiles");
-  if(textileHost){
-    textileHost.replaceChildren();
-    const rows=[...textileMap.values()].sort((a,b)=>a.product.localeCompare(b.product,"de")||a.color.localeCompare(b.color,"de")||a.size.localeCompare(b.size,"de"));
-    if(!rows.length){ textileHost.innerHTML='<p class="production-empty">Aktuell kein Textilienbedarf.</p>'; }
-    rows.forEach(row=>{
-      const el=document.createElement("div"); el.className="production-row";
-      el.innerHTML=`<div><strong>${htmlEscape(row.product)}${row.article?` <small>${htmlEscape(row.article)}</small>`:""}</strong><span>${htmlEscape(row.color)} · Größe ${htmlEscape(row.size)}</span></div><b>${row.qty}×</b>`;
-      textileHost.appendChild(el);
+  const textileRows=[...textileMap.entries()].sort((a,b)=>a[0].localeCompare(b[0],"de"));
+  const printRows=[...printMap.entries()].sort((a,b)=>a[0].localeCompare(b[0],"de"));
+
+  set("prodStatOrders",openEntries.length);
+  set("prodStatItems",totalItems);
+  set("prodStatVariants",textileRows.length);
+  set("prodStatPrints",printRows.length);
+
+  const renderSimple=(host,rows)=>{
+    if(!host)return;
+    host.replaceChildren();
+    if(!rows.length){host.innerHTML='<p class="production-empty">Aktuell kein Bedarf.</p>';return;}
+    rows.forEach(([name,qty])=>{
+      const el=document.createElement("div");
+      el.className="production-row v30147-production-row";
+      el.innerHTML=`<span>${htmlEscape(name)}</span><b>${qty}×</b>`;
+      host.appendChild(el);
     });
-  }
-  const printHost=document.getElementById("productionPrints");
-  if(printHost){
-    printHost.replaceChildren();
-    const rows=[...printMap.values()].sort((a,b)=>b.qty-a.qty||a.motif.localeCompare(b.motif,"de"));
-    if(!rows.length){ printHost.innerHTML='<p class="production-empty">Aktuell kein Druckbedarf.</p>'; }
-    rows.forEach(row=>{
-      const el=document.createElement("div"); el.className="production-row";
-      el.innerHTML=`<div><strong>${htmlEscape(row.motif)}</strong><span>Druckfarbe: ${htmlEscape(row.motifColor)}</span></div><b>${row.qty}×</b>`;
-      printHost.appendChild(el);
-    });
-  }
-  const orderHost=document.getElementById("productionOrders");
-  if(orderHost){
-    orderHost.replaceChildren();
-    if(!openEntries.length){ orderHost.innerHTML='<p class="production-empty">Keine offenen Aufträge.</p>'; }
-    openEntries.forEach(({id,order})=>{
-      const row=document.createElement("button"); row.type="button"; row.className="production-order-row";
-      row.innerHTML=`<span class="prod-date">${htmlEscape(dateOnlyText(order.createdAt))}</span><strong>${htmlEscape(text(order.customerName||order.customerId,"Shop"))}</strong><span>${htmlEscape(text(order.name,"Besteller"))}</span><b>${htmlEscape(text(order.totalQuantity,"0"))} Artikel</b><em>${htmlEscape(order.status||"Neu")}</em>`;
-      row.addEventListener("click",()=>{switchAdminTab("orders"); const card=document.querySelector(`.order-card[data-order-id="${CSS.escape(id)}"]`); if(card){card.scrollIntoView({behavior:"smooth",block:"center"});}});
-      orderHost.appendChild(row);
-    });
-  }
+  };
+
+  renderSimple(document.getElementById("productionTextiles"),textileRows);
+  renderSimple(document.getElementById("productionPrints"),printRows);
+
+  const textileTotal=textileRows.reduce((s,r)=>s+Number(r[1]||0),0);
+  const printTotal=printRows.reduce((s,r)=>s+Number(r[1]||0),0);
+  set("prodNeedsSummary",`${textileTotal} Artikel · ${printTotal} Drucke`);
 }
-const productionRefreshBtn=document.getElementById("productionRefreshBtn");
-productionRefreshBtn?.addEventListener("click",async()=>{await loadOrders();renderProductionDashboard();});
 
 loginForm.addEventListener("submit",async e=>{
   e.preventDefault();loginMessage.textContent="";
@@ -377,7 +430,7 @@ const seedShops = (CENTRAL && CENTRAL.seedShops) || {};
 const tabButtons = [...document.querySelectorAll(".tab-btn")];
 const ordersTab = document.getElementById("ordersTab");
 const shopsTab = document.getElementById("shopsTab");
-const productionTab = document.getElementById("productionTab");
+const productionPanel = document.getElementById("productionPanel");
 const shopList = document.getElementById("shopList");
 const shopForm = document.getElementById("shopForm");
 const shopEditorTitle = document.getElementById("shopEditorTitle");
@@ -666,14 +719,11 @@ function flashSavedButton(btn, normalText){
 }
 
 function switchAdminTab(name){
-  tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===name));
-  ordersTab.hidden=name!=="orders";
-  shopsTab.hidden=name!=="shops";
-  if(productionTab) productionTab.hidden=name!=="production";
-  if(name==="production"){
-    if(typeof window.loadProductionV30145==="function") window.loadProductionV30145();
-    else renderProductionDashboard();
-  }
+  const target = name==="shops" ? "shops" : "orders";
+  tabButtons.forEach(b=>b.classList.toggle("active",b.dataset.tab===target));
+  ordersTab.hidden=target!=="orders";
+  shopsTab.hidden=target!=="shops";
+  if(target==="orders") renderProductionDashboard();
 }
 tabButtons.forEach(btn=>btn.addEventListener("click",()=>switchAdminTab(btn.dataset.tab)));
 
@@ -992,7 +1042,6 @@ saveShopBtn.addEventListener("click",async()=>{
     <nav class="v284-nav" aria-label="Admin Navigation">
       <button type="button" data-main="shops" class="active"><span>⚙</span>Shop Einstellungen</button>
       <button type="button" data-main="orders"><span>▣</span>Bestellungen</button>
-      <button type="button" data-main="production"><span>▤</span>Produktion</button>
     </nav>
     <div class="v284-side-bottom">
       <button type="button" id="v284NewShop">＋ Neuer Shop</button>
@@ -1151,8 +1200,7 @@ saveShopBtn.addEventListener("click",async()=>{
         sidebar.classList.add("mobile-menu-open");
         if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","true"); mobileMenuBtn.textContent="×"; }
       } else {
-        if(productionTab && !productionTab.hidden) setNavActive("production");
-        else setNavActive(ordersTab.hidden?"shops":"orders");
+        setNavActive(ordersTab.hidden?"shops":"orders");
       }
       window.refreshV284ShopSelect?.();
     }

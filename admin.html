@@ -773,271 +773,10 @@
 </style>
 
 
-<style id="v30141-production-ultracompact">
-  /* Materialbedarf: standardmäßig nur eine schmale Zeile */
-  #productionTab .production-grid{display:none!important}
-  #productionTab .production-needs{
-    margin:0!important;padding:0!important;border-radius:10px!important;overflow:hidden!important;
-  }
-  #productionTab .production-needs summary{
-    list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
-    gap:10px;padding:7px 10px!important;min-height:30px;background:#f8fafb;
-    font-size:11px;font-weight:800;color:#243744;
-  }
-  #productionTab .production-needs summary::-webkit-details-marker{display:none}
-  #productionTab .production-needs summary:after{content:"›";font-size:15px;color:#7b8790;line-height:1}
-  #productionTab .production-needs[open] summary:after{transform:rotate(90deg)}
-  #productionTab .production-needs summary small{
-    margin-left:auto;font-size:9.5px;font-weight:600;color:#71808a;white-space:nowrap;
-  }
-  #productionTab .production-needs summary small b{font-size:10px;color:#263b48}
-  #productionTab .production-needs-body{
-    display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #e8edef;
-  }
-  #productionTab .production-needs-body>section{min-width:0;padding:7px 10px}
-  #productionTab .production-needs-body>section+section{border-left:1px solid #e8edef}
-  #productionTab .production-needs-body>section>strong{
-    display:block;margin-bottom:2px;font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:#7a8790;
-  }
-  #productionTab .production-needs .production-list{padding:0!important;max-height:90px!important}
-  #productionTab .production-needs .v30140-list-row{padding:3px 0!important;font-size:9.5px!important}
-  #productionTab .production-needs .v30140-list-row b{font-size:9.5px!important}
-
-  /* Produktionsaufträge: echte Ein-Zeilen-Arbeitsliste */
-  #productionTab .production-orders-block{border-radius:10px!important}
-  #productionTab .production-orders-block .production-block-head{padding:7px 10px!important}
-  #productionTab .production-orders-block .production-block-head h3{font-size:11.5px!important}
-  .v30140-prod-table-head{
-    grid-template-columns:minmax(0,1fr) 38px 112px 52px!important;
-    gap:6px!important;padding:5px 8px!important;font-size:8px!important;
-  }
-  .v30140-prod-row{
-    grid-template-columns:minmax(0,1fr) 38px 112px 52px!important;
-    gap:6px!important;padding:5px 8px!important;min-height:32px!important;
-  }
-  .v30140-order strong{
-    display:block!important;font-size:10px!important;line-height:1.05!important;
-    white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
-  }
-  .v30140-order strong em{font-style:normal;font-weight:600;color:#53636d}
-  .v30140-order span{margin-top:1px!important;font-size:8.5px!important;line-height:1!important}
-  .v30140-small{text-align:center;font-size:10px!important;font-weight:800;color:#263b48!important}
-  .v30140-badge{
-    max-width:112px;overflow:hidden;text-overflow:ellipsis;
-    padding:3px 6px!important;font-size:8.5px!important;line-height:1!important;
-  }
-  .v30140-actions{gap:3px!important}
-  .v30140-actions button{
-    width:23px!important;height:23px!important;min-height:23px!important;
-    padding:0!important;border-radius:6px!important;font-size:13px!important;line-height:1!important;
-  }
-
-  @media(max-width:700px){
-    #productionTab .production-needs-body{grid-template-columns:1fr}
-    #productionTab .production-needs-body>section+section{border-left:0;border-top:1px solid #e8edef}
-    .v30140-prod-table-head{display:none!important}
-    .v30140-prod-row{
-      grid-template-columns:minmax(0,1fr) 30px 92px 50px!important;
-      gap:4px!important;padding:5px 7px!important;
-    }
-    .v30140-order span{display:none!important}
-    .v30140-badge{max-width:92px;font-size:8px!important;padding:3px 5px!important}
-    .v30140-actions button{width:22px!important;height:22px!important;min-height:22px!important}
-  }
-</style>
 
 
-<style id="v30142-production-clean">
-  /* Materialbedarf bewusst zweitrangig und standardmäßig kompakt */
-  #productionTab .production-needs summary{min-height:28px!important;padding:6px 9px!important}
-  #productionTab .production-needs summary>span{font-size:10.5px!important}
-  #productionTab #prodNeedsSummary{font-size:9.5px!important;color:#73808a!important}
-  #productionTab .production-needs-body{grid-template-columns:1fr 1fr!important}
-  #productionTab .production-needs .production-list{max-height:72px!important}
-  #productionTab .production-needs .v30140-list-row{padding:3px 0!important}
-  #productionTab .production-needs .v30140-list-row span{font-size:9.5px!important}
-  #productionTab .production-needs .v30140-list-row b{font-size:10px!important}
-
-  /* Produktionsaufträge: exakt ausgerichtete 5-Spalten-Tabelle */
-  #productionTab .v30140-prod-table-head,
-  #productionTab .v30140-prod-row{
-    display:grid!important;
-    grid-template-columns:76px minmax(220px,1fr) 52px 128px 58px!important;
-    align-items:center!important;
-    column-gap:10px!important;
-  }
-  #productionTab .v30140-prod-table-head{
-    padding:5px 9px!important;
-    background:#f7f9fa!important;
-    border-top:1px solid #e8edef!important;
-    border-bottom:1px solid #e8edef!important;
-    font-size:8.5px!important;
-    font-weight:800!important;
-    color:#7a8790!important;
-    text-transform:uppercase!important;
-    letter-spacing:.025em!important;
-  }
-  #productionTab .v30140-prod-row{
-    min-height:34px!important;
-    padding:5px 9px!important;
-    border-bottom:1px solid #edf1f3!important;
-  }
-  #productionTab .v30140-prod-row:hover{background:#fbfcfd!important}
-  #productionTab .v30142-date{
-    font-size:9.5px!important;
-    color:#75828b!important;
-    white-space:nowrap!important;
-  }
-  #productionTab .v30142-customer{min-width:0!important}
-  #productionTab .v30142-customer strong{
-    display:block!important;
-    font-size:10.5px!important;
-    line-height:1.1!important;
-    white-space:nowrap!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    color:#1f2f39!important;
-  }
-  #productionTab .v30142-customer span{
-    display:block!important;
-    margin-top:2px!important;
-    font-size:8.5px!important;
-    line-height:1!important;
-    color:#82909a!important;
-    white-space:nowrap!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-  }
-  #productionTab .v30140-small{
-    text-align:center!important;
-    font-size:10px!important;
-    font-weight:800!important;
-  }
-  #productionTab .v30140-badge{
-    justify-self:start!important;
-    max-width:128px!important;
-    padding:4px 7px!important;
-    font-size:8.5px!important;
-    white-space:nowrap!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-  }
-  #productionTab .v30140-actions{
-    justify-self:end!important;
-    display:flex!important;
-    gap:3px!important;
-  }
-  #productionTab .v30140-actions button{
-    width:24px!important;height:24px!important;min-height:24px!important;
-    padding:0!important;border-radius:6px!important;font-size:13px!important;
-  }
-
-  @media(max-width:800px){
-    #productionTab .production-needs-body{grid-template-columns:1fr!important}
-    #productionTab .production-needs-body>section+section{border-left:0!important;border-top:1px solid #e8edef!important}
-    #productionTab .v30140-prod-table-head{display:none!important}
-    #productionTab .v30140-prod-row{
-      grid-template-columns:54px minmax(0,1fr) 34px 92px 52px!important;
-      column-gap:6px!important;
-      padding:5px 7px!important;
-    }
-    #productionTab .v30142-customer span{display:none!important}
-    #productionTab .v30140-badge{max-width:92px!important;font-size:8px!important;padding:3px 5px!important}
-  }
-</style>
 
 
-<style id="v30146-production-actions-clean">
-  #productionTab .v30140-prod-table-head,
-  #productionTab .v30140-prod-row{
-    grid-template-columns:76px minmax(240px,1fr) 48px 170px!important;
-    column-gap:10px!important;
-  }
-
-  #productionTab .v30142-customer strong{
-    margin-bottom:2px!important;
-  }
-
-  #productionTab .v30146-customerline{
-    display:flex!important;
-    align-items:center!important;
-    gap:6px!important;
-    min-width:0!important;
-    margin-top:0!important;
-    font-size:8.8px!important;
-    color:#7a8790!important;
-  }
-
-  #productionTab .v30146-customerline>span{
-    min-width:0!important;
-    overflow:hidden!important;
-    text-overflow:ellipsis!important;
-    white-space:nowrap!important;
-  }
-
-  #productionTab .v30146-delivery{
-    flex:0 0 auto!important;
-    display:inline-flex!important;
-    align-items:center!important;
-    padding:2px 6px!important;
-    border-radius:999px!important;
-    border:1px solid #d8e3e7!important;
-    background:#f5f8fa!important;
-    color:#53636d!important;
-    font-size:8px!important;
-    line-height:1!important;
-    font-weight:800!important;
-  }
-
-  #productionTab .v30146-status-wrap{
-    display:block!important;
-    min-width:0!important;
-  }
-
-  #productionTab .v30146-status-select{
-    width:100%!important;
-    height:27px!important;
-    min-height:27px!important;
-    padding:3px 24px 3px 8px!important;
-    border:1px solid #cfdde2!important;
-    border-radius:8px!important;
-    background:#f8fbfb!important;
-    color:#24564f!important;
-    font-size:9px!important;
-    font-weight:800!important;
-    outline:none!important;
-    cursor:pointer!important;
-  }
-
-  #productionTab .v30146-status-select:focus{
-    border-color:#8ecdc2!important;
-    box-shadow:0 0 0 2px rgba(142,205,194,.14)!important;
-  }
-
-  #productionTab .v30140-actions{display:none!important}
-
-  @media(max-width:800px){
-    #productionTab .v30140-prod-row{
-      grid-template-columns:52px minmax(0,1fr) 30px 118px!important;
-      column-gap:5px!important;
-    }
-    #productionTab .v30146-status-select{
-      height:25px!important;
-      min-height:25px!important;
-      font-size:8px!important;
-      padding-left:6px!important;
-    }
-    #productionTab .v30146-customerline{
-      display:flex!important;
-      font-size:8px!important;
-      gap:4px!important;
-    }
-    #productionTab .v30146-delivery{
-      font-size:7.5px!important;
-      padding:2px 5px!important;
-    }
-  }
-</style>
 
 </head>
 <body>
@@ -1062,7 +801,6 @@
       <nav class="admin-tabs panel" aria-label="Adminbereiche">
         <button type="button" class="tab-btn active" data-tab="orders">Bestellungen</button>
         <button type="button" class="tab-btn" data-tab="shops">Shops verwalten</button>
-        <button type="button" class="tab-btn" data-tab="production">Produktion</button>
       </nav>
 
       <section id="ordersTab" class="tab-panel">
@@ -1078,44 +816,31 @@
           <label class="status-filter-field v2963-status"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option><option value="Versandt">Versandt</option></select></label>
           <button id="refreshBtn" class="ghost-btn v2963-refresh" type="button">Aktualisieren</button>
         </div>
+
+        <details id="productionPanel" class="panel production-integrated" open>
+          <summary class="production-integrated-summary">
+            <span><strong>Produktion</strong><small>direkt aus den Bestellungen</small></span>
+            <span class="production-integrated-counts">
+              <b id="prodStatOrders">0</b> offen · <b id="prodStatItems">0</b> Artikel
+            </span>
+          </summary>
+          <div class="production-integrated-body">
+            <div class="production-mini-stats">
+              <span><b id="prodStatVariants">0</b> Textilien</span>
+              <span><b id="prodStatPrints">0</b> Drucke</span>
+            </div>
+            <details class="production-needs-inline" id="productionNeeds">
+              <summary>Materialbedarf <small id="prodNeedsSummary">0 Artikel · 0 Drucke</small></summary>
+              <div class="production-needs-inline-grid">
+                <section><strong>Textilien gesamt</strong><div id="productionTextiles" class="production-list"></div></section>
+                <section><strong>Drucke gesamt</strong><div id="productionPrints" class="production-list"></div></section>
+              </div>
+            </details>
+          </div>
+        </details>
+
         <div id="ordersList" class="orders-list"></div>
         <p id="ordersMessage" class="empty-message" hidden>Keine Bestellungen vorhanden.</p>
-      </section>
-
-      <section id="productionTab" class="tab-panel" hidden>
-        <div class="production-dashboard">
-          <div class="production-head panel">
-            <div><span class="eyebrow">PRODUKTION</span><h2>Produktion</h2><p>Offene Aufträge und Bedarf.</p></div>
-            <button id="productionRefreshBtn" class="ghost-btn" type="button">Aktualisieren</button>
-          </div>
-          <div class="production-stats">
-            <article class="production-stat panel"><span>Offene Aufträge</span><strong id="prodStatOrders">0</strong></article>
-            <article class="production-stat panel"><span>Artikel</span><strong id="prodStatItems">0</strong></article>
-            <article class="production-stat panel"><span>Textil-Varianten</span><strong id="prodStatVariants">0</strong></article>
-            <article class="production-stat panel"><span>Druck-Varianten</span><strong id="prodStatPrints">0</strong></article>
-          </div>
-          <details class="panel production-needs" id="productionNeeds">
-            <summary>
-              <span>Materialbedarf</span>
-              <small id="prodNeedsSummary">0 Artikel · 0 Drucke</small>
-            </summary>
-            <div class="production-needs-body">
-              <section>
-                <strong>Textilien gesamt</strong>
-                <div id="productionTextiles" class="production-list"></div>
-              </section>
-              <section>
-                <strong>Drucke gesamt</strong>
-                <div id="productionPrints" class="production-list"></div>
-              </section>
-            </div>
-          </details>
-          <section class="panel production-block production-orders-block">
-            <div class="production-block-head"><div><h3>Produktionsaufträge</h3><p>Status je Auftrag – vom Textil bis zur Übergabe.</p></div></div>
-            <div class="v30140-prod-table-head"><span>Datum</span><span>Kunde</span><span>Art.</span><span>Status</span></div>
-            <div id="productionOrders" class="production-order-list"></div>
-          </section>
-        </div>
       </section>
 
       <section id="shopsTab" class="tab-panel" hidden>
@@ -1354,14 +1079,14 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.46"></script>
+  <script src="/central-config.js?v=30.1.47"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
   
 
-  <script src="/admin.js?v=30.1.46"></script>
+  <script src="/admin.js?v=30.1.47"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1804,157 +1529,6 @@
 </script>
 
 
-<script id="v30146-production-status-logic">
-(function(){
-  const STEPS=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
-  const FINAL=["Abgeholt","Versandt"];
-  const $=id=>document.getElementById(id);
-  const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));
-  const num=v=>Number(v)||0;
-  const qty=o=>(Array.isArray(o.items)?o.items:[]).reduce((s,i)=>s+Math.max(1,num(i.quantity)||1),0);
-  const delivery=o=>String(o.deliveryType||o.orderType||o.delivery||"Abholung");
-  function prodStatus(o){
-    const p=String(o.productionStatus||"").trim();
-    if(STEPS.includes(p)||FINAL.includes(p)) return p;
-    const s=String(o.status||"").trim();
-    if(s==="Fertig") return "Fertig";
-    if(s==="Abgeholt") return "Abgeholt";
-    if(s==="Versandt") return "Versandt";
-    return "Offen";
-  }
-  function finalFor(o){ return /versand/i.test(delivery(o))?"Versandt":"Abgeholt"; }
-  function nextFor(o){
-    const s=prodStatus(o);
-    if(FINAL.includes(s)) return null;
-    if(s==="Fertig") return finalFor(o);
-    const i=STEPS.indexOf(s); return STEPS[Math.min(i+1,STEPS.length-1)]||"Textil bestellt";
-  }
-  function prevFor(o){
-    const s=prodStatus(o);
-    if(FINAL.includes(s)) return "Fertig";
-    const i=STEPS.indexOf(s); return i>0?STEPS[i-1]:null;
-  }
-  function sortOrders(arr){
-    return arr.sort((a,b)=>{
-      const av=a.createdAt&&a.createdAt.toMillis?a.createdAt.toMillis():Date.parse(a.createdAt||a.date||0)||0;
-      const bv=b.createdAt&&b.createdAt.toMillis?b.createdAt.toMillis():Date.parse(b.createdAt||b.date||0)||0;
-      return av-bv;
-    });
-  }
-  function orderDate(o){
-    let d=null;
-    if(o.createdAt&&typeof o.createdAt.toDate==="function") d=o.createdAt.toDate();
-    else if(o.createdAt) d=new Date(o.createdAt);
-    else if(o.date) d=new Date(o.date);
-    if(!d||isNaN(d.getTime())) return "–";
-    return d.toLocaleDateString("de-DE",{day:"2-digit",month:"2-digit",year:"2-digit"});
-  }
-  function aggregateTextiles(orders){
-    const m=new Map();
-    orders.forEach(o=>(Array.isArray(o.items)?o.items:[]).forEach(i=>{
-      const product=i.productName||(i.productId==="polo"?"Polo-Shirt":i.productId==="hoodie"?"Hoodie":"T-Shirt");
-      m.set(product,(m.get(product)||0)+Math.max(1,num(i.quantity)||1));
-    }));
-    const order={"T-Shirt":1,"Polo-Shirt":2,"Hoodie":3};
-    return [...m.entries()].sort((a,b)=>(order[a[0]]||99)-(order[b[0]]||99)||a[0].localeCompare(b[0],"de"));
-  }
-  function aggregatePrints(orders){
-    const m=new Map();
-    orders.forEach(o=>(Array.isArray(o.items)?o.items:[]).forEach(i=>{
-      const q=Math.max(1,num(i.quantity)||1);
-      const motif=i.motifName||i.motif||i.designName||"Motiv";
-      m.set(motif,(m.get(motif)||0)+q);
-    }));
-    return [...m.entries()].sort((a,b)=>a[0].localeCompare(b[0],"de"));
-  }
-  function renderList(el, rows){
-    if(!el)return;
-    el.innerHTML=rows.length?rows.map(([k,v])=>`<div class="v30140-list-row"><span title="${esc(k)}">${esc(k)}</span><b>${v}</b></div>`).join(""):'<div class="v30140-empty">Aktuell kein Bedarf.</div>';
-  }
-  async function updateStatus(id,o,newStatus){
-    if(!window.firebase||!firebase.firestore) return;
-    const patch={productionStatus:newStatus,productionUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()};
-    if(newStatus==="Fertig") patch.status="Fertig";
-    if(newStatus==="Abgeholt") patch.status="Abgeholt";
-    if(newStatus==="Versandt") patch.status="Versandt";
-    if(["Textil bestellt","Transfer bestellt","Bereit zum Pressen"].includes(newStatus) && (!o.status||o.status==="Neu")) patch.status="In Bearbeitung";
-    await firebase.firestore().collection("orders").doc(id).update(patch);
-    await loadProduction();
-  }
-  function orderCard(o){
-    const s=prodStatus(o);
-    const customer=o.name||o.customerName||"–";
-    const club=o.customerClass||o.company||o.club||"–";
-    const ship=delivery(o);
-    const finalStatus=finalFor(o);
-    const statusOptions=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig",finalStatus]
-      .map(v=>`<option value="${esc(v)}"${v===s?" selected":""}>${esc(v)}</option>`).join("");
-    return `<article class="v30140-prod-row" data-id="${esc(o.id)}">
-      <div class="v30142-date">${esc(orderDate(o))}</div>
-      <div class="v30142-customer">
-        <strong>${esc(club)}</strong>
-        <span class="v30146-customerline"><span>${esc(customer)}</span><b class="v30146-delivery">${esc(ship)}</b></span>
-      </div>
-      <div class="v30140-small">${qty(o)}</div>
-      <label class="v30146-status-wrap">
-        <span class="sr-only">Produktionsstatus</span>
-        <select class="v30146-status-select" data-prod-status aria-label="Produktionsstatus">${statusOptions}</select>
-      </label>
-    </article>`;
-  }
-  let busy=false;
-  async function loadProduction(){
-    if(busy)return; busy=true;
-    const ordersEl=$("productionOrders");
-    try{
-      if(!window.firebase||!firebase.firestore){throw new Error("Firestore ist noch nicht geladen.");}
-      const snap=await firebase.firestore().collection("orders").get();
-      const all=[]; snap.forEach(doc=>all.push({id:doc.id,...doc.data()}));
-      const active=sortOrders(all.filter(o=>!FINAL.includes(prodStatus(o))));
-      if($("prodStatOrders")) $("prodStatOrders").textContent=active.length;
-      if($("prodStatItems")) $("prodStatItems").textContent=active.reduce((s,o)=>s+qty(o),0);
-      const textiles=aggregateTextiles(active), prints=aggregatePrints(active);
-      if($("prodStatVariants")) $("prodStatVariants").textContent=textiles.length;
-      if($("prodStatPrints")) $("prodStatPrints").textContent=prints.length;
-      renderList($("productionTextiles"),textiles); renderList($("productionPrints"),prints);
-      const textileTotal=textiles.reduce((s,r)=>s+Number(r[1]||0),0);
-      const printTotal=prints.reduce((s,r)=>s+Number(r[1]||0),0);
-      if($("prodNeedsSummary")) $("prodNeedsSummary").textContent=`${textileTotal} Artikel · ${printTotal} Drucke`;
-      if(ordersEl) ordersEl.innerHTML=active.length?active.map(orderCard).join(""):'<div class="v30140-empty">Keine offenen Produktionsaufträge.</div>';
-    }catch(err){ if(ordersEl)ordersEl.innerHTML=`<div class="v30140-prod-error">Produktion konnte nicht geladen werden: ${esc(err&&err.message||err)}</div>`; }
-    busy=false;
-  }
-  function showProductionTab(){
-    const orders=$("ordersTab"), shops=$("shopsTab"), production=$("productionTab");
-    if(orders) orders.hidden=true;
-    if(shops) shops.hidden=true;
-    if(production) production.hidden=false;
-    document.querySelectorAll(".tab-btn").forEach(btn=>{
-      btn.classList.toggle("active",btn.dataset.tab==="production");
-    });
-  }
-
-  document.addEventListener("click",e=>{
-    if(e.target.closest('#productionRefreshBtn')){loadProduction();}
-  });
-  document.addEventListener("change",async e=>{
-    const select=e.target.closest('[data-prod-status]'); if(!select)return;
-    const card=select.closest('[data-id]'); if(!card)return;
-    const target=select.value;
-    select.disabled=true;
-    try{
-      const doc=await firebase.firestore().collection('orders').doc(card.dataset.id).get();
-      if(doc.exists) await updateStatus(doc.id,{id:doc.id,...doc.data()},target);
-    }catch(err){
-      alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));
-      select.disabled=false;
-      loadProduction();
-    }
-  });
-  document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const t=$("productionTab");if(t&&!t.hidden)loadProduction();},800);});
-  window.loadProductionV30146=loadProduction;
-})();
-</script>
 
 </body>
 </html>
