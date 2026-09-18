@@ -772,6 +772,80 @@
   }
 </style>
 
+
+<style id="v30141-production-ultracompact">
+  /* Materialbedarf: standardmäßig nur eine schmale Zeile */
+  #productionTab .production-grid{display:none!important}
+  #productionTab .production-needs{
+    margin:0!important;padding:0!important;border-radius:10px!important;overflow:hidden!important;
+  }
+  #productionTab .production-needs summary{
+    list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;
+    gap:10px;padding:7px 10px!important;min-height:30px;background:#f8fafb;
+    font-size:11px;font-weight:800;color:#243744;
+  }
+  #productionTab .production-needs summary::-webkit-details-marker{display:none}
+  #productionTab .production-needs summary:after{content:"›";font-size:15px;color:#7b8790;line-height:1}
+  #productionTab .production-needs[open] summary:after{transform:rotate(90deg)}
+  #productionTab .production-needs summary small{
+    margin-left:auto;font-size:9.5px;font-weight:600;color:#71808a;white-space:nowrap;
+  }
+  #productionTab .production-needs summary small b{font-size:10px;color:#263b48}
+  #productionTab .production-needs-body{
+    display:grid;grid-template-columns:1fr 1fr;gap:0;border-top:1px solid #e8edef;
+  }
+  #productionTab .production-needs-body>section{min-width:0;padding:7px 10px}
+  #productionTab .production-needs-body>section+section{border-left:1px solid #e8edef}
+  #productionTab .production-needs-body>section>strong{
+    display:block;margin-bottom:2px;font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:#7a8790;
+  }
+  #productionTab .production-needs .production-list{padding:0!important;max-height:90px!important}
+  #productionTab .production-needs .v30140-list-row{padding:3px 0!important;font-size:9.5px!important}
+  #productionTab .production-needs .v30140-list-row b{font-size:9.5px!important}
+
+  /* Produktionsaufträge: echte Ein-Zeilen-Arbeitsliste */
+  #productionTab .production-orders-block{border-radius:10px!important}
+  #productionTab .production-orders-block .production-block-head{padding:7px 10px!important}
+  #productionTab .production-orders-block .production-block-head h3{font-size:11.5px!important}
+  .v30140-prod-table-head{
+    grid-template-columns:minmax(0,1fr) 38px 112px 52px!important;
+    gap:6px!important;padding:5px 8px!important;font-size:8px!important;
+  }
+  .v30140-prod-row{
+    grid-template-columns:minmax(0,1fr) 38px 112px 52px!important;
+    gap:6px!important;padding:5px 8px!important;min-height:32px!important;
+  }
+  .v30140-order strong{
+    display:block!important;font-size:10px!important;line-height:1.05!important;
+    white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;
+  }
+  .v30140-order strong em{font-style:normal;font-weight:600;color:#53636d}
+  .v30140-order span{margin-top:1px!important;font-size:8.5px!important;line-height:1!important}
+  .v30140-small{text-align:center;font-size:10px!important;font-weight:800;color:#263b48!important}
+  .v30140-badge{
+    max-width:112px;overflow:hidden;text-overflow:ellipsis;
+    padding:3px 6px!important;font-size:8.5px!important;line-height:1!important;
+  }
+  .v30140-actions{gap:3px!important}
+  .v30140-actions button{
+    width:23px!important;height:23px!important;min-height:23px!important;
+    padding:0!important;border-radius:6px!important;font-size:13px!important;line-height:1!important;
+  }
+
+  @media(max-width:700px){
+    #productionTab .production-needs-body{grid-template-columns:1fr}
+    #productionTab .production-needs-body>section+section{border-left:0;border-top:1px solid #e8edef}
+    .v30140-prod-table-head{display:none!important}
+    .v30140-prod-row{
+      grid-template-columns:minmax(0,1fr) 30px 92px 50px!important;
+      gap:4px!important;padding:5px 7px!important;
+    }
+    .v30140-order span{display:none!important}
+    .v30140-badge{max-width:92px;font-size:8px!important;padding:3px 5px!important}
+    .v30140-actions button{width:22px!important;height:22px!important;min-height:22px!important}
+  }
+</style>
+
 </head>
 <body>
   <main class="admin-shell">
@@ -827,16 +901,22 @@
             <article class="production-stat panel"><span>Textil-Varianten</span><strong id="prodStatVariants">0</strong></article>
             <article class="production-stat panel"><span>Druck-Varianten</span><strong id="prodStatPrints">0</strong></article>
           </div>
-          <div class="production-grid">
-            <section class="panel production-block">
-              <div class="production-block-head"><div><h3>Textilienbedarf</h3><p>Zusammengefasst nach Artikel, Farbe und Größe.</p></div></div>
-              <div id="productionTextiles" class="production-list"></div>
-            </section>
-            <section class="panel production-block">
-              <div class="production-block-head"><div><h3>Druckbedarf</h3><p>Zusammengefasst nach Motiv und Druckfarbe.</p></div></div>
-              <div id="productionPrints" class="production-list"></div>
-            </section>
-          </div>
+          <details class="panel production-needs" id="productionNeeds">
+            <summary>
+              <span>Materialbedarf</span>
+              <small><b id="prodNeedsTextiles">0</b> Textil · <b id="prodNeedsPrints">0</b> Druck</small>
+            </summary>
+            <div class="production-needs-body">
+              <section>
+                <strong>Textil</strong>
+                <div id="productionTextiles" class="production-list"></div>
+              </section>
+              <section>
+                <strong>Druck</strong>
+                <div id="productionPrints" class="production-list"></div>
+              </section>
+            </div>
+          </details>
           <section class="panel production-block production-orders-block">
             <div class="production-block-head"><div><h3>Produktionsaufträge</h3><p>Status je Auftrag – vom Textil bis zur Übergabe.</p></div></div>
             <div class="v30140-prod-table-head"><span>Auftrag</span><span>Kunde</span><span>Art.</span><span>Bestellart</span><span>Status</span><span>Aktion</span></div>
@@ -1529,7 +1609,7 @@
 </script>
 
 
-<script id="v30140-production-status-logic">
+<script id="v30141-production-status-logic">
 (function(){
   const STEPS=["Offen","Textil bestellt","Transfer bestellt","Bereit zum Pressen","Fertig"];
   const FINAL=["Abgeholt","Versandt"];
@@ -1605,12 +1685,13 @@
     const customer=o.name||o.customerName||"–";
     const club=o.customerClass||o.company||o.club||"–";
     return `<article class="v30140-prod-row" data-id="${esc(o.id)}">
-      <div class="v30140-order"><strong>${esc(orderNo)}</strong><span>${esc(club)}</span></div>
-      <div class="v30140-customer" title="${esc(customer)}">${esc(customer)}</div>
+      <div class="v30140-order">
+        <strong>${esc(orderNo)} <em>· ${esc(customer)}</em></strong>
+        <span>${esc(club)} · ${esc(delivery(o))}</span>
+      </div>
       <div class="v30140-small">${qty(o)}</div>
-      <div class="v30140-small">${esc(delivery(o))}</div>
       <span class="v30140-badge">${esc(s)}</span>
-      <div class="v30140-actions">${p?`<button type="button" data-prod-prev="${esc(p)}" title="Zurück zu ${esc(p)}">←</button>`:''}${n?`<button class="v30140-next" type="button" data-prod-next="${esc(n)}" title="Weiter zu ${esc(n)}">Weiter ›</button>`:'<button class="v30140-next" type="button" disabled>Fertig</button>'}</div>
+      <div class="v30140-actions">${p?`<button type="button" data-prod-prev="${esc(p)}" title="Zurück zu ${esc(p)}">←</button>`:''}${n?`<button class="v30140-next" type="button" data-prod-next="${esc(n)}" title="Weiter zu ${esc(n)}">›</button>`:'<button class="v30140-next" type="button" disabled>✓</button>'}</div>
     </article>`;
   }
   let busy=false;
@@ -1628,6 +1709,8 @@
       if($("prodStatVariants")) $("prodStatVariants").textContent=textiles.length;
       if($("prodStatPrints")) $("prodStatPrints").textContent=prints.length;
       renderList($("productionTextiles"),textiles); renderList($("productionPrints"),prints);
+      if($("prodNeedsTextiles")) $("prodNeedsTextiles").textContent=textiles.reduce((s,r)=>s+Number(r[1]||0),0);
+      if($("prodNeedsPrints")) $("prodNeedsPrints").textContent=prints.reduce((s,r)=>s+Number(r[1]||0),0);
       if(ordersEl) ordersEl.innerHTML=active.length?active.map(orderCard).join(""):'<div class="v30140-empty">Keine offenen Produktionsaufträge.</div>';
     }catch(err){ if(ordersEl)ordersEl.innerHTML=`<div class="v30140-prod-error">Produktion konnte nicht geladen werden: ${esc(err&&err.message||err)}</div>`; }
     busy=false;
@@ -1645,7 +1728,7 @@
     }catch(err){alert('Status konnte nicht gespeichert werden: '+(err&&err.message||err));btn.disabled=false;}
   });
   document.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{const t=$("productionTab");if(t&&!t.hidden)loadProduction();},800);});
-  window.loadProductionV30140=loadProduction;
+  window.loadProductionV30141=loadProduction;
 })();
 </script>
 
