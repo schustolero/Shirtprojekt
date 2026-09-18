@@ -16,7 +16,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:28px;padding:42px 44px 32px;box-shadow:0 26px 80px rgba(17,31,43,.08)}
 .top{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;margin-bottom:30px;padding-bottom:12px;border-bottom:1px solid #edf1f4}.brand{flex:1 1 auto;min-width:0}.brand-logo{min-width:0}.brand-note{max-width:100%;white-space:normal}
 .brand{display:flex;gap:16px;align-items:center;min-width:0}
-.brand-logo{width:310px;min-height:88px;display:flex;align-items:center;gap:0}
+.brand-logo{width:310px;min-height:88px;display:flex;align-items:center;gap:0}.brand-logo-image{width:420px;max-width:100%}.brand-mark{display:block;max-width:100%;width:100%;height:auto;object-fit:contain}
 .brand-text{line-height:.92}
 .brand-text .main{font-size:36px;font-weight:900;letter-spacing:.11em}
 .brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.46em;margin-top:6px}
@@ -89,7 +89,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .page{width:200mm!important;height:auto!important;min-height:0!important;margin:0 auto!important;break-after:auto!important;page-break-after:auto!important}
  .sheet{width:100%!important;height:auto!important;min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82;break-after:auto!important;page-break-after:auto!important}
  .top{margin-bottom:10px!important;padding-bottom:7px!important;gap:18px!important}
- .brand-logo{min-height:58px!important;width:250px!important}.brand-text .main{font-size:29px!important}.brand-text .sub{font-size:10px!important}.brand-note{font-size:7.5px!important;margin-top:5px!important}
+ .brand-logo{min-height:58px!important;width:250px!important}.brand-logo-image{width:290px!important}.brand-mark{width:100%!important;height:auto!important}
  .slogan img{width:108px!important}
  .hero{grid-template-columns:54px 1fr 190px!important;gap:12px!important;margin-bottom:10px!important}
  .check{width:50px!important;height:50px!important;border-radius:15px!important;font-size:29px!important;box-shadow:none!important}
@@ -114,14 +114,11 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 
 <header class="top">
   <div class="brand">
-    <div class="brand-logo">
-      <div>
-        <div class="brand-text"><span class="main">SHIRT</span><span class="sub">PROJEKT</span></div>
-        <div class="brand-note">TEXTILDRUCK FÜR VEREINE, FIRMEN & ALLE SPARTEN</div>
-      </div>
+    <div class="brand-logo brand-logo-image">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-sports-logo.jpg?v=30.1.54" alt="NEXARO SPORTS">
     </div>
   </div>
-  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.36" alt="Ein Team. Ein Style."></div>
+  <div class="slogan"><img src="/slogan-team-style.png?v=30.1.54" alt="Ein Team. Ein Style."></div>
 </header>
 
 <section class="hero">
@@ -192,17 +189,17 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <footer class="footer premium-footer">
   <div class="footer-signature">
     <span class="footer-line"></span>
-    <strong>Qualität, die man fühlt. Druck, der bleibt.</strong>
+    <strong>Next Level Sportswear</strong>
     
   </div>
-  <div class="footer-brand">SHIRTPROJEKT<span>TEXTILDRUCK, DER VERBINDET.</span></div>
+  <div class="footer-brand">NEXARO SPORTS<span>SPORTSWEAR & TEAMWEAR</span></div>
 </footer>
 
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.36"></script>
-<script src="/shop-loader.js?v=30.1.36"></script>
+<script src="/central-config.js?v=30.1.54"></script>
+<script src="/shop-loader.js?v=30.1.54"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -212,9 +209,9 @@ loadShopConfig(function(cfg){
   document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
 
   // Logo oben links entfernt
-  if(cfg.logoFile){
-    const logo=document.getElementById("thanksLogo");
-    if(logo) logo.src=window.shopAssetUrl(cfg.logoFile);
+  const logo=document.getElementById("thanksLogo");
+  if(logo){
+    logo.src="/nexaro-sports-logo.jpg?v=30.1.54";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;

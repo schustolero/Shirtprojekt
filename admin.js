@@ -138,7 +138,7 @@ function htmlEscape(value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
+  const logoUrl = `${location.origin}/nexaro-sports-logo.jpg?v=30.1.54`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -202,7 +202,7 @@ function printOrderSlip(order){
   </style></head><body>
   <div class="sheet">
     <div class="head">
-      <div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div>
+      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><div><h1>NEXARO SPORTS</h1><p>Bestellschein</p></div></div>
       <div class="tag">Bestellung bestätigt</div>
     </div>
 
@@ -240,7 +240,7 @@ function printOrderSlip(order){
     </section>
 
     <div class="foot">
-      <div class="contact"><b>ShirtProjekt</b><br>WhatsApp: +49 160 26 55 220<br>Qualität, die man fühlt. Druck, der bleibt.</div>
+      <div class="contact"><b>NEXARO SPORTS</b><br>WhatsApp: +49 160 26 55 220<br>Next Level Sportswear</div>
       <div class="sum"><span>Gesamtbetrag</span><strong>${htmlEscape(euro(order.totalPrice))}</strong></div>
     </div>
   </div>
@@ -253,7 +253,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
+  const logoUrl = `${location.origin}/nexaro-sports-logo.jpg?v=30.1.54`;
   const items = Array.isArray(order.items) ? order.items : [];
 
   const itemRows = items.map((item,index)=>{
@@ -328,7 +328,7 @@ function printProductionSlip(order){
   </style></head><body>
   <div class="sheet">
     <div class="head">
-      <div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div>
+      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><div><h1>NEXARO SPORTS</h1><p>Produktionsschein</p></div></div>
       <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div>
     </div>
 
@@ -364,7 +364,7 @@ function printProductionSlip(order){
       <div class="notes"></div>
     </section>
 
-    <div class="footer"><span>ShirtProjekt · Produktion</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
+    <div class="footer"><span>NEXARO SPORTS · Produktion</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
   </div>
   <div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div>
   </body></html>`);
