@@ -265,34 +265,40 @@ function renderOrder(id,order){
   main.append(headline);
 
   const stageWrap=document.createElement("div");
-  stageWrap.className="v30149-stage-wrap";
+  stageWrap.className="v30150-stage-wrap";
   const currentStage=productionStatus(order);
   const finalStage=productionFinalStatus(order);
-  const stageValues=["Bestellt","Transfer","Abgeschlossen",finalStage];
-  const currentIndex=Math.max(0,stageValues.indexOf(currentStage));
-  stageValues.forEach((value,index)=>{
+  const stageValues=[
+    {value:"Bestellt",label:"Bestellt"},
+    {value:"Transfer",label:"Transfer"},
+    {value:"Abgeschlossen",label:"Abgeschlossen"},
+    {value:finalStage,label:finalStage==="Versandt"?"Versand":"Abholung"}
+  ];
+  const currentIndex=Math.max(0,stageValues.findIndex(s=>s.value===currentStage));
+  stageValues.forEach((stage,index)=>{
     const step=document.createElement("button");
     step.type="button";
-    step.className=`v30149-stage v30149-stage-${index+1}`;
-    step.textContent=value;
+    step.className=`v30150-stage v30150-stage-${index+1}`;
+    step.dataset.value=stage.value;
+    step.textContent=stage.label;
     step.classList.toggle("done",index<=currentIndex);
     step.classList.toggle("current",index===currentIndex);
-    step.setAttribute("aria-label",`Produktionsstatus ${value}`);
+    step.setAttribute("aria-label",`Produktionsstatus ${stage.label}`);
     step.addEventListener("click",async e=>{
       e.preventDefault();
       e.stopPropagation();
-      if(step.disabled || productionStatus(order)===value) return;
+      if(step.disabled || productionStatus(order)===stage.value) return;
       stageWrap.querySelectorAll("button").forEach(b=>b.disabled=true);
       try{
-        await saveProductionStatus(id,order,value);
-        const newIndex=stageValues.indexOf(value);
-        stageWrap.querySelectorAll(".v30149-stage").forEach((b,i)=>{
+        await saveProductionStatus(id,order,stage.value);
+        const newIndex=stageValues.findIndex(s=>s.value===stage.value);
+        stageWrap.querySelectorAll(".v30150-stage").forEach((b,i)=>{
           b.classList.toggle("done",i<=newIndex);
           b.classList.toggle("current",i===newIndex);
           b.disabled=false;
         });
         const expandedSelect=card.querySelector(".v30147-production-select");
-        if(expandedSelect) expandedSelect.value=value;
+        if(expandedSelect) expandedSelect.value=stage.value;
       }catch(err){
         console.error(err);
         alert("Produktionsstatus konnte nicht gespeichert werden.");
