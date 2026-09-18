@@ -139,25 +139,115 @@ function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
   const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
-  const rows = (Array.isArray(order.items) ? order.items : []).map((item,index)=>{
+  const items = Array.isArray(order.items) ? order.items : [];
+  const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
     const unit = Number(item.unitPrice)||Number(order.unitPrice)||15;
     const linePrice = Number(item.linePrice)||qty*unit;
     const product = item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
-    return `<tr><td>${index+1}</td><td>${htmlEscape(product)}</td><td>${htmlEscape(item.size)}</td><td>${htmlEscape(item.shirtColor)}</td><td>${htmlEscape(item.motif)}</td><td>${htmlEscape(item.motifColor)}</td><td>${qty}</td><td>${htmlEscape(euro(linePrice))}</td></tr>`;
+    return `<tr>
+      <td>${index+1}</td>
+      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(item.motif||"-")}</span></td>
+      <td>${htmlEscape(item.shirtColor||"-")}</td>
+      <td>${htmlEscape(item.size||"-")}</td>
+      <td>${htmlEscape(item.motifColor||"-")}</td>
+      <td class="num">${qty}</td>
+      <td class="num">${htmlEscape(euro(linePrice))}</td>
+    </tr>`;
   }).join("");
 
-  const w = window.open("", "_blank", "width=900,height=900");
+  const w = window.open("", "_blank", "width=920,height=900");
   if(!w){ alert("Bitte Pop-ups für den Bestellschein erlauben."); return; }
-  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title><style>
-    *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#18181b;margin:0;background:#fff}.sheet{width:190mm;max-width:100%;margin:0 auto;padding:14mm}.head{display:flex;align-items:center;justify-content:space-between;gap:20px;border-bottom:2px solid #18181b;padding-bottom:14px}.brand{display:flex;align-items:center;gap:16px}.brand img{width:82px;height:82px;object-fit:contain}.brand h1{font-size:20px;margin:0 0 4px}.brand p{margin:0;color:#666}.number{text-align:right}.number strong{display:block;font-size:19px}.number span{font-size:12px;color:#666}.section{margin-top:20px}.section h2{font-size:14px;margin:0 0 9px;text-transform:uppercase;letter-spacing:.04em}.grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px}.field{border-bottom:1px solid #ddd;padding:7px 0}.field span{display:block;font-size:10px;color:#777}.field strong{font-size:13px}table{width:100%;border-collapse:collapse;font-size:11px}th,td{border:1px solid #ddd;padding:7px;text-align:left}th{background:#f3f3f4}.total{display:flex;justify-content:flex-end;gap:28px;margin-top:14px;font-size:15px;font-weight:700}.footer{margin-top:28px;padding-top:12px;border-top:1px solid #ddd;font-size:10px;color:#777}.actions{display:flex;gap:10px;margin:18px auto 0;width:190mm;max-width:calc(100% - 20px)}button{border:0;border-radius:8px;padding:11px 16px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}@media print{.actions{display:none}.sheet{padding:8mm}body{print-color-adjust:exact;-webkit-print-color-adjust:exact}}
-  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div><div class="number"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <div class="section"><h2>Kundendaten</h2><div class="grid"><div class="field"><span>Vor- und Nachname</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="field"><span>Verein / Firma</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div><div class="field"><span>WhatsApp</span><strong>${htmlEscape(order.whatsapp||order.phone||"-")}</strong></div><div class="field"><span>Adresse</span><strong>${htmlEscape(order.address||"-")}</strong></div><div class="field"><span>Bestellart</span><strong>${htmlEscape(order.deliveryType||"Abholung")}</strong></div><div class="field"><span>Zahlung</span><strong>${htmlEscape(order.paymentMethod||"Bar bei Abholung")}</strong></div></div></div>
-  <div class="section"><h2>Bestellung</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Farbe</th><th>Motiv</th><th>Motivfarbe</th><th>Menge</th><th>Preis</th></tr></thead><tbody>${rows}</tbody></table><div class="total"><span>${htmlEscape(order.totalQuantity||0)} Artikel</span><span>${htmlEscape(euro(order.totalPrice))}</span></div></div>
-  <div class="footer">${htmlEscape(customerName)} · Bestellnummer ${htmlEscape(order.orderNumber||"")}</div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+
+  w.document.write(`<!doctype html><html lang="de"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Bestellschein ${htmlEscape(order.orderNumber||"")}</title>
+  <style>
+    @page{size:A4;margin:8mm}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#f4f6f8;color:#17212b;font-family:Arial,Helvetica,sans-serif}
+    .sheet{width:194mm;max-width:calc(100% - 20px);margin:12px auto;background:#fff;border:1px solid #e2e7ea;border-radius:14px;padding:10mm 11mm}
+    .head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
+    .brand{display:flex;align-items:center;gap:12px}.brand img{width:58px;height:58px;object-fit:contain}
+    .brand h1{margin:0;font-size:19px;line-height:1.05}.brand p{margin:3px 0 0;font-size:9px;color:#7b8790;text-transform:uppercase;letter-spacing:.08em}
+    .tag{padding:7px 10px;border-radius:10px;background:#f2f7f9;border:1px solid #dce7eb;font-size:10px;font-weight:800;color:#315461}
+    .success{display:flex;align-items:center;gap:10px;margin:9px 0 8px;padding:8px 10px;border-radius:10px;background:#f6fbf9;border:1px solid #dfeee8}
+    .success b{font-size:14px}.success span{font-size:9.5px;color:#74817a}
+    .two{display:grid;grid-template-columns:1.08fr .92fr;gap:8px}
+    .card{border:1px solid #e1e7ea;border-radius:10px;overflow:hidden}
+    .card h2{margin:0;padding:6px 9px;background:#f7f9fa;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;padding:5px 9px}
+    .field{padding:4px 0;border-bottom:1px solid #eef1f3}.field.full{grid-column:1/-1}.field:nth-last-child(-n+2){border-bottom:0}
+    .field span{display:block;font-size:7.7px;color:#87939b}.field strong{display:block;margin-top:1px;font-size:9.8px;line-height:1.2}
+    .meta{display:grid;grid-template-columns:1fr 1fr;padding:5px 9px}
+    .meta .field{padding-right:8px}.meta .field:nth-child(odd){border-right:1px solid #edf1f3}
+    .items{margin-top:8px;border:1px solid #e1e7ea;border-radius:10px;overflow:hidden}
+    table{width:100%;border-collapse:collapse;font-size:8.8px}
+    th{padding:5px 6px;background:#f6f8f9;color:#596871;text-align:left;font-size:7.7px;text-transform:uppercase;letter-spacing:.025em}
+    td{padding:6px;border-top:1px solid #edf1f3;vertical-align:middle}
+    td b{display:block;font-size:9.2px}td span{display:block;margin-top:1px;color:#7c8991;font-size:7.8px}
+    .num{text-align:right;white-space:nowrap}
+    .total{display:flex;justify-content:flex-end;gap:22px;padding:7px 8px;border-top:1px solid #e4e9ec;font-size:10px;font-weight:800}
+    .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:8px;padding-top:7px;border-top:1px solid #e8ecee}
+    .contact{font-size:8px;color:#71808a;line-height:1.45}.contact b{color:#374952}
+    .sum{text-align:right}.sum span{display:block;font-size:8px;color:#839098}.sum strong{font-size:15px}
+    .actions{width:194mm;max-width:calc(100% - 20px);margin:10px auto;display:flex;gap:8px}
+    button{border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}.print{background:#153946;color:#fff}.close{background:#e8edef;color:#34434b}
+    @media print{
+      html,body{background:#fff}
+      .actions{display:none}
+      .sheet{width:auto;max-width:none;margin:0;border:0;border-radius:0;padding:0}
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+  </style></head><body>
+  <div class="sheet">
+    <div class="head">
+      <div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Bestellschein</p></div></div>
+      <div class="tag">Bestellung bestätigt</div>
+    </div>
+
+    <div class="success"><b>✓ Vielen Dank für deine Bestellung!</b><span>Die Bestellung ist erfolgreich eingegangen.</span></div>
+
+    <div class="two">
+      <section class="card">
+        <h2>Kundendaten</h2>
+        <div class="grid">
+          <div class="field"><span>Vor- und Nachname</span><strong>${htmlEscape(order.name||"-")}</strong></div>
+          <div class="field"><span>Verein / Firma</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div>
+          <div class="field"><span>E-Mail</span><strong>${htmlEscape(order.email||"-")}</strong></div>
+          <div class="field"><span>WhatsApp</span><strong>${htmlEscape(order.whatsapp||order.phone||"-")}</strong></div>
+          <div class="field full"><span>Adresse</span><strong>${htmlEscape(order.address||"-")}</strong></div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Bestellung & Zahlung</h2>
+        <div class="meta">
+          <div class="field"><span>Bestellart</span><strong>${htmlEscape(order.deliveryType||"Abholung")}</strong></div>
+          <div class="field"><span>Zahlung</span><strong>${htmlEscape(order.paymentMethod||"Bar bei Abholung")}</strong></div>
+          <div class="field"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"-")}</strong></div>
+          <div class="field"><span>Datum</span><strong>${htmlEscape(dateText(order.createdAt))}</strong></div>
+        </div>
+      </section>
+    </div>
+
+    <section class="items">
+      <table>
+        <thead><tr><th>#</th><th>Artikel / Motiv</th><th>Farbe</th><th>Größe</th><th>Druckfarbe</th><th class="num">Menge</th><th class="num">Gesamt</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+      <div class="total"><span>${htmlEscape(order.totalQuantity||0)} Artikel</span><span>${htmlEscape(euro(order.totalPrice))}</span></div>
+    </section>
+
+    <div class="foot">
+      <div class="contact"><b>ShirtProjekt</b><br>WhatsApp: +49 160 26 55 220<br>Qualität, die man fühlt. Druck, der bleibt.</div>
+      <div class="sum"><span>Gesamtbetrag</span><strong>${htmlEscape(euro(order.totalPrice))}</strong></div>
+    </div>
+  </div>
+  <div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div>
+  </body></html>`);
   w.document.close();
 }
-
 
 
 function printProductionSlip(order){
@@ -165,9 +255,19 @@ function printProductionSlip(order){
   const customerName = order.customerName || customerId || "Shirtprojekt";
   const logoUrl = `${location.origin}/shops/${encodeURIComponent(customerId)}/shop-logo.png`;
   const items = Array.isArray(order.items) ? order.items : [];
+
   const itemRows = items.map((item,index)=>{
     const qty=Number(item.quantity)||1;
-    return `<tr><td>${index+1}</td><td>${htmlEscape(item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt"))}</td><td>${htmlEscape(item.size||"-")}</td><td>${qty}</td><td>${htmlEscape(item.shirtColor||"-")}</td><td>${htmlEscape(item.motif||"-")}</td><td>${htmlEscape(item.motifColor||"-")}</td><td class="check">□</td></tr>`;
+    const product=item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+    return `<tr>
+      <td>${index+1}</td>
+      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(item.motif||"-")}</span></td>
+      <td>${htmlEscape(item.size||"-")}</td>
+      <td>${htmlEscape(item.shirtColor||"-")}</td>
+      <td>${htmlEscape(item.motifColor||"-")}</td>
+      <td class="num">${qty}</td>
+      <td class="check">□</td>
+    </tr>`;
   }).join("");
 
   const usedProducts = new Set(items.map(item=>item.productId||"tshirt"));
@@ -188,24 +288,88 @@ function printProductionSlip(order){
   addSpec("hoodie","Hoodie","front","Vorne");
   addSpec("hoodie","Hoodie","back","Hinten");
 
-  const specs = specRows.length
-    ? `<section><h2>Produktionsdaten</h2><table><thead><tr><th>Textil</th><th>Seite</th><th>Druckverfahren</th><th>Druckmaß</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
-    : `<section><div class="warning">Für diese Bestellung sind noch keine Produktionsdaten hinterlegt.</div></section>`;
+  const finalLabel=/versand/i.test(order.deliveryType||order.orderType||"")?"Versand":"Abholung";
+  const specs=specRows.length
+    ? `<section class="block"><div class="block-head">Druckdaten</div><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Druckmaß</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
+    : `<section class="warning">Noch keine Produktionsdaten hinterlegt.</section>`;
 
   const w=window.open("","_blank","width=1000,height=900");
   if(!w){alert("Bitte Pop-ups für den Produktionsschein erlauben.");return;}
-  w.document.write(`<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Produktionsschein ${htmlEscape(order.orderNumber||"")}</title><style>
-  *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#151515;margin:0;background:#fff}.sheet{width:195mm;max-width:100%;margin:0 auto;padding:11mm}.head{display:flex;justify-content:space-between;align-items:center;gap:18px;border-bottom:3px solid #111;padding-bottom:10px}.brand{display:flex;align-items:center;gap:13px}.brand img{width:68px;height:68px;object-fit:contain}.brand h1{margin:0;font-size:19px}.brand p{margin:3px 0 0;font-size:12px;color:#666;text-transform:uppercase;letter-spacing:.08em}.meta{text-align:right}.meta strong{display:block;font-size:20px}.meta span{font-size:11px;color:#666}section{margin-top:16px}h2{font-size:13px;text-transform:uppercase;letter-spacing:.05em;margin:0 0 7px}.info{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.box{border:1px solid #ddd;border-radius:7px;padding:7px}.box span{display:block;color:#777;font-size:9px;text-transform:uppercase}.box strong{display:block;margin-top:2px;font-size:12px}table{width:100%;border-collapse:collapse;font-size:9.5px}th,td{border:1px solid #ccc;padding:6px;vertical-align:top}th{background:#f3f3f3;text-align:left}.check{text-align:center;font-size:16px;width:28px}.warning{padding:10px;border:1px solid #e0a400;background:#fff8d8;border-radius:7px;font-size:11px}.checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:7px}.task{border:1px solid #bbb;border-radius:7px;padding:10px;font-size:11px}.task b{font-size:17px;margin-right:5px}.notes{height:62px;border:1px solid #bbb;border-radius:7px}.footer{margin-top:18px;display:flex;justify-content:space-between;border-top:1px solid #ddd;padding-top:8px;font-size:9px;color:#777}.actions{display:flex;gap:8px;width:195mm;max-width:calc(100% - 20px);margin:14px auto}button{border:0;border-radius:7px;padding:10px 14px;font-weight:700;cursor:pointer}.print{background:#111;color:#fff}.close{background:#eee}a{color:#111}@media print{.actions{display:none}.sheet{padding:6mm}body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}
-  </style></head><body><div class="sheet"><div class="head"><div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div><div class="meta"><strong>${htmlEscape(order.orderNumber||"")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div></div>
-  <section><h2>Auftrag</h2><div class="info"><div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div><div class="box"><span>Abteilung / Klasse</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div><div class="box"><span>Gesamtmenge</span><strong>${htmlEscape(order.totalQuantity||0)} Teile</strong></div></div></section>
-  <section><h2>Artikel</h2><table><thead><tr><th>#</th><th>Textil</th><th>Größe</th><th>Menge</th><th>Farbe</th><th>Motiv</th><th>Druckfarbe</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table></section>
-  ${specs}
-  <section><h2>Produktions-Checkliste</h2><div class="checklist"><div class="task"><b>□</b>Textilien gezählt</div><div class="task"><b>□</b>Druckmaß geprüft</div><div class="task"><b>□</b>Position geprüft</div><div class="task"><b>□</b>Produktion fertig</div></div></section>
-  <section><h2>Notizen / Besonderheiten</h2><div class="notes"></div></section>
-  <div class="footer"><span>${htmlEscape(customerName)}</span><span>Produktionsschein · ${htmlEscape(order.orderNumber||"")}</span></div></div><div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div></body></html>`);
+
+  w.document.write(`<!doctype html><html lang="de"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Produktionsschein ${htmlEscape(order.orderNumber||"")}</title>
+  <style>
+    @page{size:A4;margin:8mm}
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#f4f6f8;color:#17212b;font-family:Arial,Helvetica,sans-serif}
+    .sheet{width:194mm;max-width:calc(100% - 20px);margin:12px auto;background:#fff;border:1px solid #e2e7ea;border-radius:14px;padding:9mm 10mm}
+    .head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
+    .brand{display:flex;align-items:center;gap:11px}.brand img{width:52px;height:52px;object-fit:contain}.brand h1{margin:0;font-size:18px}.brand p{margin:2px 0 0;font-size:8.5px;color:#7a8790;text-transform:uppercase;letter-spacing:.08em}
+    .meta{text-align:right}.meta strong{display:block;font-size:13px}.meta span{display:block;margin-top:2px;font-size:8px;color:#829098}
+    .info{display:grid;grid-template-columns:1.2fr 1.2fr .7fr .8fr;gap:6px;margin-top:8px}
+    .box{border:1px solid #e1e7ea;border-radius:8px;padding:5px 7px}.box span{display:block;font-size:7.2px;color:#87939b}.box strong{display:block;margin-top:1px;font-size:9.5px}
+    .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
+    .step{border-radius:999px;padding:6px 8px;text-align:center;font-size:8px;font-weight:800;border:1px solid}
+    .s1{background:#fff3c4;border-color:#f0d278;color:#806000}.s2{background:#dcecff;border-color:#afd0f5;color:#2467aa}.s3{background:#def3e5;border-color:#afddbd;color:#287245}.s4{background:#ffe1e1;border-color:#efb3b3;color:#a43b3b}
+    .block{margin-top:8px;border:1px solid #e1e7ea;border-radius:9px;overflow:hidden}.block-head{padding:5px 7px;background:#f6f8f9;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+    table{width:100%;border-collapse:collapse;font-size:8.4px}th{padding:5px 6px;background:#fafbfc;color:#63727b;text-align:left;font-size:7.3px;text-transform:uppercase}td{padding:5px 6px;border-top:1px solid #edf1f3;vertical-align:middle}
+    td b{display:block;font-size:8.8px}td span{display:block;margin-top:1px;color:#7c8991;font-size:7.4px}.num{text-align:right}.check{text-align:center;font-size:14px;width:27px}
+    .checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px}.task{border:1px solid #dfe5e8;border-radius:7px;padding:7px;font-size:8px}.task b{font-size:12px;margin-right:4px}
+    .notes{height:42px;margin:6px;border:1px solid #dfe5e8;border-radius:7px}
+    .warning{margin-top:8px;padding:8px;border:1px solid #e7d184;background:#fff9dc;border-radius:8px;font-size:8.5px}
+    .footer{display:flex;justify-content:space-between;margin-top:8px;padding-top:6px;border-top:1px solid #e7ecee;font-size:7.8px;color:#7c8991}
+    .actions{width:194mm;max-width:calc(100% - 20px);margin:10px auto;display:flex;gap:8px}
+    button{border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}.print{background:#153946;color:#fff}.close{background:#e8edef;color:#34434b}
+    @media print{
+      html,body{background:#fff}.actions{display:none}.sheet{width:auto;max-width:none;margin:0;border:0;border-radius:0;padding:0}
+      *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    }
+  </style></head><body>
+  <div class="sheet">
+    <div class="head">
+      <div class="brand"><img src="${logoUrl}" alt="Logo"><div><h1>${htmlEscape(customerName)}</h1><p>Produktionsschein</p></div></div>
+      <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div>
+    </div>
+
+    <div class="info">
+      <div class="box"><span>Kunde</span><strong>${htmlEscape(order.name||"-")}</strong></div>
+      <div class="box"><span>Verein / Firma</span><strong>${htmlEscape(order.customerClass||"-")}</strong></div>
+      <div class="box"><span>Gesamt</span><strong>${htmlEscape(order.totalQuantity||0)} Artikel</strong></div>
+      <div class="box"><span>Bestellart</span><strong>${htmlEscape(order.deliveryType||"Abholung")}</strong></div>
+    </div>
+
+    <div class="flow">
+      <div class="step s1">□ Bestellt</div>
+      <div class="step s2">□ Transfer</div>
+      <div class="step s3">□ Abgeschlossen</div>
+      <div class="step s4">□ ${htmlEscape(finalLabel)}</div>
+    </div>
+
+    <section class="block">
+      <div class="block-head">Artikel</div>
+      <table><thead><tr><th>#</th><th>Textil / Motiv</th><th>Größe</th><th>Farbe</th><th>Druckfarbe</th><th class="num">Menge</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table>
+    </section>
+
+    ${specs}
+
+    <section class="block">
+      <div class="block-head">Produktionskontrolle</div>
+      <div class="checklist">
+        <div class="task"><b>□</b>Textilien gezählt</div>
+        <div class="task"><b>□</b>Transfer geprüft</div>
+        <div class="task"><b>□</b>Position / Druckmaß</div>
+        <div class="task"><b>□</b>Qualität geprüft</div>
+      </div>
+      <div class="notes"></div>
+    </section>
+
+    <div class="footer"><span>ShirtProjekt · Produktion</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
+  </div>
+  <div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div>
+  </body></html>`);
   w.document.close();
 }
-
 
 const PRODUCTION_STEPS = ["Bestellt","Transfer","Abgeschlossen"];
 function deliveryLabel(order){
