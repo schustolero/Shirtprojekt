@@ -135,10 +135,38 @@ function htmlEscape(value){
   return String(value ?? "").replace(/[&<>"']/g, ch => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[ch]));
 }
 
+function normalizeOrderPrintMethod(value){
+  const method=String(value||"").trim();
+  if(/dtf/i.test(method)) return "DTF";
+  if(/flex|transfer/i.test(method)) return "Flexdruck";
+  return "";
+}
+
+function fallbackItemPrintMethod(order,item){
+  const printData=order.printData||{};
+  const product=item.productId||"tshirt";
+  const methods=["front","back"]
+    .map(side=>printData?.[product]?.[side]?.method||printData?.global?.[side]?.method||"")
+    .filter(Boolean);
+  return methods.some(method=>/dtf/i.test(method))?"DTF":"Flexdruck";
+}
+
+async function saveItemPrintMethod(id,order,index,value){
+  const items=(Array.isArray(order.items)?order.items:[]).map((item,itemIndex)=>
+    itemIndex===index?{...item,productionMethod:normalizeOrderPrintMethod(value)||"Flexdruck"}:{...item}
+  );
+  await db.collection("orders").doc(id).update({
+    items,
+    productionUpdatedAt:firebase.firestore.FieldValue.serverTimestamp()
+  });
+  order.items=items;
+  renderProductionDashboard();
+}
+
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.68`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.69`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -246,35 +274,49 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.68`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.69`;
   const items = Array.isArray(order.items) ? order.items : [];
+  const printData = order.printData || {};
+  const activePrintMethods=[];
+  const itemPrintMethod=(item)=>{
+    const manual=normalizeOrderPrintMethod(item.productionMethod);
+    if(manual) return manual;
+    const product=item.productId||"tshirt";
+    const methods=["front","back"]
+      .map(side=>printData?.[product]?.[side]?.method||printData?.global?.[side]?.method||"")
+      .filter(Boolean);
+    return methods.some(method=>/dtf/i.test(method))?"DTF":"Flexdruck";
+  };
 
   const itemRows = items.map((item,index)=>{
     const qty=Number(item.quantity)||1;
     const product=item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+    const method=itemPrintMethod(item);
+    activePrintMethods.push(method);
     return `<tr>
       <td>${index+1}</td>
       <td><b>${htmlEscape(product)}</b><span>${htmlEscape(item.motif||"-")}</span></td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
+      <td>${htmlEscape(method)}</td>
       <td class="num">${qty}</td>
       <td class="check">□</td>
     </tr>`;
   }).join("");
 
   const usedProducts = new Set(items.map(item=>item.productId||"tshirt"));
-  const printData = order.printData || {};
-  const activePrintMethods=[];
   const specRows=[];
   const addSpec=(product,label,side,sideLabel)=>{
     if(!usedProducts.has(product)) return;
     const d=printData?.[product]?.[side]||printData?.global?.[side]||{};
     const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
     if(!has) return;
-    if(d.method) activePrintMethods.push(String(d.method).trim());
+    if(d.method && !items.length) activePrintMethods.push(String(d.method).trim());
+    const productMethods=[...new Set(items.filter(item=>(item.productId||"tshirt")===product).map(itemPrintMethod))];
+    const methodLabel=productMethods.length>1?"Gemischt":(productMethods[0]||d.method||"-");
     const format=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"–";
-    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(format)}</td><td class="check">□</td></tr>`);
+    specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(methodLabel)}</td><td>${htmlEscape(format)}</td><td class="check">□</td></tr>`);
   };
   addSpec("tshirt","T-Shirt","front","Vorne");
   addSpec("tshirt","T-Shirt","back","Hinten");
@@ -284,7 +326,9 @@ function printProductionSlip(order){
   addSpec("hoodie","Hoodie","back","Hinten");
 
   const finalLabel=/versand/i.test(order.deliveryType||order.orderType||"")?"Versand":"Abholung";
-  const productionMethodLabel=activePrintMethods.some(method=>/dtf/i.test(method))?"DTF":"Transfer";
+  const hasDtf=activePrintMethods.some(method=>/dtf/i.test(method));
+  const hasFlex=activePrintMethods.some(method=>/flex|transfer/i.test(method));
+  const productionMethodLabel=hasDtf&&hasFlex?"Transfer + DTF":hasDtf?"DTF":"Transfer";
   const specs=specRows.length
     ? `<section class="block"><div class="block-head">Druckdaten</div><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Druckmaß</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
     : `<section class="warning">Noch keine Produktionsdaten hinterlegt.</section>`;
@@ -346,7 +390,7 @@ function printProductionSlip(order){
 
     <section class="block">
       <div class="block-head">Artikel</div>
-      <table><thead><tr><th>#</th><th>Textil / Motiv</th><th>Größe</th><th>Farbe</th><th>Druckfarbe</th><th class="num">Menge</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table>
+      <table><thead><tr><th>#</th><th>Textil / Motiv</th><th>Größe</th><th>Farbe</th><th>Druckfarbe</th><th>Verfahren</th><th class="num">Menge</th><th>OK</th></tr></thead><tbody>${itemRows}</tbody></table>
     </section>
 
     ${specs}
@@ -499,8 +543,29 @@ function renderOrder(id,order){
     const row=document.createElement("div");row.className="item-row v2971-item-row";
     const info=document.createElement("div");info.className="v2971-item-info";
     const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
+    const methodControl=document.createElement("label");methodControl.className="v30169-method-control";
+    const methodLabel=document.createElement("span");methodLabel.textContent="Verfahren";
+    const methodSelect=document.createElement("select");methodSelect.className="v30169-method-select";methodSelect.setAttribute("aria-label",`Druckverfahren für Artikel ${index+1}`);
+    ["Flexdruck","DTF"].forEach(value=>{
+      const option=document.createElement("option");option.value=value;option.textContent=value;methodSelect.appendChild(option);
+    });
+    methodSelect.value=normalizeOrderPrintMethod(item.productionMethod)||fallbackItemPrintMethod(order,item);
+    methodSelect.addEventListener("change",async()=>{
+      methodSelect.disabled=true;
+      try{
+        await saveItemPrintMethod(id,order,index,methodSelect.value);
+        item.productionMethod=methodSelect.value;
+      }catch(err){
+        console.error(err);
+        alert("Druckverfahren konnte nicht gespeichert werden.");
+        methodSelect.value=normalizeOrderPrintMethod(item.productionMethod)||fallbackItemPrintMethod(order,item);
+      }finally{
+        methodSelect.disabled=false;
+      }
+    });
+    methodControl.append(methodLabel,methodSelect);
     const amount=document.createElement("strong");amount.className="v2971-item-amount";amount.textContent=euro(item.linePrice ?? ((Number(item.quantity)||1)*(Number(order.unitPrice)||15)));
-    info.appendChild(main);row.append(info,amount);items.appendChild(row);
+    info.appendChild(main);row.append(info,methodControl,amount);items.appendChild(row);
   });
   body.appendChild(items);
   const footer=document.createElement("div");footer.className="order-footer";footer.innerHTML=`<span>${text(order.totalQuantity,"0")} Artikel</span><span>${euro(order.totalPrice)}</span>`;body.appendChild(footer);
