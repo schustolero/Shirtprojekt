@@ -1063,6 +1063,209 @@ body.v284-admin #ordersTab .stat-card,body.v284-admin #ordersTab .panel,body.v28
   .v284-card[data-card="production"] .print-data-grid{grid-template-columns:1fr 1fr!important;gap:6px!important}
   .v284-card[data-card="display"] .wide{grid-column:1/-1!important}
 }
+
+/* ============================================================
+   v30.1.60 – Bestellübersicht kompakter
+   ============================================================ */
+html body.v284-admin #ordersTab .stats-grid{
+  gap:7px!important;
+  margin-bottom:8px!important;
+}
+html body.v284-admin #ordersTab .stat-card{
+  min-height:52px!important;
+  padding:8px 11px!important;
+}
+html body.v284-admin #ordersTab .stat-card span{
+  font-size:10px!important;
+  line-height:1.1!important;
+}
+html body.v284-admin #ordersTab .stat-card strong{
+  margin-top:2px!important;
+  font-size:19px!important;
+  line-height:1.05!important;
+}
+html body.v284-admin #ordersTab .v2963-orders-toolbar{
+  gap:7px!important;
+  padding:8px 10px!important;
+  margin-bottom:8px!important;
+}
+html body.v284-admin #ordersTab .v2963-orders-toolbar .orders-toolbar-title h2{
+  font-size:15px!important;
+}
+html body.v284-admin #ordersTab .v2963-orders-toolbar select,
+html body.v284-admin #ordersTab .v2963-orders-toolbar input{
+  height:29px!important;
+  min-height:29px!important;
+  padding:3px 7px!important;
+  font-size:10px!important;
+  border-radius:7px!important;
+}
+html body.v284-admin #ordersTab .v2963-orders-toolbar .ghost-btn{
+  height:29px!important;
+  min-height:29px!important;
+  padding:3px 9px!important;
+  border-radius:7px!important;
+  font-size:9.5px!important;
+}
+html body.v284-admin #ordersTab .production-integrated{
+  margin-bottom:8px!important;
+}
+html body.v284-admin #ordersTab .production-integrated-summary{
+  min-height:31px!important;
+  padding:6px 10px!important;
+}
+html body.v284-admin #ordersTab .production-integrated-body{
+  padding:7px 9px 9px!important;
+}
+html body.v284-admin #ordersTab .orders-list{
+  gap:6px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-summary{
+  min-height:34px!important;
+  padding:5px 9px!important;
+  column-gap:9px!important;
+}
+html body.v284-admin #ordersTab .v2967-order-headline{
+  gap:5px!important;
+}
+html body.v284-admin #ordersTab .v2967-order-date{
+  padding:2px 5px!important;
+  font-size:8px!important;
+  border-radius:6px!important;
+}
+html body.v284-admin #ordersTab .v2967-order-shop,
+html body.v284-admin #ordersTab .v2967-order-buyer{
+  font-size:10px!important;
+}
+html body.v284-admin #ordersTab .v2967-order-buyer{
+  padding:2px 6px!important;
+  border-radius:6px!important;
+}
+html body.v284-admin #ordersTab .v30150-stage-wrap{
+  gap:10px!important;
+  min-width:350px!important;
+}
+html body.v284-admin #ordersTab .v30150-stage{
+  height:20px!important;
+  min-height:20px!important;
+  padding:2px 8px 2px 22px!important;
+  font-size:7.8px!important;
+}
+html body.v284-admin #ordersTab .v30150-stage::before{
+  left:7px!important;
+  width:8px!important;
+  height:8px!important;
+  margin-top:-4px!important;
+}
+html body.v284-admin #ordersTab .v30150-stage.done::before{
+  left:6px!important;
+  width:10px!important;
+  height:10px!important;
+  margin-top:-5px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-quick{
+  gap:7px!important;
+  font-size:9px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-quick strong{
+  font-size:10.5px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-arrow{
+  width:20px!important;
+  height:20px!important;
+  font-size:12px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-body{
+  padding:7px 9px 8px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-body .order-number{
+  font-size:14px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-body .order-customer{
+  margin-top:3px!important;
+  padding:2px 6px!important;
+  font-size:9px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-body .order-date{
+  margin-top:2px!important;
+  font-size:9px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-body .order-actions{
+  gap:5px!important;
+}
+html body.v284-admin #ordersTab .v2966-order-body .order-actions .ghost-btn{
+  min-height:27px!important;
+  padding:4px 8px!important;
+  border-radius:7px!important;
+  font-size:9px!important;
+}
+html body.v284-admin #ordersTab .customer-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:5px 12px!important;
+  padding:8px 0!important;
+  margin-bottom:7px!important;
+}
+html body.v284-admin #ordersTab .customer-grid span{
+  margin-bottom:1px!important;
+  font-size:9px!important;
+}
+html body.v284-admin #ordersTab .customer-grid strong{
+  font-size:10px!important;
+  line-height:1.15!important;
+}
+html body.v284-admin #ordersTab .items{
+  gap:4px!important;
+}
+html body.v284-admin #ordersTab .v2971-item-row{
+  gap:10px!important;
+  padding:6px 8px!important;
+  border-radius:8px!important;
+}
+html body.v284-admin #ordersTab .v2971-item-info strong,
+html body.v284-admin #ordersTab .v2971-item-amount{
+  font-size:9.5px!important;
+}
+html body.v284-admin #ordersTab .order-footer{
+  margin-top:7px!important;
+  padding-top:6px!important;
+  font-size:10px!important;
+}
+@media(max-width:720px){
+  html body.v284-admin #ordersTab .stats-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  html body.v284-admin #ordersTab .stat-card:last-child{
+    grid-column:auto!important;
+  }
+  html body.v284-admin #ordersTab .stat-card{
+    min-height:47px!important;
+    padding:7px 8px!important;
+  }
+  html body.v284-admin #ordersTab .stat-card strong{
+    font-size:16px!important;
+  }
+  html body.v284-admin #ordersTab .v2966-order-summary{
+    row-gap:4px!important;
+    padding:5px 7px!important;
+  }
+  html body.v284-admin #ordersTab .v30150-stage-wrap{
+    min-width:0!important;
+    gap:8px!important;
+    padding-bottom:1px!important;
+  }
+  html body.v284-admin #ordersTab .v30150-stage{
+    padding-right:7px!important;
+    font-size:7.5px!important;
+  }
+  html body.v284-admin #ordersTab .customer-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px 9px!important;
+  }
+  html body.v284-admin #ordersTab .v2971-item-info strong{
+    font-size:9px!important;
+    line-height:1.2!important;
+  }
+}
 @media(max-width:420px){
   .v284-card[data-card="basic"] .form-grid,
   .v284-card[data-card="display"] .display-grid,
