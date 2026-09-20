@@ -371,15 +371,35 @@ async function renderShirtImage(view) {
     ctx.fillRect(0, 0, c.width, c.height);
     ctx.globalCompositeOperation = "destination-in";
     ctx.drawImage(base, 0, 0, c.width, c.height);
-    if (currentPattern === "heather") {
-      ctx.globalCompositeOperation = "source-atop";
-      ctx.globalAlpha = 0.10;
-      ctx.strokeStyle = "#ffffff";
-      ctx.lineWidth = Math.max(1, Math.round(c.width / 900));
-      const step = Math.max(7, Math.round(c.width / 130));
-      for (let x = -c.height; x < c.width + c.height; x += step) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x + c.height, c.height); ctx.stroke();
+    if (currentPattern === "heather" || currentPattern === "vintage") {
+      const tile = document.createElement("canvas");
+      tile.width = 72; tile.height = 72;
+      const texture = tile.getContext("2d");
+      let seed = currentPattern === "vintage" ? 9173 : 4817;
+      const random = () => ((seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296);
+      texture.lineCap = "round";
+      if (currentPattern === "heather") {
+        for (let i = 0; i < 115; i++) {
+          const x = random() * 72, y = random() * 72, len = 1.5 + random() * 5;
+          texture.strokeStyle = random() > .28 ? "rgba(255,255,255,.16)" : "rgba(0,0,0,.08)";
+          texture.lineWidth = .45 + random() * .7;
+          texture.beginPath(); texture.moveTo(x,y); texture.lineTo(x+len,y+(random()-.5)*1.7); texture.stroke();
+        }
+      } else {
+        const wash = texture.createRadialGradient(20,18,2,36,36,52);
+        wash.addColorStop(0,"rgba(255,255,255,.13)");
+        wash.addColorStop(.55,"rgba(255,255,255,.025)");
+        wash.addColorStop(1,"rgba(0,0,0,.07)");
+        texture.fillStyle = wash; texture.fillRect(0,0,72,72);
+        for (let i = 0; i < 70; i++) {
+          texture.fillStyle = random() > .35 ? "rgba(255,255,255,.10)" : "rgba(0,0,0,.045)";
+          texture.fillRect(random()*72,random()*72,.7+random()*1.8,.5+random()*1.2);
+        }
       }
+      ctx.globalCompositeOperation = "source-atop";
+      ctx.globalAlpha = currentPattern === "vintage" ? .72 : .88;
+      ctx.fillStyle = ctx.createPattern(tile,"repeat");
+      ctx.fillRect(0,0,c.width,c.height);
       ctx.globalAlpha = 1;
     }
     ctx.globalCompositeOperation = "source-over";
@@ -641,7 +661,10 @@ const FIXED_MOTIF_LAYOUTS = {
 
 function getFixedPrintLayout(motifId) {
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
-  if (cfg && cfg.enabled) {
+  const productLayout = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][currentView];
+  // Eine im Admin gespeicherte Artikelposition gilt auch dann, wenn kein
+  // klassischer "fester Druck" aktiviert ist (z. B. Hansa-Motivshop).
+  if (productLayout || (cfg && cfg.enabled)) {
     const unified = getUnifiedPrintLayout(currentView, cfg);
     return {
       left: unified.xPct / 100,
