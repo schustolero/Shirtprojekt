@@ -3327,6 +3327,11 @@ body.v284-admin #ordersTab .v2971-item-amount{display:block!important;white-spac
 .v30169-method-control>span{font-size:9px;font-weight:800;color:#75808a;text-transform:uppercase;letter-spacing:.03em}
 body.v284-admin #ordersTab .v30169-method-select{height:30px!important;min-height:30px!important;padding:4px 24px 4px 8px!important;border:1px solid #dce3e7!important;border-radius:7px!important;background-color:#fff!important;font-size:10px!important;font-weight:700!important;color:#21323b!important}
 body.v284-admin #ordersTab .v30169-method-select:disabled{opacity:.6}
+.v30170-product-toggle{grid-column:1/-1;display:inline-flex!important;align-items:center;gap:5px;justify-self:start;margin-top:3px;font-size:8.5px!important;font-weight:800;color:#43515a;cursor:pointer}
+.v30170-product-toggle input{width:14px!important;height:14px!important;min-height:0!important;margin:0!important;accent-color:#18a878}
+.v2850-product.is-disabled{opacity:.48;background:#f4f5f6!important}
+.v2850-product.is-disabled::after{content:"Ausgeschaltet";position:absolute;right:7px;bottom:6px;font-size:7.5px;font-weight:800;color:#9b4b4b;text-transform:uppercase;letter-spacing:.04em}
+.v2850-product{position:relative}
 @media(max-width:760px){
   body.v284-admin #ordersTab .customer-grid{grid-template-columns:1fr 1fr!important}
   body.v284-admin #ordersTab .v2971-item-row{grid-template-columns:minmax(0,1fr) auto;gap:8px}

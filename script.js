@@ -134,6 +134,33 @@ function getAllowedMotifColorNames(){
       : "Motiv auswählen. Es wird automatisch fest platziert.";
   }
 
+  const isHansa = String(cfg.customerId || window.SHOP_SLUG || "") === "hansa";
+  if (isHansa) {
+    document.body.dataset.shopStructure = "solingen";
+    const sidebar = document.querySelector(".sidebar");
+    const productSection = document.getElementById("productSection");
+    const orderSection = document.querySelector(".order-section");
+    [viewSection,productSection,shirtColorSection,motifSection,motifColorSection,orderSection].forEach(section=>{
+      if(sidebar && section) sidebar.appendChild(section);
+    });
+    const makePaletteCompact=(section,selector,label)=>{
+      const palette=section?.querySelector(selector);
+      if(!palette || section.querySelector(".hansa-palette-toggle")) return;
+      palette.classList.add("hansa-collapsible-palette");
+      const button=document.createElement("button");
+      button.type="button";
+      button.className="hansa-palette-toggle";
+      button.textContent=`Alle ${label} anzeigen`;
+      button.addEventListener("click",()=>{
+        const expanded=palette.classList.toggle("is-expanded");
+        button.textContent=expanded?`${label} einklappen`:`Alle ${label} anzeigen`;
+      });
+      palette.insertAdjacentElement("afterend",button);
+    };
+    makePaletteCompact(shirtColorSection,".shirt-colors","Shirtfarben");
+    makePaletteCompact(motifColorSection,".motif-colors","Druckfarben");
+  }
+
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
 
   if (FEATURES.allowCustomerUpload) {
@@ -234,7 +261,8 @@ const viewStates = { front: null, back: null };
 const baseImages = { front: null, back: null };
 let dualBaseImage = null;
 const motifSourceCache = new Map();
-const PRODUCTS = Array.isArray(SHOP.products) && SHOP.products.length ? SHOP.products : [{
+const configuredProducts = Array.isArray(SHOP.products) ? SHOP.products.filter(product => product && product.enabled !== false) : [];
+const PRODUCTS = configuredProducts.length ? configuredProducts : [{
   id: "tshirt", name: "T-Shirt", price: Number(SHOP.shirtPrice) || 15,
   frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png"
 }];

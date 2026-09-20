@@ -862,6 +862,18 @@ body[data-shop-layout="designer"] .sidebar { width: 370px; min-width: 370px; }
 body[data-shop-layout="designer"] .workspace { background: radial-gradient(circle at center, #fff 0%, #f5f6f8 44%, #e7e9ed 100%); }
 body[data-shop-layout="designer"] .print-zone { outline: 1px dashed rgba(0,0,0,.12); outline-offset: 5px; }
 
+/* v30.1.70 – Hansa übernimmt den Solingen-Aufbau, große Paletten bleiben vollständig verfügbar. */
+body[data-shop-structure="solingen"] .sidebar{width:330px;min-width:330px}
+body[data-shop-structure="solingen"] .tool-section{padding:18px 0}
+body[data-shop-structure="solingen"] .hansa-collapsible-palette{max-height:134px;overflow:hidden;position:relative}
+body[data-shop-structure="solingen"] .hansa-collapsible-palette.is-expanded{max-height:none;overflow:visible}
+body[data-shop-structure="solingen"] .hansa-palette-toggle{width:100%;margin-top:8px;padding:8px 10px;border:1px solid #dfe4e8;border-radius:9px;background:#f8fafb;color:#34434c;font-size:10px;font-weight:800;cursor:pointer}
+body[data-shop-structure="solingen"] .hansa-palette-toggle:hover{background:#f1f5f6}
+@media(max-width:760px){
+  body[data-shop-structure="solingen"] .sidebar{width:100%;min-width:0}
+  body[data-shop-structure="solingen"] .hansa-collapsible-palette{max-height:140px}
+}
+
 @media (max-width: 900px) {
   .customer-upload-section { order: 5; }
   .text-section { order: 6; }

@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=29.9.8`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.70`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -82,6 +82,10 @@
               ...product,
               ...(commercial[product.id] || {})
             }));
+          } else if (slug === "hansa") {
+            // Hansa nutzt bewusst denselben kompakten Grundaufbau wie Solingen,
+            // behält aber seine eigene Farb- und Motivauswahl.
+            merged.features = { ...(merged.features || {}), layout: "simple", showResetButton: false };
           }
 
           if (merged.active === false) {

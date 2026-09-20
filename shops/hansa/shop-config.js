@@ -10,6 +10,11 @@ window.SHOP_CONFIG = {
   logoFile: "shop-logo.jpg",
   logoHeight: 90,
   shirtPrice: 15, currency: "EUR",
+  products: [
+    { id: "tshirt", name: "T-Shirt", articleNo: "F140", price: 15, purchasePrice: 2.60, printCost: 1.50, frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png", enabled: true },
+    { id: "polo", name: "Polo-Shirt", articleNo: "F502", price: 25, purchasePrice: 5.61, printCost: 1.50, frontTemplate: "polo-front-template.png", backTemplate: "polo-back-template.png", enabled: false },
+    { id: "hoodie", name: "Hoodie", articleNo: "F421", price: 30, purchasePrice: 9.90, printCost: 1.50, frontTemplate: "hoodie-front-template.png", backTemplate: "hoodie-back-template.png", enabled: true }
+  ],
   orderEmail: "shirtzentrale@gmail.com",
   orderSubject: "Neue Hansa Berufskolleg T-Shirt Bestellung",
   customerExtraFieldLabel: "Klasse",
@@ -17,11 +22,12 @@ window.SHOP_CONFIG = {
   orderPrefix: "HAN",
   shopType: "motifs",
   features: {
-    layout: "compact", motifMode: "multiple",
+    layout: "simple", motifMode: "multiple",
     allowCustomerUpload: false, allowText: false,
     allowMoveMotif: false, allowResizeMotif: false, allowRotateMotif: false,
     allowBackDesign: true, allowMotifColor: true,
-    autoSelectSingleMotif: false, maxUploadMB: 8
+    showShirtColorPicker: true, showMotifPicker: true, showMotifColorPicker: true,
+    showResetButton: false, autoSelectSingleMotif: false, maxUploadMB: 8
   },
   motifs: [
     { id: "college", name: "College", file: "motiv-1.png" },
