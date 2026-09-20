@@ -138,7 +138,7 @@ function htmlEscape(value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.67`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.68`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -246,7 +246,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.67`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.68`;
   const items = Array.isArray(order.items) ? order.items : [];
 
   const itemRows = items.map((item,index)=>{
