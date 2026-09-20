@@ -166,7 +166,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.71`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.72`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -274,7 +274,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.71`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.72`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -785,8 +785,11 @@ function stagePctToStoredY(stagePct){
 }
 
 const positionShirtPreviewCache = new Map();
+const positionMotifPreviewCache = new Map();
 function loadPositionImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
-async function coloredPositionShirt(src,color){const key=`${src}|${color}`;if(positionShirtPreviewCache.has(key))return positionShirtPreviewCache.get(key);try{const img=await loadPositionImage(src);const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;const ctx=c.getContext("2d");ctx.drawImage(img,0,0,c.width,c.height);if(color&&String(color).toLowerCase()!=="#ffffff"){ctx.globalCompositeOperation="multiply";ctx.fillStyle=color;ctx.fillRect(0,0,c.width,c.height);ctx.globalCompositeOperation="destination-in";ctx.drawImage(img,0,0,c.width,c.height);ctx.globalCompositeOperation="source-over";}const out=c.toDataURL("image/png");positionShirtPreviewCache.set(key,out);return out;}catch(e){return src;}}
+async function coloredPositionShirt(src,color){const key=`${src}|${color}`;if(positionShirtPreviewCache.has(key))return positionShirtPreviewCache.get(key);try{const img=await loadPositionImage(src);const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;const ctx=c.getContext("2d");ctx.drawImage(img,0,0,c.width,c.height);if(color&&String(color).toLowerCase()!=="#ffffff"){ctx.globalCompositeOperation="multiply";ctx.fillStyle=String(color).toLowerCase()==="#111015"?"#3a3a3d":color;ctx.fillRect(0,0,c.width,c.height);ctx.globalCompositeOperation="destination-in";ctx.drawImage(img,0,0,c.width,c.height);ctx.globalCompositeOperation="source-over";}const out=c.toDataURL("image/png");positionShirtPreviewCache.set(key,out);return out;}catch(e){return src;}}
+function positionHexToRgb(hex){const clean=String(hex||"#000000").replace("#","");const value=clean.length===3?clean.split("").map(char=>char+char).join(""):clean.padEnd(6,"0").slice(0,6);return{r:parseInt(value.slice(0,2),16),g:parseInt(value.slice(2,4),16),b:parseInt(value.slice(4,6),16)};}
+async function coloredPositionMotif(src,color){const key=`${src}|${color}`;if(positionMotifPreviewCache.has(key))return positionMotifPreviewCache.get(key);try{const img=await loadPositionImage(src);const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;const ctx=c.getContext("2d",{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);const imageData=ctx.getImageData(0,0,c.width,c.height);const data=imageData.data;const rgb=positionHexToRgb(color);for(let i=0;i<data.length;i+=4){if(data[i+3]===0)continue;data[i]=rgb.r;data[i+1]=rgb.g;data[i+2]=rgb.b;}ctx.putImageData(imageData,0,0);const out=c.toDataURL("image/png");positionMotifPreviewCache.set(key,out);return out;}catch(e){return src;}}
 
 
 function friendlySizeLabel(value){
@@ -817,7 +820,8 @@ function refreshPositionEditor(){
       if(positionMotif.src !== new URL(fallback, location.href).href) positionMotif.src = fallback;
       else positionMotif.onerror = null;
     };
-    positionMotif.src = safeAssetUrl(motif.file, currentAssetSlug());
+    const motifSrc=safeAssetUrl(motif.file,currentAssetSlug());
+    coloredPositionMotif(motifSrc,shopFields.fixedMotifHex?.value||"#000000").then(src=>{positionMotif.src=src;});
     positionMotif.hidden = false;
   } else {
     positionMotif.hidden = true;
@@ -863,6 +867,7 @@ function bindPositionEditor(){
   if(!positionStage || !positionMotif || !positionPrintZone) return;
   [positionProduct, positionSide].forEach(el => el?.addEventListener("change", refreshPositionEditor));
   shopFields.fixedShirtHex?.addEventListener("input", refreshPositionEditor);
+  shopFields.fixedMotifHex?.addEventListener("input", refreshPositionEditor);
   positionSize?.addEventListener("input", () => writePositionValues(NaN, NaN, Number(positionSize.value)));
   [shopFields.fixedFrontMotif, shopFields.fixedBackMotif].forEach(el => el?.addEventListener("change", refreshPositionEditor));
   Object.values(shopFields).forEach(el => {
@@ -1032,12 +1037,25 @@ function fillProductToggles(cfg){
     input.closest(".v2850-product")?.classList.toggle("is-disabled",!input.checked);
   });
 }
+function configurePositionProducts(cfg){
+  const configured=Array.isArray(cfg.products)&&cfg.products.length?cfg.products:[{id:"tshirt",enabled:true},{id:"polo",enabled:true},{id:"hoodie",enabled:true}];
+  const allIds=[...new Set([...configured.map(product=>product.id),"tshirt","polo","hoodie"])].filter(id=>["tshirt","polo","hoodie"].includes(id));
+  const labels={tshirt:"T-Shirt",polo:"Polo-Shirt",hoodie:"Hoodie"};
+  if(positionProduct){
+    positionProduct.replaceChildren();
+    allIds.forEach(id=>{const option=document.createElement("option");option.value=id;option.textContent=labels[id];positionProduct.appendChild(option);});
+    positionProduct.value=configured.find(product=>product.enabled!==false)?.id||allIds[0]||"tshirt";
+  }
+  if(positionSide) positionSide.value="front";
+  const grid=document.querySelector(".v2850-product-grid");
+  allIds.forEach(id=>{const card=grid?.querySelector(`.v2850-product[data-product="${id}"]`);if(card)grid.appendChild(card);});
+}
 function selectShop(id){
   const cfg=deepClone(shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingLogo=cfg.logoFile||"";
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=cfg.customerName||id||"Neuer Shop";
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
   shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(cfg.accentColor||"")?cfg.accentColor:"#111111"; shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=cfg.features?.previewMode||"single"; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
-  fillProductToggles(cfg);
+  fillProductToggles(cfg); configurePositionProducts(cfg);
   shopFields.fixedShirtName.value=cleanVisibleColorName(cfg.fixedShirtColor?.name||cfg.fixedShirtColor?.id||""); shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
   shopFields.showShirtColors.checked=featureValue(cfg,"showShirtColorPicker",true); shopFields.showMotifs.checked=featureValue(cfg,"showMotifPicker",cfg.shopType!=="simple"); shopFields.showMotifColors.checked=featureValue(cfg,"showMotifColorPicker",true);
   shopFields.allowUpload.checked=featureValue(cfg,"allowCustomerUpload",cfg.shopType==="designer"); shopFields.allowText.checked=featureValue(cfg,"allowText",cfg.shopType==="designer"); shopFields.allowBack.checked=featureValue(cfg,"allowBackDesign",true); shopFields.allowMove.checked=featureValue(cfg,"allowMoveMotif",cfg.shopType==="designer"); shopFields.allowResize.checked=featureValue(cfg,"allowResizeMotif",cfg.shopType==="designer"); shopFields.allowRotate.checked=featureValue(cfg,"allowRotateMotif",cfg.shopType==="designer");
@@ -1046,11 +1064,12 @@ function selectShop(id){
   shopFields.fixedBackEnabled.checked=!!fp.back?.enabled; shopFields.fixedBackPosition.value=fp.back?.position||"center"; shopFields.fixedBackSize.value=fp.back?.size||"large"; shopFields.fixedBackTop.value=Number(fp.back?.topPct ?? 36);
   const pp=cfg.productPrint||{};
   const tshirt=pp.tshirt||{}; const polo=pp.polo||{}; const hoodie=pp.hoodie||{};
-  shopFields.tshirtFrontX.value=Number(tshirt.front?.xPct ?? 68); shopFields.tshirtFrontY.value=Number(tshirt.front?.yPct ?? fp.front?.topPct ?? 20); shopFields.tshirtFrontW.value=Number(tshirt.front?.widthPct ?? 28);
+  const hansaDefaultFront=id==="hansa"?{x:50,y:31,w:72}:null;
+  shopFields.tshirtFrontX.value=Number(tshirt.front?.xPct ?? hansaDefaultFront?.x ?? 68); shopFields.tshirtFrontY.value=Number(tshirt.front?.yPct ?? hansaDefaultFront?.y ?? fp.front?.topPct ?? 20); shopFields.tshirtFrontW.value=Number(tshirt.front?.widthPct ?? hansaDefaultFront?.w ?? 28);
   shopFields.tshirtBackX.value=Number(tshirt.back?.xPct ?? 50); shopFields.tshirtBackY.value=Number(tshirt.back?.yPct ?? fp.back?.topPct ?? 36); shopFields.tshirtBackW.value=Number(tshirt.back?.widthPct ?? 50);
-  shopFields.poloFrontX.value=Number(polo.front?.xPct ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? 28);
+  shopFields.poloFrontX.value=Number(polo.front?.xPct ?? hansaDefaultFront?.x ?? 68); shopFields.poloFrontY.value=Number(polo.front?.yPct ?? hansaDefaultFront?.y ?? 22); shopFields.poloFrontW.value=Number(polo.front?.widthPct ?? hansaDefaultFront?.w ?? 28);
   shopFields.poloBackX.value=Number(polo.back?.xPct ?? 50); shopFields.poloBackY.value=Number(polo.back?.yPct ?? 36); shopFields.poloBackW.value=Number(polo.back?.widthPct ?? 50);
-  shopFields.hoodieFrontX.value=Number(hoodie.front?.xPct ?? 68); shopFields.hoodieFrontY.value=Number(hoodie.front?.yPct ?? 22); shopFields.hoodieFrontW.value=Number(hoodie.front?.widthPct ?? 36);
+  shopFields.hoodieFrontX.value=Number(hoodie.front?.xPct ?? hansaDefaultFront?.x ?? 68); shopFields.hoodieFrontY.value=Number(hoodie.front?.yPct ?? hansaDefaultFront?.y ?? 22); shopFields.hoodieFrontW.value=Number(hoodie.front?.widthPct ?? hansaDefaultFront?.w ?? 36);
   shopFields.hoodieBackX.value=Number(hoodie.back?.xPct ?? 50); shopFields.hoodieBackY.value=Number(hoodie.back?.yPct ?? 34); { const hb=Number(hoodie.back?.widthPct ?? 78); shopFields.hoodieBackW.value=([46,54,58,62,72].includes(hb)?78:hb); }
   fillPrintData(cfg);
   if(productionFileUrl) productionFileUrl.value = cfg.productionFile || cfg.printData?.productionFile || "";
@@ -1128,7 +1147,7 @@ newShopBtn.addEventListener("click",()=>{
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent="Neuen SIMPLE-Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=Number(template.shirtPrice??15); shopFields.prefix.value=""; shopFields.email.value=template.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=template.active!==false;
   shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(template.accentColor||"")?template.accentColor:"#111111"; shopFields.logoHeight.value=Number(template.logoHeight||90); shopFields.previewMode.value=template.features?.previewMode||"single"; shopFields.heading.value=template.designerHeading||"Shirt auswählen"; shopFields.intro.value=template.designerIntro||"";
-  fillProductToggles(template);
+  fillProductToggles(template); configurePositionProducts(template);
   shopFields.fixedShirtName.value=cleanVisibleColorName(template.fixedShirtColor?.name||template.fixedShirtColor?.id||""); shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedShirtColor?.color||"")?template.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=template.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedMotifColor?.color||"")?template.fixedMotifColor.color:"#f6c951";
   const fp=template.fixedPrint||{}; refreshFixedPrintMotifOptions(fp.front?.motifId||"motiv1",fp.back?.motifId||"motiv1");
   shopFields.fixedFrontEnabled.checked=!!fp.front?.enabled; shopFields.fixedFrontPosition.value=fp.front?.position||"left-chest"; shopFields.fixedFrontSize.value=fp.front?.size||"small"; shopFields.fixedFrontTop.value=Number(fp.front?.topPct??16); shopFields.fixedFrontSide.value=Number(fp.front?.sidePct??32);
@@ -1155,9 +1174,9 @@ function buildShopConfig(){
   const clamp=(v,min,max,fallback)=>Math.max(min,Math.min(max,Number(v)||fallback));
   cfg.productPrint={
     ...(old.productPrint||{}),
-    tshirt:{front:{xPct:clamp(shopFields.tshirtFrontX.value,10,90,68),yPct:clamp(shopFields.tshirtFrontY.value,10,70,20),widthPct:clamp(shopFields.tshirtFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.tshirtBackX.value,10,90,50),yPct:clamp(shopFields.tshirtBackY.value,10,70,36),widthPct:clamp(shopFields.tshirtBackW.value,10,80,50)}},
-    polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,70,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}},
-    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,70,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,90,78)}}
+    tshirt:{front:{xPct:clamp(shopFields.tshirtFrontX.value,10,90,68),yPct:clamp(shopFields.tshirtFrontY.value,10,70,20),widthPct:clamp(shopFields.tshirtFrontW.value,8,80,28)},back:{xPct:clamp(shopFields.tshirtBackX.value,10,90,50),yPct:clamp(shopFields.tshirtBackY.value,10,70,36),widthPct:clamp(shopFields.tshirtBackW.value,10,80,50)}},
+    polo:{front:{xPct:clamp(shopFields.poloFrontX.value,10,90,68),yPct:clamp(shopFields.poloFrontY.value,10,70,22),widthPct:clamp(shopFields.poloFrontW.value,8,80,28)},back:{xPct:clamp(shopFields.poloBackX.value,10,90,50),yPct:clamp(shopFields.poloBackY.value,10,70,36),widthPct:clamp(shopFields.poloBackW.value,10,80,50)}},
+    hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,10,90,68),yPct:clamp(shopFields.hoodieFrontY.value,10,70,22),widthPct:clamp(shopFields.hoodieFrontW.value,8,80,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,10,90,50),yPct:clamp(shopFields.hoodieBackY.value,10,70,34),widthPct:clamp(shopFields.hoodieBackW.value,10,90,78)}}
   };
   cfg.printData=collectPrintData();
   cfg.productionFile=(productionFileUrl?.value||"").trim();
