@@ -138,7 +138,7 @@ function htmlEscape(value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.63`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.64`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -167,20 +167,20 @@ function printOrderSlip(order){
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:#f4f6f8;color:#17212b;font-family:Arial,Helvetica,sans-serif}
     .sheet{width:194mm;max-width:calc(100% - 20px);margin:12px auto;background:#fff;border:1px solid #e2e7ea;border-radius:14px;padding:10mm 11mm}
-    .head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
-    .brand{display:flex;align-items:center;gap:12px}.brand img{width:58px;height:58px;object-fit:contain}
-    .brand h1{margin:0;font-size:19px;line-height:1.05}.brand p{margin:3px 0 0;font-size:9px;color:#7b8790;text-transform:uppercase;letter-spacing:.08em}
-    .tag{padding:7px 10px;border-radius:10px;background:#f2f7f9;border:1px solid #dce7eb;font-size:10px;font-weight:800;color:#315461}
+    .head{display:flex;align-items:flex-start;justify-content:flex-start;padding-bottom:8px;border-bottom:1px solid #e4eaed}
+    .brand{display:flex;flex-direction:column;align-items:center;width:165px}.brand img{display:block;width:165px;height:auto;object-fit:contain}
+    .brand p{margin:4px 0 0;font-size:11px;line-height:1;font-weight:800;color:#3d4d56;text-transform:uppercase;letter-spacing:.13em;text-align:center}
     .success{display:flex;align-items:center;gap:10px;margin:9px 0 8px;padding:8px 10px;border-radius:10px;background:#f6fbf9;border:1px solid #dfeee8}
     .success b{font-size:14px}.success span{font-size:9.5px;color:#74817a}
-    .two{display:grid;grid-template-columns:1.08fr .92fr;gap:8px}
+    .two{display:grid;grid-template-columns:1.2fr .8fr;gap:8px}
     .card{border:1px solid #e1e7ea;border-radius:10px;overflow:hidden}
     .card h2{margin:0;padding:6px 9px;background:#f7f9fa;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;padding:5px 9px}
     .field{padding:4px 0;border-bottom:1px solid #eef1f3}.field.full{grid-column:1/-1}.field:nth-last-child(-n+2){border-bottom:0}
     .field span{display:block;font-size:7.7px;color:#87939b}.field strong{display:block;margin-top:1px;font-size:9.8px;line-height:1.2}
-    .meta{display:grid;grid-template-columns:1fr 1fr;padding:5px 9px}
-    .meta .field{padding-right:8px}.meta .field:nth-child(odd){border-right:1px solid #edf1f3}
+    .meta{display:grid;grid-template-columns:1fr 1fr;padding:3px 6px}
+    .meta .field{padding:3px 5px}.meta .field:nth-child(odd){border-right:1px solid #edf1f3}
+    .meta .field span{font-size:7.2px}.meta .field strong{font-size:9px}
     .items{margin-top:8px;border:1px solid #e1e7ea;border-radius:10px;overflow:hidden}
     table{width:100%;border-collapse:collapse;font-size:8.8px}
     th{padding:5px 6px;background:#f6f8f9;color:#596871;text-align:left;font-size:7.7px;text-transform:uppercase;letter-spacing:.025em}
@@ -188,8 +188,7 @@ function printOrderSlip(order){
     td b{display:block;font-size:9.2px}td span{display:block;margin-top:1px;color:#7c8991;font-size:7.8px}
     .num{text-align:right;white-space:nowrap}
     .total{display:flex;justify-content:flex-end;gap:22px;padding:7px 8px;border-top:1px solid #e4e9ec;font-size:10px;font-weight:800}
-    .foot{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:8px;padding-top:7px;border-top:1px solid #e8ecee}
-    .contact{font-size:8px;color:#71808a;line-height:1.45}.contact b{color:#374952}
+    .foot{display:flex;align-items:flex-end;justify-content:flex-end;margin-top:8px;padding-top:7px;border-top:1px solid #e8ecee}
     .sum{text-align:right}.sum span{display:block;font-size:8px;color:#839098}.sum strong{font-size:15px}
     .actions{width:194mm;max-width:calc(100% - 20px);margin:10px auto;display:flex;gap:8px}
     button{border:0;border-radius:8px;padding:10px 14px;font-weight:800;cursor:pointer}.print{background:#153946;color:#fff}.close{background:#e8edef;color:#34434b}
@@ -202,8 +201,7 @@ function printOrderSlip(order){
   </style></head><body>
   <div class="sheet">
     <div class="head">
-      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><div><h1>NEXARO SPORTS</h1><p>Bestellschein</p></div></div>
-      <div class="tag">Bestellung bestätigt</div>
+      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Bestellschein</p></div>
     </div>
 
     <div class="success"><b>✓ Vielen Dank für deine Bestellung!</b><span>Die Bestellung ist erfolgreich eingegangen.</span></div>
@@ -240,7 +238,6 @@ function printOrderSlip(order){
     </section>
 
     <div class="foot">
-      <div class="contact"><b>NEXARO SPORTS</b><br>WhatsApp: +49 160 26 55 220<br>Next Level Sportswear</div>
       <div class="sum"><span>Gesamtbetrag</span><strong>${htmlEscape(euro(order.totalPrice))}</strong></div>
     </div>
   </div>
@@ -253,7 +250,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.63`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.64`;
   const items = Array.isArray(order.items) ? order.items : [];
 
   const itemRows = items.map((item,index)=>{
