@@ -14,16 +14,16 @@
 html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
 .page{width:min(1080px,calc(100% - 28px));margin:24px auto}
 .sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:28px;padding:42px 44px 32px;box-shadow:0 26px 80px rgba(17,31,43,.08)}
-.top{display:flex;justify-content:flex-start;gap:28px;align-items:flex-start;margin-bottom:30px;padding-bottom:12px;border-bottom:1px solid #edf1f4}.brand{flex:1 1 auto;min-width:0}.brand-logo{min-width:0}.brand-note{max-width:100%;white-space:normal}
+.top{display:flex;justify-content:space-between;gap:28px;align-items:flex-start;margin-bottom:30px;padding-bottom:12px;border-bottom:1px solid #edf1f4}.brand{flex:1 1 auto;min-width:0}.brand-logo{min-width:0}.brand-note{max-width:100%;white-space:normal}
 .brand{display:flex;gap:16px;align-items:center;min-width:0}
 .brand-logo{width:300px;min-height:72px;display:flex;align-items:center;gap:0}.brand-logo-image{width:300px;max-width:100%}.brand-mark{display:block;max-width:100%;width:100%;max-height:92px;height:auto;object-fit:contain;object-position:left center}
 .brand-text{line-height:.92}
 .brand-text .main{font-size:36px;font-weight:900;letter-spacing:.11em}
 .brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.46em;margin-top:6px}
 .brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#74808a}
-.slogan{display:none}
+.slogan{display:flex;justify-content:flex-end;align-items:flex-start;flex:0 0 auto;margin-top:-8px}
 .slogan:after{display:none}
-.slogan img{display:block;width:122px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:center;margin-bottom:18px}
+.slogan img{display:block;width:220px;height:auto;object-fit:contain}.hero{display:grid;grid-template-columns:86px 1fr;gap:24px;align-items:center;margin-bottom:18px}
 .check{width:82px;height:82px;border-radius:24px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:44px;font-weight:900;box-shadow:0 12px 26px rgba(28,166,112,.18)}
 .hero h1{font-size:32px;line-height:1.04;margin:0;font-weight:850;letter-spacing:-.03em}
 .hero p{font-size:14px;margin:8px 0 0;color:#4f5b67}
@@ -54,7 +54,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .contact{border:1px solid #e1e7eb;border-radius:18px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:18px 20px;display:grid;grid-template-columns:minmax(0,1fr) 126px;gap:12px;align-items:center;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .contact-copy{min-width:0}.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}.contact-lines{display:grid;gap:9px}
 .contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:0}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px;flex:0 0 24px}.contact-ico svg{width:13px;height:13px;display:block}.contact-ico.whatsapp-ico{background:#25D366}.contact-ico.mail-ico{background:#172532}
-.thanks-note{display:flex;justify-content:flex-end;align-items:flex-end;margin:0;min-width:0;transform:none;align-self:end}.thanks-note:after{display:none}.thanks-note-text{display:flex;flex-direction:column;align-items:flex-end;line-height:1.02;text-align:right}.thanks-note-text .main{font-size:18px;font-weight:900;font-style:italic;letter-spacing:-.03em;color:#101820}.thanks-note-text .sub{font-size:12px;font-weight:800;font-style:italic;letter-spacing:.01em;color:#c89b2b}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
+.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;align-self:center}.thanks-note:after{display:none}.thanks-note img{display:block;width:156px;max-width:100%;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:18px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:20px 22px;box-shadow:0 10px 24px rgba(23,37,49,.035)}
 .totalbox h3{font-size:16px;margin:0 0 10px}
 .total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
 .total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
@@ -73,10 +73,10 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .brand{min-width:0}.brand-logo{width:auto}
  .brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}
  .brand-note{display:block;font-size:8px;letter-spacing:.08em;line-height:1.25;margin-top:6px;white-space:normal;max-width:185px}
- .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:0}
- .slogan img{width:120px;max-width:100%;height:auto}
+ .slogan{display:flex;justify-content:flex-end;align-items:flex-start;min-width:0;padding:0;margin:-3px 0 0}
+ .slogan img{width:142px;max-width:100%;height:auto}
  .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.order-details{grid-template-columns:1fr 1fr}.order-detail{padding:8px 10px}.order-detail strong{font-size:11.5px}
- .info,.bottom{grid-template-columns:1fr}.customer-grid{grid-template-columns:1fr 1fr}.customer-grid .row{padding:7px 8px}.customer-grid .row.address-row{grid-column:1/-1}.contact{grid-template-columns:minmax(0,1fr) 120px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;transform:none;align-self:center}.thanks-note-text .main{font-size:15px}.thanks-note-text .sub{font-size:10px}
+ .info,.bottom{grid-template-columns:1fr}.customer-grid{grid-template-columns:1fr 1fr}.customer-grid .row{padding:7px 8px}.customer-grid .row.address-row{grid-column:1/-1}.contact{grid-template-columns:minmax(0,1fr) 128px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;align-self:center}.thanks-note img{width:128px}
  .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
  .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}
  .actions{grid-template-columns:1fr}
@@ -88,7 +88,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .sheet{width:100%!important;height:auto!important;min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82;break-after:auto!important;page-break-after:auto!important}
  .top{margin-bottom:10px!important;padding-bottom:7px!important;gap:18px!important}
  .brand-logo{min-height:50px!important;width:205px!important}.brand-logo-image{width:220px!important}.brand-mark{width:100%!important;max-height:70px!important;height:auto!important}
- .slogan img{width:92px!important}
+ .slogan{margin-top:-5px!important}.slogan img{width:155px!important}
  .hero{grid-template-columns:54px 1fr 190px!important;gap:12px!important;margin-bottom:10px!important}
  .check{width:50px!important;height:50px!important;border-radius:15px!important;font-size:29px!important;box-shadow:none!important}
  .hero h1{font-size:24px!important}.hero p{font-size:11px!important;margin-top:4px!important}
@@ -98,7 +98,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
  .rows{padding:4px 8px 6px!important}.customer-grid{grid-template-columns:1fr 1fr!important;gap:5px 6px!important}.customer-grid .row{padding:5px 7px!important;border-radius:6px!important;font-size:9.6px!important}.customer-grid .row span{font-size:7.8px!important;margin-bottom:1px!important}.customer-grid .row strong{font-size:9.4px!important;line-height:1.15!important}.customer-grid .row.address-row{grid-column:1/-1!important}
  .table-wrap{border-radius:10px!important;box-shadow:none!important;margin-bottom:9px!important}.table-head{padding:8px 10px!important;font-size:8.5px!important;gap:8px!important}.item-row{padding:7px 10px!important;min-height:56px!important;gap:8px!important}
  .product-cell{grid-template-columns:44px 1fr!important;gap:7px!important}.product-cell img{width:40px!important;height:40px!important;border-radius:8px!important;padding:3px!important}.product-cell strong{font-size:10.5px!important}.cell,.money{font-size:9.8px!important}.positions div+div{margin-top:2px!important}
- .bottom{gap:10px!important;margin-bottom:8px!important}.contact{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important;grid-template-columns:minmax(0,1fr) 110px!important;gap:8px!important}.contact h3{font-size:12px!important;margin-bottom:3px!important}.contact p{font-size:9px!important;margin-bottom:5px!important}.contact-lines{gap:5px!important}.contact-line{font-size:9.2px!important}.contact-ico{width:18px!important;height:18px!important;flex-basis:18px!important}.contact-ico svg{width:10px!important;height:10px!important}.thanks-note-text .main{font-size:13px!important}.thanks-note-text .sub{font-size:8px!important}
+ .bottom{gap:10px!important;margin-bottom:8px!important}.contact{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important;grid-template-columns:minmax(0,1fr) 112px!important;gap:8px!important}.contact h3{font-size:12px!important;margin-bottom:3px!important}.contact p{font-size:9px!important;margin-bottom:5px!important}.contact-lines{gap:5px!important}.contact-line{font-size:9.2px!important}.contact-ico{width:18px!important;height:18px!important;flex-basis:18px!important}.contact-ico svg{width:10px!important;height:10px!important}.thanks-note img{width:112px!important}
  .totalbox{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important}.totalbox h3{font-size:12px!important;margin-bottom:5px!important}.total-line{padding:5px 0!important;font-size:10px!important}.grand strong{font-size:21px!important}.totalbox small{font-size:8px!important}
  .actions{display:none!important}.footer{margin-top:8px!important;padding-top:7px!important;gap:12px!important}.footer-line{margin-bottom:5px!important}.footer-signature strong{font-size:11px!important}
  .card,.table-wrap,.contact,.totalbox,.footer{break-inside:avoid;page-break-inside:avoid}
@@ -113,10 +113,12 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <header class="top">
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.59" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.61" alt="NEXARO SPORTS">
     </div>
   </div>
-  
+  <div class="slogan">
+    <img src="/slogan-black-gold-v3.png?v=30.1.61" alt="Ein Team. Ein Style.">
+  </div>
 </header>
 
 <section class="hero">
@@ -168,7 +170,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><div class="thanks-note-text" aria-label="Vielen Dank für dein Vertrauen!"><span class="main">Vielen Dank</span><span class="sub">für dein Vertrauen!</span></div></div>
+    <div class="thanks-note"><img src="/danke-team-style.png?v=30.1.61" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -184,20 +186,11 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
   <a class="btn" id="newOrderLink" href="/">↻ Neue Bestellung</a>
 </div>
 
-<footer class="footer premium-footer">
-  <div class="footer-signature">
-    <span class="footer-line"></span>
-    <strong>Next Level Sportswear</strong>
-    
-  </div>
-  
-</footer>
-
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.59"></script>
-<script src="/shop-loader.js?v=30.1.59"></script>
+<script src="/central-config.js?v=30.1.61"></script>
+<script src="/shop-loader.js?v=30.1.61"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -209,7 +202,7 @@ loadShopConfig(function(cfg){
   // Logo oben links entfernt
   const logo=document.getElementById("thanksLogo");
   if(logo){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.59";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.61";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
