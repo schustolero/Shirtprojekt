@@ -138,7 +138,7 @@ function htmlEscape(value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.64`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.65`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -250,7 +250,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.64`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.65`;
   const items = Array.isArray(order.items) ? order.items : [];
 
   const itemRows = items.map((item,index)=>{
@@ -301,8 +301,9 @@ function printProductionSlip(order){
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:#f4f6f8;color:#17212b;font-family:Arial,Helvetica,sans-serif}
     .sheet{width:194mm;max-width:calc(100% - 20px);margin:12px auto;background:#fff;border:1px solid #e2e7ea;border-radius:14px;padding:9mm 10mm}
-    .head{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
-    .brand{display:flex;align-items:center;gap:11px}.brand img{width:52px;height:52px;object-fit:contain}.brand h1{margin:0;font-size:18px}.brand p{margin:2px 0 0;font-size:8.5px;color:#7a8790;text-transform:uppercase;letter-spacing:.08em}
+    .head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
+    .brand{display:flex;flex-direction:column;align-items:center;width:165px}.brand img{display:block;width:165px;height:auto;object-fit:contain}
+    .brand p{margin:4px 0 0;font-size:11px;line-height:1;font-weight:800;color:#3d4d56;text-transform:uppercase;letter-spacing:.13em;text-align:center}
     .meta{text-align:right}.meta strong{display:block;font-size:13px}.meta span{display:block;margin-top:2px;font-size:8px;color:#829098}
     .info{display:grid;grid-template-columns:1.2fr 1.2fr .7fr .8fr;gap:6px;margin-top:8px}
     .box{border:1px solid #e1e7ea;border-radius:8px;padding:5px 7px}.box span{display:block;font-size:7.2px;color:#87939b}.box strong{display:block;margin-top:1px;font-size:9.5px}
@@ -313,7 +314,8 @@ function printProductionSlip(order){
     table{width:100%;border-collapse:collapse;font-size:8.4px}th{padding:5px 6px;background:#fafbfc;color:#63727b;text-align:left;font-size:7.3px;text-transform:uppercase}td{padding:5px 6px;border-top:1px solid #edf1f3;vertical-align:middle}
     td b{display:block;font-size:8.8px}td span{display:block;margin-top:1px;color:#7c8991;font-size:7.4px}.num{text-align:right}.check{text-align:center;font-size:14px;width:27px}
     .checklist{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;padding:6px}.task{border:1px solid #dfe5e8;border-radius:7px;padding:7px;font-size:8px}.task b{font-size:12px;margin-right:4px}
-    .notes{height:42px;margin:6px;border:1px solid #dfe5e8;border-radius:7px}
+    .notes{min-height:82px;margin:6px;padding:8px 10px;border:1px solid #dfe5e8;border-radius:7px;background:#fff}
+    .notes span{display:block;font-size:8px;font-weight:700;color:#89959d;letter-spacing:.03em}
     .warning{margin-top:8px;padding:8px;border:1px solid #e7d184;background:#fff9dc;border-radius:8px;font-size:8.5px}
     .footer{display:flex;justify-content:space-between;margin-top:8px;padding-top:6px;border-top:1px solid #e7ecee;font-size:7.8px;color:#7c8991}
     .actions{width:194mm;max-width:calc(100% - 20px);margin:10px auto;display:flex;gap:8px}
@@ -325,7 +327,7 @@ function printProductionSlip(order){
   </style></head><body>
   <div class="sheet">
     <div class="head">
-      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><div><h1>NEXARO SPORTS</h1><p>Produktionsschein</p></div></div>
+      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Produktionsschein</p></div>
       <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div>
     </div>
 
@@ -358,7 +360,7 @@ function printProductionSlip(order){
         <div class="task"><b>□</b>Position / Druckmaß</div>
         <div class="task"><b>□</b>Qualität geprüft</div>
       </div>
-      <div class="notes"></div>
+      <div class="notes"><span>Bemerkungen</span></div>
     </section>
 
     <div class="footer"><span>NEXARO SPORTS · Produktion</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
