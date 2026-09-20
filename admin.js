@@ -138,7 +138,7 @@ function htmlEscape(value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.65`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.67`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -170,9 +170,7 @@ function printOrderSlip(order){
     .head{display:flex;align-items:flex-start;justify-content:flex-start;padding-bottom:8px;border-bottom:1px solid #e4eaed}
     .brand{display:flex;flex-direction:column;align-items:center;width:165px}.brand img{display:block;width:165px;height:auto;object-fit:contain}
     .brand p{margin:4px 0 0;font-size:11px;line-height:1;font-weight:800;color:#3d4d56;text-transform:uppercase;letter-spacing:.13em;text-align:center}
-    .success{display:flex;align-items:center;gap:10px;margin:9px 0 8px;padding:8px 10px;border-radius:10px;background:#f6fbf9;border:1px solid #dfeee8}
-    .success b{font-size:14px}.success span{font-size:9.5px;color:#74817a}
-    .two{display:grid;grid-template-columns:1.2fr .8fr;gap:8px}
+    .two{display:grid;grid-template-columns:1.2fr .8fr;gap:8px;margin-top:8px}
     .card{border:1px solid #e1e7ea;border-radius:10px;overflow:hidden}
     .card h2{margin:0;padding:6px 9px;background:#f7f9fa;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:0 10px;padding:5px 9px}
@@ -203,8 +201,6 @@ function printOrderSlip(order){
     <div class="head">
       <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Bestellschein</p></div>
     </div>
-
-    <div class="success"><b>✓ Vielen Dank für deine Bestellung!</b><span>Die Bestellung ist erfolgreich eingegangen.</span></div>
 
     <div class="two">
       <section class="card">
@@ -250,7 +246,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.65`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.67`;
   const items = Array.isArray(order.items) ? order.items : [];
 
   const itemRows = items.map((item,index)=>{
@@ -269,12 +265,14 @@ function printProductionSlip(order){
 
   const usedProducts = new Set(items.map(item=>item.productId||"tshirt"));
   const printData = order.printData || {};
+  const activePrintMethods=[];
   const specRows=[];
   const addSpec=(product,label,side,sideLabel)=>{
     if(!usedProducts.has(product)) return;
-    const d=printData?.[product]?.[side]||{};
+    const d=printData?.[product]?.[side]||printData?.global?.[side]||{};
     const has=Object.values(d).some(v=>v!==null&&v!==undefined&&String(v).trim()!=="");
     if(!has) return;
+    if(d.method) activePrintMethods.push(String(d.method).trim());
     const format=[d.widthCm,d.heightCm].every(v=>v!==null&&v!==undefined&&v!=="")?`${d.widthCm} × ${d.heightCm} cm`:"–";
     specRows.push(`<tr><td>${htmlEscape(label)}</td><td>${htmlEscape(sideLabel)}</td><td>${htmlEscape(d.method||"-")}</td><td>${htmlEscape(format)}</td><td class="check">□</td></tr>`);
   };
@@ -286,6 +284,7 @@ function printProductionSlip(order){
   addSpec("hoodie","Hoodie","back","Hinten");
 
   const finalLabel=/versand/i.test(order.deliveryType||order.orderType||"")?"Versand":"Abholung";
+  const productionMethodLabel=activePrintMethods.some(method=>/dtf/i.test(method))?"DTF":"Transfer";
   const specs=specRows.length
     ? `<section class="block"><div class="block-head">Druckdaten</div><table><thead><tr><th>Textil</th><th>Seite</th><th>Verfahren</th><th>Druckmaß</th><th>OK</th></tr></thead><tbody>${specRows.join("")}</tbody></table></section>`
     : `<section class="warning">Noch keine Produktionsdaten hinterlegt.</section>`;
@@ -340,7 +339,7 @@ function printProductionSlip(order){
 
     <div class="flow">
       <div class="step s1">□ Bestellt</div>
-      <div class="step s2">□ Transfer</div>
+      <div class="step s2">□ ${htmlEscape(productionMethodLabel)}</div>
       <div class="step s3">□ Abgeschlossen</div>
       <div class="step s4">□ ${htmlEscape(finalLabel)}</div>
     </div>
