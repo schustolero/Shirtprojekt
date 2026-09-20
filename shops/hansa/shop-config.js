@@ -11,10 +11,14 @@ window.SHOP_CONFIG = {
   logoHeight: 90,
   shirtPrice: 15, currency: "EUR",
   products: [
+    { id: "hoodie", name: "Hoodie", articleNo: "F421", price: 30, purchasePrice: 9.90, printCost: 1.50, frontTemplate: "hoodie-front-template.png", backTemplate: "hoodie-back-template.png", enabled: true },
     { id: "tshirt", name: "T-Shirt", articleNo: "F140", price: 15, purchasePrice: 2.60, printCost: 1.50, frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png", enabled: true },
-    { id: "polo", name: "Polo-Shirt", articleNo: "F502", price: 25, purchasePrice: 5.61, printCost: 1.50, frontTemplate: "polo-front-template.png", backTemplate: "polo-back-template.png", enabled: false },
-    { id: "hoodie", name: "Hoodie", articleNo: "F421", price: 30, purchasePrice: 9.90, printCost: 1.50, frontTemplate: "hoodie-front-template.png", backTemplate: "hoodie-back-template.png", enabled: true }
+    { id: "polo", name: "Polo-Shirt", articleNo: "F502", price: 25, purchasePrice: 5.61, printCost: 1.50, frontTemplate: "polo-front-template.png", backTemplate: "polo-back-template.png", enabled: false }
   ],
+  fixedShirtColor: { id: "black", name: "Black||default=black", color: "#111015" },
+  fixedMotifColor: { name: "Yellow", color: "#ffe600" },
+  defaultMotifId: "college",
+  hansaDefaultsVersion: 1,
   orderEmail: "shirtzentrale@gmail.com",
   orderSubject: "Neue Hansa Berufskolleg T-Shirt Bestellung",
   customerExtraFieldLabel: "Klasse",

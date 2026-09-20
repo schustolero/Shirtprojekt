@@ -1326,6 +1326,9 @@ async function initializeFixedPrints() {
   if (fixed.front?.enabled) {
     const btn = motifById(fixed.front.motifId);
     if (btn) await addMotifToView("front", btn.dataset.motif, btn.dataset.src, true);
+  } else if (SHOP.defaultMotifId) {
+    const btn = motifById(SHOP.defaultMotifId);
+    if (btn) await addSelectedMotif(btn.dataset.motif, btn.dataset.src);
   } else if (FEATURES.autoSelectSingleMotif && motifButtons.length === 1 && FEATURES.motifMode === "single") {
     const only = motifButtons[0];
     await addSelectedMotif(only.dataset.motif, only.dataset.src);

@@ -166,7 +166,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.70`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.71`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -274,7 +274,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.70`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.71`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -1163,11 +1163,12 @@ function buildShopConfig(){
   cfg.productionFile=(productionFileUrl?.value||"").trim();
   const oldProducts = Array.isArray(old.products) ? old.products : [];
   const byId = Object.fromEntries(oldProducts.map(product => [product.id,product]));
-  const productCatalog = [
-    {...(byId.tshirt||{}),id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:!!shopFields.productTshirtEnabled?.checked},
-    {...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",enabled:!!shopFields.productPoloEnabled?.checked},
-    {...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",enabled:!!shopFields.productHoodieEnabled?.checked}
-  ];
+  const productDefinitions={
+    tshirt:{...(byId.tshirt||{}),id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:!!shopFields.productTshirtEnabled?.checked},
+    polo:{...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",enabled:!!shopFields.productPoloEnabled?.checked},
+    hoodie:{...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",enabled:!!shopFields.productHoodieEnabled?.checked}
+  };
+  const productCatalog=(id==="hansa"?["hoodie","tshirt","polo"]:["tshirt","polo","hoodie"]).map(productId=>productDefinitions[productId]);
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;

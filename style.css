@@ -2572,3 +2572,21 @@ body:not(.shop-loading) .sidebar-bottom{
   animation:shopReadyFade .14s ease-out both;
 }
 @keyframes shopReadyFade{from{opacity:0}to{opacity:1}}
+
+/* v30.1.71 – Hansa-Farbpaletten dürfen den Bestellbereich nicht überlagern. */
+body[data-shop-structure="solingen"] .hansa-collapsible-palette{
+  max-height:134px!important;
+  overflow:hidden!important;
+}
+body[data-shop-structure="solingen"] .hansa-collapsible-palette.is-expanded{
+  max-height:none!important;
+  overflow:visible!important;
+}
+body[data-shop-structure="solingen"] .motif-color-section,
+body[data-shop-structure="solingen"] .color-section{
+  min-height:0!important;
+  isolation:isolate;
+}
+@media(max-width:760px){
+  body[data-shop-structure="solingen"] .hansa-collapsible-palette{max-height:140px!important}
+}
