@@ -633,6 +633,10 @@ function changeShirtColor(color, name, colorId, pattern) {
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
   renderShirt();
   if (FEATURES.previewMode === "dual") renderDualPreview();
+  const pairedMotifColor = SHOP.shirtMotifColors && SHOP.shirtMotifColors[currentShirtColorId];
+  if (pairedMotifColor?.color) {
+    void recolorActiveMotif(pairedMotifColor.color, pairedMotifColor.name || "Druckfarbe");
+  }
 }
 
 shirtColorButtons.forEach(button => button.addEventListener("click", () => {

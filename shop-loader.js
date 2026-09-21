@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.96`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.97`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -117,6 +117,13 @@
               merged.defaultMotifId="college";
               merged.hansaDefaultsVersion=1;
             }
+          } else if (slug === "tus-hemmerde" && (data.tusColorPairsVersion || 0) < 1) {
+            merged.shirtPrice=10;
+            merged.products=(merged.products||[]).map(product=>product.id==="tshirt"?{...product,price:10,enabled:true}:{...product,enabled:false});
+            merged.fixedShirtColor={id:"white",name:"White||default=white||allowed=white,red,heather-grey",color:"#ffffff"};
+            merged.fixedMotifColor={name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"};
+            merged.shirtMotifColors={white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}};
+            merged.tusColorPairsVersion=1;
           }
 
           const finalConfig = normalizeTemplateDemo(merged);

@@ -39,7 +39,7 @@ window.CENTRAL_CONFIG = {
     },
     "tus-hemmerde": {
       customerId:"tus-hemmerde",customerName:"TuS Hemmerde",pageTitle:"TuS Hemmerde – T-Shirt Shop",brandTitle:"TuS Hemmerde",brandSubtitle:"Vereinsshirts einfach bestellen",designerHeading:"Dein TuS Hemmerde Shirt",designerIntro:"Farbe, Größe und Menge auswählen.",accentColor:"#e30613",logoFile:"shop-logo.png",logoHeight:100,shirtPrice:10,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue TuS Hemmerde T-Shirt Bestellung",customerExtraFieldLabel:"Mannschaft / Abteilung",customerExtraFieldName:"Mannschaft / Abteilung",orderPrefix:"TUS",shopType:"simple",active:true,
-      fixedShirtColor:{id:"white",name:"White||default=white",color:"#ffffff"},fixedMotifColor:{name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"},defaultMotifId:"vereinslogo",
+      fixedShirtColor:{id:"white",name:"White||default=white||allowed=white,red,heather-grey",color:"#ffffff"},fixedMotifColor:{name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"},shirtMotifColors:{white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}},tusColorPairsVersion:1,defaultMotifId:"vereinslogo",
       products:[
         {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:10,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true},
         {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",enabled:false},

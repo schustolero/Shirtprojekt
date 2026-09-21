@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.96`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.97`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.96`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.97`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -999,6 +999,14 @@ async function loadShopConfigs(){
           merged.brandSubtitle="Wir sind Hansa!";
           merged.hansaSubtitleVersion=1;
         }
+      }
+      if(doc.id==="tus-hemmerde" && (stored.tusColorPairsVersion||0)<1){
+        merged.shirtPrice=10;
+        merged.products=(merged.products||[]).map(product=>product.id==="tshirt"?{...product,price:10,enabled:true}:{...product,enabled:false});
+        merged.fixedShirtColor={id:"white",name:"White||default=white||allowed=white,red,heather-grey",color:"#ffffff"};
+        merged.fixedMotifColor={name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"};
+        merged.shirtMotifColors={white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}};
+        merged.tusColorPairsVersion=1;
       }
       shopConfigs.set(doc.id,merged);
     });
