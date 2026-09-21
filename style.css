@@ -2597,3 +2597,24 @@ body[data-shop-structure="solingen"] .color-section{
 @media(max-width:760px){
   body[data-shop-structure="solingen"] .hansa-collapsible-palette{max-height:140px!important}
 }
+
+/* v30.1.76 – Desktop: Bereiche der scrollbaren Seitenleiste dürfen nicht
+   zusammengestaucht werden. Ihre echte Höhe schiebt den Folgeabschnitt weiter. */
+@media(min-width:901px){
+  body[data-shop-structure="solingen"] .sidebar{
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    align-items:stretch!important;
+    scrollbar-gutter:stable;
+  }
+  body[data-shop-structure="solingen"] .sidebar>.brand,
+  body[data-shop-structure="solingen"] .sidebar>.tool-section,
+  body[data-shop-structure="solingen"] .sidebar>.sidebar-bottom{
+    flex:0 0 auto!important;
+    flex-shrink:0!important;
+  }
+  body[data-shop-structure="solingen"] .sidebar>.tool-section{
+    position:relative!important;
+    overflow:visible!important;
+  }
+}
