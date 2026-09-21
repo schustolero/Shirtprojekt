@@ -9,6 +9,17 @@
   const slug = fromQuery || fromPath || central.defaultShop || "_simple";
   window.SHOP_SLUG = slug;
 
+  const templateDemos = {
+    _simple: { customerName:"Vorlage Simple", pageTitle:"Vorlage Simple – T-Shirt Shop", brandTitle:"Vorlage Simple", brandSubtitle:"Einfach auswählen und bestellen", shopType:"simple" },
+    _motifs: { customerName:"Vorlage Motive", pageTitle:"Vorlage Motive – T-Shirt Shop", brandTitle:"Vorlage Motive", brandSubtitle:"Mehrere Motive zur Auswahl", shopType:"motifs" },
+    _designer: { customerName:"Vorlage Designer", pageTitle:"Vorlage Designer – T-Shirt Shop", brandTitle:"Vorlage Designer", brandSubtitle:"Dein Textil frei gestalten", shopType:"designer" }
+  };
+  function normalizeTemplateDemo(config){
+    const template = templateDemos[slug];
+    if (!template) return config;
+    return { ...config, ...template, customerId:slug, logoFile:"/dein-logo.svg", logoHeight:90, active:true };
+  }
+
   window.shopAssetUrl = function(file){
     if (!file) return "";
     if (/^(https?:)?\/\//i.test(file) || /^(data|blob):/i.test(file) || file.startsWith("/")) return file;
@@ -17,8 +28,11 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.81`;
-    script.onload = () => callback && callback(window.SHOP_CONFIG || {});
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.82`;
+    script.onload = () => {
+      window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
+      callback && callback(window.SHOP_CONFIG);
+    };
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
       document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop nicht gefunden</h1><p>Für <strong>${slug}</strong> wurde noch keine Kundenkonfiguration angelegt.</p></main>`;
@@ -99,12 +113,13 @@
             }
           }
 
-          if (merged.active === false) {
+          const finalConfig = normalizeTemplateDemo(merged);
+          if (finalConfig.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;
           }
-          window.SHOP_CONFIG = merged;
-          callback && callback(merged);
+          window.SHOP_CONFIG = finalConfig;
+          callback && callback(finalConfig);
           return;
         }
       }
