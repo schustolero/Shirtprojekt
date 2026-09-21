@@ -2594,6 +2594,33 @@ body[data-shop-structure="solingen"] .color-section{
   min-height:0!important;
   isolation:isolate;
 }
+
+/* v30.1.86 – Motive vor Textilfarbe; neutrale Vorlagen mit klarer Wortmarke. */
+body[data-template-shop="true"] .brand .shop-brand-logo{
+  display:block!important;
+  width:100%!important;
+  height:auto!important;
+  max-width:265px!important;
+  margin:0 0 10px!important;
+  object-fit:contain!important;
+}
+@media(max-width:900px){
+  .motif-section{order:5!important}
+  .color-section{order:6!important}
+  .motif-color-section{order:7!important}
+  .order-section{order:8!important}
+  .upload-section{order:9!important}
+  .logo-section{order:10!important}
+  .customer-upload-section{order:11!important}
+  .text-section{order:12!important}
+  body[data-template-shop="true"] .brand{display:block!important}
+  body[data-template-shop="true"] .brand .shop-brand-logo{
+    width:230px!important;
+    height:auto!important;
+    max-width:88vw!important;
+    margin:0 0 5px!important;
+  }
+}
 @media(max-width:760px){
   body[data-shop-structure="solingen"] .hansa-collapsible-palette{max-height:140px!important}
 }

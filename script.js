@@ -54,6 +54,7 @@ function getAllowedMotifColorNames(){
 }
 (function applyShopConfig() {
   const cfg = SHOP;
+  if (String(cfg.customerId || window.SHOP_SLUG || "").startsWith("_")) document.body.dataset.templateShop = "true";
   if (cfg.pageTitle) document.title = cfg.pageTitle;
   const setText = (id, value) => {
     const el = document.getElementById(id);
@@ -140,7 +141,7 @@ function getAllowedMotifColorNames(){
     const sidebar = document.querySelector(".sidebar");
     const productSection = document.getElementById("productSection");
     const orderSection = document.querySelector(".order-section");
-    [viewSection,productSection,shirtColorSection,motifSection,motifColorSection,orderSection].forEach(section=>{
+    [viewSection,productSection,motifSection,shirtColorSection,motifColorSection,orderSection].forEach(section=>{
       if(sidebar && section) sidebar.appendChild(section);
     });
     const makePaletteCompact=(section,selector,label)=>{
@@ -160,6 +161,10 @@ function getAllowedMotifColorNames(){
     makePaletteCompact(shirtColorSection,".shirt-colors","Shirtfarben");
     makePaletteCompact(motifColorSection,".motif-colors","Druckfarben");
   }
+
+  // In jedem Shop steht die Motivauswahl vor der Textilfarbe.
+  const sidebar = document.querySelector(".sidebar");
+  if (sidebar && motifSection && shirtColorSection) sidebar.insertBefore(motifSection, shirtColorSection);
 
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
 
