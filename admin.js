@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.80`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.81`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -203,9 +203,10 @@ function printOrderSlip(order){
     *{box-sizing:border-box}
     html,body{margin:0;padding:0;background:#f4f6f8;color:#17212b;font-family:Arial,Helvetica,sans-serif}
     .sheet{width:194mm;max-width:calc(100% - 14px);margin:8px auto;background:#fff;border:1px solid #e2e7ea;border-radius:14px;padding:8mm 9mm}
-    .head{display:flex;align-items:flex-start;justify-content:flex-start;padding-bottom:8px;border-bottom:1px solid #e4eaed}
+    .head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
     .brand{display:flex;flex-direction:column;align-items:center;width:165px}.brand img{display:block;width:165px;height:auto;object-fit:contain}
     .brand p{margin:4px 0 0;font-size:11px;line-height:1;font-weight:800;color:#3d4d56;text-transform:uppercase;letter-spacing:.13em;text-align:center}
+    .head-shop{text-align:right;font-size:13px;font-weight:700;line-height:1.2}
     .two{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:7px}
     .card{border:1px solid #e1e7ea;border-radius:10px;overflow:hidden}
     .card h2{margin:0;padding:5px 7px;background:#f7f9fa;font-size:9px;line-height:1.05;text-transform:uppercase;letter-spacing:.025em;white-space:nowrap}
@@ -237,6 +238,7 @@ function printOrderSlip(order){
   <div class="sheet">
     <div class="head">
       <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Bestellschein</p></div>
+      <strong class="head-shop">${htmlEscape(customerName)}</strong>
     </div>
 
     <div class="two">
@@ -283,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.80`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.81`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
