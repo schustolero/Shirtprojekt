@@ -38,6 +38,22 @@
   }
 }
 
+/* v30.2.7 – wiederverwendbare Motiv-Bibliothek */
+.motif-library{margin:0 0 12px;padding:10px;border:1px solid #e2e6ec;border-radius:12px;background:#f8fafc}
+.motif-library>strong{display:block;margin-bottom:8px;font-size:12px}
+.motif-library-item{display:grid;grid-template-columns:54px minmax(0,1fr) auto;gap:10px;align-items:center}
+.motif-library-item img{width:54px;height:54px;object-fit:contain;border-radius:50%;background:transparent}
+.motif-library-item span{display:flex;min-width:0;flex-direction:column;gap:2px}
+.motif-library-item b{font-size:12px}
+.motif-library-item small,.motif-original-colors{font-size:10px;color:#6d7480}
+.motif-original-colors{display:block;margin-top:4px;color:#16704a;font-weight:700}
+@media(max-width:720px){
+  .motif-library{padding:8px}
+  .motif-library-item{grid-template-columns:46px minmax(0,1fr) auto;gap:7px}
+  .motif-library-item img{width:46px;height:46px}
+  .motif-library-item .ghost-btn{padding:6px 8px}
+}
+
 .admin-header{margin-bottom:12px}
 .admin-tabs{margin-bottom:12px;padding:5px}
 .tab-btn{padding:8px 13px}

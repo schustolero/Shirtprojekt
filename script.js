@@ -238,6 +238,7 @@ function getAllowedMotifColorNames(){
       btn.className = "motif-btn";
       btn.dataset.motif = motif.id;
       btn.dataset.src = window.shopAssetUrl ? window.shopAssetUrl(motif.file) : motif.file;
+      btn.dataset.preserveColors = motif.preserveColors ? "true" : "false";
       btn.setAttribute("aria-label", `${motif.name || motif.id} Motiv`);
       const preview = document.createElement("span");
       preview.className = "motif-preview";
@@ -614,7 +615,7 @@ async function renderDualMotif(view, img) {
   if (!entry) { img.hidden = true; img.removeAttribute("src"); return; }
   try {
     const src = window.shopAssetUrl ? window.shopAssetUrl(entry.motif.file) : entry.motif.file;
-    img.src = await recolorMotifSource(src, currentMotifColor);
+    img.src = entry.motif.preserveColors ? src : await recolorMotifSource(src, currentMotifColor);
     img.hidden = false;
     applyDualMotifLayout(img, view, entry.cfg);
   } catch (err) {
@@ -653,7 +654,7 @@ function applyPreviewMode() {
 }
 
 function getActiveObject() { return canvas.getActiveObject(); }
-function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName"]); }
+function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName", "preserveColors"]); }
 
 function loadView(view) {
   canvas.clear();
@@ -806,12 +807,13 @@ function applyFixedMotifLayout(image, motifId) {
   image.setCoords();
 }
 
-function configureFabricImage(image, motifId, motifSrc) {
+function configureFabricImage(image, motifId, motifSrc, preserveColors = false) {
   applyFixedMotifLayout(image, motifId);
   image.set({
     motifId, motifSrc,
     motifColor: currentMotifColor,
-    motifColorLabel: currentMotifColorLabel
+    motifColorLabel: currentMotifColorLabel,
+    preserveColors: !!preserveColors
   });
 }
 
@@ -819,17 +821,19 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
   if (currentView !== view) switchView(view);
   await new Promise(resolve => requestAnimationFrame(resolve));
   try {
-    const dataUrl = await recolorMotifSource(motifSrc, currentMotifColor);
+    const motif=(SHOP.motifs||[]).find(item=>item.id===motifId);
+    const preserveColors=!!motif?.preserveColors;
+    const dataUrl = preserveColors ? motifSrc : await recolorMotifSource(motifSrc, currentMotifColor);
     canvas.clear();
     canvas.backgroundColor = "transparent";
     await new Promise((resolve) => {
       fabric.Image.fromURL(dataUrl, function(image) {
-        configureFabricImage(image, motifId, motifSrc);
+        configureFabricImage(image, motifId, motifSrc, preserveColors);
         canvas.add(image);
         canvas.discardActiveObject();
         image.setCoords();
         canvas.requestRenderAll();
-        viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName"]);
+        viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName", "preserveColors"]);
         if (markActive && view === "front") motifButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.motif === motifId));
         resolve();
       }, { crossOrigin: "anonymous" });
@@ -863,6 +867,7 @@ async function recolorActiveMotif(color, label) {
 
   const object = canvas.getObjects().find(obj => obj && obj.motifSrc && obj.type === "image" && obj.motifKind !== "upload");
   if (!object) return;
+  if (object.preserveColors) return;
 
   const oldWidth = object.getScaledWidth();
   const oldHeight = object.getScaledHeight();
