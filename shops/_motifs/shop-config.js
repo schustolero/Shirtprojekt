@@ -7,7 +7,7 @@ window.SHOP_CONFIG = {
   designerHeading: "Motiv auswählen",
   designerIntro: "Motiv, Textilfarbe, Größe und Menge auswählen.",
   accentColor: "#c99a1b",
-  logoFile: "/dein-logo.svg?v=30.1.83",
+  logoFile: "/dein-logo.svg?v=30.1.84",
   logoHeight: 90,
   shirtPrice: 15, currency: "EUR",
   orderEmail: "shirtzentrale@gmail.com",
@@ -30,7 +30,7 @@ window.SHOP_CONFIG = {
     autoSelectSingleMotif: false, maxUploadMB: 8
   },
   motifs: [
-    { id: "motiv1", name: "Motiv 1", file: "motiv-1.png" },
-    { id: "motiv2", name: "Motiv 2", file: "motiv-2.png" }
+    { id: "motiv1", name: "NOVA Wappen", file: "demo-motiv-1.png?v=30.1.84" },
+    { id: "motiv2", name: "NOVA Dynamik", file: "demo-motiv-2.png?v=30.1.84" }
   ]
 };

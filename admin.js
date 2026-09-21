@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.83`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.84`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.83`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.84`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -997,13 +997,13 @@ async function loadShopConfigs(){
     });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
   const templateDemos={
-    _simple:{customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",shopType:"simple"},
-    _motifs:{customerName:"Vorlage Motive",pageTitle:"Vorlage Motive – T-Shirt Shop",brandTitle:"Vorlage Motive",brandSubtitle:"Mehrere Motive zur Auswahl",shopType:"motifs"},
-    _designer:{customerName:"Vorlage Designer",pageTitle:"Vorlage Designer – T-Shirt Shop",brandTitle:"Vorlage Designer",brandSubtitle:"Dein Textil frei gestalten",shopType:"designer"}
+    _simple:{customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",shopType:"simple",motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.84"}]},
+    _motifs:{customerName:"Vorlage Motive",pageTitle:"Vorlage Motive – T-Shirt Shop",brandTitle:"Vorlage Motive",brandSubtitle:"Mehrere Motive zur Auswahl",shopType:"motifs",motifs:[{id:"motiv1",name:"NOVA Wappen",file:"demo-motiv-1.png?v=30.1.84"},{id:"motiv2",name:"NOVA Dynamik",file:"demo-motiv-2.png?v=30.1.84"}]},
+    _designer:{customerName:"Vorlage Designer",pageTitle:"Vorlage Designer – T-Shirt Shop",brandTitle:"Vorlage Designer",brandSubtitle:"Dein Textil frei gestalten",shopType:"designer",motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.84"}]}
   };
   Object.entries(templateDemos).forEach(([id,demo])=>{
     const cfg=shopConfigs.get(id);
-    if(cfg) shopConfigs.set(id,{...cfg,...demo,customerId:id,logoFile:"/dein-logo.svg?v=30.1.83",logoHeight:90,active:true});
+    if(cfg) shopConfigs.set(id,{...cfg,...demo,customerId:id,logoFile:"/dein-logo.svg?v=30.1.84",logoHeight:90,active:true});
   });
   renderShopList();
   if(!selectedShopId && shopConfigs.has("tg-solingen")) selectShop("tg-solingen");

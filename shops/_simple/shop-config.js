@@ -7,7 +7,7 @@ window.SHOP_CONFIG = {
   designerHeading: "Shirt auswählen",
   designerIntro: "Ein festes Motiv – einfach Farbe, Größe und Menge auswählen.",
   accentColor: "#c99a1b",
-  logoFile: "/dein-logo.svg?v=30.1.83",
+  logoFile: "/dein-logo.svg?v=30.1.84",
   logoHeight: 90,
   shirtPrice: 15, currency: "EUR",
   orderEmail: "shirtzentrale@gmail.com",
@@ -29,5 +29,5 @@ window.SHOP_CONFIG = {
     allowBackDesign: true, allowMotifColor: true,
     autoSelectSingleMotif: true, maxUploadMB: 8
   },
-  motifs: [{ id: "motiv1", name: "Vereinslogo", file: "motiv-1.png" }]
+  motifs: [{ id: "motiv1", name: "NOVA Athletic", file: "demo-motiv-1.png?v=30.1.84" }]
 };

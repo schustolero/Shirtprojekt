@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title">
+  <title id="title">Fiktives Sportvereinslogo Nova Athletic</title>
+  <path fill="#111111" d="M400 36 692 145v217c0 185-116 322-292 402C224 684 108 547 108 362V145L400 36zm0 68L174 188v174c0 145 84 252 226 325 142-73 226-180 226-325V188L400 104z"/>
+  <path fill="#111111" d="M235 453V188h78l174 165V188h78v265h-78L313 288v165h-78z"/>
+  <text x="400" y="565" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="78" font-weight="900" letter-spacing="8" fill="#111111">NOVA</text>
+  <text x="400" y="615" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="26" font-weight="800" letter-spacing="10" fill="#111111">ATHLETIC</text>
+</svg>
