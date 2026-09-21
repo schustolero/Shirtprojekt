@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.2`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.3`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.2`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.3`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -1013,6 +1013,14 @@ async function loadShopConfigs(){
         merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"};
         merged.tusInitialsVersion=5;
       }
+      if(doc.id==="tus-hemmerde" && (stored.tusJc001Version||0)<1){
+        merged.products=(merged.products||[]).map(product=>product.id==="tshirt"
+          ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white"}
+          :product).filter(product=>product.id!=="jc001");
+        merged.products.splice(1,0,{id:"jc001",name:"Just Cool JC001",articleNo:"JC001",price:10,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red"}});
+        merged.productPrint={...(merged.productPrint||{}),jc001:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}}};
+        merged.tusJc001Version=1;
+      }
       shopConfigs.set(doc.id,merged);
     });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
@@ -1234,7 +1242,8 @@ function buildShopConfig(){
     polo:{...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",enabled:!!shopFields.productPoloEnabled?.checked},
     hoodie:{...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",enabled:!!shopFields.productHoodieEnabled?.checked}
   };
-  const productCatalog=(id==="hansa"?["hoodie","tshirt","polo"]:["tshirt","polo","hoodie"]).map(productId=>productDefinitions[productId]);
+  const customProducts=oldProducts.filter(product=>!["tshirt","polo","hoodie"].includes(product.id));
+  const productCatalog=[...(id==="hansa"?["hoodie","tshirt","polo"]:["tshirt","polo","hoodie"]).map(productId=>productDefinitions[productId]),...customProducts];
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;

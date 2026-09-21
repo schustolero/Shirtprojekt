@@ -309,6 +309,30 @@ let currentProductId = PRODUCTS[0].id;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
 
+function applyProductColorRules(product, forceDefault = false) {
+  const allowed = Array.isArray(product?.allowedShirtColorIds) ? product.allowedShirtColorIds : [];
+  const labels = product?.shirtColorLabels || {};
+  shirtColorButtons.forEach(button => {
+    if (!button.dataset.baseName) button.dataset.baseName = button.dataset.name || "";
+    const visible = !allowed.length || allowed.includes(button.dataset.id);
+    button.hidden = !visible;
+    const label = labels[button.dataset.id] || button.dataset.baseName;
+    button.dataset.name = label;
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    const labelNode = button.querySelector(".color-label");
+    if (labelNode) labelNode.textContent = label;
+  });
+
+  const currentButton = Array.from(shirtColorButtons).find(button => button.dataset.id === currentShirtColorId && !button.hidden);
+  const defaultId = product?.defaultShirtColorId || allowed[0] || "";
+  const target = Array.from(shirtColorButtons).find(button => button.dataset.id === defaultId && !button.hidden)
+    || Array.from(shirtColorButtons).find(button => !button.hidden);
+  if (target && (forceDefault || !currentButton)) {
+    changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "");
+  }
+}
+
 function renderProductSelector() {
   if (!productSection || !productSwitch) return;
   productSection.hidden = PRODUCTS.length <= 1;
@@ -333,6 +357,7 @@ function renderProductSelector() {
       currentProductId = product.id;
       dualBaseImage = null;
       document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
+      applyProductColorRules(product, true);
       updateProductPriceLabel();
       canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
       canvas.requestRenderAll();
@@ -377,6 +402,7 @@ function updateActiveMotifColorButton(color, label) {
 
 enhanceMotifColorCards();
 renderProductSelector();
+applyProductColorRules(getCurrentProduct());
 
 function getBaseSrc(view) {
   const product = getCurrentProduct();

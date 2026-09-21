@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.2`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.3`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -129,6 +129,14 @@
             merged.features={...(merged.features||{}),allowInitials:true};
             merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"};
             merged.tusInitialsVersion=5;
+          }
+          if (slug === "tus-hemmerde" && (data.tusJc001Version || 0) < 1) {
+            merged.products=(merged.products||[]).map(product=>product.id==="tshirt"
+              ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white"}
+              :product).filter(product=>product.id!=="jc001");
+            merged.products.splice(1,0,{id:"jc001",name:"Just Cool JC001",articleNo:"JC001",price:10,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red"}});
+            merged.productPrint={...(merged.productPrint||{}),jc001:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}}};
+            merged.tusJc001Version=1;
           }
 
           const finalConfig = normalizeTemplateDemo(merged);
