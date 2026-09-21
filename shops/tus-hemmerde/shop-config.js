@@ -19,6 +19,7 @@ window.SHOP_CONFIG = {
   shopType: "simple",
   active: true,
   fixedShirtColor: { id: "white", name: "White||default=white", color: "#ffffff" },
+  fixedMotifColor: { name: "Red||default=Red||allowed=%5B%22Red%22%5D", color: "#B62820" },
   defaultMotifId: "vereinslogo",
   products: [
     { id: "tshirt", name: "T-Shirt", articleNo: "F140", price: 10, purchasePrice: 2.60, printCost: 1.50, frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png", enabled: true },

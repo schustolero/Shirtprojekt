@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=30.1.92">
+  <link rel="stylesheet" href="admin.css?v=30.1.93">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -558,6 +558,7 @@
 <style id="v2940-print-grid-style">
 .v2940-print-default-row{margin-top:8px!important}
 .v2940-print-default-row .v2934-current-choice{margin-top:5px!important}
+.v2940-print-default-row select{min-width:0;flex:1;border:0!important;background:transparent!important;padding:2px 28px 2px 2px!important;font-weight:800;color:#202329;box-shadow:none!important}
 .v2938-print-grid .v2919-f140-option input[type="checkbox"]{margin:0!important;flex:0 0 auto!important}
 .v2938-print-grid .v2919-f140-option.is-active{border-color:#e0be36!important;background:#fff9df!important;box-shadow:inset 0 0 0 1px rgba(224,190,54,.18)!important}
 @media(max-width:760px){
@@ -955,10 +956,9 @@
                     </div>
                     <div id="poliFlexTurboPicker" class="v2919-f140-grid v2938-print-grid" aria-label="Poli-Flex Turbo Druckfarben Auswahl"></div>
                     <div class="v2919-shirt-default-row v2940-print-default-row">
-                      <label class="wide"><span>Standard-Druckfarbe</span><div id="poliFlexDefaultPreview" class="v2934-current-choice" aria-live="polite"><span class="v2934-current-swatch" style="background:#FCB91D"></span><strong class="v2934-current-label">Yellow</strong></div></label>
+                      <label class="wide"><span>Standard-Druckfarbe</span><div id="poliFlexDefaultPreview" class="v2934-current-choice"><span class="v2934-current-swatch" style="background:#FCB91D"></span><select id="poliFlexTurboPreset" aria-label="Standard-Druckfarbe wählen"><option value="Yellow" selected>Yellow</option></select></div></label>
                       <p class="v2919-hint v2943-hint-red"><strong>Druckfarben-Hinweis:</strong> Für Yellow wird eine andere Folie verwendet: <strong>Siser P.S. Film Yellow A0004</strong>.</p>
                     </div>
-                    <select id="poliFlexTurboPreset" hidden aria-hidden="true"><option value="Yellow" selected>Yellow</option></select>
                   </div>
                 </div>
                 <datalist id="poliFlexTurboColorList"></datalist>
@@ -1083,14 +1083,14 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.1.92"></script>
+  <script src="/central-config.js?v=30.1.93"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
   
 
-  <script src="/admin.js?v=30.1.92"></script>
+  <script src="/admin.js?v=30.1.93"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1117,7 +1117,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.92';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.1.93';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1463,7 +1463,7 @@
   var COLORS = [
     {name:'Anthracite',hex:'#474946'},{name:'Apple Green',hex:'#A5D542'},{name:'Aqua Green',hex:'#317176'},{name:'Baby Pink',hex:'#ECA7BC'},{name:'Beige',hex:'#F0E4C1'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#642C32'},{name:'Bright Blue',hex:'#93ACD1'},{name:'Bright Copper',hex:'#955D42'},{name:'Bright Gold',hex:'#DDBE68'},{name:'Bright Lavender',hex:'#9D86B3'},{name:'Bright Lime',hex:'#B3DB88'},{name:'Bright Pink',hex:'#A03271'},{name:'Bright Red',hex:'#8E3128'},{name:'Bright Silver',hex:'#A6A9AA'},{name:'Bright Violet',hex:'#C7AFCE'},{name:'Bright Yellow',hex:'#F7D35E'},{name:'Bronze',hex:'#C18D45'},{name:'Brown',hex:'#44382B'},{name:'Champagne',hex:'#DDD29A'},{name:'Coffee',hex:'#8F6E5B'},{name:'Coral',hex:'#ED7157'},{name:'Flame Red',hex:'#DC4647'},{name:'Flamingo',hex:'#B36966'},{name:'Frog Green',hex:'#4FAE4F'},{name:'Fuchsia',hex:'#9E2759'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#A13126'},{name:'Glossy White',hex:'#FFFFFF'},{name:'Gold Metallic',hex:'#857451'},{name:'Green',hex:'#2D683D'},{name:'Grey',hex:'#85909A'},{name:'Ice Blue',hex:'#91BFDD'},{name:'Lemon Yellow',hex:'#FAF077'},{name:'Light Apricot',hex:'#EDD0B7'},{name:'Light Berry',hex:'#AF6D9E'},{name:'Light Grey',hex:'#CDCDCD'},{name:'Medium Yellow',hex:'#F6C951'},{name:'Mint',hex:'#9FD4BE'},{name:'Navy Blue',hex:'#0B1B2B'},{name:'Neon Berry',hex:'#7C2398'},{name:'Neon Blue',hex:'#459AD8'},{name:'Neon Dark Pink',hex:'#B5257B'},{name:'Neon Green',hex:'#72D34C'},{name:'Neon Orange',hex:'#F3AE5F'},{name:'Neon Pink',hex:'#EB50B1'},{name:'Neon Red',hex:'#EE7A7A'},{name:'Neon Yellow',hex:'#E4E855'},{name:'Olive',hex:'#9AB37F'},{name:'Orange',hex:'#CF743E'},{name:'Pastel Yellow',hex:'#E9D980'},{name:'Peach Fuzz',hex:'#EFB18A'},{name:'Peri',hex:'#7374B4'},{name:'Purple',hex:'#2D1C6F'},{name:'Red',hex:'#B62820'},{name:'Rose Gold',hex:'#B17D6D'},{name:'Royal Blue',hex:'#326C99'},{name:'Sage Green',hex:'#A9B99B'},{name:'Sand Beige',hex:'#D1B894'},{name:'Silver Metallic',hex:'#A6A8AD'},{name:'Sky Blue',hex:'#67B5DA'},{name:'Violet',hex:'#B59AD0'},{name:'Viva Magenta',hex:'#C62F58'},{name:'White',hex:'#FFFFFF'},{name:'Yellow',hex:'#FCB91D'}
   ];
-  var DEFAULT='Yellow';
+  var FALLBACK='Yellow';
   function byId(id){return document.getElementById(id)}
   function norm(v){return String(v||'').trim().toLowerCase()}
   function find(name){return COLORS.find(function(c){return norm(c.name)===norm(name)})||null}
@@ -1471,17 +1471,22 @@
     var f=byId('fixedMotifName');
     var raw=f?String(f.value||''):'';
     var parts=raw.split('||');
-    var name=(parts.shift()||DEFAULT).trim()||DEFAULT;
+    var name=(parts.shift()||FALLBACK).trim()||FALLBACK;
+    var defaultName=name;
     var allowed=[];
     parts.forEach(function(part){
+      if(part.indexOf('default=')===0){
+        try{defaultName=decodeURIComponent(part.slice(8))}catch(e){defaultName=part.slice(8)}
+      }
       if(part.indexOf('allowed=')===0){
         try{allowed=JSON.parse(decodeURIComponent(part.slice(8)))}catch(e){allowed=[]}
       }
     });
-    if(!allowed.length) allowed=[name||DEFAULT];
+    if(!allowed.length) allowed=[name||FALLBACK];
     allowed=allowed.filter(function(n,i){return !!find(n)&&allowed.indexOf(n)===i});
-    if(!allowed.length) allowed=[DEFAULT];
-    return {defaultName:DEFAULT,allowed:allowed};
+    if(!allowed.length) allowed=[FALLBACK];
+    if(allowed.indexOf(defaultName)<0) defaultName=allowed[0];
+    return {defaultName:defaultName,allowed:allowed};
   }
   function build(){
     var wrap=byId('poliFlexTurboPicker');
@@ -1497,15 +1502,25 @@
   }
   function selected(){return Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input:checked')).map(function(i){return i.value})}
   function renderActive(){document.querySelectorAll('#poliFlexTurboPicker .v2919-f140-option').forEach(function(el){el.classList.toggle('is-active',!!el.querySelector('input:checked'))})}
+  function fillDefaultSelect(allowed,defaultName){
+    var select=byId('poliFlexTurboPreset');if(!select)return;
+    var current=defaultName||select.value||allowed[0]||FALLBACK;
+    select.innerHTML='';
+    allowed.forEach(function(name){var option=document.createElement('option');option.value=name;option.textContent=name;select.appendChild(option)});
+    select.value=allowed.indexOf(current)>-1?current:(allowed[0]||FALLBACK);
+    var color=find(select.value),preview=byId('poliFlexDefaultPreview'),swatch=preview&&preview.querySelector('.v2934-current-swatch');
+    if(swatch&&color)swatch.style.background=color.hex;
+  }
   function writeBack(){
     var nameField=byId('fixedMotifName'),hexField=byId('fixedMotifHex'),select=byId('poliFlexTurboPreset');
     if(!nameField||!hexField)return;
     var ids=selected();
-    if(!ids.length){ids=[DEFAULT];var rescue=document.querySelector('#poliFlexTurboPicker input[value="'+DEFAULT+'"]');if(rescue)rescue.checked=true}
-    var d=find(DEFAULT);
-    nameField.value=DEFAULT+'||default='+encodeURIComponent(DEFAULT)+'||allowed='+encodeURIComponent(JSON.stringify(ids));
+    if(!ids.length){ids=[FALLBACK];var rescue=document.querySelector('#poliFlexTurboPicker input[value="'+FALLBACK+'"]');if(rescue)rescue.checked=true}
+    var defaultName=select&&ids.indexOf(select.value)>-1?select.value:ids[0];
+    var d=find(defaultName)||find(FALLBACK);
+    nameField.value=defaultName+'||default='+encodeURIComponent(defaultName)+'||allowed='+encodeURIComponent(JSON.stringify(ids));
     hexField.value=d.hex;
-    if(select)select.value=DEFAULT;
+    fillDefaultSelect(ids,defaultName);
     nameField.dispatchEvent(new Event('change',{bubbles:true}));
     hexField.dispatchEvent(new Event('change',{bubbles:true}));
     renderActive();
@@ -1513,17 +1528,18 @@
   function apply(){
     build();var m=parseMeta();
     document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]').forEach(function(i){i.checked=m.allowed.indexOf(i.value)>-1});
+    fillDefaultSelect(m.allowed,m.defaultName);
     renderActive();
   }
   function bind(){
     build();if(bind.done)return;bind.done=true;
-    document.addEventListener('change',function(ev){if(ev.target&&ev.target.matches('#poliFlexTurboPicker input[type="checkbox"]'))writeBack()},true);
+    document.addEventListener('change',function(ev){if(ev.target&&(ev.target.matches('#poliFlexTurboPicker input[type="checkbox"]')||ev.target.id==='poliFlexTurboPreset'))writeBack()},true);
     document.addEventListener('click',function(ev){
       var b=ev.target.closest('[data-print-quick]');if(!b)return;
       var mode=b.getAttribute('data-print-quick');var boxes=Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]'));
       if(mode==='all')boxes.forEach(function(x){x.checked=true});
       else if(mode==='none')boxes.forEach(function(x){x.checked=false});
-      else boxes.forEach(function(x){x.checked=(x.value===DEFAULT)});
+      else boxes.forEach(function(x){x.checked=(x.value===FALLBACK)});
       writeBack();
     });
   }
