@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.4`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.5`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.4`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.5`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -1013,13 +1013,13 @@ async function loadShopConfigs(){
         merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"};
         merged.tusInitialsVersion=5;
       }
-      if(doc.id==="tus-hemmerde" && (stored.tusJc001Version||0)<2){
+      if(doc.id==="tus-hemmerde" && (stored.tusJc001Version||0)<3){
         merged.products=(merged.products||[]).map(product=>product.id==="tshirt"
-          ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white"}
+          ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white",sizes:["S","M","L","XL","2XL","3XL"]}
           :product).filter(product=>product.id!=="jc001");
-        merged.products.splice(1,0,{id:"jc001",name:"Just Cool JC001",articleNo:"JC001",price:10,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"}});
+        merged.products.splice(1,0,{id:"jc001",name:"Just Cool JC001",articleNo:"JC001",price:10,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"},sizesByColor:{red:["S","M","L","XL","2XL","3XL"],"heather-grey":["S","M","L","XL","2XL"]}});
         merged.productPrint={...(merged.productPrint||{}),jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}}};
-        merged.tusJc001Version=2;
+        merged.tusJc001Version=3;
       }
       shopConfigs.set(doc.id,merged);
     });

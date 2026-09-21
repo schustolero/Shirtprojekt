@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.4`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.5`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -130,13 +130,13 @@
             merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"};
             merged.tusInitialsVersion=5;
           }
-          if (slug === "tus-hemmerde" && (data.tusJc001Version || 0) < 2) {
+          if (slug === "tus-hemmerde" && (data.tusJc001Version || 0) < 3) {
             merged.products=(merged.products||[]).map(product=>product.id==="tshirt"
-              ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white"}
+              ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white",sizes:["S","M","L","XL","2XL","3XL"]}
               :product).filter(product=>product.id!=="jc001");
-            merged.products.splice(1,0,{id:"jc001",name:"Just Cool JC001",articleNo:"JC001",price:10,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"}});
+            merged.products.splice(1,0,{id:"jc001",name:"Just Cool JC001",articleNo:"JC001",price:10,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"},sizesByColor:{red:["S","M","L","XL","2XL","3XL"],"heather-grey":["S","M","L","XL","2XL"]}});
             merged.productPrint={...(merged.productPrint||{}),jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}}};
-            merged.tusJc001Version=2;
+            merged.tusJc001Version=3;
           }
 
           const finalConfig = normalizeTemplateDemo(merged);

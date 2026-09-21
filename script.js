@@ -309,6 +309,31 @@ let currentProductId = PRODUCTS[0].id;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
 
+function updateSizeOptionsForCurrentSelection() {
+  const select = document.getElementById("shirtSize");
+  if (!select) return;
+  const product = getCurrentProduct();
+  const colorSizes = product?.sizesByColor?.[currentShirtColorId];
+  const sizes = Array.isArray(colorSizes) && colorSizes.length
+    ? colorSizes
+    : (Array.isArray(product?.sizes) && product.sizes.length
+      ? product.sizes
+      : ["XS", "S", "M", "L", "XL", "2XL", "3XL", "4XL", "5XL"]);
+  const previous = select.value;
+  select.replaceChildren();
+  const placeholder = document.createElement("option");
+  placeholder.value = "";
+  placeholder.textContent = "Bitte wählen";
+  select.appendChild(placeholder);
+  sizes.forEach(size => {
+    const option = document.createElement("option");
+    option.value = size;
+    option.textContent = size;
+    select.appendChild(option);
+  });
+  select.value = sizes.includes(previous) ? previous : "";
+}
+
 function applyProductColorRules(product, forceDefault = false) {
   const allowed = Array.isArray(product?.allowedShirtColorIds) ? product.allowedShirtColorIds : [];
   const labels = product?.shirtColorLabels || {};
@@ -331,6 +356,7 @@ function applyProductColorRules(product, forceDefault = false) {
   if (target && (forceDefault || !currentButton)) {
     changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "");
   }
+  updateSizeOptionsForCurrentSelection();
 }
 
 function renderProductSelector() {
@@ -671,6 +697,7 @@ function changeShirtColor(color, name, colorId, pattern) {
   currentPattern = pattern || "";
   currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
+  updateSizeOptionsForCurrentSelection();
   renderShirt();
   if (FEATURES.previewMode === "dual") renderDualPreview();
   const pairedMotifColor = SHOP.shirtMotifColors && SHOP.shirtMotifColors[currentShirtColorId];
