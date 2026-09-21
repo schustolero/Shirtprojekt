@@ -164,8 +164,8 @@ function getAllowedMotifColorNames(){
 
   // In jedem Shop: Textilwahl vor Motiven, Motive vor Textilfarbe.
   const sidebar = document.querySelector(".sidebar");
-  if (sidebar && productSection && motifSection) sidebar.insertBefore(productSection, motifSection);
   if (sidebar && motifSection && shirtColorSection) sidebar.insertBefore(motifSection, shirtColorSection);
+  if (sidebar && productSection && motifSection) sidebar.insertBefore(productSection, motifSection);
 
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
 
