@@ -30,6 +30,8 @@ const F140_ALLOWED_META = (function parseAllowedShirtColorMeta(){
     if (part.indexOf("default=") === 0) result.defaultId = part.slice(8).trim();
     if (part.indexOf("allowed=") === 0) result.allowedIds = part.slice(8).split(",").map(item => item.trim()).filter(Boolean);
   });
+  if (result.defaultId === "weiss") result.defaultId = "white";
+  result.allowedIds = result.allowedIds.map(id => id === "weiss" ? "white" : id);
   return result;
 })();
 function getAllowedShirtColorIds(){
@@ -275,7 +277,7 @@ const dualBackMotif = document.getElementById("dualBackMotif");
 
 let currentView = "front";
 let currentShirtColor = "#ffffff";
-let currentShirtColorId = "weiss";
+let currentShirtColorId = "white";
 let currentPattern = "";
 let currentMotifColor = "#000000";
 let currentMotifColorLabel = "Black";
@@ -383,7 +385,7 @@ function getBaseImage(view) {
 async function renderShirtImage(view) {
   try {
     const base = await getBaseImage(view);
-    if (currentShirtColorId === "weiss") return getBaseSrc(view);
+    if (currentShirtColorId === "white" || currentShirtColorId === "weiss") return getBaseSrc(view);
     const c = document.createElement("canvas");
     c.width = base.naturalWidth || base.width;
     c.height = base.naturalHeight || base.height;
@@ -449,13 +451,18 @@ function getConfiguredMotif(view) {
   return { cfg, motif };
 }
 
+function clampPrintValue(value, min, max, fallback) {
+  const number = Number(value);
+  return Math.max(min, Math.min(max, Number.isFinite(number) ? number : fallback));
+}
+
 function getUnifiedPrintLayout(view, cfg) {
   const product = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][view];
   if (product) {
     return {
-      xPct: Math.max(8, Math.min(92, Number(product.xPct) || 50)),
-      yPct: Math.max(10, Math.min(70, Number(product.yPct) || (view === "front" ? 20 : 36))),
-      widthPct: Math.max(8, Math.min((currentProductId === "hoodie" && view === "back") ? 90 : 80, Number(product.widthPct) || (view === "front" ? 22 : 50)))
+      xPct: clampPrintValue(product.xPct, -20, 120, 50),
+      yPct: clampPrintValue(product.yPct, -20, 120, view === "front" ? 20 : 36),
+      widthPct: clampPrintValue(product.widthPct, 5, 110, view === "front" ? 22 : 50)
     };
   }
   const size = cfg?.size || "medium";
@@ -467,9 +474,9 @@ function getUnifiedPrintLayout(view, cfg) {
     xPct = 100 - side;
   }
   return {
-    xPct: Math.max(8, Math.min(92, xPct)),
-    yPct: Math.max(10, Math.min(70, Number(cfg?.topPct) || (view === "front" ? 20 : 36))),
-    widthPct: Math.max(8, Math.min(80, (widths[size] || widths.medium) * scaleFactor))
+    xPct: clampPrintValue(xPct, -20, 120, 50),
+    yPct: clampPrintValue(cfg?.topPct, -20, 120, view === "front" ? 20 : 36),
+    widthPct: clampPrintValue((widths[size] || widths.medium) * scaleFactor, 5, 110, 50)
   };
 }
 
@@ -519,7 +526,7 @@ async function renderDualShirtImage() {
     const ctx = c.getContext("2d");
     ctx.drawImage(base, 0, 0, c.width, c.height);
 
-    if (currentShirtColorId !== "weiss") {
+    if (currentShirtColorId !== "white" && currentShirtColorId !== "weiss") {
       ctx.globalCompositeOperation = "multiply";
       ctx.fillStyle = currentShirtColorId === "black" ? "#3a3a3d" : currentShirtColor;
       ctx.fillRect(0, 0, c.width, c.height);
@@ -620,7 +627,7 @@ viewButtons.forEach(button => button.addEventListener("click", () => switchView(
 
 function changeShirtColor(color, name, colorId, pattern) {
   currentShirtColor = color || "#ffffff";
-  currentShirtColorId = colorId || "weiss";
+  currentShirtColorId = colorId || "white";
   currentPattern = pattern || "";
   currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
@@ -910,7 +917,7 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   canvas.setWidth(PRINT_BASE_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
   viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === "front"));
   motifButtons.forEach(button => button.classList.remove("active"));
-  changeShirtColor("#ffffff", "White", "weiss", "");
+  changeShirtColor("#ffffff", "White", "white", "");
   recolorActiveMotif("#000000", "Black");
   canvas.requestRenderAll();
 });
@@ -1393,7 +1400,7 @@ if (FIXED_SHIRT && FIXED_SHIRT.color) {
   if (firstVisibleColor) {
     changeShirtColor(firstVisibleColor.dataset.color, firstVisibleColor.dataset.name, firstVisibleColor.dataset.id, firstVisibleColor.dataset.pattern || "");
   } else {
-    changeShirtColor("#ffffff", "White", "weiss", "");
+    changeShirtColor("#ffffff", "White", "white", "");
   }
 }
 
