@@ -105,6 +105,8 @@ function getAllowedMotifColorNames(){
   const motifSection = document.querySelector(".motif-section");
   const motifColorSection = document.querySelector(".motif-color-section");
   const viewSection = document.querySelector(".view-section");
+  const productSection = document.getElementById("productSection");
+  const orderSection = document.querySelector(".order-section");
   const motifHelp = document.querySelector(".motif-help");
   const backButton = document.querySelector('.view-btn[data-view="back"]');
   const resetSection = document.querySelector('.sidebar-bottom');
@@ -139,8 +141,6 @@ function getAllowedMotifColorNames(){
   if (isHansa) {
     document.body.dataset.shopStructure = "solingen";
     const sidebar = document.querySelector(".sidebar");
-    const productSection = document.getElementById("productSection");
-    const orderSection = document.querySelector(".order-section");
     [viewSection,productSection,motifSection,shirtColorSection,motifColorSection,orderSection].forEach(section=>{
       if(sidebar && section) sidebar.appendChild(section);
     });
@@ -162,8 +162,9 @@ function getAllowedMotifColorNames(){
     makePaletteCompact(motifColorSection,".motif-colors","Druckfarben");
   }
 
-  // In jedem Shop steht die Motivauswahl vor der Textilfarbe.
+  // In jedem Shop: Textilwahl vor Motiven, Motive vor Textilfarbe.
   const sidebar = document.querySelector(".sidebar");
+  if (sidebar && productSection && motifSection) sidebar.insertBefore(productSection, motifSection);
   if (sidebar && motifSection && shirtColorSection) sidebar.insertBefore(motifSection, shirtColorSection);
 
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
