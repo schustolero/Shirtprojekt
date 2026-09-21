@@ -35,7 +35,7 @@ window.CENTRAL_CONFIG = {
       fixedShirtColor:{id:"black",name:"Black||default=black",color:"#111015"},fixedMotifColor:{name:"Yellow",color:"#ffe600"},defaultMotifId:"college",hansaDefaultsVersion:1,
       orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Hansa Berufskolleg T-Shirt Bestellung",customerExtraFieldLabel:"Klasse",customerExtraFieldName:"Klasse",orderPrefix:"HAN",shopType:"motifs",active:true,
       features:{layout:"simple",motifMode:"multiple",allowCustomerUpload:false,allowText:false,allowMoveMotif:false,allowResizeMotif:false,allowRotateMotif:false,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:true,showMotifColorPicker:true,showResetButton:false,autoSelectSingleMotif:false,maxUploadMB:8,previewMode:"single"},
-      motifs:[{id:"college",name:"College",file:"motiv-1.png"},{id:"script",name:"Script",file:"motiv-2.png"}]
+      motifs:[{id:"college",name:"College",file:"motiv-1.png"},{id:"script",name:"Allstar",file:"motiv-2.png"}]
     },
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Simple Shop",brandTitle:"Simple Shop",brandSubtitle:"Vorlage",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach bestellen.",accentColor:"#111111",logoFile:"shop-logo.png",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,

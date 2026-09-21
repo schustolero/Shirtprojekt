@@ -151,6 +151,11 @@ function fallbackItemPrintMethod(order,item){
   return methods.some(method=>/dtf/i.test(method))?"DTF":"Flexdruck";
 }
 
+function orderMotifLabel(order,item){
+  const raw=text(item?.motifName||item?.motif||item?.designName,"Motiv");
+  return String(order?.customerId||"").toLowerCase()==="hansa" && /^script$/i.test(raw.trim()) ? "Allstar" : raw;
+}
+
 async function saveItemPrintMethod(id,order,index,value){
   const items=(Array.isArray(order.items)?order.items:[]).map((item,itemIndex)=>
     itemIndex===index?{...item,productionMethod:normalizeOrderPrintMethod(value)||"Flexdruck"}:{...item}
@@ -166,19 +171,22 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.76`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.80`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
     const unit = Number(item.unitPrice)||Number(order.unitPrice)||15;
     const linePrice = Number(item.linePrice)||qty*unit;
     const product = item.productName || (item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+    const printMethod = normalizeOrderPrintMethod(item.productionMethod) || fallbackItemPrintMethod(order,item);
+    const printAction = printMethod === "DTF" ? "DTF bestellen" : "Transfer selbst drucken";
     return `<tr>
       <td>${index+1}</td>
-      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(item.motif||"-")}</span></td>
+      <td><b>${htmlEscape(product)}</b><span>Motiv: ${htmlEscape(orderMotifLabel(order,item))}</span></td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
+      <td>${htmlEscape(printAction)}</td>
       <td class="num">${qty}</td>
       <td class="num">${htmlEscape(euro(linePrice))}</td>
     </tr>`;
@@ -256,7 +264,7 @@ function printOrderSlip(order){
 
     <section class="items">
       <table>
-        <thead><tr><th>#</th><th>Artikel / Motiv</th><th>Farbe</th><th>Größe</th><th>Druckfarbe</th><th class="num">Menge</th><th class="num">Gesamt</th></tr></thead>
+        <thead><tr><th>#</th><th>Artikel / Motiv</th><th>Farbe</th><th>Größe</th><th>Druckfarbe</th><th>Verfahren</th><th class="num">Menge</th><th class="num">Gesamt</th></tr></thead>
         <tbody>${rows}</tbody>
       </table>
       <div class="total"><span>${htmlEscape(order.totalQuantity||0)} Artikel</span><span>${htmlEscape(euro(order.totalPrice))}</span></div>
@@ -275,7 +283,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.76`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.80`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -296,7 +304,7 @@ function printProductionSlip(order){
     activePrintMethods.push(method);
     return `<tr>
       <td>${index+1}</td>
-      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(item.motif||"-")}</span></td>
+      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(orderMotifLabel(order,item))}</span></td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
@@ -348,7 +356,7 @@ function printProductionSlip(order){
     .head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:8px;border-bottom:1px solid #e4eaed}
     .brand{display:flex;flex-direction:column;align-items:center;width:165px}.brand img{display:block;width:165px;height:auto;object-fit:contain}
     .brand p{margin:4px 0 0;font-size:11px;line-height:1;font-weight:800;color:#3d4d56;text-transform:uppercase;letter-spacing:.13em;text-align:center}
-    .meta{text-align:right}.meta strong{display:block;font-size:13px}.meta span{display:block;margin-top:2px;font-size:8px;color:#829098}
+    .meta{text-align:right}.meta strong{display:block;font-size:13px}.meta span{display:block;margin-top:2px;font-size:8px;color:#829098}.meta .shop-name{margin-top:4px}
     .info{display:grid;grid-template-columns:1.2fr 1.2fr .7fr .8fr;gap:6px;margin-top:8px}
     .box{border:1px solid #e1e7ea;border-radius:8px;padding:5px 7px}.box span{display:block;font-size:7.2px;color:#87939b}.box strong{display:block;margin-top:1px;font-size:9.5px}
     .flow{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-top:8px}
@@ -372,7 +380,7 @@ function printProductionSlip(order){
   <div class="sheet">
     <div class="head">
       <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Produktionsschein</p></div>
-      <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span></div>
+      <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span><strong class="shop-name">${htmlEscape(customerName)}</strong></div>
     </div>
 
     <div class="info">
@@ -543,7 +551,7 @@ function renderOrder(id,order){
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
     const row=document.createElement("div");row.className="item-row v2971-item-row";
     const info=document.createElement("div");info.className="v2971-item-info";
-    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${text(item.motif)} · Motivfarbe: ${text(item.motifColor)}`;
+    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${orderMotifLabel(order,item)} · Motivfarbe: ${text(item.motifColor)}`;
     const methodControl=document.createElement("label");methodControl.className="v30169-method-control";
     const methodLabel=document.createElement("span");methodLabel.textContent="Verfahren";
     const methodSelect=document.createElement("select");methodSelect.className="v30169-method-select";methodSelect.setAttribute("aria-label",`Druckverfahren für Artikel ${index+1}`);
@@ -601,7 +609,7 @@ function renderProductionDashboard(){
       const product=productLabel(item);
       textileMap.set(product,(textileMap.get(product)||0)+qty);
 
-      const motif=text(item.motifName||item.motif||item.designName,"Motiv");
+      const motif=orderMotifLabel(order,item);
       printMap.set(motif,(printMap.get(motif)||0)+qty);
     });
   });
@@ -977,7 +985,14 @@ async function loadShopConfigs(){
   shopConfigs = new Map(Object.entries(seedShops).map(([id,cfg])=>[id,deepClone(cfg)]));
   try{
     const snap=await db.collection("shops").get();
-    snap.forEach(doc=>{ const seed=shopConfigs.get(doc.id)||{}; shopConfigs.set(doc.id,{...deepClone(seed),...deepClone(doc.data()),customerId:doc.id}); });
+    snap.forEach(doc=>{
+      const seed=shopConfigs.get(doc.id)||{};
+      const merged={...deepClone(seed),...deepClone(doc.data()),customerId:doc.id};
+      if(doc.id==="hansa") merged.motifs=(merged.motifs||[]).map(motif=>
+        motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
+      );
+      shopConfigs.set(doc.id,merged);
+    });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
   renderShopList();
   if(!selectedShopId && shopConfigs.has("tg-solingen")) selectShop("tg-solingen");

@@ -17,7 +17,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.76`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.80`;
     script.onload = () => callback && callback(window.SHOP_CONFIG || {});
     script.onerror = () => {
       console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
@@ -88,6 +88,9 @@
             merged.features = { ...(merged.features || {}), layout: "simple", showResetButton: false };
             const order={hoodie:0,tshirt:1,polo:2};
             merged.products=(merged.products||[]).sort((a,b)=>(order[a.id]??99)-(order[b.id]??99));
+            merged.motifs=(merged.motifs||[]).map(motif=>
+              motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
+            );
             if ((data.hansaDefaultsVersion || 0) < 1) {
               merged.fixedShirtColor={id:"black",name:"Black||default=black",color:"#111015"};
               merged.fixedMotifColor={name:"Yellow",color:"#ffe600"};

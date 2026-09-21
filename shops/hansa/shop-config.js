@@ -35,6 +35,6 @@ window.SHOP_CONFIG = {
   },
   motifs: [
     { id: "college", name: "College", file: "motiv-1.png" },
-    { id: "script", name: "Script", file: "motiv-2.png" }
+    { id: "script", name: "Allstar", file: "motiv-2.png" }
   ]
 };

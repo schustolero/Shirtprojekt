@@ -108,7 +108,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <header class="top">
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.76" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.80" alt="NEXARO SPORTS">
     </div>
   </div>
 </header>
@@ -161,7 +161,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.1.76" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.1.80" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -180,8 +180,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.76"></script>
-<script src="/shop-loader.js?v=30.1.76"></script>
+<script src="/central-config.js?v=30.1.80"></script>
+<script src="/shop-loader.js?v=30.1.80"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -193,7 +193,7 @@ loadShopConfig(function(cfg){
   // Logo oben links entfernt
   const logo=document.getElementById("thanksLogo");
   if(logo){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.76";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.80";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
