@@ -184,7 +184,24 @@ function getAllowedMotifColorNames(){
     textSection.className = "tool-section text-section";
     textSection.innerHTML = `
       <h3>Eigener Text</h3>
-      <div class="feature-row"><input id="customTextInput" class="feature-input" type="text" maxlength="40" placeholder="Text eingeben"><button id="addTextBtn" type="button" class="secondary-btn compact-btn">Hinzufügen</button></div>`;
+      <div class="feature-row"><input id="customTextInput" class="feature-input" type="text" maxlength="40" placeholder="Text eingeben"><button id="addTextBtn" type="button" class="secondary-btn compact-btn">Hinzufügen</button></div>
+      <div class="text-style-grid">
+        <label class="text-style-field"><span>Schriftart</span><select id="customTextFont" class="feature-select">
+          <option value="Arial">Arial</option>
+          <option value="Impact">Impact Sport</option>
+          <option value="Trebuchet MS">Trebuchet</option>
+          <option value="Georgia">Georgia</option>
+          <option value="Courier New">Courier</option>
+        </select></label>
+        <label class="text-style-field text-color-field"><span>Textfarbe</span><input id="customTextColor" type="color" value="#111111" aria-label="Textfarbe wählen"></label>
+      </div>
+      <div class="text-color-swatches" aria-label="Schnelle Textfarben">
+        <button type="button" class="text-color-swatch active" data-color="#111111" aria-label="Schwarz" title="Schwarz" style="--text-swatch:#111111"></button>
+        <button type="button" class="text-color-swatch" data-color="#ffffff" aria-label="Weiß" title="Weiß" style="--text-swatch:#ffffff"></button>
+        <button type="button" class="text-color-swatch" data-color="#ffe600" aria-label="Gelb" title="Gelb" style="--text-swatch:#ffe600"></button>
+        <button type="button" class="text-color-swatch" data-color="#e10600" aria-label="Rot" title="Rot" style="--text-swatch:#e10600"></button>
+        <button type="button" class="text-color-swatch" data-color="#147fae" aria-label="Azure Blue" title="Azure Blue" style="--text-swatch:#147fae"></button>
+      </div>`;
     const anchor = document.querySelector(".customer-upload-section") || motifSection || document.querySelector(".color-section");
     insertAfter(anchor, textSection);
   }
@@ -832,12 +849,49 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
 
 const customTextInput = document.getElementById("customTextInput");
 const addTextBtn = document.getElementById("addTextBtn");
+const customTextFont = document.getElementById("customTextFont");
+const customTextColor = document.getElementById("customTextColor");
+const textColorSwatches = [...document.querySelectorAll(".text-color-swatch")];
+
+function getActiveTextObject() {
+  const active = canvas.getActiveObject();
+  return active && active.motifKind === "text" ? active : null;
+}
+function updateTextStyleControls(textObject) {
+  if (!textObject) return;
+  if (customTextFont && textObject.fontFamily) customTextFont.value = textObject.fontFamily;
+  if (customTextColor && /^#[0-9a-f]{6}$/i.test(String(textObject.fill || ""))) customTextColor.value = textObject.fill;
+  textColorSwatches.forEach(button => button.classList.toggle("active", button.dataset.color.toLowerCase() === String(customTextColor?.value || "").toLowerCase()));
+}
+function applyTextStyle() {
+  const text = getActiveTextObject();
+  textColorSwatches.forEach(button => button.classList.toggle("active", button.dataset.color.toLowerCase() === String(customTextColor?.value || "").toLowerCase()));
+  if (!text) return;
+  text.set({
+    fill: customTextColor?.value || "#111111",
+    fontFamily: customTextFont?.value || "Arial"
+  });
+  text.initDimensions?.();
+  text.setCoords();
+  canvas.requestRenderAll();
+  saveCurrentView();
+}
+customTextFont?.addEventListener("change", applyTextStyle);
+customTextColor?.addEventListener("input", applyTextStyle);
+customTextColor?.addEventListener("change", applyTextStyle);
+textColorSwatches.forEach(button => button.addEventListener("click", () => {
+  if (customTextColor) customTextColor.value = button.dataset.color;
+  applyTextStyle();
+}));
+canvas.on("selection:created", event => updateTextStyleControls(event.selected?.[0]));
+canvas.on("selection:updated", event => updateTextStyleControls(event.selected?.[0]));
 if (addTextBtn && customTextInput) addTextBtn.addEventListener("click", function() {
   const value = customTextInput.value.trim();
   if (!value) return;
   const text = new fabric.Textbox(value, {
     left: canvas.width / 2, top: canvas.height * 0.56, originX: "center", originY: "center",
-    width: canvas.width * 0.7, textAlign: "center", fontSize: 28, fontWeight: 700, fill: currentMotifColor,
+    width: canvas.width * 0.7, textAlign: "center", fontSize: 28, fontWeight: 700,
+    fill: customTextColor?.value || "#111111", fontFamily: customTextFont?.value || "Arial",
     editable: true, selectable: true, motifKind: "text", motifName: value
   });
   canvas.add(text);

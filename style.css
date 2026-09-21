@@ -1334,6 +1334,44 @@ body[data-shop-structure="solingen"] .hansa-palette-toggle:hover{background:#f1f
     font-size:11.5px!important;
   }
 }
+
+/* v30.1.89 – Designer: Schrift- und Textfarbenauswahl. */
+.text-style-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) 82px;
+  gap:8px;
+  margin-top:9px;
+}
+.text-style-field{
+  display:flex;
+  flex-direction:column;
+  gap:5px;
+  color:#626871;
+  font-size:10px;
+  font-weight:800;
+}
+.feature-select,
+.text-color-field input{
+  width:100%;
+  height:38px;
+  border:1px solid #d7dce1;
+  border-radius:9px;
+  background:#fff;
+}
+.feature-select{padding:0 9px;color:#22272c;font-size:12px;font-weight:700}
+.text-color-field input{padding:4px;cursor:pointer}
+.text-color-swatches{display:flex;gap:8px;margin-top:8px}
+.text-color-swatch{
+  width:31px;
+  height:31px;
+  padding:0;
+  border:2px solid #fff;
+  border-radius:8px;
+  background:var(--text-swatch);
+  box-shadow:0 0 0 1px #cfd5da;
+  cursor:pointer;
+}
+.text-color-swatch.active{box-shadow:0 0 0 2px var(--accent)}
 @media(max-width:360px){
   .product-btn-name{font-size:10px!important}
   .product-btn-price{font-size:8.5px!important}
