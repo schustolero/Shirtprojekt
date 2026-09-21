@@ -2684,14 +2684,15 @@ body[data-template-shop="true"] .brand .shop-brand-logo{
   }
 }
 .initials-section .feature-input{text-transform:uppercase;font-weight:800;letter-spacing:.12em}
-body[data-customer-id="tus-hemmerde"] .print-zone,
-body[data-customer-id="tus-hemmerde"] .print-zone.back{
-  height:565px;
-  top:calc(47% + 22.5px);
+.shirt-initials-overlay{
+  position:absolute;
+  z-index:4;
+  transform:translate(-50%,-50%);
+  font-weight:800;
+  line-height:1;
+  letter-spacing:.02em;
+  white-space:nowrap;
+  pointer-events:none;
+  user-select:none;
 }
-body[data-customer-id="tus-hemmerde"] .canvas-container,
-body[data-customer-id="tus-hemmerde"] .print-zone canvas,
-body[data-customer-id="tus-hemmerde"] .print-zone.back .canvas-container,
-body[data-customer-id="tus-hemmerde"] .print-zone.back canvas{
-  height:565px!important;
-}
+.shirt-initials-overlay[hidden]{display:none!important}

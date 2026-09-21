@@ -258,8 +258,7 @@ function getAllowedMotifColorNames(){
 const PRINT_BASE_WIDTH = 260;
 const PRINT_BASE_HEIGHT = 340;
 const PRINT_HEADROOM = 90;
-const PRINT_FOOTROOM = FEATURES.allowInitials ? 135 : 0;
-const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM + PRINT_FOOTROOM;
+const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM;
 
 const canvas = new fabric.Canvas("designCanvas", {
   width: PRINT_BASE_WIDTH,
@@ -892,44 +891,36 @@ function initialsValue() {
 }
 
 function updateInitialsOnCanvas() {
-  if (!FEATURES.allowInitials || typeof canvas === "undefined") return;
+  if (!FEATURES.allowInitials) return;
   const value = initialsValue();
-  let object = canvas.getObjects().find(item => item && item.motifKind === "initials");
-  if (!value) {
-    if (object) {
-      canvas.remove(object);
-      canvas.requestRenderAll();
-      saveCurrentView();
-    }
-    return;
-  }
-
   const cfg = SHOP.initialsConfig || {};
   const paired = SHOP.shirtMotifColors?.[currentShirtColorId];
   const color = paired?.color || currentMotifColor || "#B62820";
-  if (!object) {
-    object = new fabric.Text(value, {
-      left: PRINT_BASE_WIDTH * (Number(cfg.xPct) || 18) / 100,
-      top: PRINT_HEADROOM + PRINT_BASE_HEIGHT * (Number(cfg.yPct) || 94) / 100,
-      originX: "center",
-      originY: "center",
-      fontSize: Number(cfg.fontSize) || 20,
-      fontWeight: 800,
-      fontFamily: cfg.fontFamily || "Arial",
-      fill: color,
-      selectable: false,
-      evented: false,
-      motifKind: "initials",
-      motifName: value
-    });
-    canvas.add(object);
-  } else {
-    object.set({ text: value, motifName: value, fill: color });
+  const stage = document.querySelector(".mockup-stage");
+  if (!stage) return;
+  let overlay = stage.querySelector(".shirt-initials-overlay");
+  if (!overlay) {
+    overlay = document.createElement("div");
+    overlay.className = "shirt-initials-overlay";
+    overlay.setAttribute("aria-hidden", "true");
+    stage.appendChild(overlay);
   }
-  object.initDimensions?.();
-  object.setCoords();
-  canvas.requestRenderAll();
-  saveCurrentView();
+  overlay.textContent = value;
+  overlay.hidden = !value;
+  overlay.style.left = `${Number(cfg.stageXPct) || 32}%`;
+  overlay.style.top = `${Number(cfg.stageYPct) || 90}%`;
+  overlay.style.fontSize = `${Number(cfg.fontSize) || 20}px`;
+  overlay.style.fontFamily = cfg.fontFamily || "Arial";
+  overlay.style.color = color;
+
+  const oldCanvasObject = typeof canvas !== "undefined"
+    ? canvas.getObjects().find(item => item && item.motifKind === "initials")
+    : null;
+  if (oldCanvasObject) {
+    canvas.remove(oldCanvasObject);
+    canvas.requestRenderAll();
+    saveCurrentView();
+  }
 }
 
 initialsInput?.addEventListener("input", updateInitialsOnCanvas);
