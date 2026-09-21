@@ -57,6 +57,7 @@ function getAllowedMotifColorNames(){
 }
 (function applyShopConfig() {
   const cfg = SHOP;
+  document.body.dataset.customerId = String(cfg.customerId || window.SHOP_SLUG || "");
   if (String(cfg.customerId || window.SHOP_SLUG || "").startsWith("_")) document.body.dataset.templateShop = "true";
   if (cfg.pageTitle) document.title = cfg.pageTitle;
   const setText = (id, value) => {
@@ -257,7 +258,8 @@ function getAllowedMotifColorNames(){
 const PRINT_BASE_WIDTH = 260;
 const PRINT_BASE_HEIGHT = 340;
 const PRINT_HEADROOM = 90;
-const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM;
+const PRINT_FOOTROOM = FEATURES.allowInitials ? 135 : 0;
+const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM + PRINT_FOOTROOM;
 
 const canvas = new fabric.Canvas("designCanvas", {
   width: PRINT_BASE_WIDTH,

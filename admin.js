@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.98`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.99`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.98`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.99`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -1008,10 +1008,10 @@ async function loadShopConfigs(){
         merged.shirtMotifColors={white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}};
         merged.tusColorPairsVersion=1;
       }
-      if(doc.id==="tus-hemmerde" && (stored.tusInitialsVersion||0)<1){
+      if(doc.id==="tus-hemmerde" && (stored.tusInitialsVersion||0)<2){
         merged.features={...(merged.features||{}),allowInitials:true};
-        merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,xPct:18,yPct:94,fontSize:20,fontFamily:"Arial"};
-        merged.tusInitialsVersion=1;
+        merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,xPct:18,yPct:130,fontSize:20,fontFamily:"Arial"};
+        merged.tusInitialsVersion=2;
       }
       shopConfigs.set(doc.id,merged);
     });
