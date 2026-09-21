@@ -44,7 +44,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .item-row:last-child{border-bottom:0}.item-row:nth-child(even){background:#fbfcfd}
 .product-cell{display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:center}
 .product-cell img{width:52px;height:52px;object-fit:contain;background:linear-gradient(180deg,#ffffff,#f4f7f9);border:1px solid #e3e8ec;border-radius:10px;padding:4px}
-.product-cell strong{display:block;font-size:12.5px;font-weight:800;letter-spacing:-.01em}.product-cell small{display:none}
+.product-cell strong{display:block;font-size:12.5px;font-weight:800;letter-spacing:-.01em}.product-cell em{display:block;margin-top:3px;font-size:10px;font-style:normal;font-weight:700;color:#66717d}.product-cell small{display:none}
 .cell{font-size:11.5px;line-height:1.2}.positions div+div{margin-top:2px}.positions div{white-space:normal}
 .motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
 .money{font-size:11.5px}.money.total{font-weight:900}
@@ -108,7 +108,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <header class="top">
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.97" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.1.98" alt="NEXARO SPORTS">
     </div>
   </div>
 </header>
@@ -161,7 +161,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.1.97" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.1.98" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -180,8 +180,8 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.1.97"></script>
-<script src="/shop-loader.js?v=30.1.97"></script>
+<script src="/central-config.js?v=30.1.98"></script>
+<script src="/shop-loader.js?v=30.1.98"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -193,7 +193,7 @@ loadShopConfig(function(cfg){
   // Logo oben links entfernt
   const logo=document.getElementById("thanksLogo");
   if(logo){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.97";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.1.98";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
@@ -267,6 +267,11 @@ loadShopConfig(function(cfg){
         const strong=document.createElement("strong");
         strong.textContent=product;
         copy.append(strong);
+        if(item.initials){
+          const initials=document.createElement("em");
+          initials.textContent=`Initialen: ${text(item.initials)}`;
+          copy.append(initials);
+        }
         prod.append(img,copy);
 
         const color=document.createElement("div");

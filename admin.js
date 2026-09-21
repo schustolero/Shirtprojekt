@@ -63,7 +63,7 @@ function searchableText(entry){
   const o = entry.order || {};
   return [
     o.orderNumber, entry.id, o.customerId, o.customerName, o.name, o.customerClass, o.email, o.phone, o.status,
-    ...(Array.isArray(o.items) ? o.items.flatMap(item => [item.size,item.shirtColor,item.motif,item.motifColor]) : [])
+    ...(Array.isArray(o.items) ? o.items.flatMap(item => [item.size,item.shirtColor,item.motif,item.motifColor,item.initials]) : [])
   ].filter(Boolean).join(" ").toLowerCase();
 }
 
@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.97`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.98`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -182,7 +182,7 @@ function printOrderSlip(order){
     const printAction = printMethod === "DTF" ? "DTF bestellen" : "Transfer selbst drucken";
     return `<tr>
       <td>${index+1}</td>
-      <td><b>${htmlEscape(product)}</b><span>Motiv: ${htmlEscape(orderMotifLabel(order,item))}</span></td>
+      <td><b>${htmlEscape(product)}</b><span>Motiv: ${htmlEscape(orderMotifLabel(order,item))}${item.initials?` · Initialen: ${htmlEscape(item.initials)}`:""}</span></td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.97`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.98`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -306,7 +306,7 @@ function printProductionSlip(order){
     activePrintMethods.push(method);
     return `<tr>
       <td>${index+1}</td>
-      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(orderMotifLabel(order,item))}</span></td>
+      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(orderMotifLabel(order,item))}${item.initials?` · Initialen: ${htmlEscape(item.initials)}`:""}</span></td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
@@ -553,7 +553,7 @@ function renderOrder(id,order){
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
     const row=document.createElement("div");row.className="item-row v2971-item-row";
     const info=document.createElement("div");info.className="v2971-item-info";
-    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${orderMotifLabel(order,item)} · Motivfarbe: ${text(item.motifColor)}`;
+    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${orderMotifLabel(order,item)} · Motivfarbe: ${text(item.motifColor)}${item.initials?` · Initialen: ${text(item.initials)}`:""}`;
     const methodControl=document.createElement("label");methodControl.className="v30169-method-control";
     const methodLabel=document.createElement("span");methodLabel.textContent="Verfahren";
     const methodSelect=document.createElement("select");methodSelect.className="v30169-method-select";methodSelect.setAttribute("aria-label",`Druckverfahren für Artikel ${index+1}`);
@@ -1007,6 +1007,11 @@ async function loadShopConfigs(){
         merged.fixedMotifColor={name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"};
         merged.shirtMotifColors={white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}};
         merged.tusColorPairsVersion=1;
+      }
+      if(doc.id==="tus-hemmerde" && (stored.tusInitialsVersion||0)<1){
+        merged.features={...(merged.features||{}),allowInitials:true};
+        merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,xPct:18,yPct:94,fontSize:20,fontFamily:"Arial"};
+        merged.tusInitialsVersion=1;
       }
       shopConfigs.set(doc.id,merged);
     });

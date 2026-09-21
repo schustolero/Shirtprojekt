@@ -5,6 +5,7 @@ const FEATURES = Object.assign({
   motifMode: "single",          // single | multiple | upload | mixed
   allowCustomerUpload: false,
   allowText: false,
+  allowInitials: false,
   allowMoveMotif: false,
   allowResizeMotif: false,
   allowRotateMotif: false,
@@ -206,6 +207,18 @@ function getAllowedMotifColorNames(){
       </div>`;
     const anchor = document.querySelector(".customer-upload-section") || motifSection || document.querySelector(".color-section");
     insertAfter(anchor, textSection);
+  }
+
+  if (FEATURES.allowInitials) {
+    const initials = SHOP.initialsConfig || {};
+    const maxLength = Number(initials.maxLength) || 3;
+    const initialsSection = document.createElement("section");
+    initialsSection.className = "tool-section initials-section";
+    initialsSection.innerHTML = `
+      <h3>${initials.label || "Initialen (optional)"}</h3>
+      <input id="initialsInput" class="feature-input" type="text" maxlength="${maxLength}" placeholder="${initials.placeholder || "z. B. TS"}" autocomplete="off" autocapitalize="characters" aria-label="Initialen eingeben">
+      <p class="hint">Maximal ${maxLength} Zeichen · feste Position unten links</p>`;
+    insertAfter(shirtColorSection || productSection, initialsSection);
   }
 
   const footer = document.querySelector(".designer-footer");
@@ -587,7 +600,7 @@ function applyPreviewMode() {
 }
 
 function getActiveObject() { return canvas.getActiveObject(); }
-function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel"]); }
+function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName"]); }
 
 function loadView(view) {
   canvas.clear();
@@ -637,6 +650,7 @@ function changeShirtColor(color, name, colorId, pattern) {
   if (pairedMotifColor?.color) {
     void recolorActiveMotif(pairedMotifColor.color, pairedMotifColor.name || "Druckfarbe");
   }
+  updateInitialsOnCanvas();
 }
 
 shirtColorButtons.forEach(button => button.addEventListener("click", () => {
@@ -761,7 +775,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
         canvas.discardActiveObject();
         image.setCoords();
         canvas.requestRenderAll();
-        viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel"]);
+        viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName"]);
         if (markActive && view === "front") motifButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.motif === motifId));
         resolve();
       }, { crossOrigin: "anonymous" });
@@ -863,6 +877,60 @@ const addTextBtn = document.getElementById("addTextBtn");
 const customTextFont = document.getElementById("customTextFont");
 const customTextColor = document.getElementById("customTextColor");
 const textColorSwatches = [...document.querySelectorAll(".text-color-swatch")];
+const initialsInput = document.getElementById("initialsInput");
+
+function initialsValue() {
+  const maxLength = Number(SHOP.initialsConfig?.maxLength) || 3;
+  const value = String(initialsInput?.value || "")
+    .toUpperCase()
+    .replace(/[^A-ZÄÖÜ0-9]/g, "")
+    .slice(0, maxLength);
+  if (initialsInput && initialsInput.value !== value) initialsInput.value = value;
+  return value;
+}
+
+function updateInitialsOnCanvas() {
+  if (!FEATURES.allowInitials || typeof canvas === "undefined") return;
+  const value = initialsValue();
+  let object = canvas.getObjects().find(item => item && item.motifKind === "initials");
+  if (!value) {
+    if (object) {
+      canvas.remove(object);
+      canvas.requestRenderAll();
+      saveCurrentView();
+    }
+    return;
+  }
+
+  const cfg = SHOP.initialsConfig || {};
+  const paired = SHOP.shirtMotifColors?.[currentShirtColorId];
+  const color = paired?.color || currentMotifColor || "#B62820";
+  if (!object) {
+    object = new fabric.Text(value, {
+      left: PRINT_BASE_WIDTH * (Number(cfg.xPct) || 18) / 100,
+      top: PRINT_HEADROOM + PRINT_BASE_HEIGHT * (Number(cfg.yPct) || 94) / 100,
+      originX: "center",
+      originY: "center",
+      fontSize: Number(cfg.fontSize) || 20,
+      fontWeight: 800,
+      fontFamily: cfg.fontFamily || "Arial",
+      fill: color,
+      selectable: false,
+      evented: false,
+      motifKind: "initials",
+      motifName: value
+    });
+    canvas.add(object);
+  } else {
+    object.set({ text: value, motifName: value, fill: color });
+  }
+  object.initDimensions?.();
+  object.setCoords();
+  canvas.requestRenderAll();
+  saveCurrentView();
+}
+
+initialsInput?.addEventListener("input", updateInitialsOnCanvas);
 
 function getActiveTextObject() {
   const active = canvas.getActiveObject();
@@ -1057,6 +1125,7 @@ function getCurrentShirtSelection() {
     shirtColor: currentColorName.textContent || "White",
     motif: getSelectedMotifName(),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
+    initials: initialsValue(),
     printLayout: fixedPrintParts.join(" · "),
     size,
     quantity
@@ -1092,7 +1161,7 @@ function renderCart() {
     top.append(title, price);
 
     const meta = document.createElement("span");
-    meta.textContent = `${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
+    meta.textContent = `${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
     info.append(top, meta);
 
     const remove = document.createElement("button");
@@ -1122,6 +1191,7 @@ function addCurrentShirtToOrder() {
     entry.shirtColor === item.shirtColor &&
     entry.motif === item.motif &&
     entry.motifColor === item.motifColor &&
+    entry.initials === item.initials &&
     entry.size === item.size
   );
 
@@ -1135,7 +1205,7 @@ function addCurrentShirtToOrder() {
 
 function orderItemsAsText() {
   return orderItems.map((item, i) =>
-    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
+    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.initials ? ` | Initialen: ${item.initials}` : ""}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
   ).join("\n");
 }
 
@@ -1155,7 +1225,7 @@ function openOrderSummary() {
   orderItems.forEach((item, i) => {
     orderSummary.appendChild(summaryRow(
       `Position ${i + 1}`,
-      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
@@ -1313,6 +1383,7 @@ if (orderForm) {
           shirtColor: item.shirtColor || "",
           motif: item.motif || "",
           motifColor: item.motifColor || "",
+          initials: item.initials || "",
           printLayout: item.printLayout || "",
           size: item.size || "",
           quantity: Number(item.quantity) || 1,
