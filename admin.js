@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.89`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.91`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.89`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.1.91`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -709,7 +709,7 @@ let shopAdminInitialized = false;
 const shopFields = {
   id: document.getElementById("shopId"), type: document.getElementById("shopType"), name: document.getElementById("shopName"),
   price: document.getElementById("shopPrice"), prefix: document.getElementById("shopPrefix"), email: document.getElementById("shopEmail"), active: document.getElementById("shopActive"),
-  accent: document.getElementById("accentColor"), logoHeight: document.getElementById("logoHeight"), previewMode: document.getElementById("previewMode"), heading: document.getElementById("designerHeading"), intro: document.getElementById("designerIntro"),
+  accent: document.getElementById("accentColor"), logoHeight: document.getElementById("logoHeight"), previewMode: document.getElementById("previewMode"), subtitle: document.getElementById("brandSubtitle"), heading: document.getElementById("designerHeading"), intro: document.getElementById("designerIntro"),
   fixedShirtName: document.getElementById("fixedShirtName"), fixedShirtHex: document.getElementById("fixedShirtHex"), fixedMotifName: document.getElementById("fixedMotifName"), fixedMotifHex: document.getElementById("fixedMotifHex"),
   productTshirtEnabled: document.getElementById("productTshirtEnabled"), productPoloEnabled: document.getElementById("productPoloEnabled"), productHoodieEnabled: document.getElementById("productHoodieEnabled"),
   showShirtColors: document.getElementById("showShirtColors"), showMotifs: document.getElementById("showMotifs"), showMotifColors: document.getElementById("showMotifColors"),
@@ -989,10 +989,17 @@ async function loadShopConfigs(){
     const snap=await db.collection("shops").get();
     snap.forEach(doc=>{
       const seed=shopConfigs.get(doc.id)||{};
-      const merged={...deepClone(seed),...deepClone(doc.data()),customerId:doc.id};
-      if(doc.id==="hansa") merged.motifs=(merged.motifs||[]).map(motif=>
-        motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
-      );
+      const stored=deepClone(doc.data());
+      const merged={...deepClone(seed),...stored,customerId:doc.id};
+      if(doc.id==="hansa"){
+        merged.motifs=(merged.motifs||[]).map(motif=>
+          motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
+        );
+        if((stored.hansaSubtitleVersion||0)<1){
+          merged.brandSubtitle="Wir sind Hansa!";
+          merged.hansaSubtitleVersion=1;
+        }
+      }
       shopConfigs.set(doc.id,merged);
     });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
@@ -1003,7 +1010,7 @@ async function loadShopConfigs(){
   };
   Object.entries(templateDemos).forEach(([id,demo])=>{
     const cfg=shopConfigs.get(id);
-    if(cfg) shopConfigs.set(id,{...cfg,...demo,features:{...(cfg.features||{}),allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true},customerId:id,logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,active:true});
+    if(cfg) shopConfigs.set(id,{...cfg,...demo,brandSubtitle:typeof cfg.brandSubtitle==="string"?cfg.brandSubtitle:demo.brandSubtitle,features:{...(cfg.features||{}),allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true},customerId:id,logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,active:true});
   });
   renderShopList();
   if(!selectedShopId && shopConfigs.has("tg-solingen")) selectShop("tg-solingen");
@@ -1081,7 +1088,7 @@ function selectShop(id){
   const cfg=deepClone(shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingLogo=cfg.logoFile||"";
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=cfg.customerName||id||"Neuer Shop";
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
-  shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(cfg.accentColor||"")?cfg.accentColor:"#111111"; shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=cfg.features?.previewMode||"single"; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
+  shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(cfg.accentColor||"")?cfg.accentColor:"#111111"; shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=cfg.features?.previewMode||"single"; shopFields.subtitle.value=cfg.brandSubtitle||""; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
   fillProductToggles(cfg); configurePositionProducts(cfg);
   shopFields.fixedShirtName.value=cleanVisibleColorName(cfg.fixedShirtColor?.name||cfg.fixedShirtColor?.id||""); shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
   shopFields.showShirtColors.checked=featureValue(cfg,"showShirtColorPicker",true); shopFields.showMotifs.checked=featureValue(cfg,"showMotifPicker",cfg.shopType!=="simple"); shopFields.showMotifColors.checked=featureValue(cfg,"showMotifColorPicker",true);
@@ -1173,7 +1180,7 @@ newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal=template; workingMotifs=deepClone(template.motifs||[{id:"motiv1",name:"Motiv 1",file:""}]); workingLogo=template.logoFile||"";
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent="Neuen SIMPLE-Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=Number(template.shirtPrice??15); shopFields.prefix.value=""; shopFields.email.value=template.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=template.active!==false;
-  shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(template.accentColor||"")?template.accentColor:"#111111"; shopFields.logoHeight.value=Number(template.logoHeight||90); shopFields.previewMode.value=template.features?.previewMode||"single"; shopFields.heading.value=template.designerHeading||"Shirt auswählen"; shopFields.intro.value=template.designerIntro||"";
+  shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(template.accentColor||"")?template.accentColor:"#111111"; shopFields.logoHeight.value=Number(template.logoHeight||90); shopFields.previewMode.value=template.features?.previewMode||"single"; shopFields.subtitle.value=template.brandSubtitle||"T-Shirt Konfigurator"; shopFields.heading.value=template.designerHeading||"Shirt auswählen"; shopFields.intro.value=template.designerIntro||"";
   fillProductToggles(template); configurePositionProducts(template);
   shopFields.fixedShirtName.value=cleanVisibleColorName(template.fixedShirtColor?.name||template.fixedShirtColor?.id||""); shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedShirtColor?.color||"")?template.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=template.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedMotifColor?.color||"")?template.fixedMotifColor.color:"#f6c951";
   const fp=template.fixedPrint||{}; refreshFixedPrintMotifOptions(fp.front?.motifId||"motiv1",fp.back?.motifId||"motiv1");
@@ -1192,7 +1199,7 @@ function buildShopConfig(){
   const name=shopFields.name.value.trim(); if(!name) throw new Error("Bitte einen Shopnamen eingeben.");
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,allowBackDesign:shopFields.allowBack.checked,allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showMotifColorPicker:shopFields.showMotifColors.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
-  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:old.brandSubtitle||"T-Shirt Konfigurator",designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||""}))};
+  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||""}))};
   const fsn=cleanVisibleColorName(shopFields.fixedShirtName.value), fmn=shopFields.fixedMotifName.value.trim(); if(fsn) cfg.fixedShirtColor={id:slugify(fsn),name:fsn,color:shopFields.fixedShirtHex.value}; else delete cfg.fixedShirtColor; if(fmn) cfg.fixedMotifColor={name:fmn,color:shopFields.fixedMotifHex.value}; else delete cfg.fixedMotifColor;
   cfg.fixedPrint={
     front:{enabled:shopFields.fixedFrontEnabled.checked,motifId:shopFields.fixedFrontMotif.value||"motiv1",position:shopFields.fixedFrontPosition.value||"left-chest",size:shopFields.fixedFrontSize.value||"small",topPct:Math.max(10,Math.min(70,Number(shopFields.fixedFrontTop.value)||24)),sidePct:Math.max(15,Math.min(50,Number(shopFields.fixedFrontSide.value)||32))},

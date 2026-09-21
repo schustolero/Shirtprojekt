@@ -24,7 +24,7 @@ window.CENTRAL_CONFIG = {
       motifs:[{id:"motiv1",name:"Vereinslogo",file:"motiv-1.png"}]
     },
     "hansa": {
-      customerId:"hansa", customerName:"Hansa Berufskolleg", pageTitle:"Hansa Berufskolleg – T-Shirt Shop", brandTitle:"Hansa Berufskolleg", brandSubtitle:"T-Shirt Konfigurator",
+      customerId:"hansa", customerName:"Hansa Berufskolleg", pageTitle:"Hansa Berufskolleg – T-Shirt Shop", brandTitle:"Hansa Berufskolleg", brandSubtitle:"Wir sind Hansa!", hansaSubtitleVersion:1,
       designerHeading:"Shirt gestalten", designerIntro:"Motiv auswählen, Farbe bestimmen und Shirt konfigurieren.", accentColor:"#1f3f76", logoFile:"shop-logo.jpg", logoHeight:90,
       shirtPrice:15,currency:"EUR",
       products:[

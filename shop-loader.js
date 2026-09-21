@@ -18,7 +18,8 @@
     const template = templateDemos[slug];
     if (!template) return config;
     const features = { ...(config.features || {}), allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true };
-    return { ...config, ...template, features, customerId:slug, logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90, active:true };
+    const brandSubtitle = typeof config.brandSubtitle === "string" ? config.brandSubtitle : template.brandSubtitle;
+    return { ...config, ...template, brandSubtitle, features, customerId:slug, logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90, active:true };
   }
 
   window.shopAssetUrl = function(file){
@@ -29,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.89`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.91`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -106,6 +107,10 @@
             merged.motifs=(merged.motifs||[]).map(motif=>
               motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
             );
+            if ((data.hansaSubtitleVersion || 0) < 1) {
+              merged.brandSubtitle="Wir sind Hansa!";
+              merged.hansaSubtitleVersion=1;
+            }
             if ((data.hansaDefaultsVersion || 0) < 1) {
               merged.fixedShirtColor={id:"black",name:"Black||default=black",color:"#111015"};
               merged.fixedMotifColor={name:"Yellow",color:"#ffe600"};

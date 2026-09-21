@@ -2643,14 +2643,14 @@ body[data-template-shop="true"] .brand .shop-brand-logo{
   object-fit:contain!important;
 }
 @media(max-width:900px){
-  .motif-section{order:5!important}
-  .color-section{order:6!important}
-  .motif-color-section{order:7!important}
-  .order-section{order:8!important}
-  .upload-section{order:9!important}
-  .logo-section{order:10!important}
-  .customer-upload-section{order:11!important}
-  .text-section{order:12!important}
+  .customer-upload-section{order:5!important}
+  .text-section{order:6!important}
+  .motif-section{order:7!important}
+  .color-section{order:8!important}
+  .motif-color-section{order:9!important}
+  .order-section{order:10!important}
+  .upload-section{order:11!important}
+  .logo-section{order:12!important}
   body[data-template-shop="true"] .brand{display:block!important}
   body[data-template-shop="true"] .brand .shop-brand-logo{
     width:230px!important;
