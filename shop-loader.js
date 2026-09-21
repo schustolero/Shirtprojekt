@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.1`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.2`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -125,10 +125,10 @@
             merged.shirtMotifColors={white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}};
             merged.tusColorPairsVersion=1;
           }
-          if (slug === "tus-hemmerde" && (data.tusInitialsVersion || 0) < 4) {
+          if (slug === "tus-hemmerde" && (data.tusInitialsVersion || 0) < 5) {
             merged.features={...(merged.features||{}),allowInitials:true};
-            merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:20,fontFamily:"Arial"};
-            merged.tusInitialsVersion=4;
+            merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"};
+            merged.tusInitialsVersion=5;
           }
 
           const finalConfig = normalizeTemplateDemo(merged);
