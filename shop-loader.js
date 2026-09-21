@@ -17,7 +17,7 @@
   function normalizeTemplateDemo(config){
     const template = templateDemos[slug];
     if (!template) return config;
-    return { ...config, ...template, customerId:slug, logoFile:"/dein-logo.svg", logoHeight:90, active:true };
+    return { ...config, ...template, customerId:slug, logoFile:"/dein-logo.svg?v=30.1.83", logoHeight:90, active:true };
   }
 
   window.shopAssetUrl = function(file){
@@ -28,7 +28,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.82`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.1.83`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);

@@ -7,7 +7,7 @@ window.SHOP_CONFIG = {
   designerHeading: "Shirt frei gestalten",
   designerIntro: "Eigenes Logo hochladen, Text ergänzen und Motiv frei positionieren.",
   accentColor: "#c99a1b",
-  logoFile: "/dein-logo.svg",
+  logoFile: "/dein-logo.svg?v=30.1.83",
   logoHeight: 90,
   shirtPrice: 15, currency: "EUR",
   orderEmail: "shirtzentrale@gmail.com",
