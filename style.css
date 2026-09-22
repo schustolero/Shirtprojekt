@@ -2710,7 +2710,7 @@ body[data-show-prices="false"] .cart-item-price,
 body[data-show-prices="false"] #cartTotal,
 body[data-show-prices="false"] #checkoutTotal{display:none!important}
 
-/* v30.3.14 – Mobil: Logoart und Initialen direkt unter der Shirt-Vorschau. */
+/* v30.3.15 – Mobil: Logoart und Initialen direkt unter der Shirt-Vorschau. */
 .mobile-after-shirt-controls{display:contents}
 @media(max-width:900px){
   .mobile-after-shirt-controls{
@@ -2728,4 +2728,15 @@ body[data-show-prices="false"] #checkoutTotal{display:none!important}
   }
   .mobile-after-shirt-controls>.tool-section[hidden]{display:none!important}
   .mobile-after-shirt-controls>.tool-section h3{margin:0 0 8px!important}
+}
+
+/* v30.3.15 – Kundenpreise endgültig ausblenden. */
+html body[data-show-prices="false"] #productSwitch .product-btn .product-btn-price,
+html body[data-show-prices="false"] .sidebar .order-price-info,
+html body[data-show-prices="false"] #addToOrderPrice,
+html body[data-show-prices="false"] .cart-item-price,
+html body[data-show-prices="false"] #cartTotal,
+html body[data-show-prices="false"] #checkoutTotal{
+  display:none!important;
+  visibility:hidden!important;
 }

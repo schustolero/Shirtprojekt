@@ -112,7 +112,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 <header class="top" hidden>
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.14" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.15" alt="NEXARO SPORTS">
     </div>
   </div>
 </header>
@@ -165,7 +165,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.14" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.15" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -184,8 +184,8 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 </section>
 </main>
 
-<script src="/central-config.js?v=30.3.14"></script>
-<script src="/shop-loader.js?v=30.3.14"></script>
+<script src="/central-config.js?v=30.3.15"></script>
+<script src="/shop-loader.js?v=30.3.15"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -194,6 +194,10 @@ loadShopConfig(function(cfg){
   const showPrices=cfg.features?.showPrices!==false;
   const showNexaroBranding=cfg.features?.showNexaroBranding!==false;
   document.body.dataset.showPrices=showPrices?"true":"false";
+  const enforceConfirmationPrices=()=>{
+    if(showPrices)return;
+    document.querySelectorAll(".item-row>.money,.total-line.grand,.totalbox>small").forEach(element=>element.style.setProperty("display","none","important"));
+  };
 
   document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
 
@@ -202,7 +206,7 @@ loadShopConfig(function(cfg){
   const top=document.querySelector(".top");
   if(top) top.hidden=!showNexaroBranding;
   if(logo && showNexaroBranding){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.14";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.15";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
@@ -309,6 +313,7 @@ loadShopConfig(function(cfg){
     }
 
     document.getElementById("confirmationSummary").hidden=false;
+    enforceConfirmationPrices();
     /* Bestelldaten bleiben für Reload/PDF erhalten; nächste Bestellung überschreibt sie. */
   }catch(err){
     console.error(err);

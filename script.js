@@ -23,6 +23,15 @@ const FEATURES = Object.assign({
 
 function featureEnabled(name) { return FEATURES[name] !== false; }
 
+function enforceCustomerPriceVisibility() {
+  if (FEATURES.showPrices !== false) return;
+  document.querySelectorAll(".product-btn-price,.order-price-info,#addToOrderPrice,.cart-item-price,#cartTotal,#checkoutTotal").forEach(element => {
+    if (element.style.getPropertyValue("display") !== "none" || element.style.getPropertyPriority("display") !== "important") {
+      element.style.setProperty("display", "none", "important");
+    }
+  });
+}
+
 function syncMobileAfterShirtControls() {
   const mobile = window.matchMedia("(max-width: 900px)").matches;
   const designerArea = document.querySelector(".designer-area");
@@ -140,6 +149,10 @@ function getAllowedMotifColorNames(){
 
   document.body.dataset.shopLayout = FEATURES.layout || "simple";
   document.body.dataset.showPrices = FEATURES.showPrices === false ? "false" : "true";
+  enforceCustomerPriceVisibility();
+  if (FEATURES.showPrices === false) {
+    new MutationObserver(enforceCustomerPriceVisibility).observe(document.body, { childList: true, subtree: true });
+  }
 
   const shirtColorSection = document.querySelector(".color-section");
   const motifSection = document.querySelector(".motif-section");
@@ -454,6 +467,7 @@ function renderProductSelector() {
     const productPrice = document.createElement("small");
     productPrice.className = "product-btn-price";
     productPrice.textContent = priceText;
+    if (FEATURES.showPrices === false) productPrice.style.setProperty("display", "none", "important");
     btn.append(productName, productPrice);
     btn.classList.toggle("active", product.id === currentProductId);
     btn.addEventListener("click", async () => {
