@@ -47,6 +47,8 @@
 .motif-library-item b{font-size:12px}
 .motif-library-item small,.motif-original-colors{font-size:10px;color:#6d7480}
 .motif-original-colors{display:block;margin-top:4px;color:#16704a;font-weight:700}
+.v3028-patch-btn{font:inherit;cursor:pointer;color:#9b1c1c!important;border-color:#efb3b3!important;background:#fff7f7!important}
+.v3028-patch-btn:hover{background:#ffecec!important}
 @media(max-width:720px){
   .motif-library{padding:8px}
   .motif-library-item{grid-template-columns:46px minmax(0,1fr) auto;gap:7px}
