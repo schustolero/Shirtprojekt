@@ -2710,7 +2710,7 @@ body[data-show-prices="false"] .cart-item-price,
 body[data-show-prices="false"] #cartTotal,
 body[data-show-prices="false"] #checkoutTotal{display:none!important}
 
-/* v30.3.6 – Mobil: Logoart und Initialen direkt unter der Shirt-Vorschau. */
+/* v30.3.7 – Mobil: Logoart und Initialen direkt unter der Shirt-Vorschau. */
 .mobile-after-shirt-controls{display:contents}
 @media(max-width:900px){
   .mobile-after-shirt-controls{
