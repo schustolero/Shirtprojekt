@@ -38,7 +38,7 @@
   }
 }
 
-/* v30.3.12 – professioneller Funktions- und Preisbereich */
+/* v30.3.13 – professioneller Funktions- und Preisbereich */
 .shop-form .v2972-status-functions{
   grid-template-columns:126px minmax(0,1fr)!important;
   gap:8px!important;
@@ -1028,7 +1028,7 @@
   .functions-accordion .core-features{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 
-/* v30.3.12 – kompakte, editierbare Produktpreise */
+/* v30.3.13 – kompakte, editierbare Produktpreise */
 .v3036-product-head,.v3036-product-row{
   display:grid!important;
   grid-template-columns:minmax(90px,1.5fr) minmax(54px,.65fr) minmax(92px,.8fr) 62px!important;
@@ -4613,7 +4613,7 @@ body.v284-admin #ordersTab .v30150-stage{
   }
 }
 
-/* v30.3.12 final – einheitliche professionelle Schalter */
+/* v30.3.13 final – einheitliche professionelle Schalter */
 .shop-form .v2853-basic-grid>.v2972-status-functions{
   display:grid!important;
   grid-template-columns:126px minmax(0,1fr)!important;
@@ -4834,7 +4834,7 @@ body.v284-admin #ordersTab .v30150-stage{
   .shop-form .v2850-products{padding:9px!important}
 }
 
-/* v30.3.12 – Grunddaten-Funktionen: korrekter Container */
+/* v30.3.13 – Grunddaten-Funktionen: korrekter Container */
 .shop-form .v2850-main-fields>.v2972-status-functions{
   grid-column:1/-1!important;
   display:grid!important;
@@ -4984,7 +4984,7 @@ body.v284-admin #ordersTab .v30150-stage{
   }
 }
 
-/* v30.3.12 – Shirtfarben-Schnellauswahl ohne Royal-Sonderbutton */
+/* v30.3.13 – Shirtfarben-Schnellauswahl ohne Royal-Sonderbutton */
 .shop-form .v3039-shirt-quick-actions{
   display:grid!important;
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
@@ -4994,3 +4994,21 @@ body.v284-admin #ordersTab .v30150-stage{
   width:100%!important;
   grid-column:auto!important;
 }
+
+/* v30.3.13 – artikelabhängige Markenfarben und Größen */
+.v3040-variants{margin-top:9px;border-top:1px solid #e3e7ec;padding-top:8px}
+.v3040-variants>summary{cursor:pointer;font-size:11px;font-weight:800;color:#3d4650;list-style:none;display:flex;align-items:center;justify-content:space-between}
+.v3040-variants>summary:after{content:"›";font-size:18px;line-height:1;transform:rotate(90deg);transition:.15s ease}
+.v3040-variants[open]>summary:after{transform:rotate(-90deg)}
+#productVariantEditor{display:grid;gap:9px;margin-top:9px}
+.v3040-variant-select{display:grid;grid-template-columns:54px 1fr;align-items:center;gap:8px;font-size:10px;font-weight:800;color:#68717c}
+.v3040-variant-select select,.v3040-size-row>input{height:34px;border:1px solid #d7dde4;border-radius:8px;background:#fff;padding:0 9px;font:600 10px/1.2 inherit;color:#252b32;min-width:0}
+.v3040-variant-note{margin:0;padding:9px;border-radius:8px;background:#f6f7f9;color:#707985;font-size:10px;line-height:1.45}
+.v3040-color-picker{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px;max-height:175px;overflow:auto;padding:7px;border:1px solid #e0e4e9;border-radius:9px;background:#fafbfc}
+.v3040-color-picker label{display:flex;gap:5px;align-items:center;min-width:0;font-size:9px;color:#505963}
+.v3040-color-picker label span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.v3040-size-head,.v3040-size-row{display:grid;grid-template-columns:minmax(90px,1fr) minmax(145px,1.7fr) 50px;gap:6px;align-items:center}
+.v3040-size-head{padding:0 3px;color:#7b8490;font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.05em}
+.v3040-size-rows{display:grid;gap:5px}
+.v3040-default-color{display:flex;align-items:center;gap:3px;font-size:9px;color:#666f79}
+@media(max-width:720px){.v3040-color-picker{grid-template-columns:repeat(2,minmax(0,1fr))}.v3040-size-head,.v3040-size-row{grid-template-columns:minmax(82px,1fr) minmax(120px,1.5fr) 44px}}

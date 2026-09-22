@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.12`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.13`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -108,7 +108,7 @@
             // Hansa nutzt bewusst denselben kompakten Grundaufbau wie Solingen,
             // behält aber seine eigene Farb- und Motivauswahl.
             merged.features = { ...(merged.features || {}), layout: "simple", showResetButton: false };
-            const order={hoodie:0,tshirt:1,polo:2};
+            const order={hoodie:0,tshirt:1,bcwu01w:2,polo:3};
             merged.products=(merged.products||[]).sort((a,b)=>(order[a.id]??99)-(order[b.id]??99));
             merged.motifs=(merged.motifs||[]).map(motif=>
               motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
@@ -127,6 +127,9 @@
               merged.features={...(merged.features||{}),showPrices:false};
               merged.hansaPriceVisibilityVersion=2;
             }
+            merged.productPrint={...(merged.productPrint||{}),bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}},...((data.productPrint||{}).bcwu01w?{bcwu01w:{...(merged.productPrint||{}).bcwu01w,...data.productPrint.bcwu01w}}:{})};
+            merged.productMotifModes={...(merged.productMotifModes||{}),bcwu01w:(data.productMotifModes||{}).bcwu01w||"normal"};
+            merged.hansaSweatshirtVersion=1;
           } else if (slug === "tus-hemmerde" && (data.tusColorPairsVersion || 0) < 1) {
             merged.shirtPrice=10;
             merged.products=(merged.products||[]).map(product=>product.id==="tshirt"?{...product,price:10,enabled:true}:{...product,enabled:false});
@@ -150,7 +153,7 @@
           }
           if (slug === "tus-hemmerde" && (data.tusProductMotifVersion || 0) < 1) {
             const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.12",preserveColors:true});
+            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.13",preserveColors:true});
             merged.motifs=motifs;
             merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
             merged.tusProductMotifVersion=1;

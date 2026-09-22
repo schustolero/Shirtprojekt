@@ -174,7 +174,7 @@ function printOrderSlip(order){
   const currentShopConfig = shopConfigs.get(customerId) || {};
   const showPrices = order.showPrices !== undefined ? order.showPrices !== false : currentShopConfig.features?.showPrices !== false;
   const showNexaroBranding = order.showNexaroBranding !== undefined ? order.showNexaroBranding !== false : currentShopConfig.features?.showNexaroBranding !== false;
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.12`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.13`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -288,7 +288,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.12`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.13`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -713,6 +713,23 @@ let workingProducts = [];
 let workingLogo = "";
 let shopAdminInitialized = false;
 
+const PRODUCT_COLOR_CATALOG = [
+  ["white","White"],["black","Black"],["azure-blue","Azure Blue"],["bottle-green","Bottle Green"],
+  ["brick-red","Brick Red"],["burgundy","Burgundy"],["chocolate","Chocolate"],["classic-olive","Classic Olive"],
+  ["dark-grey-heather","Dark Grey Heather"],["deep-navy","Deep Navy"],["fuchsia","Fuchsia"],["heather-burgundy","Heather Burgundy"],
+  ["heather-grey","Heather Grey"],["heather-purple","Heather Purple"],["kelly-green","Kelly Green"],["khaki","Khaki"],
+  ["light-graphite","Light Graphite (Solid)"],["light-pink","Light Pink"],["lime","Lime"],["natural","Natural"],
+  ["navy","Navy"],["orange","Orange"],["purple","Purple"],["red","Red"],["retro-heather-green","Retro Heather Green"],
+  ["retro-heather-royal","Retro Heather Royal"],["royal-blue","Royal Blue"],["sky-blue","Sky Blue"],["sunflower","Sunflower"],
+  ["vintage-heather-navy","Vintage Heather Navy"],["vintage-heather-red","Vintage Heather Red"],["yellow","Yellow"]
+];
+const PRODUCT_SIZES = ["XS","S","M","L","XL","2XL","3XL","4XL","5XL"];
+let currentVariantProductId = "";
+function hansaSweatshirtProduct(){
+  const extended=["XS","S","M","L","XL","2XL","3XL","4XL","5XL"];
+  return {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",enabled:true,allowedShirtColorIds:["white","black","navy","red","royal-blue","bottle-green","heather-grey"],defaultShirtColorId:"black",shirtColorLabels:{white:"White",black:"Black Pure",navy:"Navy Blue",red:"Red","royal-blue":"Royal","bottle-green":"Forest Green","heather-grey":"Heather Grey"},sizesByColor:{white:[...extended],black:[...extended],navy:[...extended],red:[...extended],"royal-blue":[...extended],"heather-grey":[...extended],"bottle-green":["XS","S","M","L","XL","2XL","3XL"]}};
+}
+
 const shopFields = {
   id: document.getElementById("shopId"), type: document.getElementById("shopType"), name: document.getElementById("shopName"),
   price: document.getElementById("shopPrice"), prefix: document.getElementById("shopPrefix"), email: document.getElementById("shopEmail"), active: document.getElementById("shopActive"),
@@ -835,7 +852,7 @@ function refreshPositionEditor(){
   const x = Number(fields.x?.value || (side === "front" ? 68 : 50));
   const y = Number(fields.y?.value || (side === "front" ? 20 : 36));
   const w = Number(fields.w?.value || (side === "front" ? 28 : 50));
-  const productConfig=(selectedShopOriginal?.products||[]).find(item=>item.id===product)||{};
+  const productConfig=(workingProducts||[]).find(item=>item.id===product)||(selectedShopOriginal?.products||[]).find(item=>item.id===product)||{};
   const shirtSrc=side==="front"
     ? (productConfig.frontTemplate||(product==="polo"?"polo-front-template.png":product==="hoodie"?"hoodie-front-template.png":"shirt-front-template.png"))
     : (productConfig.backTemplate||(product==="polo"?"polo-back-template.png":product==="hoodie"?"hoodie-back-template.png":"shirt-back-template.png"));
@@ -1023,6 +1040,15 @@ async function loadShopConfigs(){
           merged.features={...(merged.features||{}),showPrices:false};
           merged.hansaPriceVisibilityVersion=2;
         }
+        if((stored.hansaSweatshirtVersion||0)<1){
+          const products=(merged.products||[]).filter(product=>product.id!=="bcwu01w");
+          const tshirtIndex=products.findIndex(product=>product.id==="tshirt");
+          products.splice(tshirtIndex>=0?tshirtIndex+1:products.length,0,hansaSweatshirtProduct());
+          merged.products=products;
+          merged.productPrint={...(merged.productPrint||{}),bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}}};
+          merged.productMotifModes={...(merged.productMotifModes||{}),bcwu01w:"normal"};
+          merged.hansaSweatshirtVersion=1;
+        }
       }
       if(doc.id==="tus-hemmerde" && (stored.tusColorPairsVersion||0)<1){
         merged.shirtPrice=10;
@@ -1047,7 +1073,7 @@ async function loadShopConfigs(){
       }
       if(doc.id==="tus-hemmerde" && (stored.tusProductMotifVersion||0)<1){
         const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.12",preserveColors:true});
+        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.13",preserveColors:true});
         merged.motifs=motifs;
         merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
         merged.tusProductMotifVersion=1;
@@ -1172,6 +1198,64 @@ function renderProductPriceEditor(){
     row.append(name,article,priceWrap,toggle);
     host.appendChild(row);
   });
+  renderProductVariantEditor();
+}
+function renderProductVariantEditor(){
+  const host=document.getElementById("productVariantEditor");
+  if(!host) return;
+  host.replaceChildren();
+  if(!workingProducts.length) return;
+  if(!workingProducts.some(product=>product.id===currentVariantProductId)) currentVariantProductId=workingProducts[0].id;
+  const toolbar=document.createElement("label"); toolbar.className="v3040-variant-select";
+  const title=document.createElement("span"); title.textContent="Artikel";
+  const select=document.createElement("select");
+  workingProducts.forEach(product=>{const option=document.createElement("option");option.value=product.id;option.textContent=`${product.name||product.id} · ${product.articleNo||"–"}`;select.appendChild(option);});
+  select.value=currentVariantProductId;
+  select.addEventListener("change",()=>{currentVariantProductId=select.value;renderProductVariantEditor();});
+  toolbar.append(title,select); host.appendChild(toolbar);
+  const index=workingProducts.findIndex(product=>product.id===currentVariantProductId);
+  const product=workingProducts[index];
+  if(!product) return;
+  if(!Array.isArray(product.allowedShirtColorIds)){
+    const note=document.createElement("p"); note.className="v3040-variant-note";
+    note.textContent="Dieser Artikel verwendet derzeit die allgemeinen Shopfarben. Artikelspezifische Varianten werden bei Markenartikeln hinterlegt.";
+    host.appendChild(note); return;
+  }
+  const allowed=new Set(product.allowedShirtColorIds);
+  const picker=document.createElement("div"); picker.className="v3040-color-picker";
+  PRODUCT_COLOR_CATALOG.forEach(([id,fallbackName])=>{
+    const label=document.createElement("label");
+    const input=document.createElement("input"); input.type="checkbox"; input.checked=allowed.has(id);
+    const copy=document.createElement("span"); copy.textContent=product.shirtColorLabels?.[id]||fallbackName;
+    input.addEventListener("change",()=>{
+      const next=new Set(workingProducts[index].allowedShirtColorIds||[]);
+      input.checked?next.add(id):next.delete(id);
+      if(!next.size){input.checked=true;return;}
+      workingProducts[index].allowedShirtColorIds=PRODUCT_COLOR_CATALOG.map(item=>item[0]).filter(colorId=>next.has(colorId));
+      workingProducts[index].sizesByColor=workingProducts[index].sizesByColor||{};
+      if(input.checked&&!workingProducts[index].sizesByColor[id]) workingProducts[index].sizesByColor[id]=[...PRODUCT_SIZES];
+      if(!next.has(workingProducts[index].defaultShirtColorId)) workingProducts[index].defaultShirtColorId=workingProducts[index].allowedShirtColorIds[0];
+      setShopState("Artikelvarianten geändert – oben Speichern klicken."); renderProductVariantEditor();
+    });
+    label.append(input,copy); picker.appendChild(label);
+  });
+  host.appendChild(picker);
+  const heads=document.createElement("div"); heads.className="v3040-size-head"; heads.innerHTML="<span>Marken-Farbname</span><span>verfügbare Größen</span><span>Start</span>";
+  const rows=document.createElement("div"); rows.className="v3040-size-rows";
+  product.allowedShirtColorIds.forEach(colorId=>{
+    const row=document.createElement("div"); row.className="v3040-size-row";
+    const fallback=PRODUCT_COLOR_CATALOG.find(item=>item[0]===colorId)?.[1]||colorId;
+    const colorName=document.createElement("input"); colorName.type="text"; colorName.value=product.shirtColorLabels?.[colorId]||fallback; colorName.setAttribute("aria-label",`Farbname ${fallback}`);
+    const sizes=document.createElement("input"); sizes.type="text"; sizes.value=(product.sizesByColor?.[colorId]||product.sizes||PRODUCT_SIZES).join(", "); sizes.setAttribute("aria-label",`Größen ${fallback}`);
+    colorName.addEventListener("input",()=>{workingProducts[index].shirtColorLabels=workingProducts[index].shirtColorLabels||{};workingProducts[index].shirtColorLabels[colorId]=colorName.value.trim()||fallback;setShopState("Farbname geändert – oben Speichern klicken.");});
+    sizes.addEventListener("change",()=>{const parsed=sizes.value.split(/[,;\s]+/).map(value=>value.trim().toUpperCase()).filter(value=>PRODUCT_SIZES.includes(value));const unique=[...new Set(parsed)];if(!unique.length){sizes.value=(workingProducts[index].sizesByColor?.[colorId]||PRODUCT_SIZES).join(", ");return;}workingProducts[index].sizesByColor=workingProducts[index].sizesByColor||{};workingProducts[index].sizesByColor[colorId]=unique;sizes.value=unique.join(", ");setShopState("Größen geändert – oben Speichern klicken.");});
+    const defaultLabel=document.createElement("label"); defaultLabel.className="v3040-default-color";
+    const radio=document.createElement("input"); radio.type="radio"; radio.name="v3040DefaultColor"; radio.checked=product.defaultShirtColorId===colorId;
+    radio.addEventListener("change",()=>{workingProducts[index].defaultShirtColorId=colorId;setShopState("Startfarbe geändert – oben Speichern klicken.");});
+    const radioCopy=document.createElement("span"); radioCopy.textContent="Start"; defaultLabel.append(radio,radioCopy);
+    row.append(colorName,sizes,defaultLabel); rows.appendChild(row);
+  });
+  host.append(heads,rows);
 }
 function configurePositionProducts(cfg){
   const configured=Array.isArray(cfg.products)&&cfg.products.length?cfg.products:[{id:"tshirt",enabled:true},{id:"polo",enabled:true},{id:"hoodie",enabled:true}];
@@ -1281,11 +1365,11 @@ addTusPatchBtn?.addEventListener("click",()=>{
   let motif=workingMotifs.find(item=>item.id===patchId);
   if(!motif){
     if(workingMotifs.length>=4){alert("Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.");return;}
-    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.12",preserveColors:true};
+    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.13",preserveColors:true};
     workingMotifs.push(motif);
   }else{
     motif.name="TuS 3D-Patch";
-    motif.file="/tus-3d-patch.png?v=30.3.12";
+    motif.file="/tus-3d-patch.png?v=30.3.13";
     motif.preserveColors=true;
   }
   renderMotifsEditor();
@@ -1973,9 +2057,9 @@ saveShopBtn.addEventListener("click",async()=>{
     const motifName=motif?.name||'Motiv';
     const shirtHex=(shopFields.fixedShirtHex?.value||'#0758b2').trim();
     const productionHref=(productionFileUrl?.value||'').trim();
-    const customProducts=(selectedShopOriginal?.products||[])
+    const customProducts=(workingProducts||[])
       .filter(item=>item&&item.enabled!==false&&!['tshirt','polo','hoodie'].includes(item.id))
-      .map(item=>({key:item.id,name:item.name||item.id,tone:'v3030-product-custom',custom:true}));
+      .map(item=>({key:item.id,name:item.name||item.id,tone:'v3030-product-custom',front:getPositionFieldSet(item.id,'front').w,back:getPositionFieldSet(item.id,'back').w}));
     const products=[
       {key:'tshirt',name:'T-Shirt',tone:'v2862-product-tshirt',front:shopFields.tshirtFrontW,back:shopFields.tshirtBackW},
       {key:'polo',name:'Polo-Shirt',tone:'v2862-product-polo',front:shopFields.poloFrontW,back:shopFields.poloBackW},
@@ -2020,12 +2104,12 @@ saveShopBtn.addEventListener("click",async()=>{
         : fmtSizeMm(printDataFields.back.width,printDataFields.back.height);
       return `<span class="v2917-size-badge v2921-inline-size" aria-label="Druckgröße ${side==='front'?'Vorderseite':'Rückseite'}">${dims}</span>`;
     };
-    table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><label class="v3030-product-motif"><span>Motivart</span><select class="v3030-product-motif-select" data-product="${item.key}">${motifModeOptions(item.key)}</select></label></div>${item.custom?'<div class="v3030-custom-note">Motivart für diesen Artikel festlegen.</div>':`<div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select>${sizeBadge(item.key,'front')}<button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select>${sizeBadge(item.key,'back')}<button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div>`}</section>`).join('')+'</div>';
+    table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><label class="v3030-product-motif"><span>Motivart</span><select class="v3030-product-motif-select" data-product="${item.key}">${motifModeOptions(item.key)}</select></label></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select>${sizeBadge(item.key,'front')}<button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select>${sizeBadge(item.key,'back')}<button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
     table.querySelectorAll('.v3030-product-motif-select').forEach(select=>select.addEventListener('change',()=>{
       const next=select.value;
       if((next==='patch'||next==='both')&&!workingMotifs.some(item=>item.id==='tus-3d-patch')){
         if(workingMotifs.length>=4){alert('Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.');renderMergedPrintTable();return;}
-        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.12',preserveColors:true});
+        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.13',preserveColors:true});
         renderMotifsEditor();
       }
       workingProductMotifModes[select.dataset.product]=next;
