@@ -51,7 +51,7 @@ window.CENTRAL_CONFIG = {
       productMotifModes:{tshirt:"normal",jc001:"both",polo:"normal",hoodie:"normal"},
       productPrint:{tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}}},
       fixedPrint:{front:{enabled:true,motifId:"vereinslogo",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},back:{enabled:false,motifId:"vereinslogo",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}},
-      motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.1",preserveColors:true}]
+      motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.2",preserveColors:true}]
     },
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach Farbe, Größe und Menge auswählen.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,

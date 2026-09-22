@@ -21,6 +21,39 @@ const FEATURES = Object.assign({
 
 function featureEnabled(name) { return FEATURES[name] !== false; }
 
+function syncMobileAfterShirtControls() {
+  const mobile = window.matchMedia("(max-width: 900px)").matches;
+  const designerArea = document.querySelector(".designer-area");
+  const productSection = document.getElementById("productSection");
+  const shirtColorSection = document.querySelector(".color-section");
+  const logoChoice = document.querySelector(".product-motif-choice-section");
+  const initials = document.querySelector(".initials-section");
+  if (!designerArea || (!logoChoice && !initials)) return;
+
+  let host = document.getElementById("mobileAfterShirtControls");
+  if (mobile) {
+    if (!host) {
+      host = document.createElement("div");
+      host.id = "mobileAfterShirtControls";
+      host.className = "mobile-after-shirt-controls";
+    }
+    const workspace = document.querySelector(".workspace");
+    const dualWorkspace = document.getElementById("dualWorkspace");
+    const anchor = dualWorkspace && !dualWorkspace.hidden ? dualWorkspace : workspace;
+    if (anchor) anchor.insertAdjacentElement("afterend", host);
+    if (logoChoice) host.appendChild(logoChoice);
+    if (initials) host.appendChild(initials);
+    return;
+  }
+
+  if (logoChoice && productSection) productSection.insertAdjacentElement("afterend", logoChoice);
+  if (initials && shirtColorSection) shirtColorSection.insertAdjacentElement("afterend", initials);
+  else if (initials && logoChoice) logoChoice.insertAdjacentElement("afterend", initials);
+  host?.remove();
+}
+
+window.matchMedia("(max-width: 900px)").addEventListener?.("change", syncMobileAfterShirtControls);
+
 const F140_ALLOWED_META = (function parseAllowedShirtColorMeta(){
   const fixed = SHOP.fixedShirtColor || null;
   const result = { fixed, name: fixed?.name || "", defaultId: fixed?.id || "", allowedIds: [] };
@@ -220,6 +253,7 @@ function getAllowedMotifColorNames(){
       <input id="initialsInput" class="feature-input" type="text" maxlength="${maxLength}" placeholder="${initials.placeholder || "z. B. TS"}" autocomplete="off" autocapitalize="characters" aria-label="Initialen eingeben">
       <p class="hint">Maximal ${maxLength} Zeichen · feste Position unten links</p>`;
     insertAfter(shirtColorSection || productSection, initialsSection);
+    queueMicrotask(syncMobileAfterShirtControls);
   }
 
   const footer = document.querySelector(".designer-footer");
@@ -333,6 +367,7 @@ function ensureProductMotifChoiceSection(){
     await applyProductMotifRule(true);
   }));
   productMotifChoiceSection=section;
+  syncMobileAfterShirtControls();
   return section;
 }
 
@@ -686,6 +721,7 @@ function applyPreviewMode() {
     dualWorkspace.hidden = !dual;
     dualWorkspace.style.display = dual ? "grid" : "none";
   }
+  syncMobileAfterShirtControls();
   if (viewSection) viewSection.hidden = dual;
   if (designerStatus) designerStatus.textContent = dual ? "Vorder- & Rückseite" : (currentView === "back" ? "Rückseite" : "Vorderseite");
   if (dual) {

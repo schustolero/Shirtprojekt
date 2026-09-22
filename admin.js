@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.1`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.2`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.1`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.2`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -1034,7 +1034,7 @@ async function loadShopConfigs(){
       }
       if(doc.id==="tus-hemmerde" && (stored.tusProductMotifVersion||0)<1){
         const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.1",preserveColors:true});
+        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.2",preserveColors:true});
         merged.motifs=motifs;
         merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
         merged.tusProductMotifVersion=1;
@@ -1217,11 +1217,11 @@ addTusPatchBtn?.addEventListener("click",()=>{
   let motif=workingMotifs.find(item=>item.id===patchId);
   if(!motif){
     if(workingMotifs.length>=4){alert("Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.");return;}
-    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.1",preserveColors:true};
+    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.2",preserveColors:true};
     workingMotifs.push(motif);
   }else{
     motif.name="TuS 3D-Patch";
-    motif.file="/tus-3d-patch.png?v=30.3.1";
+    motif.file="/tus-3d-patch.png?v=30.3.2";
     motif.preserveColors=true;
   }
   renderMotifsEditor();
@@ -1967,7 +1967,7 @@ saveShopBtn.addEventListener("click",async()=>{
       const next=select.value;
       if((next==='patch'||next==='both')&&!workingMotifs.some(item=>item.id==='tus-3d-patch')){
         if(workingMotifs.length>=4){alert('Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.');renderMergedPrintTable();return;}
-        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.1',preserveColors:true});
+        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.2',preserveColors:true});
         renderMotifsEditor();
       }
       workingProductMotifModes[select.dataset.product]=next;

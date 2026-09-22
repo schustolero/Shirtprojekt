@@ -2701,3 +2701,23 @@ body[data-template-shop="true"] .brand .shop-brand-logo{
 .product-motif-choice button{min-height:48px;border:1px solid #d9dde4;border-radius:12px;background:#fff;color:#222;font:inherit;font-size:12px;font-weight:800;cursor:pointer}
 .product-motif-choice button.active{border-color:var(--accent,#e3b900);background:#fff9d9;box-shadow:inset 0 0 0 1px var(--accent,#e3b900)}
 .product-motif-choice-section .hint{margin:7px 0 0;color:#7a8089;font-size:10px}
+
+/* v30.3.2 – Mobil: Logoart und Initialen direkt unter der Shirt-Vorschau. */
+.mobile-after-shirt-controls{display:contents}
+@media(max-width:900px){
+  .mobile-after-shirt-controls{
+    order:2!important;
+    display:block!important;
+    width:100%!important;
+    padding:0 18px 8px!important;
+    background:#fff!important;
+  }
+  .mobile-after-shirt-controls>.tool-section{
+    width:100%!important;
+    padding:12px 0!important;
+    margin:0!important;
+    border-top:1px solid #eceef2!important;
+  }
+  .mobile-after-shirt-controls>.tool-section[hidden]{display:none!important}
+  .mobile-after-shirt-controls>.tool-section h3{margin:0 0 8px!important}
+}
