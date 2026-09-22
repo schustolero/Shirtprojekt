@@ -38,7 +38,7 @@
   }
 }
 
-/* v30.3.7 – professioneller Funktions- und Preisbereich */
+/* v30.3.8 – professioneller Funktions- und Preisbereich */
 .shop-form .v2972-status-functions{
   grid-template-columns:126px minmax(0,1fr)!important;
   gap:8px!important;
@@ -1028,7 +1028,7 @@
   .functions-accordion .core-features{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 
-/* v30.3.7 – kompakte, editierbare Produktpreise */
+/* v30.3.8 – kompakte, editierbare Produktpreise */
 .v3036-product-head,.v3036-product-row{
   display:grid!important;
   grid-template-columns:minmax(90px,1.5fr) minmax(54px,.65fr) minmax(92px,.8fr) 62px!important;
@@ -4614,7 +4614,7 @@ body.v284-admin #ordersTab .v30150-stage{
   }
 }
 
-/* v30.3.7 final – einheitliche professionelle Schalter */
+/* v30.3.8 final – einheitliche professionelle Schalter */
 .shop-form .v2853-basic-grid>.v2972-status-functions{
   display:grid!important;
   grid-template-columns:126px minmax(0,1fr)!important;
@@ -4833,4 +4833,154 @@ body.v284-admin #ordersTab .v30150-stage{
   .shop-form .v2853-basic-grid>.v2972-status-functions{grid-template-columns:1fr!important}
   .shop-form .v2853-basic-grid>.v2972-status-functions>.v2972-inline-functions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
   .shop-form .v2850-products{padding:9px!important}
+}
+
+/* v30.3.8 – Grunddaten-Funktionen: korrekter Container */
+.shop-form .v2850-main-fields>.v2972-status-functions{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:7px!important;
+  width:100%!important;
+  min-width:0!important;
+  margin:0!important;
+  padding:0!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2850-active-field{
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:38px!important;
+  margin:0!important;
+  padding:8px 11px!important;
+  border:1px solid #dfe4ea!important;
+  border-radius:9px!important;
+  background:#fff!important;
+  box-shadow:0 1px 3px rgba(16,24,40,.04)!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2850-active-field span{
+  margin:0!important;
+  color:#29313b!important;
+  font-size:10px!important;
+  font-weight:800!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:6px!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
+  margin:0!important;
+  padding:9px!important;
+  border:1px solid #dfe4ea!important;
+  border-radius:9px!important;
+  background:#f7f9fb!important;
+  box-shadow:none!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions:before{
+  content:"Shop-Funktionen"!important;
+  display:block!important;
+  grid-column:1/-1!important;
+  width:100%!important;
+  margin:0 0 1px!important;
+  color:#7a838f!important;
+  font-size:8px!important;
+  font-weight:850!important;
+  line-height:1.1!important;
+  letter-spacing:.07em!important;
+  text-transform:uppercase!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions>label,
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions>.v2972-designer-tools>label{
+  display:flex!important;
+  flex-direction:row!important;
+  justify-content:space-between!important;
+  align-items:center!important;
+  gap:5px!important;
+  width:100%!important;
+  min-width:0!important;
+  min-height:30px!important;
+  margin:0!important;
+  padding:5px 6px!important;
+  border:1px solid #e0e5eb!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#3d4651!important;
+  box-shadow:0 1px 2px rgba(16,24,40,.025)!important;
+  overflow:hidden!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions>label:has(input:checked),
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions>.v2972-designer-tools>label:has(input:checked){
+  background:#fffdf4!important;
+  border-color:#e5cf74!important;
+  color:#604d00!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions label span{
+  display:block!important;
+  min-width:0!important;
+  margin:0!important;
+  font-size:8.3px!important;
+  font-weight:750!important;
+  line-height:1.1!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions input[type="checkbox"]{
+  display:block!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+  flex:0 0 26px!important;
+  width:26px!important;
+  min-width:26px!important;
+  max-width:26px!important;
+  height:15px!important;
+  min-height:15px!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid #cbd3dc!important;
+  border-radius:999px!important;
+  background:#dfe4e9!important;
+  position:relative!important;
+  box-shadow:none!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions input[type="checkbox"]:before{
+  content:""!important;
+  display:block!important;
+  position:absolute!important;
+  left:2px!important;
+  top:2px!important;
+  width:9px!important;
+  height:9px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.22)!important;
+  transition:transform .15s ease!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions input[type="checkbox"]:after{display:none!important}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions input[type="checkbox"]:checked{
+  background:#e9bd00!important;
+  border-color:#d8ad00!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions input[type="checkbox"]:checked:before{transform:translateX(11px)!important}
+.shop-form .v2850-main-fields>.v2972-status-functions .v2972-designer-tools{
+  grid-column:1/-1!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:6px!important;
+  width:100%!important;
+  margin:0!important;
+  padding:6px 0 0!important;
+  border:0!important;
+  border-top:1px dashed #d8dee6!important;
+}
+.shop-form .v2850-main-fields>.v2972-status-functions .v2972-designer-tools[hidden]{display:none!important}
+
+@media(max-width:720px){
+  .shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
 }
