@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.13`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.14`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -153,7 +153,7 @@
           }
           if (slug === "tus-hemmerde" && (data.tusProductMotifVersion || 0) < 1) {
             const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.13",preserveColors:true});
+            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.14",preserveColors:true});
             merged.motifs=motifs;
             merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
             merged.tusProductMotifVersion=1;
