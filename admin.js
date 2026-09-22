@@ -171,7 +171,7 @@ async function saveItemPrintMethod(id,order,index,value){
 function printOrderSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.8`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.9`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -285,7 +285,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.8`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.2.9`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -1203,11 +1203,11 @@ addTusPatchBtn?.addEventListener("click",()=>{
   let motif=workingMotifs.find(item=>item.id===patchId);
   if(!motif){
     if(workingMotifs.length>=4){alert("Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.");return;}
-    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.2.8",preserveColors:true};
+    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.2.9",preserveColors:true};
     workingMotifs.push(motif);
   }else{
     motif.name="TuS 3D-Patch";
-    motif.file="/tus-3d-patch.png?v=30.2.8";
+    motif.file="/tus-3d-patch.png?v=30.2.9";
     motif.preserveColors=true;
   }
   renderMotifsEditor();
@@ -1642,7 +1642,8 @@ saveShopBtn.addEventListener("click",async()=>{
   // Motivübersicht wie im Referenzbild.
   window.updateV284PrintTable=function(){
     const table=document.getElementById("v284PrintTable"); if(!table) return;
-    const motif=workingMotifs?.[0];
+    const selectedMotifId=shopFields.fixedFrontMotif?.value||workingMotifs?.[0]?.id||'';
+    const motif=workingMotifs?.find(item=>item.id===selectedMotifId)||workingMotifs?.[0];
     const motifSrc=motif?.file?safeAssetUrl(motif.file,currentAssetSlug()):"";
     const rows=[
       ["tshirt","front","T-Shirt","Vorderseite",shopFields.tshirtFrontX,shopFields.tshirtFrontY,shopFields.tshirtFrontW],
@@ -1920,7 +1921,9 @@ saveShopBtn.addEventListener("click",async()=>{
     const optionHtml=(p,s,w)=>`<option value="small" ${sizeLabel(p,s,w)==='small'?'selected':''}>Klein</option><option value="medium" ${sizeLabel(p,s,w)==='medium'?'selected':''}>Mittel</option><option value="large" ${sizeLabel(p,s,w)==='large'?'selected':''}>Groß</option>`;
     const motifDownload=motifSrc?`<a class="v2863-download-btn" href="${motifSrc}" download>Motivdatei herunterladen</a>`:'';
     const productionDownload=productionHref?`<a class="v2863-download-btn secondary" href="${productionHref}" target="_blank" rel="noopener">Produktionsdatei öffnen</a>`:'';
-    const patchAction=`<button type="button" class="v2863-download-btn v3028-patch-btn">3D-Patch einsetzen</button>`;
+    const normalMotif=workingMotifs?.find(item=>item.id!=="tus-3d-patch");
+    const patchActive=motif?.id==="tus-3d-patch";
+    const motifTypeControl=`<label class="v3029-motif-choice"><span>Motivart</span><select class="v3029-motif-type"><option value="normal" ${patchActive?'':'selected'}>Normales Vereinslogo</option><option value="patch" ${patchActive?'selected':''}>3D-Patch</option></select></label>`;
     const fmtSizeMm=(w,h)=>{
       const toMm=v=>{
         const n=Number(v?.value??v??0);
@@ -1932,7 +1935,7 @@ saveShopBtn.addEventListener("click",async()=>{
       return wn&&hn?`${wn} × ${hn} mm`:'–';
     };
     const sizeInfo=`<div class="v2864-size-info"><span><b>Vorne</b> ${fmtSizeMm(printDataFields.front.width,printDataFields.front.height)}</span><span><b>Hinten</b> ${fmtSizeMm(printDataFields.back.width,printDataFields.back.height)}</span></div>`;
-    const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${patchAction}${sizeInfo}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
+    const sharedMotif=`<div class="v2862-shared-motif v2863-shared-motif"><div class="v2863-motif-meta"><strong>Gemeinsames Motiv</strong><span>Dieses Motiv wird auf T-Shirt, Polo-Shirt und Hoodie verwendet.</span><div class="v2863-downloads">${motifDownload}${motifTypeControl}${sizeInfo}${productionDownload}</div></div><span class="v2861-motif-preview v2863-shirt-bg" style="--shirt-preview-bg:${shirtHex}" title="${motifName}">${motifSrc?`<img src="${motifSrc}" alt="${motifName}">`:'–'}</span></div>`;
     const sizeBadge=(productKey,side)=>{
       const dims=side==='front'
         ? fmtSizeMm(printDataFields.front.width,printDataFields.front.height)
@@ -1940,7 +1943,21 @@ saveShopBtn.addEventListener("click",async()=>{
       return `<span class="v2917-size-badge v2921-inline-size" aria-label="Druckgröße ${side==='front'?'Vorderseite':'Rückseite'}">${dims}</span>`;
     };
     table.innerHTML=sharedMotif+'<div class="v2862-product-groups">'+products.map(item=>`<section class="v2862-product-group ${item.tone}" data-product="${item.key}"><div class="v2862-product-head"><strong>${item.name}</strong><span>Vorder- & Rückseite</span></div><div class="v2862-side-row"><span>Vorderseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="front">${optionHtml(item.key,'front',item.front)}</select>${sizeBadge(item.key,'front')}<button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="front">Positionieren</button></div><div class="v2862-side-row"><span>Rückseite</span><select class="v2856-size-select" data-product="${item.key}" data-side="back">${optionHtml(item.key,'back',item.back)}</select>${sizeBadge(item.key,'back')}<button type="button" class="v284-edit-print v2856-position-btn" data-product="${item.key}" data-side="back">Positionieren</button></div></section>`).join('')+'</div>';
-    table.querySelector('.v3028-patch-btn')?.addEventListener('click',()=>addTusPatchBtn?.click());
+    table.querySelector('.v3029-motif-type')?.addEventListener('change',event=>{
+      if(event.target.value==='patch'){
+        addTusPatchBtn?.click();
+        return;
+      }
+      if(!normalMotif){
+        alert('Es ist noch kein normales Vereinslogo hinterlegt.');
+        renderMergedPrintTable();
+        return;
+      }
+      if(shopFields.fixedFrontMotif) shopFields.fixedFrontMotif.value=normalMotif.id;
+      refreshPositionEditor();
+      setShopState('Normales Vereinslogo gewählt – jetzt oben Speichern klicken.','ok');
+      renderMergedPrintTable();
+    });
     table.querySelectorAll('.v2856-size-select').forEach(sel=>sel.addEventListener('change',()=>{
       const item=products.find(x=>x.key===sel.dataset.product);
       if(!item) return;

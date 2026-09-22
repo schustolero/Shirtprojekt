@@ -47,8 +47,10 @@
 .motif-library-item b{font-size:12px}
 .motif-library-item small,.motif-original-colors{font-size:10px;color:#6d7480}
 .motif-original-colors{display:block;margin-top:4px;color:#16704a;font-weight:700}
-.v3028-patch-btn{font:inherit;cursor:pointer;color:#9b1c1c!important;border-color:#efb3b3!important;background:#fff7f7!important}
-.v3028-patch-btn:hover{background:#ffecec!important}
+.v3029-motif-choice{display:flex!important;flex-direction:row!important;align-items:center!important;gap:7px!important;margin:0!important;padding:0!important}
+.v3029-motif-choice>span{margin:0!important;font-size:10px!important;font-weight:800!important;color:#56606d!important}
+.v3029-motif-type{width:auto!important;min-width:170px!important;height:34px!important;padding:5px 30px 5px 10px!important;border:1px solid #d4d9e0!important;border-radius:8px!important;background:#fff!important;font-size:10.5px!important;font-weight:800!important}
+@media(max-width:720px){.v3029-motif-choice{width:100%!important}.v3029-motif-type{min-width:0!important;flex:1!important}}
 @media(max-width:720px){
   .motif-library{padding:8px}
   .motif-library-item{grid-template-columns:46px minmax(0,1fr) auto;gap:7px}
