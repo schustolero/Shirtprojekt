@@ -174,7 +174,7 @@ function printOrderSlip(order){
   const currentShopConfig = shopConfigs.get(customerId) || {};
   const showPrices = order.showPrices !== undefined ? order.showPrices !== false : currentShopConfig.features?.showPrices !== false;
   const showNexaroBranding = order.showNexaroBranding !== undefined ? order.showNexaroBranding !== false : currentShopConfig.features?.showNexaroBranding !== false;
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.15`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.16`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -288,7 +288,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.15`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.16`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -968,6 +968,20 @@ function removeInlineFunctionsTitle(){
 document.addEventListener("DOMContentLoaded",()=>setTimeout(removeInlineFunctionsTitle,0));
 
 function deepClone(value){ return JSON.parse(JSON.stringify(value || {})); }
+function mergeProductsWithMasterCatalog(products){
+  const existing=Array.isArray(products)?products.filter(product=>product&&product.id):[];
+  const existingById=new Map(existing.map(product=>[product.id,product]));
+  const master=Array.isArray(CENTRAL.productCatalog)?CENTRAL.productCatalog:[];
+  const merged=master.map(base=>{
+    const saved=existingById.get(base.id);
+    existingById.delete(base.id);
+    return saved
+      ?{...deepClone(base),...deepClone(saved),enabled:saved.enabled!==false}
+      :{...deepClone(base),enabled:false};
+  });
+  existingById.forEach(product=>merged.push({...deepClone(product),enabled:product.enabled!==false}));
+  return merged;
+}
 function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
 function assetSlugForShop(id, cfg){
@@ -976,6 +990,7 @@ function assetSlugForShop(id, cfg){
   if(raw==="_simple" || name==="vorlage simple") return "_simple";
   if(raw==="_motifs" || name==="vorlage motive") return "_motifs";
   if(raw==="_designer" || name==="vorlage designer") return "_designer";
+  if(raw==="_master" || name==="master shop") return "_master";
   return raw || "_simple";
 }
 function currentAssetSlug(){
@@ -1073,7 +1088,7 @@ async function loadShopConfigs(){
       }
       if(doc.id==="tus-hemmerde" && (stored.tusProductMotifVersion||0)<1){
         const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.15",preserveColors:true});
+        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.16",preserveColors:true});
         merged.motifs=motifs;
         merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
         merged.tusProductMotifVersion=1;
@@ -1086,6 +1101,7 @@ async function loadShopConfigs(){
     });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
   const templateDemos={
+    _master:{customerName:"Master Shop",pageTitle:"Master Shop – Gesamtsortiment",brandTitle:"DEIN VEREINSSHOP",brandSubtitle:"Komplettes Textilsortiment",shopType:"simple",motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}]},
     _simple:{customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",shopType:"simple",motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}]},
     _motifs:{customerName:"Vorlage Motive",pageTitle:"Vorlage Motive – T-Shirt Shop",brandTitle:"Vorlage Motive",brandSubtitle:"Mehrere Motive zur Auswahl",shopType:"motifs",fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},motifs:[{id:"motiv1",name:"NOVA Wappen",file:"demo-motiv-1.png?v=30.1.87"},{id:"motiv2",name:"NOVA Dynamik",file:"demo-motiv-2.png?v=30.1.87"}]},
     _designer:{customerName:"Vorlage Designer",pageTitle:"Vorlage Designer – T-Shirt Shop",brandTitle:"Vorlage Designer",brandSubtitle:"Dein Textil frei gestalten",shopType:"designer",motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}]}
@@ -1144,7 +1160,7 @@ function refreshFixedPrintMotifOptions(selectedFront="", selectedBack=""){
   });
 }
 function fillProductToggles(cfg){
-  const products=Array.isArray(cfg.products)?cfg.products:[];
+  const products=mergeProductsWithMasterCatalog(cfg.products);
   workingProducts=deepClone(products);
   const enabled=new Set(products.length?products.filter(product=>product.enabled!==false).map(product=>product.id):["tshirt"]);
   const fields={tshirt:shopFields.productTshirtEnabled,polo:shopFields.productPoloEnabled,hoodie:shopFields.productHoodieEnabled};
@@ -1198,24 +1214,6 @@ function renderProductPriceEditor(){
     row.append(name,article,priceWrap,toggle);
     host.appendChild(row);
   });
-  if(!workingProducts.some(product=>product.id==="bcwu01w")){
-    const add=document.createElement("button");
-    add.type="button";
-    add.className="v3041-add-catalog-product";
-    add.innerHTML="<strong>＋ Sweatshirt hinzufügen</strong><span>B&amp;C BCWU01W · 23,00 €</span>";
-    add.addEventListener("click",()=>{
-      workingProducts.push(hansaSweatshirtProduct());
-      workingProductPrint.bcwu01w=workingProductPrint.bcwu01w||{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}};
-      workingProductMotifModes.bcwu01w=workingProductMotifModes.bcwu01w||"normal";
-      currentVariantProductId="bcwu01w";
-      configurePositionProducts({products:workingProducts});
-      if(positionProduct){positionProduct.value="bcwu01w";positionProduct.dispatchEvent(new Event("change",{bubbles:true}));}
-      renderProductPriceEditor();
-      window.updateV2856PrintTable?.();
-      setShopState("Sweatshirt hinzugefügt – oben Speichern klicken.","ok");
-    });
-    host.appendChild(add);
-  }
   renderProductVariantEditor();
 }
 function renderProductVariantEditor(){
@@ -1281,7 +1279,7 @@ function renderProductVariantEditor(){
   host.append(heads,rows);
 }
 function configurePositionProducts(cfg){
-  const configured=Array.isArray(cfg.products)&&cfg.products.length?cfg.products:[{id:"tshirt",enabled:true},{id:"polo",enabled:true},{id:"hoodie",enabled:true}];
+  const configured=workingProducts.length?workingProducts:mergeProductsWithMasterCatalog(cfg.products);
   const allIds=[...new Set(configured.map(product=>product.id).filter(Boolean))];
   const labels={tshirt:"T-Shirt",polo:"Polo-Shirt",hoodie:"Hoodie",...Object.fromEntries(configured.map(product=>[product.id,product.name||product.id]))};
   if(positionProduct){
@@ -1388,11 +1386,11 @@ addTusPatchBtn?.addEventListener("click",()=>{
   let motif=workingMotifs.find(item=>item.id===patchId);
   if(!motif){
     if(workingMotifs.length>=4){alert("Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.");return;}
-    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.15",preserveColors:true};
+    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.16",preserveColors:true};
     workingMotifs.push(motif);
   }else{
     motif.name="TuS 3D-Patch";
-    motif.file="/tus-3d-patch.png?v=30.3.15";
+    motif.file="/tus-3d-patch.png?v=30.3.16";
     motif.preserveColors=true;
   }
   renderMotifsEditor();
@@ -1402,9 +1400,8 @@ addTusPatchBtn?.addEventListener("click",()=>{
 });
 
 newShopBtn.addEventListener("click",()=>{
-  // Neue Shops starten bewusst als Kopie der SIMPLE-Mastervorlage.
-  // Damit werden Produktarten, Shirt-Positionen und alle weiteren Standardwerte zuverlässig übernommen.
-  const template = deepClone(shopConfigs.get("_simple") || seedShops["_simple"] || {});
+  // Neue Shops starten mit dem zentralen Master-Sortiment.
+  const template = deepClone(shopConfigs.get("_master") || seedShops["_master"] || shopConfigs.get("_simple") || seedShops["_simple"] || {});
   selectedShopId=""; selectedShopOriginal=template; workingMotifs=deepClone(template.motifs||[{id:"motiv1",name:"Motiv 1",file:""}]); workingProductMotifModes=deepClone(template.productMotifModes||{}); workingProductPrint=deepClone(template.productPrint||{}); workingLogo=template.logoFile||"";
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent="Neuen SIMPLE-Shop anlegen"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value="simple"; shopFields.price.value=Number(template.shirtPrice??15); shopFields.prefix.value=""; shopFields.email.value=template.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=template.active!==false;
@@ -1418,7 +1415,7 @@ newShopBtn.addEventListener("click",()=>{
   shopFields.tshirtFrontX.value=Number(pp.tshirt?.front?.xPct??68); shopFields.tshirtFrontY.value=Number(pp.tshirt?.front?.yPct??16); shopFields.tshirtFrontW.value=Number(pp.tshirt?.front?.widthPct??28); shopFields.tshirtBackX.value=Number(pp.tshirt?.back?.xPct??50); shopFields.tshirtBackY.value=Number(pp.tshirt?.back?.yPct??36); shopFields.tshirtBackW.value=Number(pp.tshirt?.back?.widthPct??50);
   shopFields.poloFrontX.value=Number(pp.polo?.front?.xPct??68); shopFields.poloFrontY.value=Number(pp.polo?.front?.yPct??22); shopFields.poloFrontW.value=Number(pp.polo?.front?.widthPct??28); shopFields.poloBackX.value=Number(pp.polo?.back?.xPct??50); shopFields.poloBackY.value=Number(pp.polo?.back?.yPct??36); shopFields.poloBackW.value=Number(pp.polo?.back?.widthPct??50);
   shopFields.hoodieFrontX.value=Number(pp.hoodie?.front?.xPct??68); shopFields.hoodieFrontY.value=Number(pp.hoodie?.front?.yPct??22); shopFields.hoodieFrontW.value=Number(pp.hoodie?.front?.widthPct??36); shopFields.hoodieBackX.value=Number(pp.hoodie?.back?.xPct??50); shopFields.hoodieBackY.value=Number(pp.hoodie?.back?.yPct??34); shopFields.hoodieBackW.value=Number(pp.hoodie?.back?.widthPct??78);
-  fillPrintData(template); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("SIMPLE-Mastervorlage geladen – Shop-ID und Kundendaten eintragen."); renderShopList();
+  fillPrintData(template); typePreset("simple"); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Master-Sortiment geladen – gewünschte Artikel einschalten und Kundendaten eintragen."); renderShopList();
 });
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
 
@@ -1592,7 +1589,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(!shopsTree) return;
     shopsTree.replaceChildren();
     const allEntries=[...shopConfigs.entries()];
-    const canonicalTemplateIds=new Set(["_simple","_motifs","_designer"].filter(id=>shopConfigs.has(id)));
+    const canonicalTemplateIds=new Set(["_master","_simple","_motifs","_designer"].filter(id=>shopConfigs.has(id)));
     const entries=allEntries.filter(([id,cfg])=>{
       if(canonicalTemplateIds.has(id)) return true;
       const n=String(cfg?.customerName||"").trim().toLowerCase();
@@ -2132,7 +2129,7 @@ saveShopBtn.addEventListener("click",async()=>{
       const next=select.value;
       if((next==='patch'||next==='both')&&!workingMotifs.some(item=>item.id==='tus-3d-patch')){
         if(workingMotifs.length>=4){alert('Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.');renderMergedPrintTable();return;}
-        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.15',preserveColors:true});
+        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.16',preserveColors:true});
         renderMotifsEditor();
       }
       workingProductMotifModes[select.dataset.product]=next;

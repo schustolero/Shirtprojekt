@@ -441,7 +441,7 @@ function applyProductColorRules(product, forceDefault = false) {
   });
 
   const currentButton = Array.from(shirtColorButtons).find(button => button.dataset.id === currentShirtColorId && !button.hidden);
-  const defaultId = product?.defaultShirtColorId || allowed[0] || "";
+  const defaultId = product?.defaultShirtColorId || allowed[0] || F140_ALLOWED_META.defaultId || currentShirtColorId || "";
   const target = Array.from(shirtColorButtons).find(button => button.dataset.id === defaultId && !button.hidden)
     || Array.from(shirtColorButtons).find(button => !button.hidden);
   if (target && (forceDefault || !currentButton)) {

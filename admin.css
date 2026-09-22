@@ -38,7 +38,7 @@
   }
 }
 
-/* v30.3.15 – professioneller Funktions- und Preisbereich */
+/* v30.3.16 – professioneller Funktions- und Preisbereich */
 .shop-form .v2972-status-functions{
   grid-template-columns:126px minmax(0,1fr)!important;
   gap:8px!important;
@@ -1028,7 +1028,8 @@
   .functions-accordion .core-features{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 
-/* v30.3.15 – kompakte, editierbare Produktpreise */
+/* v30.3.16 – kompakte, editierbare Produktpreise */
+.v3042-catalog-hint{margin:-2px 0 8px;color:#7b8492;font-size:11px;line-height:1.3}
 .v3036-product-head,.v3036-product-row{
   display:grid!important;
   grid-template-columns:minmax(90px,1.5fr) minmax(54px,.65fr) minmax(92px,.8fr) 62px!important;
@@ -4613,7 +4614,7 @@ body.v284-admin #ordersTab .v30150-stage{
   }
 }
 
-/* v30.3.15 final – einheitliche professionelle Schalter */
+/* v30.3.16 final – einheitliche professionelle Schalter */
 .shop-form .v2853-basic-grid>.v2972-status-functions{
   display:grid!important;
   grid-template-columns:126px minmax(0,1fr)!important;
@@ -4834,7 +4835,7 @@ body.v284-admin #ordersTab .v30150-stage{
   .shop-form .v2850-products{padding:9px!important}
 }
 
-/* v30.3.15 – Grunddaten-Funktionen: korrekter Container */
+/* v30.3.16 – Grunddaten-Funktionen: korrekter Container */
 .shop-form .v2850-main-fields>.v2972-status-functions{
   grid-column:1/-1!important;
   display:grid!important;
@@ -4984,7 +4985,7 @@ body.v284-admin #ordersTab .v30150-stage{
   }
 }
 
-/* v30.3.15 – Shirtfarben-Schnellauswahl ohne Royal-Sonderbutton */
+/* v30.3.16 – Shirtfarben-Schnellauswahl ohne Royal-Sonderbutton */
 .shop-form .v3039-shirt-quick-actions{
   display:grid!important;
   grid-template-columns:repeat(2,minmax(0,1fr))!important;
@@ -4995,7 +4996,7 @@ body.v284-admin #ordersTab .v30150-stage{
   grid-column:auto!important;
 }
 
-/* v30.3.15 – artikelabhängige Markenfarben und Größen */
+/* v30.3.16 – artikelabhängige Markenfarben und Größen */
 .v3040-variants{margin-top:9px;border-top:1px solid #e3e7ec;padding-top:8px}
 .v3040-variants>summary{cursor:pointer;font-size:11px;font-weight:800;color:#3d4650;list-style:none;display:flex;align-items:center;justify-content:space-between}
 .v3040-variants>summary:after{content:"›";font-size:18px;line-height:1;transform:rotate(90deg);transition:.15s ease}
