@@ -14,6 +14,8 @@ const FEATURES = Object.assign({
   showShirtColorPicker: true,
   showMotifPicker: true,
   showMotifColorPicker: true,
+  showPrices: true,
+  showNexaroBranding: true,
   autoSelectSingleMotif: true,
   showResetButton: true,
   maxUploadMB: 8
@@ -137,6 +139,7 @@ function getAllowedMotifColorNames(){
   }
 
   document.body.dataset.shopLayout = FEATURES.layout || "simple";
+  document.body.dataset.showPrices = FEATURES.showPrices === false ? "false" : "true";
 
   const shirtColorSection = document.querySelector(".color-section");
   const motifSection = document.querySelector(".motif-section");
@@ -1350,13 +1353,14 @@ function openOrderSummary() {
 
   orderSummary.appendChild(summaryRow("Bestellnummer", "wird beim Absenden vergeben"));
   orderItems.forEach((item, i) => {
+    const visiblePrice = FEATURES.showPrices === false ? "" : ` · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`;
     orderSummary.appendChild(summaryRow(
       `Position ${i + 1}`,
-      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""} · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}${visiblePrice}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
-  orderSummary.appendChild(summaryRow("Gesamtpreis", formatEuro(totalPrice)));
+  if (FEATURES.showPrices !== false) orderSummary.appendChild(summaryRow("Gesamtpreis", formatEuro(totalPrice)));
 
   formOrderItems.value = orderItemsAsText();
   formTotalQuantity.value = String(total);
@@ -1496,6 +1500,8 @@ if (orderForm) {
         address,
         deliveryType,
         paymentMethod,
+        showPrices: FEATURES.showPrices !== false,
+        showNexaroBranding: FEATURES.showNexaroBranding !== false,
         totalQuantity,
         unitPrice: orderItems.length === 1 ? (Number(orderItems[0].unitPrice) || SHIRT_PRICE) : null,
         totalPrice,

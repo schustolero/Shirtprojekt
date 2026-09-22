@@ -65,6 +65,9 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .trust i{font-style:normal;font-size:20px}.trust b{display:block;color:var(--ink);font-size:10px}
  .footer-brand{text-align:right;font-weight:950;letter-spacing:.13em;color:#111821;text-transform:uppercase;display:flex;flex-direction:column;align-items:flex-end;line-height:1;font-style:italic;transform:skewX(-10deg)}.footer-brand span{display:block;font-size:8.4px;color:#8f7740;font-weight:850;letter-spacing:.21em;margin-top:6px;transform:skewX(10deg)}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:52px;height:3px;background:#9ccfc6;border-radius:999px;margin-bottom:10px}.footer-signature strong{font-family:"Trebuchet MS","Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.1;font-weight:800;letter-spacing:.01em;color:#121b24;font-style:italic}
 .compact-card .rows{padding-bottom:8px}.compact-card .row{padding:8px 0}
+body[data-show-prices="false"] .table-head span:nth-child(n+5),body[data-show-prices="false"] .item-row>.money{display:none!important}
+body[data-show-prices="false"] .table-head,body[data-show-prices="false"] .item-row{grid-template-columns:1.5fr 1fr .72fr .56fr!important}
+body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] .totalbox>small{display:none!important}
 @media(max-width:760px){
  .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
  .top{display:block;margin-bottom:18px}
@@ -108,7 +111,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 <header class="top">
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.2" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.3" alt="NEXARO SPORTS">
     </div>
   </div>
 </header>
@@ -161,7 +164,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.2" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.3" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -180,20 +183,25 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 </section>
 </main>
 
-<script src="/central-config.js?v=30.3.2"></script>
-<script src="/shop-loader.js?v=30.3.2"></script>
+<script src="/central-config.js?v=30.3.3"></script>
+<script src="/shop-loader.js?v=30.3.3"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
   const text=v=>String(v??"").trim();
   const storageKey=`shirtOrderConfirmation:${cfg.customerId||window.SHOP_SLUG||"shop"}`;
+  const showPrices=cfg.features?.showPrices!==false;
+  const showNexaroBranding=cfg.features?.showNexaroBranding!==false;
+  document.body.dataset.showPrices=showPrices?"true":"false";
 
   document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
 
   // Logo oben links entfernt
   const logo=document.getElementById("thanksLogo");
-  if(logo){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.2";
+  const top=document.querySelector(".top");
+  if(top) top.hidden=!showNexaroBranding;
+  if(logo && showNexaroBranding){
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.3";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
