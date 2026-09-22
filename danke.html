@@ -15,6 +15,7 @@ html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);co
 .page{width:min(1080px,calc(100% - 28px));margin:16px auto}
 .sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:22px;padding:28px 32px 24px;box-shadow:0 20px 60px rgba(17,31,43,.07)}
 .top{display:flex;justify-content:flex-start;gap:24px;align-items:flex-start;margin-bottom:18px;padding-bottom:9px;border-bottom:1px solid #edf1f4}.brand{flex:1 1 auto;min-width:0}.brand-logo{min-width:0}.brand-note{max-width:100%;white-space:normal}
+.top[hidden]{display:none!important}
 .brand{display:flex;gap:16px;align-items:center;min-width:0}
 .brand-logo{width:300px;min-height:72px;display:flex;align-items:center;gap:0}.brand-logo-image{width:300px;max-width:100%}.brand-mark{display:block;max-width:100%;width:100%;max-height:92px;height:auto;object-fit:contain;object-position:left center}
 .brand-text{line-height:.92}
@@ -111,7 +112,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 <header class="top">
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.3" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.4" alt="NEXARO SPORTS">
     </div>
   </div>
 </header>
@@ -164,7 +165,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.3" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.4" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -183,8 +184,8 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 </section>
 </main>
 
-<script src="/central-config.js?v=30.3.3"></script>
-<script src="/shop-loader.js?v=30.3.3"></script>
+<script src="/central-config.js?v=30.3.4"></script>
+<script src="/shop-loader.js?v=30.3.4"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -201,7 +202,7 @@ loadShopConfig(function(cfg){
   const top=document.querySelector(".top");
   if(top) top.hidden=!showNexaroBranding;
   if(logo && showNexaroBranding){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.3";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.4";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;
