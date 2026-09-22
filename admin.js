@@ -174,7 +174,7 @@ function printOrderSlip(order){
   const currentShopConfig = shopConfigs.get(customerId) || {};
   const showPrices = order.showPrices !== undefined ? order.showPrices !== false : currentShopConfig.features?.showPrices !== false;
   const showNexaroBranding = order.showNexaroBranding !== undefined ? order.showNexaroBranding !== false : currentShopConfig.features?.showNexaroBranding !== false;
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.5`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.6`;
   const items = Array.isArray(order.items) ? order.items : [];
   const rows = items.map((item,index)=>{
     const qty = Number(item.quantity)||1;
@@ -288,7 +288,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.5`;
+  const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.6`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
   const activePrintMethods=[];
@@ -709,6 +709,7 @@ let selectedShopOriginal = null;
 let workingMotifs = [];
 let workingProductMotifModes = {};
 let workingProductPrint = {};
+let workingProducts = [];
 let workingLogo = "";
 let shopAdminInitialized = false;
 
@@ -1038,7 +1039,7 @@ async function loadShopConfigs(){
       }
       if(doc.id==="tus-hemmerde" && (stored.tusProductMotifVersion||0)<1){
         const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.5",preserveColors:true});
+        if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.6",preserveColors:true});
         merged.motifs=motifs;
         merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
         merged.tusProductMotifVersion=1;
@@ -1110,12 +1111,58 @@ function refreshFixedPrintMotifOptions(selectedFront="", selectedBack=""){
 }
 function fillProductToggles(cfg){
   const products=Array.isArray(cfg.products)?cfg.products:[];
+  workingProducts=deepClone(products);
   const enabled=new Set(products.length?products.filter(product=>product.enabled!==false).map(product=>product.id):["tshirt"]);
   const fields={tshirt:shopFields.productTshirtEnabled,polo:shopFields.productPoloEnabled,hoodie:shopFields.productHoodieEnabled};
   Object.entries(fields).forEach(([id,input])=>{
     if(!input) return;
     input.checked=enabled.has(id);
     input.closest(".v2850-product")?.classList.toggle("is-disabled",!input.checked);
+  });
+  renderProductPriceEditor();
+}
+function renderProductPriceEditor(){
+  const host=document.getElementById("productPriceEditor");
+  if(!host) return;
+  host.replaceChildren();
+  workingProducts.forEach((product,index)=>{
+    const row=document.createElement("div");
+    row.className="v3036-product-row";
+    row.classList.toggle("is-disabled",product.enabled===false);
+
+    const name=document.createElement("strong");
+    name.textContent=product.name||product.id||"Textil";
+    const article=document.createElement("span");
+    article.textContent=product.articleNo||"–";
+
+    const priceWrap=document.createElement("label");
+    priceWrap.className="v3036-price-field";
+    const price=document.createElement("input");
+    price.type="number"; price.min="0"; price.step="0.01"; price.inputMode="decimal";
+    price.value=Number(product.price||0).toFixed(2);
+    price.setAttribute("aria-label",`Preis ${product.name||product.id||"Textil"}`);
+    const currency=document.createElement("span"); currency.textContent="€";
+    priceWrap.append(price,currency);
+
+    const toggle=document.createElement("label");
+    toggle.className="v3036-product-toggle";
+    const checkbox=document.createElement("input"); checkbox.type="checkbox"; checkbox.checked=product.enabled!==false;
+    const switchUi=document.createElement("i");
+    toggle.append(checkbox,switchUi);
+
+    price.addEventListener("input",()=>{
+      workingProducts[index].price=Math.max(0,Number(price.value)||0);
+      setShopState("Preis geändert – oben Speichern klicken.");
+    });
+    checkbox.addEventListener("change",()=>{
+      workingProducts[index].enabled=checkbox.checked;
+      row.classList.toggle("is-disabled",!checkbox.checked);
+      const standardField={tshirt:shopFields.productTshirtEnabled,polo:shopFields.productPoloEnabled,hoodie:shopFields.productHoodieEnabled}[product.id];
+      if(standardField) standardField.checked=checkbox.checked;
+      setShopState("Produktauswahl geändert – oben Speichern klicken.");
+    });
+    row.append(name,article,priceWrap,toggle);
+    host.appendChild(row);
   });
 }
 function configurePositionProducts(cfg){
@@ -1226,11 +1273,11 @@ addTusPatchBtn?.addEventListener("click",()=>{
   let motif=workingMotifs.find(item=>item.id===patchId);
   if(!motif){
     if(workingMotifs.length>=4){alert("Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.");return;}
-    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.5",preserveColors:true};
+    motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.6",preserveColors:true};
     workingMotifs.push(motif);
   }else{
     motif.name="TuS 3D-Patch";
-    motif.file="/tus-3d-patch.png?v=30.3.5";
+    motif.file="/tus-3d-patch.png?v=30.3.6";
     motif.preserveColors=true;
   }
   renderMotifsEditor();
@@ -1281,15 +1328,8 @@ function buildShopConfig(){
   cfg.printData=collectPrintData();
   cfg.productMotifModes={...workingProductMotifModes};
   cfg.productionFile=(productionFileUrl?.value||"").trim();
-  const oldProducts = Array.isArray(old.products) ? old.products : [];
-  const byId = Object.fromEntries(oldProducts.map(product => [product.id,product]));
-  const productDefinitions={
-    tshirt:{...(byId.tshirt||{}),id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:!!shopFields.productTshirtEnabled?.checked},
-    polo:{...(byId.polo||{}),id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",enabled:!!shopFields.productPoloEnabled?.checked},
-    hoodie:{...(byId.hoodie||{}),id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",enabled:!!shopFields.productHoodieEnabled?.checked}
-  };
-  const customProducts=oldProducts.filter(product=>!["tshirt","polo","hoodie"].includes(product.id));
-  const productCatalog=[...(id==="hansa"?["hoodie","tshirt","polo"]:["tshirt","polo","hoodie"]).map(productId=>productDefinitions[productId]),...customProducts];
+  const sourceProducts = workingProducts.length ? workingProducts : (Array.isArray(old.products) ? old.products : []);
+  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false}));
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;
@@ -1976,7 +2016,7 @@ saveShopBtn.addEventListener("click",async()=>{
       const next=select.value;
       if((next==='patch'||next==='both')&&!workingMotifs.some(item=>item.id==='tus-3d-patch')){
         if(workingMotifs.length>=4){alert('Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.');renderMergedPrintTable();return;}
-        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.5',preserveColors:true});
+        workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.6',preserveColors:true});
         renderMotifsEditor();
       }
       workingProductMotifModes[select.dataset.product]=next;
