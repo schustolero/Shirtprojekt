@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=30.3.8">
+  <link rel="stylesheet" href="admin.css?v=30.3.12">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -63,7 +63,7 @@
   .v2919-card-top strong{font-size:9.5px!important}
   .v2919-card-top span{font-size:7.5px!important}
   .v2920-quick-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0 0 5px!important}
-  .v2920-quick-btn,.v2920-quick-btn[data-f140-quick="royal"]{grid-column:auto!important;min-height:24px!important;padding:3px 4px!important;font-size:7.5px!important;border-radius:6px!important;white-space:nowrap!important}
+  .v2920-quick-btn{grid-column:auto!important;min-height:24px!important;padding:3px 4px!important;font-size:7.5px!important;border-radius:6px!important;white-space:nowrap!important}
   .v2919-f140-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}
   .v2919-f140-option{min-height:27px!important;padding:4px 4px!important;gap:3px!important;border-radius:7px!important}
   .v2919-f140-option input{width:11px!important;height:11px!important;flex:0 0 11px!important}
@@ -140,8 +140,7 @@
     gap:5px!important;
     width:100%!important;
   }
-  .v2920-quick-btn,
-  .v2920-quick-btn[data-f140-quick="royal"]{
+  .v2920-quick-btn{
     grid-column:auto!important;
     width:100%!important;
     min-width:0!important;
@@ -267,8 +266,7 @@
   .v2919-card-top strong{font-size:9px!important}
   .v2919-card-top span{font-size:7.5px!important}
   .v2920-quick-actions{gap:4px!important;margin-bottom:5px!important}
-  .v2920-quick-btn,
-  .v2920-quick-btn[data-f140-quick="royal"]{
+  .v2920-quick-btn{
     min-height:25px!important;
     height:25px!important;
     padding:3px 4px!important;
@@ -378,8 +376,7 @@
     text-overflow:ellipsis!important;
   }
   .v2920-quick-actions{gap:4px!important}
-  .v2920-quick-btn,
-  .v2920-quick-btn[data-f140-quick="royal"]{
+  .v2920-quick-btn{
     min-height:24px!important;
     height:24px!important;
     padding:3px 4px!important;
@@ -931,10 +928,9 @@
                     <div class="v2953-color-title-copy"><strong>F140 Shirtfarben</strong><span>Aktiviere die Farben, die der Kunde bestellen darf.</span></div>
                     <label class="v2919-inline-toggle v2953-title-toggle"><input id="shirtColorsToggleMirror" type="checkbox"><span>Shirtfarben im Shop anzeigen</span></label>
                   </div>
-                  <div class="v2920-quick-actions" aria-label="Schnellauswahl F140 Farben">
+                  <div class="v2920-quick-actions v3039-shirt-quick-actions" aria-label="Schnellauswahl F140 Farben">
                     <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="all">Alle auswählen</button>
                     <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="none">Alle abwählen</button>
-                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="royal">Nur Royal Blue</button>
                   </div>
                   <div id="f140ColorPicker" class="v2919-f140-grid" aria-label="F140 Shirtfarben Auswahl"></div>
                   <div class="v2919-shirt-default-row">
@@ -1080,7 +1076,7 @@
                   <div class="motif-library" aria-label="Motiv-Bibliothek">
                     <strong>Motiv-Bibliothek</strong>
                     <div class="motif-library-item">
-                      <img src="/tus-3d-patch.png?v=30.3.8" alt="TuS Hemmerde 3D-Patch">
+                      <img src="/tus-3d-patch.png?v=30.3.12" alt="TuS Hemmerde 3D-Patch">
                       <span><b>TuS 3D-Patch</b><small>Originalfarben · TPU-Optik</small></span>
                       <button id="addTusPatchBtn" class="ghost-btn small" type="button">Einsetzen</button>
                     </div>
@@ -1097,14 +1093,14 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.3.8"></script>
+  <script src="/central-config.js?v=30.3.12"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
   <script src="/__/firebase/init.js"></script>
   
 
-  <script src="/admin.js?v=30.3.8"></script>
+  <script src="/admin.js?v=30.3.12"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1131,7 +1127,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.3.8';document.body.appendChild(b);}
+  function badge(){ if(document.querySelector('.v2849-version'))return; var b=document.createElement('div');b.className='v2849-version';b.textContent='v30.3.12';document.body.appendChild(b);}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1468,8 +1464,6 @@
         boxes.forEach(function(box){ box.checked=true; });
       } else if(mode==='none'){
         boxes.forEach(function(box){ box.checked=false; });
-      } else if(mode==='royal'){
-        boxes.forEach(function(box){ box.checked=(box.value==='royal-blue'); });
       }
       writeBack();
     });

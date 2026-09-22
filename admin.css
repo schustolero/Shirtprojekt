@@ -38,7 +38,7 @@
   }
 }
 
-/* v30.3.8 – professioneller Funktions- und Preisbereich */
+/* v30.3.12 – professioneller Funktions- und Preisbereich */
 .shop-form .v2972-status-functions{
   grid-template-columns:126px minmax(0,1fr)!important;
   gap:8px!important;
@@ -1028,7 +1028,7 @@
   .functions-accordion .core-features{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 
-/* v30.3.8 – kompakte, editierbare Produktpreise */
+/* v30.3.12 – kompakte, editierbare Produktpreise */
 .v3036-product-head,.v3036-product-row{
   display:grid!important;
   grid-template-columns:minmax(90px,1.5fr) minmax(54px,.65fr) minmax(92px,.8fr) 62px!important;
@@ -2661,8 +2661,7 @@ body.v284-admin #ordersTab .order-card{padding:16px!important}
 /* v29.2.0 – Schnellbuttons für F140-Farben */
 .v2920-quick-actions{display:flex!important;flex-wrap:wrap!important;gap:8px!important;margin:0 0 10px!important}
 .v2920-quick-btn{min-height:34px!important;padding:7px 12px!important;font-size:10.5px!important;font-weight:800!important;border-radius:9px!important}
-.v2920-quick-btn[data-f140-quick="royal"]{border-color:#dcb52d!important;background:#fff9df!important;color:#6d5600!important}
-@media(max-width:720px){.v2920-quick-actions{display:grid!important;grid-template-columns:1fr 1fr!important}.v2920-quick-btn[data-f140-quick="royal"]{grid-column:1/-1!important}}
+@media(max-width:720px){.v2920-quick-actions{display:grid!important;grid-template-columns:1fr 1fr!important}}
 
 
 /* v29.2.1 – Druckgröße direkt hinter der Größenauswahl + Breite voll ausnutzen */
@@ -4614,7 +4613,7 @@ body.v284-admin #ordersTab .v30150-stage{
   }
 }
 
-/* v30.3.8 final – einheitliche professionelle Schalter */
+/* v30.3.12 final – einheitliche professionelle Schalter */
 .shop-form .v2853-basic-grid>.v2972-status-functions{
   display:grid!important;
   grid-template-columns:126px minmax(0,1fr)!important;
@@ -4835,7 +4834,7 @@ body.v284-admin #ordersTab .v30150-stage{
   .shop-form .v2850-products{padding:9px!important}
 }
 
-/* v30.3.8 – Grunddaten-Funktionen: korrekter Container */
+/* v30.3.12 – Grunddaten-Funktionen: korrekter Container */
 .shop-form .v2850-main-fields>.v2972-status-functions{
   grid-column:1/-1!important;
   display:grid!important;
@@ -4983,4 +4982,15 @@ body.v284-admin #ordersTab .v30150-stage{
   .shop-form .v2850-main-fields>.v2972-status-functions>.v2972-inline-functions{
     grid-template-columns:repeat(2,minmax(0,1fr))!important;
   }
+}
+
+/* v30.3.12 – Shirtfarben-Schnellauswahl ohne Royal-Sonderbutton */
+.shop-form .v3039-shirt-quick-actions{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+.shop-form .v3039-shirt-quick-actions>.v2920-quick-btn{
+  width:100%!important;
+  grid-column:auto!important;
 }

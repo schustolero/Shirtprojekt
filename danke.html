@@ -112,7 +112,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 <header class="top" hidden>
   <div class="brand">
     <div class="brand-logo brand-logo-image">
-      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.8" alt="NEXARO SPORTS">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.12" alt="NEXARO SPORTS">
     </div>
   </div>
 </header>
@@ -165,7 +165,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
               <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
       </div>
     </div>
-    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.8" alt="Vielen Dank für dein Vertrauen!"></div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.12" alt="Vielen Dank für dein Vertrauen!"></div>
   </div>
 
   <div class="totalbox">
@@ -184,8 +184,8 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 </section>
 </main>
 
-<script src="/central-config.js?v=30.3.8"></script>
-<script src="/shop-loader.js?v=30.3.8"></script>
+<script src="/central-config.js?v=30.3.12"></script>
+<script src="/shop-loader.js?v=30.3.12"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -202,7 +202,7 @@ loadShopConfig(function(cfg){
   const top=document.querySelector(".top");
   if(top) top.hidden=!showNexaroBranding;
   if(logo && showNexaroBranding){
-    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.8";
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.12";
   }
   if(cfg.orderEmail){
     document.getElementById("thanksEmail").textContent=cfg.orderEmail;

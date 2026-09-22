@@ -14,7 +14,7 @@ const FEATURES = Object.assign({
   showShirtColorPicker: true,
   showMotifPicker: true,
   showMotifColorPicker: true,
-  showPrices: true,
+  showPrices: false,
   showNexaroBranding: true,
   autoSelectSingleMotif: true,
   showResetButton: true,

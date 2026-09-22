@@ -34,7 +34,7 @@ window.CENTRAL_CONFIG = {
       ],
       fixedShirtColor:{id:"black",name:"Black||default=black",color:"#111015"},fixedMotifColor:{name:"Yellow",color:"#ffe600"},defaultMotifId:"college",hansaDefaultsVersion:1,
       orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Hansa Berufskolleg T-Shirt Bestellung",customerExtraFieldLabel:"Klasse",customerExtraFieldName:"Klasse",orderPrefix:"HAN",shopType:"motifs",active:true,
-      features:{layout:"simple",motifMode:"multiple",allowCustomerUpload:false,allowText:false,allowMoveMotif:false,allowResizeMotif:false,allowRotateMotif:false,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:true,showMotifColorPicker:true,showResetButton:false,autoSelectSingleMotif:false,maxUploadMB:8,previewMode:"single"},
+      features:{layout:"simple",motifMode:"multiple",allowCustomerUpload:false,allowText:false,allowMoveMotif:false,allowResizeMotif:false,allowRotateMotif:false,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:true,showMotifColorPicker:true,showResetButton:false,showPrices:false,autoSelectSingleMotif:false,maxUploadMB:8,previewMode:"single"},hansaPriceVisibilityVersion:2,
       motifs:[{id:"college",name:"College",file:"motiv-1.png"},{id:"script",name:"Allstar",file:"motiv-2.png"}]
     },
     "tus-hemmerde": {
@@ -47,11 +47,11 @@ window.CENTRAL_CONFIG = {
         {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",enabled:false}
       ],
       features:{layout:"simple",motifMode:"single",allowCustomerUpload:false,allowText:false,allowInitials:true,allowMoveMotif:false,allowResizeMotif:false,allowRotateMotif:false,allowBackDesign:false,allowMotifColor:false,showShirtColorPicker:true,showMotifPicker:false,showMotifColorPicker:false,showPrices:false,showNexaroBranding:false,showResetButton:false,autoSelectSingleMotif:true,maxUploadMB:8,previewMode:"single"},
-      initialsConfig:{label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"},tusInitialsVersion:5,tusJc001Version:4,tusProductMotifVersion:1,tusOrderPageVersion:1,
+      initialsConfig:{label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"},tusInitialsVersion:5,tusJc001Version:4,tusProductMotifVersion:1,tusOrderPageVersion:2,
       productMotifModes:{tshirt:"normal",jc001:"both",polo:"normal",hoodie:"normal"},
       productPrint:{tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}}},
       fixedPrint:{front:{enabled:true,motifId:"vereinslogo",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},back:{enabled:false,motifId:"vereinslogo",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}},
-      motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.8",preserveColors:true}]
+      motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.12",preserveColors:true}]
     },
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach Farbe, Größe und Menge auswählen.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,

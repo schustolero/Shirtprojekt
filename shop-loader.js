@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.8`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.12`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -77,6 +77,12 @@
               back: { ...((seed.fixedPrint || {}).back || {}), ...((data.fixedPrint || {}).back || {}) }
             }
           };
+          // Alle Shops starten als reine Bestellseite ohne sichtbare Preise.
+          // Nach dieser einmaligen Umstellung kann der Admin-Schalter je Shop frei genutzt werden.
+          if ((data.priceVisibilityVersion || 0) < 1) {
+            merged.features={...(merged.features||{}),showPrices:false};
+            merged.priceVisibilityVersion=1;
+          }
           // TG Solingen: feste Artikelnummern sowie aktuelle VK-/EK-Preise.
           // Diese Werte haben bewusst Vorrang vor älteren Firestore-Produktpreisen.
           if (slug === "tg-solingen") {
@@ -117,6 +123,10 @@
               merged.defaultMotifId="college";
               merged.hansaDefaultsVersion=1;
             }
+            if ((data.hansaPriceVisibilityVersion || 0) < 2) {
+              merged.features={...(merged.features||{}),showPrices:false};
+              merged.hansaPriceVisibilityVersion=2;
+            }
           } else if (slug === "tus-hemmerde" && (data.tusColorPairsVersion || 0) < 1) {
             merged.shirtPrice=10;
             merged.products=(merged.products||[]).map(product=>product.id==="tshirt"?{...product,price:10,enabled:true}:{...product,enabled:false});
@@ -140,14 +150,14 @@
           }
           if (slug === "tus-hemmerde" && (data.tusProductMotifVersion || 0) < 1) {
             const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.8",preserveColors:true});
+            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.12",preserveColors:true});
             merged.motifs=motifs;
             merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
             merged.tusProductMotifVersion=1;
           }
-          if (slug === "tus-hemmerde" && (data.tusOrderPageVersion || 0) < 1) {
+          if (slug === "tus-hemmerde" && (data.tusOrderPageVersion || 0) < 2) {
             merged.features={...(merged.features||{}),showPrices:false,showNexaroBranding:false};
-            merged.tusOrderPageVersion=1;
+            merged.tusOrderPageVersion=2;
           }
 
           const finalConfig = normalizeTemplateDemo(merged);
