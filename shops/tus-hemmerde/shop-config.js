@@ -55,6 +55,8 @@ window.SHOP_CONFIG = {
   initialsConfig: { label: "Initialen (optional)", placeholder: "z. B. TS", maxLength: 3, stageXPct: 29, stageYPct: 90, fontSize: 24, fontFamily: "Arial" },
   tusInitialsVersion: 5,
   tusJc001Version: 4,
+  tusProductMotifVersion: 1,
+  productMotifModes: { tshirt: "normal", jc001: "both", polo: "normal", hoodie: "normal" },
   productPrint: {
     tshirt: { front: { xPct: 68, yPct: 16, widthPct: 28 }, back: { xPct: 50, yPct: 36, widthPct: 50 } },
     jc001: { front: { xPct: 78, yPct: 0, widthPct: 28 }, back: { xPct: 50, yPct: 36, widthPct: 50 } },
@@ -65,5 +67,5 @@ window.SHOP_CONFIG = {
     front: { enabled: true, motifId: "vereinslogo", position: "left-chest", size: "small", topPct: 16, sidePct: 32, scalePct: 100 },
     back: { enabled: false, motifId: "vereinslogo", position: "center", size: "large", topPct: 36, shiftXPct: 0, scalePct: 100 }
   },
-  motifs: [{ id: "vereinslogo", name: "Vereinslogo", file: "motiv-1.png" }]
+  motifs: [{ id: "vereinslogo", name: "Vereinslogo", file: "motiv-1.png" }, { id: "tus-3d-patch", name: "TuS 3D-Patch", file: "/tus-3d-patch.png?v=30.3.1", preserveColors: true }]
 };

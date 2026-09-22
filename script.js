@@ -307,8 +307,47 @@ const PRODUCTS = configuredProducts.length ? configuredProducts : [{
   frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png"
 }];
 let currentProductId = PRODUCTS[0].id;
+const productMotifSelections = {};
+let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
+
+function getProductMotifMode(productId=currentProductId){
+  return SHOP.productMotifModes?.[productId] || "normal";
+}
+
+function getMotifButtonByKind(kind){
+  if(kind === "patch") return Array.from(motifButtons).find(button => button.dataset.motif === "tus-3d-patch");
+  return Array.from(motifButtons).find(button => button.dataset.motif !== "tus-3d-patch") || motifButtons[0];
+}
+
+function ensureProductMotifChoiceSection(){
+  if(productMotifChoiceSection || !productSection) return productMotifChoiceSection;
+  const section=document.createElement("section");
+  section.className="tool-section product-motif-choice-section";
+  section.hidden=true;
+  section.innerHTML=`<h3>Logoart</h3><div class="product-motif-choice"><button type="button" data-logo-kind="normal">Vereinslogo</button><button type="button" data-logo-kind="patch">3D-Patch</button></div><p class="hint">Wähle die gewünschte Logoausführung.</p>`;
+  productSection.insertAdjacentElement("afterend",section);
+  section.querySelectorAll("[data-logo-kind]").forEach(button=>button.addEventListener("click",async()=>{
+    productMotifSelections[currentProductId]=button.dataset.logoKind;
+    await applyProductMotifRule(true);
+  }));
+  productMotifChoiceSection=section;
+  return section;
+}
+
+async function applyProductMotifRule(force=false){
+  const mode=getProductMotifMode();
+  const section=ensureProductMotifChoiceSection();
+  if(section) section.hidden=mode!=="both";
+  const kind=mode==="patch" ? "patch" : (mode==="both" ? (productMotifSelections[currentProductId]||"normal") : "normal");
+  if(section) section.querySelectorAll("[data-logo-kind]").forEach(button=>button.classList.toggle("active",button.dataset.logoKind===kind));
+  const target=getMotifButtonByKind(kind);
+  if(!target) return;
+  const active=document.querySelector(".motif-btn.active");
+  if(!force && active?.dataset.motif===target.dataset.motif) return;
+  await addSelectedMotif(target.dataset.motif,target.dataset.src);
+}
 
 function updateSizeOptionsForCurrentSelection() {
   const select = document.getElementById("shirtSize");
@@ -385,6 +424,7 @@ function renderProductSelector() {
       dualBaseImage = null;
       document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
       applyProductColorRules(product, true);
+      await applyProductMotifRule(true);
       updateProductPriceLabel();
       canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
       canvas.requestRenderAll();
@@ -1560,6 +1600,7 @@ async function initializeFixedPrints() {
 applyPreviewMode();
 initializeFixedPrints()
   .then(async () => {
+    await applyProductMotifRule(true);
     // Die finale Shopfarbe noch einmal vollständig rendern und erst danach
     // die Oberfläche freigeben. Dadurch blitzen weder das weiße
     // Standard-Shirt noch die ungefilterte Farbauswahl kurz auf.

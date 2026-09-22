@@ -30,7 +30,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.2.9`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.1`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -137,6 +137,13 @@
             merged.products.splice(1,0,{id:"jc001",name:"Sport",articleNo:"JC001",price:12,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"},sizesByColor:{red:["S","M","L","XL","2XL","3XL"],"heather-grey":["S","M","L","XL","2XL"]}});
             merged.productPrint={...(merged.productPrint||{}),jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}}};
             merged.tusJc001Version=4;
+          }
+          if (slug === "tus-hemmerde" && (data.tusProductMotifVersion || 0) < 1) {
+            const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
+            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.1",preserveColors:true});
+            merged.motifs=motifs;
+            merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
+            merged.tusProductMotifVersion=1;
           }
 
           const finalConfig = normalizeTemplateDemo(merged);
