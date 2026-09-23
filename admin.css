@@ -5233,7 +5233,6 @@ body.v2853-reference .v284-sidebar.v32-sidebar{
 }
 
 /* v30.3.45 Admin aufräumen */
-.v2849-version{display:none!important}
 .v2853-print-card,
 .v2853-functions-card,
 .technical-position-values,
@@ -5342,3 +5341,159 @@ html body #logoHeight{display:none!important}
 #applyMasterTemplateBtn{display:none!important}
 .v3042-catalog-hint{display:none!important}
 .v2853-products,.v2850-products{overflow:visible!important}
+html body .v2849-version{
+  display:block!important;
+  position:fixed!important;
+  right:12px!important;
+  bottom:12px!important;
+  z-index:10000!important;
+}
+
+/* v30.3.49 – Operations-Dashboard, eigenständige Oberfläche */
+html body.v32-admin,
+html body.v284-admin,
+html body.v2853-reference{
+  --ink:#0c0d10;
+  --panel:#14151a;
+  --panel-2:#1b1c22;
+  --line:#2a2c34;
+  --text:#f3f1ea;
+  --muted:#9a978c;
+  --accent:#c4a574;
+  --accent-2:#e8d7b0;
+  background:
+    radial-gradient(1200px 600px at 0% -10%, rgba(196,165,116,.08), transparent 55%),
+    var(--ink)!important;
+  color:var(--text)!important;
+  font-family:"Iowan Old Style","Palatino Linotype",Palatino,"Times New Roman",serif!important;
+}
+html body.v32-admin .v32-sidebar,
+html body.v32-admin .v284-sidebar{
+  background:#0a0b0e!important;
+  border-right:1px solid #23242b!important;
+  color:var(--text)!important;
+}
+html body.v32-admin .v284-brand strong,
+html body.v32-admin .v32-sidebar .v284-brand-copy strong{
+  color:#f6f1e6!important;
+  font-weight:700!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+  font-size:12px!important;
+}
+html body.v32-admin .v284-brand span,
+html body.v32-admin .v32-sidebar .v284-brand-copy span{
+  color:#8d8a80!important;
+}
+html body.v32-admin .v284-brand-mark{
+  background:#c4a574!important;
+  color:#111!important;
+  border:0!important;
+  border-radius:4px!important;
+}
+html body.v32-admin .v284-nav button,
+html body.v32-admin .v32-sidebar .v284-nav button,
+html body.v32-admin .v2949-shop-item,
+html body.v32-admin .v2949-shops-toggle{
+  background:#14151a!important;
+  border:1px solid #2a2c34!important;
+  color:#e8e4d8!important;
+  border-radius:6px!important;
+}
+html body.v32-admin .v284-nav button.active,
+html body.v32-admin .v2949-shop-item.is-active,
+html body.v32-admin .v2949-shop-item[aria-current="true"]{
+  background:#c4a574!important;
+  color:#111!important;
+  border-color:#c4a574!important;
+}
+html body.v32-admin .v2853-card,
+html body.v32-admin .panel,
+html body.v32-admin .stat-card,
+html body.v32-admin .order-card{
+  background:#14151a!important;
+  border:1px solid #2a2c34!important;
+  border-radius:8px!important;
+  box-shadow:none!important;
+  color:#f3f1ea!important;
+}
+html body.v32-admin .v2853-card-head,
+html body.v32-admin .panel-head{
+  background:#121318!important;
+  border-bottom:1px solid #2a2c34!important;
+  color:#f3f1ea!important;
+}
+html body.v32-admin .v2853-card-head h3,
+html body.v32-admin .panel-head h2,
+html body.v32-admin h1,html body.v32-admin h2,html body.v32-admin h3{
+  color:#f6f1e6!important;
+  font-weight:600!important;
+}
+html body.v32-admin input,
+html body.v32-admin select,
+html body.v32-admin textarea{
+  background:#0e0f13!important;
+  border:1px solid #34363f!important;
+  color:#f3f1ea!important;
+  border-radius:6px!important;
+}
+html body.v32-admin .primary-btn,
+html body.v32-admin #saveShopBtn,
+html body.v32-admin .position-save-btn{
+  background:#c4a574!important;
+  color:#111!important;
+  border:0!important;
+  border-radius:6px!important;
+  font-weight:700!important;
+}
+html body.v32-admin .ghost-btn,
+html body.v32-admin #previewShopBtn{
+  background:transparent!important;
+  border:1px solid #c4a574!important;
+  color:#e8d7b0!important;
+}
+html body.v32-admin .v2972-inline-functions label{
+  background:#1b1c22!important;
+  border:1px solid #34363f!important;
+  color:#f3f1ea!important;
+  border-radius:999px!important;
+}
+html body.v32-admin .v3036-product-row,
+html body.v32-admin .v3036-product-head{
+  background:transparent!important;
+  border-color:#2a2c34!important;
+  color:#e8e4d8!important;
+}
+html body.v32-admin .v3036-price-field input{
+  background:#0e0f13!important;
+  color:#f3f1ea!important;
+}
+html body.v32-admin .v2853-preview-shell,
+html body.v32-admin #positionStage,
+html body.v32-admin .position-stage{
+  background:#101116!important;
+  border-color:#2a2c34!important;
+}
+html body.v32-admin .v2849-version{
+  background:#c4a574!important;
+  color:#111!important;
+  border:0!important;
+  font-family:ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  letter-spacing:.06em!important;
+}
+html body.v32-admin .login-card{
+  background:#14151a!important;
+  border:1px solid #2a2c34!important;
+  color:#f3f1ea!important;
+}
+html body.v32-admin label span,
+html body.v32-admin .v3042-catalog-hint,
+html body.v32-admin .muted,
+html body.v32-admin p{
+  color:#9a978c!important;
+}
+html body.v32-admin .stat-card strong{
+  color:#f6f1e6!important;
+  font-size:28px!important;
+  letter-spacing:-.03em!important;
+}
