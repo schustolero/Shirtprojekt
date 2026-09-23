@@ -2663,6 +2663,51 @@ body[data-template-shop="true"] .brand .shop-brand-logo{
   body[data-shop-structure="solingen"] .hansa-collapsible-palette{max-height:140px!important}
 }
 
+/* Master-Shop mobile: Wortmarke klar erkennbar, Textilfarben platzsparend. */
+@media(max-width:900px){
+  body[data-template-shop="true"] .brand{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    justify-items:start!important;
+    padding:12px 18px 8px!important;
+  }
+  body[data-template-shop="true"] .brand .shop-brand-logo{
+    width:min(330px,92vw)!important;
+    max-width:100%!important;
+    height:auto!important;
+    margin:0 0 6px!important;
+  }
+  body[data-template-shop="true"] .brand-title{
+    font-size:22px!important;
+    line-height:1.05!important;
+  }
+  body[data-template-shop="true"] .brand-subtitle{
+    font-size:13px!important;
+    margin-top:3px!important;
+  }
+  body[data-template-shop="true"] .shirt-colors{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  body[data-template-shop="true"] .shirt-color{
+    min-height:36px!important;
+    padding:3px 2px!important;
+    gap:2px!important;
+    border-radius:7px!important;
+  }
+  body[data-template-shop="true"] .shirt-color .color-swatch{
+    height:18px!important;
+    min-height:18px!important;
+  }
+  body[data-template-shop="true"] .shirt-color .color-label{
+    font-size:8px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+}
+
 /* v30.1.76 – Desktop: Bereiche der scrollbaren Seitenleiste dürfen nicht
    zusammengestaucht werden. Ihre echte Höhe schiebt den Folgeabschnitt weiter. */
 @media(min-width:901px){

@@ -1340,7 +1340,10 @@ function renderCart() {
     top.append(title, price);
 
     const meta = document.createElement("span");
-    meta.textContent = `${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}`;
+    // Kundenseitig kompakt halten: Motiv-, Druckfarben- und Positionsdetails
+    // werden weiterhin im Bestellobjekt gespeichert, aber nicht unter jedem
+    // Shirt als langer Text angezeigt.
+    meta.textContent = `${item.shirtColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}`;
     info.append(top, meta);
 
     const remove = document.createElement("button");
