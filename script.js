@@ -342,14 +342,18 @@ function getAllowedMotifColorNames(){
     });
   }
 
-  (function dockShirtColorRail(){
-    const workspace=document.querySelector(".workspace");
-    const stage=document.querySelector(".mockup-stage");
-    if(!shirtColorSection || !workspace || !stage) return;
-    if(shirtColorSection.parentElement===workspace) return;
-    shirtColorSection.classList.add("color-rail");
-    workspace.insertBefore(shirtColorSection, stage);
-    workspace.classList.add("has-color-rail");
+  (function keepShirtColorsInSidebar(){
+    const sidebar=document.querySelector(".sidebar");
+    if(!shirtColorSection || !sidebar) return;
+    shirtColorSection.classList.remove("color-rail");
+    shirtColorSection.hidden=FEATURES.showShirtColorPicker===false;
+    if(FEATURES.showShirtColorPicker!==false) shirtColorSection.removeAttribute("hidden");
+    if(shirtColorSection.parentElement!==sidebar){
+      const motifs=document.querySelector(".motif-section");
+      if(motifs && motifs.parentElement===sidebar) sidebar.insertBefore(shirtColorSection, motifs.nextSibling);
+      else sidebar.appendChild(shirtColorSection);
+    }
+    document.querySelector(".workspace")?.classList.remove("has-color-rail");
   })();
 })();
 

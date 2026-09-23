@@ -3704,3 +3704,24 @@ html body .workspace .shirt-color{
 html body .workspace .shirt-color[hidden]{display:none!important}
 html body .workspace .shirt-color .color-swatch,
 html body .workspace .shirt-color .color-label{display:none!important}
+
+/* v30.3.44 Textilfarben in der Sidebar */
+html body .sidebar .color-section{
+  display:block!important;visibility:visible!important;
+  width:auto!important;max-width:none!important;
+}
+html body .sidebar .color-section h3{display:block!important}
+html body .sidebar .shirt-colors{
+  display:flex!important;flex-wrap:wrap!important;gap:8px!important;
+  max-height:168px!important;overflow-y:scroll!important;
+  scrollbar-width:thin!important;scrollbar-color:#111 #e4e4e7!important;
+}
+html body .sidebar .shirt-color{
+  display:block!important;width:28px!important;height:28px!important;
+  min-width:28px!important;min-height:28px!important;padding:0!important;
+  border-radius:50%!important;border:2px solid #fff!important;
+  box-shadow:0 0 0 1px #111!important;background:var(--swatch,#ccc)!important;
+}
+html body .sidebar .shirt-color .color-swatch,
+html body .sidebar .shirt-color .color-label{display:none!important}
+html body .sidebar .shirt-color.active{box-shadow:0 0 0 2px #111!important}
