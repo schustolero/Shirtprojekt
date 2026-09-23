@@ -847,19 +847,20 @@ function friendlySizeLabel(value){
 function renderAdminColorRail(){
   try{
   const stage=document.getElementById("positionStage");
+  const shell=document.querySelector(".v2853-preview-shell");
   const layout=document.querySelector(".position-editor-layout");
-  if(!stage||!layout) return;
-  layout.classList.add("has-color-rail");
+  const hostBox=shell||layout;
+  if(!stage||!hostBox) return;
+  hostBox.classList.add("has-color-rail");
   let rail=document.getElementById("adminColorRail");
   if(!rail){
     rail=document.createElement("section");
     rail.id="adminColorRail";
     rail.className="tool-section color-section color-rail";
     rail.innerHTML='<h3>Textilfarbe</h3><div class="shirt-colors"></div><p class="current-color">Ausgewählt: <strong id="adminCurrentColorName">White</strong></p>';
-    layout.insertBefore(rail,stage);
-  } else if(rail.parentElement!==layout){
-    layout.insertBefore(rail,stage);
   }
+  if(stage.parentElement===hostBox) hostBox.insertBefore(rail,stage);
+  else hostBox.insertBefore(rail, hostBox.firstChild);
   const host=rail.querySelector(".shirt-colors");
   const nameEl=rail.querySelector("#adminCurrentColorName");
   const product=(workingProducts||[]).find(item=>item.id===(positionProduct?.value||"tshirt"))||{};
@@ -2191,6 +2192,7 @@ saveShopBtn.addEventListener("click",async()=>{
   if(readout) previewShell.appendChild(readout);
   article.body.appendChild(previewShell);
   right.appendChild(article.card);
+  renderAdminColorRail();
 
   // Motiv / Druckbereich: zentrale, eigenständige Übersicht.
   // Wichtig: Die bestehende Artikelauswahl/Positionierungs-Logik bleibt unangetastet.

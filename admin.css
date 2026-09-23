@@ -5662,3 +5662,85 @@ html body .position-editor-layout.has-color-rail .position-stage{
 html body .position-editor-layout.has-color-rail .position-readout{
   grid-column:1/-1!important;
 }
+html body .shop-logo-inline{
+  display:flex!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+html body .shop-logo-mini-preview,
+html body .shop-logo-accent input[type="color"]{
+  width:52px!important;
+  height:52px!important;
+  border-radius:12px!important;
+  border:1px solid #e6e8ec!important;
+  background:#fff!important;
+  padding:0!important;
+}
+html body .shop-logo-accent{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:4px!important;
+  margin:0!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  color:#3d4650!important;
+}
+html body .shop-logo-accent input[type="color"]{
+  cursor:pointer!important;
+  appearance:none!important;
+  -webkit-appearance:none!important;
+}
+html body .v2853-preview-shell.has-color-rail{
+  display:grid!important;
+  grid-template-columns:48px minmax(0,1fr)!important;
+  grid-template-rows:auto 1fr auto auto!important;
+  column-gap:8px!important;
+  align-items:start!important;
+  position:relative!important;
+}
+html body .v2853-preview-shell.has-color-rail .v2853-preview-head{
+  grid-column:1/-1!important;
+  grid-row:1!important;
+}
+html body .v2853-preview-shell.has-color-rail .color-rail{
+  grid-column:1!important;
+  grid-row:2!important;
+  display:flex!important;
+  flex-direction:column!important;
+  width:48px!important;
+  margin:0!important;
+  padding:8px 0 0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html body .v2853-preview-shell.has-color-rail .color-rail h3,
+html body .v2853-preview-shell.has-color-rail .current-color{display:none!important}
+html body .v2853-preview-shell.has-color-rail .shirt-colors{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  max-height:min(62vh,520px)!important;
+  overflow-y:auto!important;
+  padding:2px!important;
+}
+html body .v2853-preview-shell.has-color-rail .shirt-color{
+  width:22px!important;height:22px!important;min-width:22px!important;min-height:22px!important;
+  aspect-ratio:1/1!important;border-radius:50%!important;padding:0!important;margin:0 auto!important;
+  border:2px solid #fff!important;box-shadow:0 0 0 1px #111!important;
+  background:var(--swatch,#888)!important;flex:0 0 22px!important;box-sizing:border-box!important;
+}
+html body .v2853-preview-shell.has-color-rail .shirt-color .color-swatch,
+html body .v2853-preview-shell.has-color-rail .shirt-color .color-label{display:none!important}
+html body .v2853-preview-shell.has-color-rail .position-stage{
+  grid-column:2!important;
+  grid-row:2!important;
+}
+html body .v2853-preview-shell.has-color-rail .v2859-size-wrap{
+  grid-column:1/-1!important;
+  grid-row:3!important;
+}
+html body .v2853-preview-shell.has-color-rail .position-readout{
+  grid-column:1/-1!important;
+  grid-row:4!important;
+}
