@@ -840,10 +840,8 @@ async function coloredPositionMotif(src,color){const key=`${src}|${color}`;if(po
 
 
 function friendlySizeLabel(value){
-  const n = Number(value) || 0;
-  if(n < 32) return "Klein";
-  if(n < 48) return "Mittel";
-  return "Groß";
+  const n = Math.round(Number(value) || 0);
+  return `${n} %`;
 }
 
 function refreshPositionEditor(){
@@ -880,7 +878,8 @@ function refreshPositionEditor(){
   positionMotif.style.top = `${y}%`;
   positionMotif.style.width = `${w}%`;
   if(positionSize) positionSize.value = String(w);
-  if(positionSizeValue) positionSizeValue.textContent = friendlySizeLabel(w);
+  const sizePct=document.getElementById("positionSizeValue")||positionSizeValue;
+  if(sizePct) sizePct.textContent = friendlySizeLabel(w);
   if(positionXValue) positionXValue.textContent = "";
   if(positionYValue) positionYValue.textContent = "";
   if(positionWValue) positionWValue.textContent = friendlySizeLabel(w);
@@ -2048,20 +2047,20 @@ saveShopBtn.addEventListener("click",async()=>{
     if(nameLogoRow.childElementCount) basic.body.appendChild(nameLogoRow);
     basic.body.appendChild(mainGrid);
   }
+  if(display){
+    display.classList.add('v2853-display');
+    basic.body.appendChild(display);
+  }
   if(products){
     products.classList.add('v2853-products');
     basic.body.appendChild(products);
   }
   left.appendChild(basic.card);
 
-  // Darstellung & Farben: alle optischen Einstellungen kompakt in einer Karte.
   const appearance=makeCard('Darstellung & Farben','v2853-appearance-card v2869-appearance-colors');
   let detachedAccent=null;
-  if(display){
-    detachedAccent=display.querySelector('.v2850-accent');
-    if(detachedAccent) detachedAccent.remove();
-    display.classList.add('v2853-display');
-    appearance.body.appendChild(display);
+  if(false){
+    detachedAccent=null;
   }
   if(colors){
     colors.classList.add('v2869-inline-colors');
@@ -2300,7 +2299,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.51');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.53');
 })();
 
 // ============================================================
@@ -2364,7 +2363,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.51");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.53");
   return true;
   }
   if(!boot()){

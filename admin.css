@@ -5410,3 +5410,32 @@ html body .v3036-product-title span{font-size:10px!important;color:#8a929c!impor
 html body .v3036-price-field span{display:none!important}
 html body .v3036-price-field input{width:54px!important;max-width:54px!important;height:28px!important;min-height:28px!important;padding:0 4px!important;text-align:right!important;font-size:11px!important}
 html body .v3036-product-main,html body .v3036-product-prices,html body .v3036-price-label{display:none!important}
+html body .v2859-size-title{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;
+  font-size:12px!important;font-weight:700!important;gap:8px!important;
+}
+html body #positionSizeValue,html body .v3051-size-pct{
+  font:700 13px/1 ui-monospace,SFMono-Regular,Menlo,monospace!important;
+  color:#1d2127!important;min-width:3.2em!important;text-align:right!important;
+}
+
+html body .v2919-color-head{display:none!important}
+html body .v2919-shirt-default-row,
+html body .v2940-print-default-row{display:none!important}
+html body .v2919-color-settings{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;align-items:start!important;
+}
+html body .v2919-shirt-palette-card,
+html body .v2935-print-color-block{
+  margin:0!important;padding:10px!important;border:1px solid #eceff3!important;border-radius:12px!important;background:#fff!important;
+}
+html body .v2919-f140-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+html body .v2919-f140-option{min-height:28px!important;padding:4px 6px!important;gap:5px!important;font-size:10px!important}
+html body .v3052-article-tabs{display:flex!important;flex-wrap:wrap!important;gap:4px!important;margin:6px 0 8px!important}
+html body .v3052-article-tabs button{
+  border:1px solid #e4e7ec!important;background:#fff!important;border-radius:999px!important;
+  padding:5px 9px!important;font-size:11px!important;font-weight:700!important;cursor:pointer!important;
+}
+html body .v3052-article-tabs button.is-active{background:#111!important;color:#fff!important;border-color:#111!important}
+html body .v2919-f140-option.is-default{border-color:#e0be36!important;background:#fff9df!important}
+@media(max-width:900px){html body .v2919-color-settings{grid-template-columns:1fr!important}}
