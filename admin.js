@@ -2082,9 +2082,6 @@ saveShopBtn.addEventListener("click",async()=>{
   const model=document.createElement('label');
   model.innerHTML='<span>Modell</span><input id="v2853Model" type="text" readonly value="F140 · T-Shirt">';
   articleControls.appendChild(model);
-  const color=document.createElement('label');
-  color.innerHTML='<span>Farbe</span><div class="v2853-color-readonly"><i></i><b id="v2853ColorName">Royal Blue</b></div>';
-  articleControls.appendChild(color);
   if(sideLabel){ sideLabel.querySelector('span').textContent='Ansicht'; articleControls.appendChild(sideLabel); }
   article.body.appendChild(articleControls);
 

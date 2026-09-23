@@ -5231,3 +5231,73 @@ body.v2853-reference .v284-sidebar.v32-sidebar{
     border-color:#e1e5eb!important;background:#fff!important;color:#272b31!important
   }
 }
+
+/* v30.3.45 Admin aufräumen */
+.v2849-version{display:none!important}
+.v2853-print-card,
+.v2853-functions-card,
+.technical-position-values,
+.legacy-motifs-accordion,
+.fixed-print-accordion,
+.print-data-accordion{display:none!important}
+.v2972-inline-functions{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+.v2972-inline-functions label{
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:8px!important;
+  white-space:nowrap!important;
+  margin:0!important;
+  padding:8px 12px!important;
+  border:1px solid #e6e6ea!important;
+  border-radius:999px!important;
+  background:#fff!important;
+}
+.v2972-inline-functions label span{white-space:nowrap!important;overflow:visible!important}
+.v2972-inline-functions label[for="showNexaroBranding"],
+.v2972-inline-functions label:has(#showNexaroBranding){display:none!important}
+.template-sync-bar{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:8px!important;
+  padding:10px 0 0!important;
+}
+.v2850-subtitle,.form-section h3{letter-spacing:0!important}
+.shop-editor-panel .panel-head{position:sticky;top:0;z-index:4;background:#fff}
+
+/* v30.3.46 markierte Admin-Punkte */
+.shop-logo-reset,
+.shop-logo-height,
+.v2853-color-readonly,
+.v2853-article-controls label:has(#v2853ColorName){display:none!important}
+.v2854-basic-logo{gap:8px!important}
+.check-row,
+.template-sync-bar .check-row{
+  min-height:36px!important;
+  padding:6px 10px!important;
+  margin:0!important;
+  gap:8px!important;
+}
+.template-sync-bar{gap:4px!important;padding:4px 0 0!important}
+.v2972-inline-functions label{
+  padding:6px 10px!important;
+  font-size:12px!important;
+}
+.v2972-inline-functions label span{
+  font-size:12px!important;
+  font-weight:650!important;
+  line-height:1.2!important;
+}
+.v2853-products,
+.v2850-products{
+  overflow-x:auto!important;
+}
+.v3036-product-head,
+.v3036-product-row{
+  grid-template-columns:1.1fr 48px 70px 70px 70px 44px!important;
+  min-width:520px!important;
+}
+.v3036-price-field input{width:58px!important}
