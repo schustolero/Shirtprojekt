@@ -1289,10 +1289,16 @@ function renderProductVariantEditor(){
     ?product.colorVariants.map(variant=>[variant.id,variant.name||variant.id])
     :PRODUCT_COLOR_CATALOG;
   const allowed=new Set(product.allowedShirtColorIds);
+  const hexMap=product.shirtColorHex||{};
+  const variantHex=Object.fromEntries((product.colorVariants||[]).map(v=>[v.id,v.color||v.hex||""]));
   const picker=document.createElement("div"); picker.className="v3040-color-picker";
   articleColorCatalog.forEach(([id,fallbackName])=>{
     const label=document.createElement("label");
+    label.className="v3040-color-chip"+(allowed.has(id)?" is-on":"");
+    const hex=hexMap[id]||variantHex[id]||"#ccc";
+    label.style.setProperty("--sw",hex);
     const input=document.createElement("input"); input.type="checkbox"; input.checked=allowed.has(id);
+    const swatch=document.createElement("i"); swatch.className="v3040-swatch";
     const copy=document.createElement("span"); copy.textContent=product.shirtColorLabels?.[id]||fallbackName;
     input.addEventListener("change",()=>{
       const next=new Set(workingProducts[index].allowedShirtColorIds||[]);
@@ -1304,7 +1310,7 @@ function renderProductVariantEditor(){
       if(!next.has(workingProducts[index].defaultShirtColorId)) workingProducts[index].defaultShirtColorId=workingProducts[index].allowedShirtColorIds[0];
       setShopState("Artikelvarianten geändert – oben Speichern klicken."); renderProductVariantEditor();
     });
-    label.append(input,copy); picker.appendChild(label);
+    label.append(input,swatch,copy); picker.appendChild(label);
   });
   host.appendChild(picker);
   const heads=document.createElement("div"); heads.className="v3040-size-head"; heads.innerHTML="<span>Marken-Farbname</span><span>verfügbare Größen</span><span>Start</span>";
@@ -1319,7 +1325,9 @@ function renderProductVariantEditor(){
     const defaultLabel=document.createElement("label"); defaultLabel.className="v3040-default-color";
     const radio=document.createElement("input"); radio.type="radio"; radio.name="v3040DefaultColor"; radio.checked=product.defaultShirtColorId===colorId;
     radio.addEventListener("change",()=>{workingProducts[index].defaultShirtColorId=colorId;setShopState("Startfarbe geändert – oben Speichern klicken.");});
-    const radioCopy=document.createElement("span"); radioCopy.textContent="Start"; defaultLabel.append(radio,radioCopy);
+    const swatch=document.createElement("i"); swatch.className="v3040-swatch";
+    swatch.style.setProperty("--sw",hexMap[colorId]||variantHex[colorId]||"#ccc");
+    const radioCopy=document.createElement("span"); radioCopy.textContent="Start"; defaultLabel.append(radio,swatch,radioCopy);
     row.append(colorName,sizes,defaultLabel); rows.appendChild(row);
   });
   host.append(heads,rows);
