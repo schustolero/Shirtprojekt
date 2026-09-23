@@ -2,6 +2,8 @@
 (function initThemeToggle(){
   const root=document.documentElement;
   const btn=document.getElementById("themeToggle");
+  const header=document.querySelector(".designer-header");
+  if(btn && header && btn.parentElement!==header) header.appendChild(btn);
   const apply=theme=>{
     root.dataset.theme=theme;
     try{localStorage.setItem("shirtprojekt-theme",theme)}catch(e){}
@@ -1232,6 +1234,14 @@ const shirtSize = document.getElementById("shirtSize");
 function renderSizePills(){
   const host=document.getElementById("sizePills");
   if(!shirtSize || !host) return;
+  if(shirtSize.options.length<=1){
+    ["S","M","L","XL","2XL","3XL","4XL","5XL"].forEach(size=>{
+      const option=document.createElement("option");
+      option.value=size;
+      option.textContent=size;
+      shirtSize.appendChild(option);
+    });
+  }
   const sizes=Array.from(shirtSize.options).map(opt=>opt.value).filter(Boolean);
   host.replaceChildren();
   sizes.forEach(size=>{

@@ -3567,3 +3567,99 @@ html body .designer-status{display:none!important}
     height:auto!important;
   }
 }
+
+/* v30.3.38 – Leerraum, Scrollbar, Größen, Textnaht */
+html body .sidebar{
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+}
+html body .brand,
+html body .brand-copy{
+  min-width:0!important;
+  max-width:100%!important;
+}
+html body .brand-subtitle{
+  display:block!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  max-width:100%!important;
+}
+html body .designer-header{
+  overflow:hidden!important;
+  gap:12px!important;
+}
+html body .designer-header .theme-toggle{margin-left:auto!important}
+html body .motif-color-section .motif-colors,
+html body .motif-colors{
+  max-height:156px!important;
+  overflow-y:scroll!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#111 #e4e4e7!important;
+  scrollbar-gutter:stable!important;
+  padding-right:6px!important;
+}
+html body .motif-colors::-webkit-scrollbar{width:10px!important}
+html body .motif-colors::-webkit-scrollbar-track{background:#ececef!important;border-radius:8px!important}
+html body .motif-colors::-webkit-scrollbar-thumb{background:#111!important;border-radius:8px!important}
+
+html body .workspace,
+html body .workspace.has-color-rail{
+  grid-template-columns:40px minmax(0,1fr)!important;
+  column-gap:4px!important;
+  padding:8px 8px 8px 6px!important;
+  align-items:center!important;
+}
+html body .workspace.has-color-rail .color-rail,
+html body .workspace .color-section{
+  width:40px!important;
+  max-width:40px!important;
+  align-self:center!important;
+}
+html body .workspace.has-color-rail .shirt-colors{
+  gap:7px!important;
+  max-height:min(70vh,560px)!important;
+  overflow-y:scroll!important;
+  scrollbar-width:thin!important;
+  scrollbar-color:#111 transparent!important;
+}
+html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar{width:8px!important}
+html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar-thumb{background:#111!important;border-radius:8px!important}
+html body .workspace .current-color{
+  position:absolute!important;
+  left:52px!important;
+  bottom:10px!important;
+  width:auto!important;
+  white-space:nowrap!important;
+  text-align:left!important;
+  grid-column:auto!important;
+  grid-row:auto!important;
+}
+html body .workspace.has-color-rail .mockup-stage,
+html body .workspace .mockup-stage{
+  justify-self:stretch!important;
+  width:100%!important;
+  max-width:none!important;
+  height:min(78vh,820px)!important;
+  aspect-ratio:auto!important;
+}
+html body .workspace .shirt-mockup,
+html body .workspace canvas{
+  object-fit:contain!important;
+}
+html body .size-field .size-select-fallback{
+  position:static!important;
+  width:100%!important;
+  height:40px!important;
+  clip:auto!important;
+  overflow:visible!important;
+}
+html body .size-pills:not(:empty) + .size-select-fallback,
+html body .size-field:has(.size-pills:not(:empty)) .size-select-fallback{
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+}
+html body .size-pills:empty{display:none!important}
