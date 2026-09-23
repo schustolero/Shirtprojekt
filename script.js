@@ -358,18 +358,18 @@ function getAllowedMotifColorNames(){
     if(shirtColorSection.parentElement!==workspace){
       workspace.insertBefore(shirtColorSection, workspace.firstChild);
     }
-    let railNav=shirtColorSection.querySelector(".rail-nav");
-    if(!railNav){
-      railNav=document.createElement("div");
-      railNav.className="rail-nav";
-      railNav.innerHTML='<button type="button" class="rail-nav-btn" data-dir="-1" aria-label="Farben nach oben">↑</button><button type="button" class="rail-nav-btn" data-dir="1" aria-label="Farben nach unten">↓</button>';
-      shirtColorSection.appendChild(railNav);
-      const palette=shirtColorSection.querySelector(".shirt-colors");
-      railNav.addEventListener("click",event=>{
-        const btn=event.target.closest(".rail-nav-btn");
-        if(!btn||!palette) return;
-        palette.scrollBy({top:Number(btn.dataset.dir)*88,behavior:"smooth"});
-      });
+    shirtColorSection.querySelector(".rail-nav")?.remove();
+    const palette=shirtColorSection.querySelector(".shirt-colors");
+    if(palette){
+      palette.classList.add("is-scrollable");
+      const syncFade=()=>{
+        const top=palette.scrollTop>4;
+        const more=palette.scrollHeight-palette.scrollTop-palette.clientHeight>8;
+        palette.classList.toggle("has-more-top",top);
+        palette.classList.toggle("has-more-bottom",more);
+      };
+      palette.onscroll=syncFade;
+      requestAnimationFrame(syncFade);
     }
     document.querySelectorAll(".shirt-color").forEach(button=>{
       let hex=button.dataset.color||"";

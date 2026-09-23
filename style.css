@@ -3899,3 +3899,35 @@ html body .rail-nav-btn{
   cursor:pointer!important;
   padding:0!important;
 }
+html body .mockup-stage{position:relative!important}
+html body .price-patch{
+  position:absolute!important;
+  right:6%!important;
+  bottom:11%!important;
+  left:auto!important;
+  z-index:8!important;
+}
+html body .color-rail .rail-nav{display:none!important}
+html body .workspace.has-color-rail .shirt-colors,
+html body .color-rail .shirt-colors{
+  position:relative!important;
+  max-height:min(68vh,560px)!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  scrollbar-width:auto!important;
+  scrollbar-color:#111 #e8eaee!important;
+  padding:10px 6px 18px!important;
+  mask-image:linear-gradient(to bottom,transparent 0,black 14px,black calc(100% - 22px),transparent 100%)!important;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,black 14px,black calc(100% - 22px),transparent 100%)!important;
+}
+html body .color-rail .shirt-colors::-webkit-scrollbar{width:7px!important}
+html body .color-rail .shirt-colors::-webkit-scrollbar-thumb{background:#111!important;border-radius:8px!important}
+html body .color-rail .shirt-colors::after{
+  content:""!important;
+  position:sticky!important;
+  bottom:0!important;
+  display:block!important;
+  height:16px!important;
+  pointer-events:none!important;
+  background:linear-gradient(to bottom,transparent,#f3f4f6)!important;
+}

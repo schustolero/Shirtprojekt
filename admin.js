@@ -2209,7 +2209,7 @@ saveShopBtn.addEventListener("click",async()=>{
   pricePatch.className="price-patch admin-price-patch";
   pricePatch.id="adminPricePatch";
   pricePatch.innerHTML='<span>Preis</span><strong id="adminPricePatchValue">15,00 €</strong>';
-  previewShell.appendChild(pricePatch);
+  (stage||previewShell).appendChild(pricePatch);
   // v28.6.1: Motivgröße wieder direkt unter der Vorschau sichtbar machen.
   // Der bestehende Range-Regler steuert weiterhin exakt die gespeicherte Breite,
   // zeigt aber bewusst keine Prozentwerte – nur Klein / Mittel / Groß.

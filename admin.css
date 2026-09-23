@@ -5808,3 +5808,19 @@ html body .admin-price-patch span{
 html body .admin-price-patch strong{
   display:block!important;font-size:20px!important;font-weight:800!important;line-height:1.1!important;
 }
+html body .position-stage{position:relative!important}
+html body .admin-price-patch{
+  right:8%!important;
+  bottom:10%!important;
+}
+html body .v2853-preview-shell .color-rail .shirt-colors{
+  max-height:min(58vh,480px)!important;
+  overflow-y:auto!important;
+  scrollbar-width:auto!important;
+  scrollbar-color:#111 #e8eaee!important;
+  mask-image:linear-gradient(to bottom,transparent 0,black 12px,black calc(100% - 18px),transparent 100%)!important;
+}
+html body .v2972-inline-functions #followMasterRow,
+html body .v2972-inline-functions #pushMasterRow{
+  min-width:0!important;
+}
