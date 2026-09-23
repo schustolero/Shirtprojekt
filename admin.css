@@ -5777,3 +5777,34 @@ html body .v2972-inline-functions #followMasterRow,
 html body .v2972-inline-functions #pushMasterRow{
   display:flex!important;
 }
+html body .shop-logo-accent{
+  opacity:.55!important;
+  transform:scale(.82)!important;
+  transform-origin:right center!important;
+}
+html body .shop-logo-accent span{font-size:9px!important;font-weight:650!important;color:#8a929c!important}
+html body .shop-logo-accent input[type="color"]{
+  width:28px!important;height:28px!important;min-width:28px!important;min-height:28px!important;
+  border-radius:8px!important;
+}
+html body .v2853-preview-shell{
+  position:relative!important;
+}
+html body .admin-price-patch{
+  position:absolute!important;
+  right:16px!important;
+  bottom:86px!important;
+  z-index:8!important;
+  min-width:112px!important;
+  padding:10px 14px!important;
+  border-radius:16px!important;
+  background:#111!important;
+  color:#fff!important;
+  box-shadow:0 10px 24px rgba(17,17,17,.16)!important;
+}
+html body .admin-price-patch span{
+  display:block!important;font-size:10px!important;letter-spacing:.08em!important;text-transform:uppercase!important;opacity:.7!important;
+}
+html body .admin-price-patch strong{
+  display:block!important;font-size:20px!important;font-weight:800!important;line-height:1.1!important;
+}

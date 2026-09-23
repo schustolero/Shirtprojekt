@@ -918,6 +918,12 @@ function refreshPositionEditor(){
     : (productConfig.backTemplate||(product==="polo"?"polo-back-template.png":product==="hoodie"?"hoodie-back-template.png":"shirt-back-template.png"));
   coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => { positionShirt.src = src; });
   renderAdminColorRail();
+  const priceEl=document.getElementById("adminPricePatchValue");
+  const productCfg=(workingProducts||[]).find(item=>item.id===product)||{};
+  if(priceEl){
+    const value=Number(productCfg.price ?? shopFields.price?.value ?? 15);
+    priceEl.textContent=value.toFixed(2).replace(".",",")+" €";
+  }
   const motif = selectedPositionMotif();
   if(motif?.file){
     positionMotif.onerror = () => {
@@ -1200,8 +1206,16 @@ async function loadShopConfigs(){
     });
   });
   renderShopList();
-  if(!selectedShopId && shopConfigs.has("tg-solingen")) selectShop("tg-solingen");
-  else if(!selectedShopId && shopConfigs.size) selectShop(shopConfigs.keys().next().value);
+  if(!selectedShopId){
+    const activeMaster=[...shopConfigs.entries()].find(([id,cfg])=>{
+      if(id.startsWith("_") || cfg?.isMasterTemplate) return false;
+      if(cfg?.active===false) return false;
+      const n=String(cfg?.customerName||id||"").trim().toLowerCase();
+      return id==="master" || n==="master shop" || n==="demo shop" || n.startsWith("demo");
+    });
+    const start=activeMaster?.[0] || (shopConfigs.has("master") && "master") || (shopConfigs.has("_master") && "_master") || [...shopConfigs.keys()][0];
+    if(start) selectShop(start);
+  }
 }
 
 function renderShopList(){
@@ -2191,6 +2205,11 @@ saveShopBtn.addEventListener("click",async()=>{
   previewShell.className='v2853-preview-shell';
   previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
   if(stage) previewShell.appendChild(stage);
+  const pricePatch=document.createElement("aside");
+  pricePatch.className="price-patch admin-price-patch";
+  pricePatch.id="adminPricePatch";
+  pricePatch.innerHTML='<span>Preis</span><strong id="adminPricePatchValue">15,00 €</strong>';
+  previewShell.appendChild(pricePatch);
   // v28.6.1: Motivgröße wieder direkt unter der Vorschau sichtbar machen.
   // Der bestehende Range-Regler steuert weiterhin exakt die gespeicherte Breite,
   // zeigt aber bewusst keine Prozentwerte – nur Klein / Mittel / Groß.
