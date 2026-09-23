@@ -440,8 +440,10 @@ function getProductMotifMode(productId=currentProductId){
 }
 
 function getMotifButtonByKind(kind){
-  if(kind === "patch") return Array.from(motifButtons).find(button => button.dataset.motif === "tus-3d-patch");
-  return Array.from(motifButtons).find(button => button.dataset.motif !== "tus-3d-patch") || motifButtons[0];
+  const buttons=Array.from(document.querySelectorAll(".motif-btn"));
+  const usable=buttons.filter(button=>button.dataset.motif && button.dataset.motif!=="none" && button.dataset.src);
+  if(kind === "patch") return usable.find(button => button.dataset.motif === "tus-3d-patch") || null;
+  return usable.find(button => button.dataset.motif !== "tus-3d-patch") || usable[0] || null;
 }
 
 function ensureProductMotifChoiceSection(){
@@ -922,6 +924,7 @@ function loadNativeImage(src) {
     const img = new Image();
     img.onload = () => { motifSourceCache.set(src, img); resolve(img); };
     img.onerror = reject;
+    try { img.crossOrigin = "anonymous"; } catch (e) {}
     img.src = src;
   });
 }
@@ -1012,6 +1015,10 @@ function configureFabricImage(image, motifId, motifSrc, preserveColors = false) 
 }
 
 async function addMotifToView(view, motifId, motifSrc, markActive = true) {
+  if (!motifId || motifId === "none" || !motifSrc) {
+    if (typeof clearShirtLogos === "function") clearShirtLogos();
+    return;
+  }
   if (currentView !== view) switchView(view);
   await new Promise(resolve => requestAnimationFrame(resolve));
   try {
@@ -1034,7 +1041,6 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
     });
   } catch (err) {
     console.error("Motiv konnte nicht geladen werden", err);
-    alert("Das Motiv konnte nicht geladen werden. Bitte Seite neu laden.");
   }
 }
 
