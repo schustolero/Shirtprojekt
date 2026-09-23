@@ -3683,3 +3683,24 @@ html body .motif-btn-off .motif-preview-off{
   display:block;height:36px;border:1px dashed #bbb;border-radius:8px;
   background:repeating-linear-gradient(45deg,#f4f4f5,#f4f4f5 6px,#fff 6px,#fff 12px);
 }
+
+/* v30.3.42 Textilfarben-Leiste */
+html body .workspace .color-section,
+html body .workspace .color-rail{
+  display:flex!important;flex-direction:column!important;visibility:visible!important;
+  width:44px!important;max-width:44px!important;z-index:5!important;
+}
+html body .workspace .color-section[hidden]{display:flex!important}
+html body .workspace .shirt-colors{
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  gap:7px!important;max-height:min(72vh,620px)!important;overflow-y:auto!important;
+}
+html body .workspace .shirt-color{
+  display:block!important;width:22px!important;height:22px!important;
+  min-width:22px!important;min-height:22px!important;padding:0!important;
+  border-radius:50%!important;border:2px solid #fff!important;
+  box-shadow:0 0 0 1px #111!important;background:var(--swatch,#ccc)!important;
+}
+html body .workspace .shirt-color[hidden]{display:none!important}
+html body .workspace .shirt-color .color-swatch,
+html body .workspace .shirt-color .color-label{display:none!important}

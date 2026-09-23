@@ -120,20 +120,20 @@ window.CENTRAL_CONFIG = {
         allowBackDesign:true, allowMotifColor:true,
         showShirtColorPicker:true, showMotifPicker:false, showMotifColorPicker:true,
         showPrices:false, showNexaroBranding:false, showResetButton:false,
-        autoSelectSingleMotif:true, maxUploadMB:8, previewMode:"single"
+        autoSelectSingleMotif:false, maxUploadMB:8, previewMode:"single"
       },
       initialsConfig:{label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"},
       productPrint:{
-        tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},
-        polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},
-        hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}},
-        jc001:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},
-        bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}}
+        tshirt:{front:{xPct:68,yPct:18,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
+        polo:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
+        hoodie:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
+        jc001:{front:{xPct:68,yPct:18,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
+        bcwu01w:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}}
       },
       productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},
       fixedPrint:{
-        front:{enabled:true,motifId:"motiv1",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},
-        back:{enabled:false,motifId:"motiv1",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}
+        front:{enabled:false,motifId:"motiv1",position:"left-chest",size:"small",topPct:18,sidePct:32,scalePct:100},
+        back:{enabled:false,motifId:"motiv1",position:"center",size:"small",topPct:32,shiftXPct:0,scalePct:100}
       },
       motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
     },

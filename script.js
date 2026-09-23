@@ -32,7 +32,7 @@ const FEATURES = Object.assign({
   showMotifColorPicker: true,
   showPrices: false,
   showNexaroBranding: true,
-  autoSelectSingleMotif: true,
+  autoSelectSingleMotif: false,
   showResetButton: true,
   maxUploadMB: 8
 }, SHOP.features || {});
@@ -193,7 +193,10 @@ function getAllowedMotifColorNames(){
   if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
     shirtColorSection.dataset.allowedColorIds = allowedShirtColorIds.join(",");
   }
-  if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
+  if (shirtColorSection) {
+    shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
+    if (FEATURES.showShirtColorPicker !== false) shirtColorSection.removeAttribute("hidden");
+  }
   if (motifSection) motifSection.hidden = !hasPresetMotifs;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
@@ -707,13 +710,14 @@ function clampPrintValue(value, min, max, fallback) {
   return Math.max(min, Math.min(max, Number.isFinite(number) ? number : fallback));
 }
 
+const SHARED_LOGO_WIDTH_PCT = 22;
 function getUnifiedPrintLayout(view, cfg) {
   const product = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][view];
   if (product) {
     return {
-      xPct: clampPrintValue(product.xPct, -20, 120, 50),
-      yPct: clampPrintValue(product.yPct, -20, 120, view === "front" ? 20 : 36),
-      widthPct: clampPrintValue(product.widthPct, 5, 110, view === "front" ? 22 : 50)
+      xPct: view === "front" ? 68 : 50,
+      yPct: view === "front" ? 18 : 32,
+      widthPct: SHARED_LOGO_WIDTH_PCT
     };
   }
   const size = cfg?.size || "medium";
@@ -727,7 +731,7 @@ function getUnifiedPrintLayout(view, cfg) {
   return {
     xPct: clampPrintValue(xPct, -20, 120, 50),
     yPct: clampPrintValue(cfg?.topPct, -20, 120, view === "front" ? 20 : 36),
-    widthPct: clampPrintValue((widths[size] || widths.medium) * scaleFactor, 5, 110, 50)
+    widthPct: SHARED_LOGO_WIDTH_PCT
   };
 }
 
@@ -970,7 +974,7 @@ function getFixedPrintLayout(motifId) {
       left: unified.xPct / 100,
       top: unified.yPct / 100,
       maxWidth: unified.widthPct / 100,
-      maxHeight: (currentProductId === "hoodie" && currentView === "back") ? Math.min(0.90, (unified.widthPct / 100) * 1.18) : Math.min(0.62, (unified.widthPct / 100) * 0.86)
+      maxHeight: unified.widthPct / 100
     };
   }
   return FIXED_MOTIF_LAYOUTS.default;
@@ -1802,23 +1806,9 @@ if (FIXED_MOTIF && FIXED_MOTIF.color) {
 }
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
 async function initializeFixedPrints() {
-  const fixed = SHOP.fixedPrint || {};
-  const realMotifs=Array.from(document.querySelectorAll(".motif-btn")).filter(btn=>btn.dataset.motif && btn.dataset.motif!=="none" && btn.dataset.src);
-  const motifById = (id) => realMotifs.find(btn => btn.dataset.motif === id) || realMotifs[0];
-  if (fixed.front?.enabled) {
-    const btn = motifById(fixed.front.motifId);
-    if (btn) await addMotifToView("front", btn.dataset.motif, btn.dataset.src, true);
-  } else if (SHOP.defaultMotifId) {
-    const btn = motifById(SHOP.defaultMotifId);
-    if (btn) await addSelectedMotif(btn.dataset.motif, btn.dataset.src);
-  } else if (FEATURES.autoSelectSingleMotif && motifButtons.length === 1 && FEATURES.motifMode === "single") {
-    const only = motifButtons[0];
-    await addSelectedMotif(only.dataset.motif, only.dataset.src);
-  }
-  if (fixed.back?.enabled) {
-    const btn = motifById(fixed.back.motifId);
-    if (btn) await addMotifToView("back", btn.dataset.motif, btn.dataset.src, false);
-  }
+  logoEnabled = false;
+  document.querySelectorAll(".motif-btn").forEach(btn => btn.classList.toggle("active", btn.dataset.motif === "none"));
+  if (typeof clearShirtLogos === "function") clearShirtLogos();
   if (currentView !== "front") switchView("front");
   applyPreviewMode();
   if (FEATURES.previewMode === "dual") await renderDualPreview();
