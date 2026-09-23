@@ -2808,3 +2808,42 @@ html body[data-show-prices="false"] #checkoutTotal{
   display:none!important;
   visibility:hidden!important;
 }
+
+/* Kompakte mobile Alltagansicht: weniger Fläche, gleiche Bedienbarkeit. */
+@media(max-width:900px){
+  .product-section,.view-section,.color-section,.motif-color-section,.order-section{
+    padding:8px 14px!important;
+  }
+  .product-section h3,.view-section h3,.color-section h3,.motif-color-section h3,.order-section h3{
+    font-size:15px!important;
+    line-height:1.15!important;
+    margin:0 0 6px!important;
+  }
+  .product-section .product-switch{
+    gap:5px!important;
+  }
+  .product-section .product-switch .product-btn{
+    min-height:58px!important;
+    padding:6px 3px!important;
+    gap:4px!important;
+    border-radius:10px!important;
+  }
+  .product-section .product-switch .product-btn .product-btn-name{
+    font-size:10px!important;
+    line-height:1!important;
+  }
+  .product-section .product-switch .product-btn .product-btn-price{
+    min-width:48px!important;
+    height:22px!important;
+    min-height:22px!important;
+    padding:0 5px!important;
+    font-size:9px!important;
+  }
+  .view-switch{gap:4px!important}
+  .view-btn{
+    min-height:34px!important;
+    padding:6px 8px!important;
+    border-radius:8px!important;
+    font-size:11px!important;
+  }
+}

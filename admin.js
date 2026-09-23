@@ -1204,6 +1204,16 @@ function renderProductPriceEditor(){
     const purchaseCurrency=document.createElement("span"); purchaseCurrency.textContent="€";
     purchaseWrap.append(purchase,purchaseCurrency);
 
+    const printWrap=document.createElement("label");
+    printWrap.className="v3036-price-field v3036-print-field";
+    const print=document.createElement("input");
+    print.type="number"; print.min="0"; print.step="0.01"; print.inputMode="decimal";
+    print.value=product.printCost == null ? "" : Number(product.printCost||0).toFixed(2);
+    print.placeholder="Druck";
+    print.setAttribute("aria-label",`Druckkosten ${product.name||product.id||"Textil"}`);
+    const printCurrency=document.createElement("span"); printCurrency.textContent="€";
+    printWrap.append(print,printCurrency);
+
     const toggle=document.createElement("label");
     toggle.className="v3036-product-toggle";
     const checkbox=document.createElement("input"); checkbox.type="checkbox"; checkbox.checked=product.enabled!==false;
@@ -1218,6 +1228,10 @@ function renderProductPriceEditor(){
       workingProducts[index].purchasePrice=Math.max(0,Number(purchase.value)||0);
       setShopState("EK-Preis geändert – oben Speichern klicken.");
     });
+    print.addEventListener("input",()=>{
+      workingProducts[index].printCost=Math.max(0,Number(print.value)||0);
+      setShopState("Druckkosten geändert – oben Speichern klicken.");
+    });
     checkbox.addEventListener("change",()=>{
       workingProducts[index].enabled=checkbox.checked;
       row.classList.toggle("is-disabled",!checkbox.checked);
@@ -1225,7 +1239,7 @@ function renderProductPriceEditor(){
       if(standardField) standardField.checked=checkbox.checked;
       setShopState("Produktauswahl geändert – oben Speichern klicken.");
     });
-    row.append(name,article,priceWrap,purchaseWrap,toggle);
+    row.append(name,article,priceWrap,purchaseWrap,printWrap,toggle);
     host.appendChild(row);
   });
   renderProductVariantEditor();
