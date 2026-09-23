@@ -103,11 +103,39 @@ window.CENTRAL_CONFIG = {
       motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.19",preserveColors:true}]
     },
     "_master": {
-      customerId:"_master",customerName:"Master Shop",pageTitle:"Master Shop – Gesamtsortiment",brandTitle:"DEIN VEREINSSHOP",brandSubtitle:"Komplettes Textilsortiment",designerHeading:"Dein Shop. Dein Sortiment.",designerIntro:"Alle verfügbaren Textilien als zentrale Vorlage.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Master-Shop Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"MAS",shopType:"simple",active:true,fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},
+      customerId:"_master", customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment",
+      brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment",
+      designerHeading:"Dein Shop. Dein Sortiment.", designerIntro:"Alle verfügbaren Textilien als zentrale Vorlage.",
+      accentColor:"#c99a1b", logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90,
+      shirtPrice:15, currency:"EUR", orderEmail:"shirtzentrale@gmail.com",
+      orderSubject:"Neue Master-Shop Bestellung",
+      customerExtraFieldLabel:"Team / Abteilung", customerExtraFieldName:"Team / Abteilung",
+      orderPrefix:"MAS", shopType:"simple", active:true, isMasterTemplate:true, templateVersion:1,
+      fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},
       products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:true})),
-      features:{layout:"simple",motifMode:"single",allowCustomerUpload:false,allowText:false,allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:false,showMotifColorPicker:true,showPrices:false,showNexaroBranding:false,autoSelectSingleMotif:true,maxUploadMB:8,previewMode:"single"},
-      productPrint:{tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}},jc001:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}}},
-      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},fixedPrint:{front:{enabled:true,motifId:"motiv1",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},back:{enabled:true,motifId:"motiv1",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}},motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
+      features:{
+        layout:"simple", motifMode:"single",
+        allowCustomerUpload:false, allowText:false, allowInitials:false,
+        allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true,
+        allowBackDesign:true, allowMotifColor:true,
+        showShirtColorPicker:true, showMotifPicker:false, showMotifColorPicker:true,
+        showPrices:false, showNexaroBranding:false, showResetButton:false,
+        autoSelectSingleMotif:true, maxUploadMB:8, previewMode:"single"
+      },
+      initialsConfig:{label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"},
+      productPrint:{
+        tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},
+        polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},
+        hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}},
+        jc001:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},
+        bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}}
+      },
+      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},
+      fixedPrint:{
+        front:{enabled:true,motifId:"motiv1",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},
+        back:{enabled:true,motifId:"motiv1",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}
+      },
+      motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
     },
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach Farbe, Größe und Menge auswählen.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,
