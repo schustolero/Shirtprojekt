@@ -1277,40 +1277,52 @@ function updateInitialsOnCanvas() {
   const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
   overlay.style.left = `${Number(custom.x ?? cfg.stageXPct ?? fallback.x)}%`;
   overlay.style.top = `${Number(custom.y ?? cfg.stageYPct ?? fallback.y)}%`;
-  overlay.style.fontSize = `${Number(cfg.fontSize) || 18}px`;
-  overlay.style.fontFamily = cfg.fontFamily || "Arial";
+  overlay.style.fontSize = "30px";
+  overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Arial, sans-serif";
+  overlay.style.fontWeight = "900";
+  overlay.style.letterSpacing = "0.06em";
   overlay.style.color = color;
   overlay.style.pointerEvents = value ? "auto" : "none";
   overlay.style.cursor = value ? "grab" : "default";
+  overlay.style.zIndex = "40";
   overlay.setAttribute("aria-hidden", "false");
   if(!overlay.dataset.dragBound){
     overlay.dataset.dragBound = "1";
     let dragging = false;
-    overlay.addEventListener("pointerdown", (ev) => {
-      if(!overlay.textContent) return;
-      dragging = true;
-      overlay.setPointerCapture?.(ev.pointerId);
-      overlay.style.cursor = "grabbing";
-      ev.preventDefault();
-      ev.stopPropagation();
-    });
-    overlay.addEventListener("pointermove", (ev) => {
-      if(!dragging) return;
+    const moveTo = (clientX, clientY) => {
       const box = stage.getBoundingClientRect();
-      const x = ((ev.clientX - box.left) / box.width) * 100;
-      const y = ((ev.clientY - box.top) / box.height) * 100;
-      const nx = Math.max(8, Math.min(92, x));
-      const ny = Math.max(40, Math.min(96, y));
+      const nx = Math.max(8, Math.min(92, ((clientX - box.left) / box.width) * 100));
+      const ny = Math.max(40, Math.min(96, ((clientY - box.top) / box.height) * 100));
       overlay.style.left = `${nx}%`;
       overlay.style.top = `${ny}%`;
       const pid = (typeof currentProductId === "string" && currentProductId) || "tshirt";
       const side = (typeof currentView === "string" && currentView) || "front";
       window._initialsLivePos[`${pid}:${side}`] = {x: Math.round(nx*2)/2, y: Math.round(ny*2)/2};
+    };
+    const onMove = (ev) => {
+      if(!dragging) return;
+      const point = ev.touches ? ev.touches[0] : ev;
+      if(!point) return;
+      moveTo(point.clientX, point.clientY);
       ev.preventDefault();
+    };
+    const stopDrag = () => { dragging = false; overlay.style.cursor = "grab"; };
+    overlay.addEventListener("pointerdown", (ev) => {
+      if(!overlay.textContent) return;
+      dragging = true;
+      overlay.style.cursor = "grabbing";
+      ev.preventDefault();
+      ev.stopPropagation();
     });
-    const stop = () => { dragging = false; overlay.style.cursor = "grab"; };
-    overlay.addEventListener("pointerup", stop);
-    overlay.addEventListener("pointercancel", stop);
+    window.addEventListener("pointermove", onMove, {passive:false});
+    window.addEventListener("pointerup", stopDrag);
+    overlay.addEventListener("touchstart", (ev) => {
+      if(!overlay.textContent) return;
+      dragging = true;
+      ev.preventDefault();
+    }, {passive:false});
+    window.addEventListener("touchmove", onMove, {passive:false});
+    window.addEventListener("touchend", stopDrag);
   }
 }
 
