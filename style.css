@@ -1335,6 +1335,25 @@ body[data-shop-structure="solingen"] .hansa-palette-toggle:hover{background:#f1f
   }
 }
 
+/* Auch im Desktop-Sidebar kompakt und alltagstauglich. */
+.product-section .product-switch .product-btn{
+  min-height:64px!important;
+  padding:7px 5px!important;
+  gap:5px!important;
+  border-radius:11px!important;
+}
+.product-section .product-switch .product-btn .product-btn-name{
+  font-size:11px!important;
+  line-height:1.05!important;
+}
+.product-section .product-switch .product-btn .product-btn-price{
+  height:24px!important;
+  min-height:24px!important;
+  min-width:50px!important;
+  padding:0 6px!important;
+  font-size:10px!important;
+}
+
 /* v30.1.89 – Designer: Schrift- und Textfarbenauswahl. */
 .text-style-grid{
   display:grid;
