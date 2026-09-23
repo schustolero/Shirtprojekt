@@ -556,7 +556,8 @@ function applyProductColorRules(product, forceDefault = false) {
   const allowed = Array.isArray(product?.allowedShirtColorIds) && product.allowedShirtColorIds.length
     ? product.allowedShirtColorIds
     : variants.map(variant=>variant.id);
-  const shopAllowed=getAllowedShirtColorIds();
+  let shopAllowed=getAllowedShirtColorIds();
+  if(shopAllowed && !Array.from(shirtColorButtons).some(button=>shopAllowed.includes(button.dataset.id))) shopAllowed=null;
   const labels = product?.shirtColorLabels || {};
   shirtColorButtons.forEach(button => {
     if (!button.dataset.baseName) button.dataset.baseName = button.dataset.name || "";
@@ -586,6 +587,7 @@ function applyProductColorRules(product, forceDefault = false) {
     changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "");
   }
   updateSizeOptionsForCurrentSelection();
+  if(typeof window.dockShirtColorRail==="function") window.dockShirtColorRail();
 }
 
 function renderProductSelector() {
@@ -1921,3 +1923,67 @@ initializeFixedPrints()
   window.addEventListener('resize', update, { passive: true });
   window.addEventListener('orientationchange', update, { passive: true });
 })();
+
+window.dockShirtColorRail=function(){
+  const workspace=document.querySelector(".workspace");
+  const section=document.querySelector(".color-section");
+  if(!workspace||!section) return;
+  section.hidden=false;
+  section.removeAttribute("hidden");
+  section.classList.add("color-rail");
+  workspace.classList.add("has-color-rail");
+  if(section.parentElement!==workspace) workspace.insertBefore(section, workspace.firstChild);
+  const host=section.querySelector(".shirt-colors");
+  if(!host) return;
+  const product=typeof getCurrentProduct==="function"?getCurrentProduct():null;
+  const key=product?.articleNo||"F140";
+  const catalog=(typeof MASTER_COLOR_VARIANTS==="object"&&(MASTER_COLOR_VARIANTS[key]||MASTER_COLOR_VARIANTS.F140))||[];
+  const allowed=Array.isArray(product?.allowedShirtColorIds)&&product.allowedShirtColorIds.length
+    ? product.allowedShirtColorIds
+    : catalog.map(item=>item.id);
+  const visibleCount=host.querySelectorAll(".shirt-color:not([hidden])").length;
+  if(catalog.length && visibleCount<4){
+    host.replaceChildren();
+    catalog.forEach(item=>{
+      if(allowed.length && !allowed.includes(item.id)) return;
+      const button=document.createElement("button");
+      button.type="button";
+      button.className="shirt-color";
+      button.dataset.id=item.id;
+      button.dataset.name=item.name;
+      button.dataset.color=item.color;
+      if(item.pattern) button.dataset.pattern=item.pattern;
+      button.style.setProperty("--swatch",item.color);
+      button.style.background=item.color;
+      button.title=item.name;
+      button.setAttribute("aria-label",item.name);
+      button.innerHTML='<span class="color-swatch"></span><span class="color-label"></span>';
+      host.appendChild(button);
+    });
+    shirtColorButtons=document.querySelectorAll(".shirt-color");
+  }
+  host.querySelectorAll(".shirt-color").forEach(button=>{
+    const hex=button.dataset.color||"#888";
+    button.hidden=false;
+    button.style.setProperty("--swatch",hex);
+    button.style.background=hex;
+  });
+};
+
+(function hardenInitials(){
+  const field=document.getElementById("initialsInput");
+  if(!field) return;
+  field.maxLength=3;
+  field.setAttribute("maxlength","3");
+  field.value=String(field.value||"AF").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3)||"AF";
+  const clamp=()=>{
+    field.value=String(field.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+    if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
+  };
+  field.addEventListener("input",clamp);
+  field.addEventListener("paste",()=>setTimeout(clamp,0));
+  clamp();
+})();
+
+setTimeout(()=>window.dockShirtColorRail(),0);
+setTimeout(()=>window.dockShirtColorRail(),250);

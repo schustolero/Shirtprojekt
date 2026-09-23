@@ -4070,3 +4070,53 @@ html body .product-btn.active{
   border-color:#111!important;
 }
 html body .product-btn.active .product-btn-price{color:#f5d000!important}
+html body .brand{
+  padding-top:4px!important;
+  overflow:visible!important;
+  align-items:flex-start!important;
+}
+html body .brand-title,
+html body .brand-copy,
+html body .brand-subtitle{
+  white-space:normal!important;
+  overflow:visible!important;
+  text-overflow:unset!important;
+  max-width:100%!important;
+  font-size:16px!important;
+  line-height:1.15!important;
+}
+html body .brand-subtitle{font-size:12px!important;color:#6b7280!important}
+html body .workspace.has-color-rail .color-rail,
+html body .workspace .color-section.color-rail{
+  display:flex!important;
+  flex-direction:column!important;
+  width:40px!important;
+  max-width:40px!important;
+  visibility:visible!important;
+  opacity:1!important;
+  z-index:6!important;
+}
+html body .workspace.has-color-rail .shirt-colors,
+html body .workspace .color-rail .shirt-colors{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+  max-height:min(68vh,540px)!important;
+  overflow-y:scroll!important;
+  overflow-x:visible!important;
+  mask-image:none!important;
+  -webkit-mask-image:none!important;
+  scrollbar-gutter:stable!important;
+}
+html body .workspace .color-rail .shirt-color,
+html body .workspace.has-color-rail .shirt-color{
+  display:block!important;
+  width:22px!important;height:22px!important;
+  border-radius:50%!important;
+  background:var(--swatch,#888)!important;
+  border:2px solid #fff!important;
+  box-shadow:0 0 0 1px #111!important;
+}
+html body .workspace .color-rail .shirt-color[hidden]{
+  display:block!important;
+}
