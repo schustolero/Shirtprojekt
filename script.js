@@ -1213,6 +1213,24 @@ canvas.on("object:modified", function(event) {
 
 // v14: Mehrere unterschiedliche Shirts in einer Bestellung
 const shirtSize = document.getElementById("shirtSize");
+(function initSizePills(){
+  const host=document.getElementById("sizePills");
+  if(!shirtSize || !host || host.childElementCount) return;
+  const sizes=Array.from(shirtSize.options).map(opt=>opt.value).filter(Boolean);
+  sizes.forEach(size=>{
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="size-pill";
+    btn.textContent=size;
+    btn.dataset.size=size;
+    btn.setAttribute("role","option");
+    btn.addEventListener("click",()=>{
+      shirtSize.value=size;
+      host.querySelectorAll(".size-pill").forEach(el=>el.classList.toggle("active",el.dataset.size===size));
+    });
+    host.appendChild(btn);
+  });
+})();
 const shirtQuantity = document.getElementById("shirtQuantity");
 const addToOrderBtn = document.getElementById("addToOrderBtn");
 const addToOrderLabel = document.getElementById("addToOrderLabel");

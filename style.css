@@ -3125,3 +3125,160 @@ html body .brand-title[hidden]{display:none!important}
     width:26px!important;height:26px!important;flex-basis:26px!important;
   }
 }
+
+/* v30.3.31 Fashion-PDP */
+.sidebar .tool-section{
+  padding:16px 20px!important;
+  border-bottom:1px solid #f0f1f3!important;
+  background:#fff!important;
+}
+.sidebar .tool-section h3,
+.product-section h3,
+.view-section h3,
+.motif-color-section h3,
+.order-section h3,
+.motif-section h3{
+  margin:0 0 10px!important;
+  font-size:11px!important;
+  font-weight:750!important;
+  letter-spacing:.14em!important;
+  text-transform:uppercase!important;
+  color:#111!important;
+}
+.product-switch{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  grid-template-columns:none!important;
+}
+.product-section .product-switch .product-btn,
+.product-btn{
+  min-height:38px!important;
+  height:38px!important;
+  padding:0 14px!important;
+  border:1px solid #e6e6e6!important;
+  border-radius:999px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 auto!important;
+}
+.product-btn-name{
+  font-size:12px!important;
+  font-weight:600!important;
+  letter-spacing:.01em!important;
+  color:#111!important;
+}
+.product-btn.active{
+  background:#111!important;
+  border-color:#111!important;
+}
+.product-btn.active .product-btn-name{color:#fff!important}
+.product-btn-price{display:none!important}
+.view-switch{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:0!important;
+  padding:3px!important;
+  border-radius:999px!important;
+  background:#f3f3f4!important;
+  border:0!important;
+}
+.view-btn{
+  min-height:36px!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  color:#6b6b70!important;
+  font-size:12px!important;
+  font-weight:650!important;
+  box-shadow:none!important;
+}
+.view-btn.active{
+  background:#fff!important;
+  color:#111!important;
+  box-shadow:0 1px 2px rgba(0,0,0,.06)!important;
+}
+html body .motif-colors{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+  max-height:168px!important;
+  overflow-y:auto!important;
+  grid-template-columns:none!important;
+  padding:2px!important;
+}
+html body .motif-color{
+  width:28px!important;
+  height:28px!important;
+  min-height:28px!important;
+  padding:0!important;
+  margin:0!important;
+  border:2px solid #fff!important;
+  border-radius:50%!important;
+  box-shadow:0 0 0 1px #d0d0d4!important;
+  background:transparent!important;
+  flex:0 0 28px!important;
+  gap:0!important;
+}
+html body .motif-color .motif-color-swatch{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:var(--motif-swatch)!important;
+}
+html body .motif-color .motif-color-label{display:none!important}
+html body .motif-color.active{box-shadow:0 0 0 2px var(--accent)!important}
+.motif-color-section .current-color{margin:8px 0 0!important;font-size:12px!important;color:#6b6b70!important}
+.order-fields{display:grid!important;grid-template-columns:1.4fr .8fr!important;gap:8px!important}
+.order-field span{font-size:10px!important;letter-spacing:.08em!important;text-transform:uppercase!important;color:#8a8a8e!important}
+.order-field select,
+.order-field input{
+  height:42px!important;
+  border:1px solid #e6e6e6!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  font-size:14px!important;
+}
+.primary-btn,#addToOrderBtn,.checkout-btn{
+  min-height:48px!important;
+  border-radius:12px!important;
+  background:#111!important;
+  color:#fff!important;
+  border:0!important;
+  font-weight:700!important;
+}
+.primary-btn strong,#addToOrderPrice,#checkoutTotal{color:#fff!important}
+.order-price-info{display:none!important}
+.secondary-btn{
+  min-height:40px!important;
+  border-radius:10px!important;
+  background:transparent!important;
+  border:1px solid #e6e6e6!important;
+  color:#555!important;
+}
+.cart-box{margin-top:12px!important;border:1px solid #eee!important;border-radius:12px!important;padding:12px!important;box-shadow:none!important}
+@media(max-width:900px){
+  .brand{padding:16px 18px 8px!important}
+  .sidebar .tool-section{padding:14px 18px!important}
+  .product-btn{height:36px!important;min-height:36px!important;padding:0 12px!important}
+  html body .motif-color{width:26px!important;height:26px!important;flex-basis:26px!important}
+}
+
+/* v30.3.32 – Größen als Fashion-Pills */
+.order-fields{grid-template-columns:1fr!important;gap:12px!important}
+.size-select-fallback{position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important}
+.size-field{position:relative!important}
+.size-pills{display:flex!important;flex-wrap:wrap!important;gap:6px!important}
+.size-pill{
+  min-width:40px!important;height:38px!important;padding:0 10px!important;
+  border:1px solid #e6e6e6!important;border-radius:999px!important;
+  background:#fff!important;color:#111!important;font-size:12px!important;font-weight:650!important;cursor:pointer!important
+}
+.size-pill.active{background:#111!important;border-color:#111!important;color:#fff!important}
+.qty-field input{max-width:96px!important}
