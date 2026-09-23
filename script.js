@@ -178,15 +178,6 @@ function getAllowedMotifColorNames(){
     shirtColorSection.dataset.allowedColorIds = allowedShirtColorIds.join(",");
   }
   if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
-  (function dockShirtColorRail(){
-    const workspace=document.querySelector(".workspace");
-    const stage=document.querySelector(".mockup-stage");
-    if(!shirtColorSection || !workspace || !stage) return;
-    if(shirtColorSection.parentElement===workspace) return;
-    shirtColorSection.classList.add("color-rail");
-    workspace.insertBefore(shirtColorSection, stage);
-    workspace.classList.add("has-color-rail");
-  })();
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
@@ -231,8 +222,12 @@ function getAllowedMotifColorNames(){
 
   // In jedem Shop: Textilwahl vor Motiven, Motive vor Textilfarbe.
   const sidebar = document.querySelector(".sidebar");
-  if (sidebar && motifSection && shirtColorSection) sidebar.insertBefore(motifSection, shirtColorSection);
-  if (sidebar && productSection && motifSection) sidebar.insertBefore(productSection, motifSection);
+  if (sidebar && motifSection && shirtColorSection && shirtColorSection.parentNode === sidebar) {
+    sidebar.insertBefore(motifSection, shirtColorSection);
+  }
+  if (sidebar && productSection && motifSection && motifSection.parentNode === sidebar) {
+    sidebar.insertBefore(productSection, motifSection);
+  }
 
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
 
@@ -270,7 +265,7 @@ function getAllowedMotifColorNames(){
         <button type="button" class="text-color-swatch" data-color="#147fae" aria-label="Azure Blue" title="Azure Blue" style="--text-swatch:#147fae"></button>
       </div>`;
     const anchor = document.querySelector(".customer-upload-section") || motifSection || document.querySelector(".color-section");
-    insertAfter(anchor, textSection);
+    insertAfter(anchor && anchor.parentNode === sidebar ? anchor : motifSection, textSection);
   }
 
   if (FEATURES.allowInitials) {
@@ -316,7 +311,19 @@ function getAllowedMotifColorNames(){
       motifGrid.appendChild(btn);
     });
   }
+
+  (function dockShirtColorRail(){
+    const workspace=document.querySelector(".workspace");
+    const stage=document.querySelector(".mockup-stage");
+    if(!shirtColorSection || !workspace || !stage) return;
+    if(shirtColorSection.parentElement===workspace) return;
+    shirtColorSection.classList.add("color-rail");
+    workspace.insertBefore(shirtColorSection, stage);
+    workspace.classList.add("has-color-rail");
+  })();
 })();
+
+setTimeout(() => document.body.classList.remove("shop-loading"), 2500);
 
 // v28.2.3: Die sichtbare Druckzone bekommt zusätzliche Reserve NUR nach oben.
 // Dadurch können große Motive höher positioniert werden, ohne am Canvas-Rand abgeschnitten zu werden.
