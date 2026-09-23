@@ -288,22 +288,21 @@ function getAllowedMotifColorNames(){
     insertAfter(anchor && anchor.parentNode === sidebar ? anchor : motifSection, textSection);
   }
 
-  const initialsTab=document.getElementById("initialsTab");
+  const initialsField=document.getElementById("initialsInput");
   const initialsPop=document.getElementById("initialsPop");
+  const initialsTab=document.getElementById("initialsTab");
   if(initialsTab) initialsTab.hidden=true;
   if(initialsPop) initialsPop.hidden=!FEATURES.allowInitials;
-  if(FEATURES.allowInitials && initialsInput && !initialsInput.value) initialsInput.value="AF";
-  queueMicrotask(updateInitialsOnCanvas);
-  if(FEATURES.allowInitials && initialsTab && initialsPop && !initialsTab.dataset.bound){
-    initialsTab.dataset.bound="1";
-    initialsTab.addEventListener("click",()=>{
-      const open=initialsPop.hasAttribute("hidden");
-      initialsPop.toggleAttribute("hidden",!open);
-      initialsTab.setAttribute("aria-expanded",open?"true":"false");
-      if(open) document.getElementById("initialsInput")?.focus();
+  if(initialsField){
+    initialsField.maxLength=3;
+    initialsField.setAttribute("maxlength","3");
+    if(FEATURES.allowInitials && !initialsField.value) initialsField.value="AF";
+    initialsField.addEventListener("input",()=>{
+      initialsField.value=String(initialsField.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+      if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
     });
-    document.getElementById("initialsInput")?.addEventListener("input",updateInitialsOnCanvas);
   }
+  queueMicrotask(()=>{ if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas(); });
 
   const footer = document.querySelector(".designer-footer");
   if (footer) {
@@ -1230,7 +1229,7 @@ const textColorSwatches = [...document.querySelectorAll(".text-color-swatch")];
 const initialsInput = document.getElementById("initialsInput");
 
 function initialsValue() {
-  const maxLength = Number(SHOP.initialsConfig?.maxLength) || 3;
+  const maxLength = Math.min(3, Number(SHOP.initialsConfig?.maxLength) || 3);
   const value = String(initialsInput?.value || "")
     .toUpperCase()
     .replace(/[^A-ZÄÖÜ0-9]/g, "")
