@@ -2363,7 +2363,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.53");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.54");
   return true;
   }
   if(!boot()){
