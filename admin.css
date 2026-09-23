@@ -5824,3 +5824,16 @@ html body .v2972-inline-functions #followMasterRow,
 html body .v2972-inline-functions #pushMasterRow{
   min-width:0!important;
 }
+html body .v2972-inline-functions #followMasterRow,
+html body .v2972-inline-functions #pushMasterRow,
+html body .v2972-inline-functions .check-row{
+  min-height:28px!important;
+  height:28px!important;
+  padding:2px 8px!important;
+  font-size:11px!important;
+}
+html body .v2972-inline-functions #followMasterRow span,
+html body .v2972-inline-functions #pushMasterRow span{
+  font-size:11px!important;
+  font-weight:700!important;
+}

@@ -36,6 +36,7 @@ const FEATURES = Object.assign({
   showResetButton: true,
   maxUploadMB: 8
 }, SHOP.features || {});
+if(!["tg-solingen"].includes(String(SHOP.customerId||""))) FEATURES.allowInitials = true;
 
 function featureEnabled(name) { return FEATURES[name] !== false; }
 
@@ -287,17 +288,18 @@ function getAllowedMotifColorNames(){
     insertAfter(anchor && anchor.parentNode === sidebar ? anchor : motifSection, textSection);
   }
 
-  if (FEATURES.allowInitials) {
-    const initials = SHOP.initialsConfig || {};
-    const maxLength = Number(initials.maxLength) || 3;
-    const initialsSection = document.createElement("section");
-    initialsSection.className = "tool-section initials-section";
-    initialsSection.innerHTML = `
-      <h3>${initials.label || "Initialen (optional)"}</h3>
-      <input id="initialsInput" class="feature-input" type="text" maxlength="${maxLength}" placeholder="${initials.placeholder || "z. B. TS"}" autocomplete="off" autocapitalize="characters" aria-label="Initialen eingeben">
-      <p class="hint">Maximal ${maxLength} Zeichen · feste Position unten links</p>`;
-    insertAfter(shirtColorSection || productSection, initialsSection);
-    queueMicrotask(syncMobileAfterShirtControls);
+  const initialsTab=document.getElementById("initialsTab");
+  const initialsPop=document.getElementById("initialsPop");
+  if(initialsTab) initialsTab.hidden=!FEATURES.allowInitials;
+  if(FEATURES.allowInitials && initialsTab && initialsPop && !initialsTab.dataset.bound){
+    initialsTab.dataset.bound="1";
+    initialsTab.addEventListener("click",()=>{
+      const open=initialsPop.hasAttribute("hidden");
+      initialsPop.toggleAttribute("hidden",!open);
+      initialsTab.setAttribute("aria-expanded",open?"true":"false");
+      if(open) document.getElementById("initialsInput")?.focus();
+    });
+    document.getElementById("initialsInput")?.addEventListener("input",updateInitialsOnCanvas);
   }
 
   const footer = document.querySelector(".designer-footer");
@@ -643,6 +645,8 @@ function updateProductPriceLabel() {
   const patch=document.getElementById("pricePatch");
   const patchValue=document.getElementById("pricePatchValue");
   if(patchValue) patchValue.textContent=formatEuro(unitPrice);
+  const patchName=document.getElementById("pricePatchName");
+  if(patchName) patchName.textContent=product.name||"Textil";
   if(patch) patch.hidden=FEATURES.showPrices===false;
 }
 

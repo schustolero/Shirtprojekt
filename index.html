@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.71">
+  <link rel="stylesheet" href="/style.css?v=30.3.72">
   <script>
     (function(){
       try{
@@ -350,7 +350,13 @@
         <div class="print-zone" id="printZone">
           <canvas id="designCanvas" width="260" height="430"></canvas>
         </div>
+        <button type="button" class="initials-tab" id="initialsTab" aria-expanded="false">Initialen</button>
+        <label class="initials-pop" id="initialsPop" hidden>
+          <span>Initialen</span>
+          <input id="initialsInput" class="feature-input" type="text" maxlength="3" placeholder="TS" autocomplete="off" autocapitalize="characters" aria-label="Initialen">
+        </label>
         <aside class="price-patch" id="pricePatch" aria-label="Preis">
+          <em id="pricePatchName">T-Shirt</em>
           <span>Preis</span>
           <strong id="pricePatchValue">15,00 €</strong>
         </aside>
@@ -461,7 +467,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.71";
+      app.src="/script.js?v=30.3.72";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
