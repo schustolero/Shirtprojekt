@@ -976,9 +976,20 @@ function mergeProductsWithMasterCatalog(products){
   const merged=master.map(base=>{
     const saved=existingById.get(base.id);
     existingById.delete(base.id);
-    return saved
+    const next=saved
       ?{...deepClone(base),...deepClone(saved),enabled:saved.enabled!==false}
       :{...deepClone(base),enabled:false};
+    const masterAllowed=Array.isArray(base.allowedShirtColorIds)?base.allowedShirtColorIds.slice():[];
+    const savedAllowed=Array.isArray(next.allowedShirtColorIds)?next.allowedShirtColorIds.filter(Boolean):[];
+    if(masterAllowed.length > 5 && savedAllowed.length <= 1){
+      next.allowedShirtColorIds=masterAllowed;
+      next.colorVariants=deepClone(base.colorVariants||next.colorVariants||[]);
+      next.shirtColorLabels=deepClone(base.shirtColorLabels||next.shirtColorLabels||{});
+      if(!next.defaultShirtColorId || next.allowedShirtColorIds.indexOf(next.defaultShirtColorId)===-1){
+        next.defaultShirtColorId=base.defaultShirtColorId||next.allowedShirtColorIds[0];
+      }
+    }
+    return next;
   });
   existingById.forEach(product=>merged.push({...deepClone(product),enabled:product.enabled!==false}));
   return merged;
@@ -2363,7 +2374,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.54");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.56");
   return true;
   }
   if(!boot()){
