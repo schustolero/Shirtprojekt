@@ -1300,7 +1300,7 @@ function getCurrentShirtSelection() {
     productName: product.name || "T-Shirt",
     articleNo: product.articleNo || "",
     unitPrice: getCurrentUnitPrice(),
-    purchasePrice: Number(product.purchasePrice) || 0,
+    purchasePrice: Number(product.purchasePriceBySize?.[size] ?? product.purchasePrice) || 0,
     shirtColor: currentColorName.textContent || "White",
     motif: getSelectedMotifName(),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,

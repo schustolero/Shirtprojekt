@@ -2665,6 +2665,29 @@ body[data-template-shop="true"] .brand .shop-brand-logo{
 
 /* Master-Shop mobile: Wortmarke klar erkennbar, Textilfarben platzsparend. */
 @media(max-width:900px){
+  /* Alle Shops: kompakte Textilfarben auf mobilen Geräten. */
+  .color-section .shirt-colors{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  .color-section .shirt-color{
+    min-height:36px!important;
+    padding:3px 2px!important;
+    gap:2px!important;
+    border-radius:7px!important;
+  }
+  .color-section .shirt-color .color-swatch{
+    height:18px!important;
+    min-height:18px!important;
+  }
+  .color-section .shirt-color .color-label{
+    font-size:8px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
   body[data-template-shop="true"] .brand{
     display:grid!important;
     grid-template-columns:minmax(0,1fr)!important;
