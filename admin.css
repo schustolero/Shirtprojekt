@@ -5023,7 +5023,7 @@ body.v284-admin #ordersTab .v30150-stage{
 body.v32-admin .admin-header,
 body.v32-admin .admin-tabs,
 body.v32-admin .shop-list-panel,
-body.v32-admin .v2849-version{display:none!important}
+body.v32-admin .v2849-version{display:block!important;z-index:10000!important}
 body.v32-admin .shop-admin-grid{display:block!important;grid-template-columns:none!important}
 body.v32-admin .v284-editor-panel,
 body.v32-admin .shop-editor-panel{border:0!important;box-shadow:none!important;background:transparent!important;padding:0!important;margin:0!important}
@@ -5041,8 +5041,14 @@ body.v32-admin .v2853-workspace[data-v32-view="design"] .v2853-right{display:non
 body.v32-admin .v2853-workspace[data-v32-view="design"] .v2853-left{grid-column:1/-1}
 body.v32-admin .v2853-workspace[data-v32-view="print"] .v2853-left{display:none!important}
 @media(max-width:720px){
-  #v32ShopNav{width:100%;display:grid;grid-template-columns:repeat(3,1fr)}
-  #v32ShopNav button{padding:10px 8px;font-size:12px;text-align:center}
+  #v32ShopNav{width:100%!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;position:sticky;top:52px;z-index:30;margin:0 0 8px!important}
+  #v32ShopNav button{padding:10px 8px!important;font-size:12px!important;text-align:center}
+  body.v32-admin .v2853-workspace{display:flex!important;flex-direction:column!important}
+  body.v32-admin .v2853-left{order:1}
+  body.v32-admin .v2853-right{order:2}
+  body.v32-admin .v2853-bottom{order:3}
+  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right .position-readout,
+  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-preview-shell{display:none!important}
 }
 
 /* v32 Sidebar – hell, wie im Admin-Screenshot */

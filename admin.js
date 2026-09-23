@@ -2250,16 +2250,18 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v29.8.6');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.26');
 })();
 
 // ============================================================
 // v32 – Admin aufräumen: Shop / Design / Druck
 // ============================================================
 (function initV32AdminStructure(){
+  function boot(){
   const workspace=document.getElementById("v2853Workspace");
   const editor=document.querySelector(".shop-editor-panel");
-  if(!workspace || !editor || document.getElementById("v32ShopNav")) return;
+  if(!workspace || !editor) return false;
+  if(document.getElementById("v32ShopNav")) return true;
 
   document.body.classList.add("v32-admin");
   document.getElementById("v284Sidebar")?.classList.remove("v2853-dark-sidebar");
@@ -2311,4 +2313,11 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.26");
+  return true;
+  }
+  if(!boot()){
+    [50,200,600,1500,3000].forEach(ms=>setTimeout(boot,ms));
+    document.addEventListener("DOMContentLoaded",boot);
+  }
 })();
