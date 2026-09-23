@@ -2975,3 +2975,59 @@ html body[data-show-prices="false"] #checkoutTotal{
     font-weight:650!important;
   }
 }
+
+/* v30.3.28 – Textil- und Druckfarben identisch, Wortmarke nicht doppelt */
+html body .shirt-colors,
+html body .motif-colors{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:8px 7px!important;
+  max-height:none!important;
+}
+html body .shirt-color,
+html body .motif-color{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:stretch!important;
+  width:100%!important;
+  margin:0!important;
+  padding:0!important;
+  min-height:0!important;
+  height:auto!important;
+  gap:4px!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  border-radius:0!important;
+  transform:none!important;
+}
+html body .shirt-color .color-swatch,
+html body .motif-color .motif-color-swatch{
+  display:block!important;
+  width:100%!important;
+  height:20px!important;
+  min-height:20px!important;
+  max-height:20px!important;
+  border:1px solid #c9c9cf!important;
+  border-radius:4px!important;
+  box-shadow:none!important;
+}
+html body .shirt-color.active .color-swatch,
+html body .motif-color.active .motif-color-swatch{
+  box-shadow:0 0 0 2px var(--accent)!important;
+}
+html body .shirt-color .color-label,
+html body .motif-color .motif-color-label{
+  display:block!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:8.5px!important;
+  line-height:1.1!important;
+  font-weight:650!important;
+  color:#3a3f46!important;
+  text-align:left!important;
+}
+html body .brand-title[hidden]{display:none!important}
+@media(max-width:900px){
+  body[data-template-shop="true"] .brand-title{display:none!important}
+}

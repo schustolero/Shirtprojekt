@@ -108,7 +108,14 @@ function getAllowedMotifColorNames(){
     const el = document.getElementById(id);
     if (el && value !== undefined && value !== null) el.textContent = value;
   };
-  setText("brandTitle", cfg.brandTitle || cfg.customerName || "");
+  const logoIsWordmark=/dein-logo/i.test(String(cfg.logoFile||""));
+  const titleEl=document.getElementById("brandTitle");
+  if(logoIsWordmark){
+    if(titleEl){ titleEl.textContent=""; titleEl.hidden=true; }
+  }else{
+    setText("brandTitle", cfg.brandTitle || cfg.customerName || "");
+    if(titleEl) titleEl.hidden=false;
+  }
   setText("brandSubtitle", cfg.brandSubtitle);
   setText("designerHeading", cfg.designerHeading);
   setText("designerIntro", cfg.designerIntro);
