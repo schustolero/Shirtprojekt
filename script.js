@@ -292,7 +292,11 @@ function getAllowedMotifColorNames(){
   const initialsPop=document.getElementById("initialsPop");
   const initialsTab=document.getElementById("initialsTab");
   if(initialsTab) initialsTab.hidden=true;
-  if(initialsPop) initialsPop.hidden=!FEATURES.allowInitials;
+  if(initialsPop){
+    initialsPop.hidden=!FEATURES.allowInitials;
+    const motifColors=document.querySelector(".motif-color-section");
+    if(motifColors) motifColors.insertAdjacentElement("afterend", initialsPop);
+  }
   if(initialsField){
     initialsField.maxLength=3;
     initialsField.setAttribute("maxlength","3");
@@ -622,6 +626,7 @@ function renderProductSelector() {
       canvas.requestRenderAll();
       saveCurrentView();
       await renderShirt();
+      updateInitialsOnCanvas();
       if (FEATURES.previewMode === "dual") await renderDualPreview();
     });
     productSwitch.appendChild(btn);
@@ -929,6 +934,7 @@ function switchView(view) {
   }
   renderShirt();
   loadView(view);
+  updateInitialsOnCanvas();
 }
 
 viewButtons.forEach(button => button.addEventListener("click", () => switchView(button.dataset.view)));
@@ -1256,8 +1262,19 @@ function updateInitialsOnCanvas() {
   }
   overlay.textContent = value;
   overlay.hidden = !value;
-  overlay.style.left = `${Number(cfg.stageXPct) || 38}%`;
-  overlay.style.top = `${Number(cfg.stageYPct) || 84}%`;
+  const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
+  const view = (typeof currentView === "string" && currentView) || "front";
+  const defaults = {
+    tshirt:{front:{x:36,y:86},back:{x:36,y:86}},
+    polo:{front:{x:36,y:84},back:{x:36,y:84}},
+    hoodie:{front:{x:34,y:88},back:{x:34,y:86}},
+    sport:{front:{x:36,y:85},back:{x:36,y:85}},
+    sweatshirt:{front:{x:35,y:87},back:{x:35,y:86}}
+  };
+  const custom = SHOP.initialsByProduct?.[productId]?.[view] || {};
+  const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
+  overlay.style.left = `${Number(custom.x ?? cfg.stageXPct ?? fallback.x)}%`;
+  overlay.style.top = `${Number(custom.y ?? cfg.stageYPct ?? fallback.y)}%`;
   overlay.style.fontSize = `${Number(cfg.fontSize) || 18}px`;
   overlay.style.fontFamily = cfg.fontFamily || "Arial";
   overlay.style.color = color;

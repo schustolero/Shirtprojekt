@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.78">
+  <link rel="stylesheet" href="/style.css?v=30.3.79">
   <script>
     (function(){
       try{
@@ -257,6 +257,13 @@
       <p class="current-color">Motiv: <strong id="currentMotifColorName">Black</strong></p>
     </section>
 
+
+    <section class="tool-section initials-section" id="initialsPop">
+      <h3>Initialen</h3>
+      <input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="" autocomplete="off" autocapitalize="characters" aria-label="Initialen">
+      <p class="hint">Maximal 3 Zeichen · unten links am Saum</p>
+    </section>
+
     <section class="tool-section view-section">
       <h3>Ansicht</h3>
 
@@ -350,10 +357,6 @@
         <div class="print-zone" id="printZone">
           <canvas id="designCanvas" width="260" height="430"></canvas>
         </div>
-        <label class="initials-pop" id="initialsPop">
-          <span>Initialen</span>
-          <input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="" autocomplete="off" autocapitalize="characters" aria-label="Initialen">
-        </label>
         <aside class="price-patch" id="pricePatch" aria-label="Preis">
           <em id="pricePatchName">T-Shirt</em>
           <span>Preis</span>
@@ -466,7 +469,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.78";
+      app.src="/script.js?v=30.3.79";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }

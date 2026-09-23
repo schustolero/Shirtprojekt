@@ -5852,3 +5852,18 @@ html body .shop-form .v2972-inline-functions #pushMasterRow span{
   white-space:nowrap!important;
   overflow:hidden!important;
 }
+.admin-initials-mark{
+  position:absolute!important;
+  z-index:8!important;
+  transform:translate(-50%,-50%)!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:.08em!important;
+  color:#fff!important;
+  text-shadow:0 1px 2px #000!important;
+  cursor:grab!important;
+  user-select:none!important;
+}
+.initials-pos-field{display:flex!important;flex-direction:column!important;gap:2px!important;margin:0 0 6px!important}
+.initials-pos-field span{font-size:10px!important;font-weight:700!important;color:#667085!important}
+.initials-pos-field input{height:28px!important;width:88px!important}

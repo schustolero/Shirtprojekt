@@ -4152,3 +4152,21 @@ html body .shirt-initials-overlay{
   letter-spacing:.08em!important;
   font-weight:800!important;
 }
+html body .sidebar .initials-section{
+  display:block!important;
+  padding:14px 0!important;
+}
+html body .sidebar .initials-section .feature-input{
+  width:100%!important;
+  max-width:160px!important;
+  height:34px!important;
+  text-transform:uppercase!important;
+  font-weight:800!important;
+  letter-spacing:.08em!important;
+}
+html body .mockup-stage .initials-pop{display:none!important}
+html body .shirt-initials-overlay{
+  transform:translate(-50%,-50%)!important;
+  pointer-events:none!important;
+  z-index:6!important;
+}
