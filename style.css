@@ -3663,3 +3663,23 @@ html body .size-field:has(.size-pills:not(:empty)) .size-select-fallback{
   clip:rect(0,0,0,0)!important;
 }
 html body .size-pills:empty{display:none!important}
+
+/* v30.3.40 Logo-Galerie */
+html body .motif-section{display:block!important}
+html body .motif-grid{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+html body .motif-btn{
+  min-height:72px!important;
+  padding:8px!important;
+  border:1px solid #d8d8de!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+html body .motif-btn.active{border-color:#111!important;box-shadow:0 0 0 1px #111!important}
+html body .motif-btn-off .motif-preview-off{
+  display:block;height:36px;border:1px dashed #bbb;border-radius:8px;
+  background:repeating-linear-gradient(45deg,#f4f4f5,#f4f4f5 6px,#fff 6px,#fff 12px);
+}

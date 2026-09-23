@@ -194,7 +194,7 @@ function getAllowedMotifColorNames(){
     shirtColorSection.dataset.allowedColorIds = allowedShirtColorIds.join(",");
   }
   if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
-  if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
+  if (motifSection) motifSection.hidden = !hasPresetMotifs;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
     motifColorSection.querySelectorAll(".motif-color").forEach((button) => {
@@ -305,6 +305,17 @@ function getAllowedMotifColorNames(){
   }
 
   const motifGrid = document.getElementById("motifGrid");
+  if (motifGrid) {
+    motifGrid.replaceChildren();
+    const noneBtn=document.createElement("button");
+    noneBtn.type="button";
+    noneBtn.className="motif-btn motif-btn-off";
+    noneBtn.dataset.motif="none";
+    noneBtn.dataset.src="";
+    noneBtn.setAttribute("aria-label","Kein Logo");
+    noneBtn.innerHTML='<span class="motif-preview motif-preview-off" aria-hidden="true"></span><span>Kein Logo</span>';
+    motifGrid.appendChild(noneBtn);
+  }
   if (motifGrid && Array.isArray(cfg.motifs)) {
     cfg.motifs.forEach((motif) => {
       if (!motif || !motif.id || !motif.file) return;
@@ -378,6 +389,7 @@ const dualFrontMotif = document.getElementById("dualFrontMotif");
 const dualBackMotif = document.getElementById("dualBackMotif");
 
 let currentView = "front";
+let logoEnabled = true;
 let currentShirtColor = "#ffffff";
 let currentShirtColorId = "white";
 let currentPattern = "";
@@ -449,6 +461,7 @@ function ensureProductMotifChoiceSection(){
 }
 
 async function applyProductMotifRule(force=false){
+  if(!logoEnabled) return;
   const mode=getProductMotifMode();
   const section=ensureProductMotifChoiceSection();
   if(section) section.hidden=mode!=="both";
@@ -1026,12 +1039,39 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 }
 
 async function addSelectedMotif(motifId, motifSrc) {
+  logoEnabled = true;
   return addMotifToView("front", motifId, motifSrc, true);
 }
 
-motifButtons.forEach(button => button.addEventListener("click", () => {
-  addSelectedMotif(button.dataset.motif, button.dataset.src);
-}));
+function clearShirtLogos(){
+  logoEnabled = false;
+  const removeFrom=target=>{
+    if(!target) return;
+    target.getObjects().filter(obj=>obj && obj.motifSrc).forEach(obj=>target.remove(obj));
+    target.discardActiveObject();
+    target.requestRenderAll();
+  };
+  removeFrom(canvas);
+  viewStates.front=canvas.toJSON(["motifId","motifSrc","motifColor","motifColorLabel","motifKind","motifName","preserveColors"]);
+  if(viewStates.back){
+    try{
+      const parsed=typeof viewStates.back==="string"?JSON.parse(viewStates.back):viewStates.back;
+      if(parsed && Array.isArray(parsed.objects)) parsed.objects=parsed.objects.filter(obj=>!obj.motifSrc);
+      viewStates.back=parsed;
+    }catch(e){}
+  }
+  document.querySelectorAll(".motif-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.motif==="none"));
+}
+
+document.addEventListener("click",(event)=>{
+  const button=event.target.closest(".motif-btn");
+  if(!button) return;
+  if(button.dataset.motif==="none"){
+    clearShirtLogos();
+    return;
+  }
+  if(button.dataset.src) addSelectedMotif(button.dataset.motif, button.dataset.src);
+});
 
 async function recolorActiveMotif(color, label) {
   currentMotifColor = color;
@@ -1757,7 +1797,8 @@ if (FIXED_MOTIF && FIXED_MOTIF.color) {
 updateActiveMotifColorButton(currentMotifColor, currentMotifColorLabel);
 async function initializeFixedPrints() {
   const fixed = SHOP.fixedPrint || {};
-  const motifById = (id) => Array.from(motifButtons).find(btn => btn.dataset.motif === id) || motifButtons[0];
+  const realMotifs=Array.from(document.querySelectorAll(".motif-btn")).filter(btn=>btn.dataset.motif && btn.dataset.motif!=="none" && btn.dataset.src);
+  const motifById = (id) => realMotifs.find(btn => btn.dataset.motif === id) || realMotifs[0];
   if (fixed.front?.enabled) {
     const btn = motifById(fixed.front.motifId);
     if (btn) await addMotifToView("front", btn.dataset.motif, btn.dataset.src, true);
