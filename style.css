@@ -4170,3 +4170,11 @@ html body .shirt-initials-overlay{
   pointer-events:none!important;
   z-index:6!important;
 }
+html body .shirt-initials-overlay{
+  pointer-events:auto!important;
+  cursor:grab!important;
+  z-index:12!important;
+  user-select:none!important;
+  touch-action:none!important;
+}
+html body .shirt-initials-overlay[hidden]{display:none!important;pointer-events:none!important}
