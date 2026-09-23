@@ -342,18 +342,22 @@ function getAllowedMotifColorNames(){
     });
   }
 
-  (function keepShirtColorsInSidebar(){
-    const sidebar=document.querySelector(".sidebar");
-    if(!shirtColorSection || !sidebar) return;
-    shirtColorSection.classList.remove("color-rail");
-    shirtColorSection.hidden=FEATURES.showShirtColorPicker===false;
-    if(FEATURES.showShirtColorPicker!==false) shirtColorSection.removeAttribute("hidden");
-    if(shirtColorSection.parentElement!==sidebar){
-      const motifs=document.querySelector(".motif-section");
-      if(motifs && motifs.parentElement===sidebar) sidebar.insertBefore(shirtColorSection, motifs.nextSibling);
-      else sidebar.appendChild(shirtColorSection);
+  (function dockColorRailNextToShirt(){
+    const workspace=document.querySelector(".workspace");
+    if(!shirtColorSection || !workspace) return;
+    const show=FEATURES.showShirtColorPicker!==false;
+    shirtColorSection.hidden=!show;
+    if(show) shirtColorSection.removeAttribute("hidden");
+    if(!show){
+      shirtColorSection.classList.remove("color-rail");
+      workspace.classList.remove("has-color-rail");
+      return;
     }
-    document.querySelector(".workspace")?.classList.remove("has-color-rail");
+    shirtColorSection.classList.add("color-rail");
+    workspace.classList.add("has-color-rail");
+    if(shirtColorSection.parentElement!==workspace){
+      workspace.insertBefore(shirtColorSection, workspace.firstChild);
+    }
   })();
 })();
 

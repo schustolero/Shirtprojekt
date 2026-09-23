@@ -844,6 +844,43 @@ function friendlySizeLabel(value){
   return `${n} %`;
 }
 
+function renderAdminColorRail(){
+  const stage=document.getElementById("positionStage");
+  const layout=document.querySelector(".position-editor-layout");
+  if(!stage||!layout) return;
+  let rail=document.getElementById("adminColorRail");
+  if(!rail){
+    rail=document.createElement("div");
+    rail.id="adminColorRail";
+    rail.className="admin-color-rail";
+    layout.insertBefore(rail,stage);
+  }
+  const product=(workingProducts||[]).find(item=>item.id===(positionProduct?.value||"tshirt"))||{};
+  const ids=Array.isArray(product.allowedShirtColorIds)&&product.allowedShirtColorIds.length?product.allowedShirtColorIds:(product.colorVariants||[]).map(v=>v.id);
+  const hexMap=product.shirtColorHex||{};
+  const variants=Object.fromEntries((product.colorVariants||[]).map(v=>[v.id,v.color||v.hex||""]));
+  const current=String(shopFields.fixedShirtHex?.value||"").toLowerCase();
+  rail.replaceChildren();
+  ids.forEach(id=>{
+    const hex=hexMap[id]||variants[id]||"#cccccc";
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.className="admin-color-dot";
+    btn.style.background=hex;
+    btn.title=product.shirtColorLabels?.[id]||id;
+    if(hex.toLowerCase()===current) btn.classList.add("is-active");
+    btn.addEventListener("click",()=>{
+      if(shopFields.fixedShirtHex) shopFields.fixedShirtHex.value=hex;
+      if(shopFields.fixedShirtName){
+        const name=product.shirtColorLabels?.[id]||id;
+        shopFields.fixedShirtName.value=`${name}||default=${id}||allowed=${ids.join(",")}`;
+      }
+      product.defaultShirtColorId=id;
+      refreshPositionEditor();
+    });
+    rail.appendChild(btn);
+  });
+}
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
   const product = positionProduct.value || "tshirt";
@@ -857,6 +894,7 @@ function refreshPositionEditor(){
     ? (productConfig.frontTemplate||(product==="polo"?"polo-front-template.png":product==="hoodie"?"hoodie-front-template.png":"shirt-front-template.png"))
     : (productConfig.backTemplate||(product==="polo"?"polo-back-template.png":product==="hoodie"?"hoodie-back-template.png":"shirt-back-template.png"));
   coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => { positionShirt.src = src; });
+  renderAdminColorRail();
   const motif = selectedPositionMotif();
   if(motif?.file){
     positionMotif.onerror = () => {

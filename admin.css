@@ -5550,3 +5550,25 @@ html body .v3040-color-picker label span{
 }
 html body .v3040-size-extra{margin-top:8px!important}
 html body .v3040-size-extra>summary{font-size:11px!important;cursor:pointer!important;color:#68717c!important}
+html body .position-editor-layout{
+  display:grid!important;
+  grid-template-columns:36px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:start!important;
+}
+html body .admin-color-rail{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:7px!important;
+  max-height:420px!important;
+  overflow-y:auto!important;
+  padding:4px 2px!important;
+  scrollbar-width:thin!important;
+}
+html body .admin-color-dot{
+  width:22px!important;height:22px!important;border-radius:50%!important;
+  border:2px solid #fff!important;box-shadow:0 0 0 1px #c5c9cf!important;
+  padding:0!important;cursor:pointer!important;flex:0 0 22px!important;
+}
+html body .admin-color-dot.is-active{box-shadow:0 0 0 2px #111!important}
+html body .position-readout{grid-column:1/-1!important}
