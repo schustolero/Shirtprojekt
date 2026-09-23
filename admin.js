@@ -1055,7 +1055,11 @@ function mergeProductsWithMasterCatalog(products){
   existingById.forEach(product=>merged.push({...deepClone(product),enabled:product.enabled!==false}));
   return merged;
 }
-function slugify(value){ return String(value||"").trim().toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,""); }
+function slugify(value){
+  const raw=String(value||"").trim();
+  if(raw.startsWith("_")) return raw.replace(/[^_a-zA-Z0-9-]+/g,"-").toLowerCase();
+  return raw.toLowerCase().replace(/ä/g,"ae").replace(/ö/g,"oe").replace(/ü/g,"ue").replace(/ß/g,"ss").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"");
+}
 function safeAssetUrl(file, slug){ if(!file)return ""; if(/^(https?:)?\/\//i.test(file)||/^(data|blob):/i.test(file)||file.startsWith("/"))return file; return `/shops/${encodeURIComponent(slug)}/${file}`; }
 function assetSlugForShop(id, cfg){
   const raw=String(id||"");
@@ -1063,7 +1067,7 @@ function assetSlugForShop(id, cfg){
   if(raw==="_simple" || name==="vorlage simple") return "_simple";
   if(raw==="_motifs" || name==="vorlage motive") return "_motifs";
   if(raw==="_designer" || name==="vorlage designer") return "_designer";
-  if(raw==="_master" || name==="master shop") return "_master";
+  if(raw==="_master") return "_master";
   return raw || "_simple";
 }
 function currentAssetSlug(){
@@ -1181,7 +1185,19 @@ async function loadShopConfigs(){
   };
   Object.entries(templateDemos).forEach(([id,demo])=>{
     const cfg=shopConfigs.get(id);
-    if(cfg) shopConfigs.set(id,{...cfg,...demo,brandSubtitle:typeof cfg.brandSubtitle==="string"?cfg.brandSubtitle:demo.brandSubtitle,features:{...(cfg.features||{}),allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true},customerId:id,logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,active:true});
+    if(!cfg){
+      shopConfigs.set(id,{...demo,customerId:id,logoFile:demo.logoFile||"/dein-logo.svg?v=30.1.87",logoHeight:90,active:true,isMasterTemplate:id==="_master"});
+      return;
+    }
+    shopConfigs.set(id,{
+      ...demo,
+      ...cfg,
+      customerId:id,
+      customerName:cfg.customerName||demo.customerName,
+      logoFile:cfg.logoFile||demo.logoFile||"/dein-logo.svg?v=30.1.87",
+      motifs:Array.isArray(cfg.motifs)&&cfg.motifs.length?cfg.motifs:demo.motifs,
+      features:{allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,...(cfg.features||{})}
+    });
   });
   renderShopList();
   if(!selectedShopId && shopConfigs.has("tg-solingen")) selectShop("tg-solingen");
@@ -1585,7 +1601,8 @@ newShopBtn.addEventListener("click",()=>{
 shopFields.name.addEventListener("blur",()=>{ if(!selectedShopId && !shopFields.id.value) shopFields.id.value=slugify(shopFields.name.value); });
 
 function buildShopConfig(){
-  const id=slugify(shopFields.id.value); if(!id) throw new Error("Bitte eine gültige Shop-ID eingeben.");
+  const locked=selectedShopId && String(selectedShopId).startsWith("_") ? selectedShopId : "";
+  const id=locked || slugify(shopFields.id.value); if(!id) throw new Error("Bitte eine gültige Shop-ID eingeben.");
   const name=shopFields.name.value.trim(); if(!name) throw new Error("Bitte einen Shopnamen eingeben.");
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,allowBackDesign:shopFields.allowBack.checked,allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showMotifColorPicker:shopFields.showMotifColors.checked,showPrices:shopFields.showPrices.checked,showNexaroBranding:shopFields.showNexaroBranding.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
