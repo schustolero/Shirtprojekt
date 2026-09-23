@@ -4120,3 +4120,35 @@ html body .workspace.has-color-rail .shirt-color{
 html body .workspace .color-rail .shirt-color[hidden]{
   display:block!important;
 }
+html body .mockup-stage .initials-pop{
+  left:0!important;
+  bottom:16%!important;
+  width:96px!important;
+  min-width:96px!important;
+  max-width:96px!important;
+  padding:5px 6px!important;
+  gap:2px!important;
+  border-radius:8px!important;
+  transform:translateX(-8px)!important;
+}
+html body .mockup-stage .initials-pop span{
+  font-size:9px!important;
+  font-weight:800!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+}
+html body .mockup-stage .initials-pop .feature-input{
+  width:100%!important;
+  height:26px!important;
+  min-height:26px!important;
+  padding:2px 6px!important;
+  font-size:13px!important;
+  font-weight:800!important;
+}
+html body .shirt-initials-overlay{
+  left:38%!important;
+  top:84%!important;
+  font-size:18px!important;
+  letter-spacing:.08em!important;
+  font-weight:800!important;
+}

@@ -1256,9 +1256,9 @@ function updateInitialsOnCanvas() {
   }
   overlay.textContent = value;
   overlay.hidden = !value;
-  overlay.style.left = `${Number(cfg.stageXPct) || 28}%`;
-  overlay.style.top = `${Number(cfg.stageYPct) || 76}%`;
-  overlay.style.fontSize = `${Number(cfg.fontSize) || 22}px`;
+  overlay.style.left = `${Number(cfg.stageXPct) || 38}%`;
+  overlay.style.top = `${Number(cfg.stageYPct) || 84}%`;
+  overlay.style.fontSize = `${Number(cfg.fontSize) || 18}px`;
   overlay.style.fontFamily = cfg.fontFamily || "Arial";
   overlay.style.color = color;
 
