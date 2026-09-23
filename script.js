@@ -178,6 +178,15 @@ function getAllowedMotifColorNames(){
     shirtColorSection.dataset.allowedColorIds = allowedShirtColorIds.join(",");
   }
   if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
+  (function dockShirtColorRail(){
+    const workspace=document.querySelector(".workspace");
+    const stage=document.querySelector(".mockup-stage");
+    if(!shirtColorSection || !workspace || !stage) return;
+    if(shirtColorSection.parentElement===workspace) return;
+    shirtColorSection.classList.add("color-rail");
+    workspace.insertBefore(shirtColorSection, stage);
+    workspace.classList.add("has-color-rail");
+  })();
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {

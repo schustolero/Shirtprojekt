@@ -3031,3 +3031,97 @@ html body .brand-title[hidden]{display:none!important}
 @media(max-width:900px){
   body[data-template-shop="true"] .brand-title{display:none!important}
 }
+
+/* v30.3.29 – Textilfarben als Kreisschiene am Shirt */
+.workspace.has-color-rail{
+  display:grid!important;
+  grid-template-columns:44px minmax(0,1fr)!important;
+  align-items:center!important;
+  justify-items:center!important;
+  gap:8px!important;
+  width:min(640px,100%)!important;
+  margin:0 auto!important;
+}
+.workspace.has-color-rail .color-rail{
+  grid-column:1;
+  grid-row:1;
+  width:44px!important;
+  max-height:min(62vh,520px)!important;
+  margin:0!important;
+  padding:6px 4px!important;
+  border:0!important;
+  background:transparent!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+.workspace.has-color-rail .color-rail h3{
+  position:absolute!important;
+  width:1px!important;height:1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;
+}
+.workspace.has-color-rail .shirt-colors{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  gap:7px!important;
+  overflow-y:auto!important;
+  overflow-x:hidden!important;
+  max-height:min(56vh,470px)!important;
+  width:36px!important;
+  padding:2px 0 4px!important;
+  grid-template-columns:none!important;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+}
+.workspace.has-color-rail .shirt-color{
+  width:28px!important;
+  height:28px!important;
+  min-height:28px!important;
+  padding:0!important;
+  margin:0!important;
+  border:2px solid #fff!important;
+  border-radius:50%!important;
+  box-shadow:0 0 0 1px #c9cdd3!important;
+  background:transparent!important;
+  flex:0 0 28px!important;
+  gap:0!important;
+}
+.workspace.has-color-rail .shirt-color .color-swatch{
+  width:100%!important;
+  height:100%!important;
+  min-height:0!important;
+  max-height:none!important;
+  border:0!important;
+  border-radius:50%!important;
+  background:var(--swatch)!important;
+}
+.workspace.has-color-rail .shirt-color .color-label{display:none!important}
+.workspace.has-color-rail .shirt-color.active{
+  box-shadow:0 0 0 2px var(--accent)!important;
+}
+.workspace.has-color-rail .current-color{
+  grid-column:1/-1;
+  grid-row:2;
+  font-size:12px!important;
+  line-height:1.2!important;
+  text-align:center!important;
+  color:#6b7280!important;
+  margin:4px 0 0!important;
+  max-width:none!important;
+}
+.workspace.has-color-rail .mockup-stage{
+  grid-column:2;
+  grid-row:1;
+  margin:0!important;
+}
+@media(max-width:900px){
+  .workspace.has-color-rail{
+    width:100%!important;
+    grid-template-columns:40px minmax(0,1fr)!important;
+    padding:0 8px!important;
+  }
+  .workspace.has-color-rail .shirt-color{
+    width:26px!important;height:26px!important;flex-basis:26px!important;
+  }
+}
