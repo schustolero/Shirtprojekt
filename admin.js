@@ -1241,7 +1241,21 @@ function renderProductPriceEditor(){
       if(standardField) standardField.checked=checkbox.checked;
       setShopState("Produktauswahl geändert – oben Speichern klicken.");
     });
-    row.append(name,article,priceWrap,purchaseWrap,printWrap,toggle);
+    const top=document.createElement("div");
+    top.className="v3036-product-main";
+    top.append(name,article,toggle);
+    const prices=document.createElement("div");
+    prices.className="v3036-product-prices";
+    [["VK",priceWrap],["EK",purchaseWrap],["Druck",printWrap]].forEach(([labelText,field])=>{
+      const cell=document.createElement("div");
+      cell.className="v3036-price-cell";
+      const lab=document.createElement("span");
+      lab.className="v3036-price-label";
+      lab.textContent=labelText;
+      cell.append(lab,field);
+      prices.appendChild(cell);
+    });
+    row.append(top,prices);
     host.appendChild(row);
   });
   renderProductVariantEditor();
@@ -2297,7 +2311,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.27');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.50');
 })();
 
 // ============================================================
@@ -2361,7 +2375,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.27");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.50");
   return true;
   }
   if(!boot()){
