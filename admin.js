@@ -713,11 +713,11 @@ let workingProducts = [];
 let workingLogo = "";
 let workingInitials = {};
 const INITIALS_DEFAULTS = {
-  tshirt:{front:{x:36,y:86},back:{x:36,y:86}},
-  polo:{front:{x:36,y:84},back:{x:36,y:84}},
-  hoodie:{front:{x:34,y:88},back:{x:34,y:86}},
-  sport:{front:{x:36,y:85},back:{x:36,y:85}},
-  sweatshirt:{front:{x:35,y:87},back:{x:35,y:86}}
+  tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
+  polo:{front:{x:24,y:88},back:{x:24,y:88}},
+  hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
+  sport:{front:{x:24,y:89},back:{x:24,y:89}},
+  sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
 };
 function currentInitialsPos(){
   const product=positionProduct?.value||"tshirt";
@@ -735,8 +735,23 @@ function writeInitialsPos(x,y){
   const yEl=document.getElementById("initialsPosY");
   if(xEl) xEl.value=String(workingInitials[pos.product][pos.side].x);
   if(yEl) yEl.value=String(workingInitials[pos.product][pos.side].y);
+  placeAdminInitialsMark(workingInitials[pos.product][pos.side].x, workingInitials[pos.product][pos.side].y);
+}
+function placeAdminInitialsMark(x,y){
   const mark=document.getElementById("adminInitialsMark");
-  if(mark){ mark.style.left=`${workingInitials[pos.product][pos.side].x}%`; mark.style.top=`${workingInitials[pos.product][pos.side].y}%`; }
+  const stage=document.getElementById("positionStage");
+  const shirt=document.getElementById("positionShirt");
+  if(!mark||!stage||!shirt) return;
+  if(mark.parentElement!==stage) stage.appendChild(mark);
+  const s=stage.getBoundingClientRect();
+  const i=shirt.getBoundingClientRect();
+  if(!s.width||!i.width){
+    mark.style.left=`${x}%`;
+    mark.style.top=`${y}%`;
+    return;
+  }
+  mark.style.left=`${((i.left-s.left)+i.width*(x/100))/s.width*100}%`;
+  mark.style.top=`${((i.top-s.top)+i.height*(y/100))/s.height*100}%`;
 }
 let shopAdminInitialized = false;
 
@@ -998,11 +1013,7 @@ function refreshPositionEditor(){
   const yEl=document.getElementById("initialsPosY");
   if(xEl) xEl.value=String(initialsPos.x);
   if(yEl) yEl.value=String(initialsPos.y);
-  const mark=document.getElementById("adminInitialsMark");
-  if(mark){
-    mark.style.left=`${initialsPos.x}%`;
-    mark.style.top=`${initialsPos.y}%`;
-  }
+  placeAdminInitialsMark(initialsPos.x, initialsPos.y);
 }
 function writePositionValues(x, y, w){
   const fields = getPositionFieldSet(positionProduct.value || "tshirt", positionSide.value || "front");
@@ -1051,15 +1062,18 @@ function bindPositionEditor(){
   const mark=document.getElementById("adminInitialsMark");
   if(mark && positionStage){
     let drag=false;
-    mark.addEventListener("pointerdown", ev=>{ drag=true; mark.setPointerCapture?.(ev.pointerId); ev.preventDefault(); ev.stopPropagation(); });
-    mark.addEventListener("pointermove", ev=>{
+    const onMove=ev=>{
       if(!drag) return;
-      const r=positionStage.getBoundingClientRect();
+      const shirt=document.getElementById("positionShirt");
+      const r=shirt?.getBoundingClientRect();
+      if(!r?.width) return;
       const point=ev.touches?.[0]||ev;
       writeInitialsPos(((point.clientX-r.left)/r.width)*100, ((point.clientY-r.top)/r.height)*100);
       ev.preventDefault();
-    });
-    mark.addEventListener("pointerup", ()=>{ drag=false; });
+    };
+    mark.addEventListener("pointerdown", ev=>{ drag=true; ev.preventDefault(); ev.stopPropagation(); });
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", ()=>{ drag=false; });
   }
   document.getElementById("initialsPosX")?.addEventListener("input", ()=>{
     writeInitialsPos(Number(document.getElementById("initialsPosX").value), currentInitialsPos().y);

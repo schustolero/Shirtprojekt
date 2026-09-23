@@ -751,6 +751,8 @@ async function renderShirt() {
   const src = await renderShirtImage(viewAtStart);
   if (viewAtStart !== currentView) return;
   shirtMockup.src = src;
+  shirtMockup.onload = () => updateInitialsOnCanvas();
+  updateInitialsOnCanvas();
   if (FEATURES.previewMode === "dual") renderDualPreview();
 }
 
@@ -1245,6 +1247,20 @@ function initialsValue() {
   return value;
 }
 
+function initialsShirtBox(){
+  const stage=document.querySelector(".mockup-stage");
+  const img=document.getElementById("shirtMockup");
+  if(!stage||!img) return null;
+  return {stage, img, stageBox:stage.getBoundingClientRect(), imgBox:img.getBoundingClientRect()};
+}
+function applyInitialsOnShirt(overlay, xPct, yPct){
+  const box=initialsShirtBox();
+  if(!box||!overlay) return;
+  const left=((box.imgBox.left-box.stageBox.left)+box.imgBox.width*(xPct/100))/box.stageBox.width*100;
+  const top=((box.imgBox.top-box.stageBox.top)+box.imgBox.height*(yPct/100))/box.stageBox.height*100;
+  overlay.style.left=`${left}%`;
+  overlay.style.top=`${top}%`;
+}
 function updateInitialsOnCanvas() {
   if (!FEATURES.allowInitials) return;
   const value = initialsValue();
@@ -1265,18 +1281,19 @@ function updateInitialsOnCanvas() {
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
-    tshirt:{front:{x:36,y:86},back:{x:36,y:86}},
-    polo:{front:{x:36,y:84},back:{x:36,y:84}},
-    hoodie:{front:{x:34,y:88},back:{x:34,y:86}},
-    sport:{front:{x:36,y:85},back:{x:36,y:85}},
-    sweatshirt:{front:{x:35,y:87},back:{x:35,y:86}}
+    tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
+    polo:{front:{x:24,y:88},back:{x:24,y:88}},
+    hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
+    sport:{front:{x:24,y:89},back:{x:24,y:89}},
+    sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
   };
   window._initialsLivePos = window._initialsLivePos || {};
   const liveKey = `${productId}:${view}`;
   const custom = window._initialsLivePos[liveKey] || SHOP.initialsByProduct?.[productId]?.[view] || {};
   const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
-  overlay.style.left = `${Number(custom.x ?? cfg.stageXPct ?? fallback.x)}%`;
-  overlay.style.top = `${Number(custom.y ?? cfg.stageYPct ?? fallback.y)}%`;
+  const x = Number(custom.x ?? fallback.x);
+  const y = Number(custom.y ?? fallback.y);
+  applyInitialsOnShirt(overlay, x, y);
   overlay.style.fontSize = "30px";
   overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Arial, sans-serif";
   overlay.style.fontWeight = "900";
@@ -1290,11 +1307,11 @@ function updateInitialsOnCanvas() {
     overlay.dataset.dragBound = "1";
     let dragging = false;
     const moveTo = (clientX, clientY) => {
-      const box = stage.getBoundingClientRect();
-      const nx = Math.max(8, Math.min(92, ((clientX - box.left) / box.width) * 100));
-      const ny = Math.max(40, Math.min(96, ((clientY - box.top) / box.height) * 100));
-      overlay.style.left = `${nx}%`;
-      overlay.style.top = `${ny}%`;
+      const box=initialsShirtBox();
+      if(!box) return;
+      const nx=Math.max(10, Math.min(90, ((clientX-box.imgBox.left)/box.imgBox.width)*100));
+      const ny=Math.max(55, Math.min(96, ((clientY-box.imgBox.top)/box.imgBox.height)*100));
+      applyInitialsOnShirt(overlay, nx, ny);
       const pid = (typeof currentProductId === "string" && currentProductId) || "tshirt";
       const side = (typeof currentView === "string" && currentView) || "front";
       window._initialsLivePos[`${pid}:${side}`] = {x: Math.round(nx*2)/2, y: Math.round(ny*2)/2};
@@ -1323,6 +1340,7 @@ function updateInitialsOnCanvas() {
     }, {passive:false});
     window.addEventListener("touchmove", onMove, {passive:false});
     window.addEventListener("touchend", stopDrag);
+    window.addEventListener("resize", () => updateInitialsOnCanvas(), {passive:true});
   }
 }
 

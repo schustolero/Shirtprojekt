@@ -4190,3 +4190,13 @@ html body .shirt-initials-overlay{
   cursor:grab!important;
   touch-action:none!important;
 }
+html body .designer-header p{overflow:hidden!important;max-width:100%!important}
+html body .shirt-initials-overlay{
+  position:absolute!important;
+  transform:translate(-50%,-50%)!important;
+  font-size:30px!important;
+  font-weight:900!important;
+  z-index:40!important;
+  pointer-events:auto!important;
+}
+html body .admin-initials-mark{z-index:12!important}
