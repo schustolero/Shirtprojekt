@@ -1310,9 +1310,11 @@ function renderProductVariantEditor(){
       if(!next.has(workingProducts[index].defaultShirtColorId)) workingProducts[index].defaultShirtColorId=workingProducts[index].allowedShirtColorIds[0];
       setShopState("Artikelvarianten geändert – oben Speichern klicken."); renderProductVariantEditor();
     });
-    label.append(input,swatch,copy); picker.appendChild(label);
+    label.append(swatch,copy,input); picker.appendChild(label);
   });
   host.appendChild(picker);
+  const extra=document.createElement("details"); extra.className="v3040-size-extra";
+  extra.innerHTML="<summary>Größen je Farbe</summary>";
   const heads=document.createElement("div"); heads.className="v3040-size-head"; heads.innerHTML="<span>Marken-Farbname</span><span>verfügbare Größen</span><span>Start</span>";
   const rows=document.createElement("div"); rows.className="v3040-size-rows";
   product.allowedShirtColorIds.forEach(colorId=>{
@@ -1330,7 +1332,8 @@ function renderProductVariantEditor(){
     const radioCopy=document.createElement("span"); radioCopy.textContent="Start"; defaultLabel.append(radio,swatch,radioCopy);
     row.append(colorName,sizes,defaultLabel); rows.appendChild(row);
   });
-  host.append(heads,rows);
+  extra.append(heads,rows);
+  host.appendChild(extra);
 }
 function configurePositionProducts(cfg){
   const configured=workingProducts.length?workingProducts:mergeProductsWithMasterCatalog(cfg.products);
