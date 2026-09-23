@@ -1,4 +1,18 @@
 // Shop-/Vereinsbranding aus shop-config.js anwenden.
+(function initThemeToggle(){
+  const root=document.documentElement;
+  const btn=document.getElementById("themeToggle");
+  const apply=theme=>{
+    root.dataset.theme=theme;
+    try{localStorage.setItem("shirtprojekt-theme",theme)}catch(e){}
+    if(btn){
+      btn.textContent=theme==="dark"?"Hell":"Dunkel";
+      btn.setAttribute("aria-pressed",theme==="dark"?"true":"false");
+    }
+  };
+  apply(root.dataset.theme==="dark"?"dark":"light");
+  if(btn) btn.addEventListener("click",()=>apply(root.dataset.theme==="dark"?"light":"dark"));
+})();
 const SHOP = window.SHOP_CONFIG || {};
 const FEATURES = Object.assign({
   layout: "simple",
@@ -468,6 +482,7 @@ function updateSizeOptionsForCurrentSelection() {
     select.appendChild(option);
   });
   select.value = sizes.includes(previous) ? previous : "";
+  renderSizePills();
 }
 
 function applyProductColorRules(product, forceDefault = false) {
@@ -519,7 +534,8 @@ function renderProductSelector() {
     btn.dataset.product = product.id;
     const productName = document.createElement("span");
     productName.className = "product-btn-name";
-    productName.textContent = product.name || product.id;
+    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat"};
+    productName.textContent = shortNames[product.id] || product.name || product.id;
     const priceText = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
     btn.dataset.price = priceText;
     const productPrice = document.createElement("small");
@@ -1213,14 +1229,15 @@ canvas.on("object:modified", function(event) {
 
 // v14: Mehrere unterschiedliche Shirts in einer Bestellung
 const shirtSize = document.getElementById("shirtSize");
-(function initSizePills(){
+function renderSizePills(){
   const host=document.getElementById("sizePills");
-  if(!shirtSize || !host || host.childElementCount) return;
+  if(!shirtSize || !host) return;
   const sizes=Array.from(shirtSize.options).map(opt=>opt.value).filter(Boolean);
+  host.replaceChildren();
   sizes.forEach(size=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="size-pill";
+    btn.className="size-pill"+(shirtSize.value===size?" active":"");
     btn.textContent=size;
     btn.dataset.size=size;
     btn.setAttribute("role","option");
@@ -1230,7 +1247,8 @@ const shirtSize = document.getElementById("shirtSize");
     });
     host.appendChild(btn);
   });
-})();
+}
+renderSizePills();
 const shirtQuantity = document.getElementById("shirtQuantity");
 const addToOrderBtn = document.getElementById("addToOrderBtn");
 const addToOrderLabel = document.getElementById("addToOrderLabel");

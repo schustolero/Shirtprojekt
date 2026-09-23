@@ -28,7 +28,16 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.32">
+  <link rel="stylesheet" href="/style.css?v=30.3.35">
+  <script>
+    (function(){
+      try{
+        var saved=localStorage.getItem("shirtprojekt-theme");
+        var theme=saved||(window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
+        document.documentElement.dataset.theme=theme;
+      }catch(e){document.documentElement.dataset.theme="light"}
+    })();
+  </script>
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -120,8 +129,11 @@
   <aside class="sidebar">
 
     <div class="brand">
-      <div class="brand-title" id="brandTitle">ShirtDesigner</div>
-      <div class="brand-subtitle" id="brandSubtitle">Logo-Konfigurator</div>
+      <div class="brand-copy">
+        <div class="brand-title" id="brandTitle">ShirtDesigner</div>
+        <div class="brand-subtitle" id="brandSubtitle">Logo-Konfigurator</div>
+      </div>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Darstellung umschalten">Dunkel</button>
     </div>
 
     <section class="tool-section color-section" hidden>
@@ -442,7 +454,7 @@
 <script>
   loadShopConfig(function(){
     const app=document.createElement("script");
-    app.src="/script.js?v=30.3.32";
+    app.src="/script.js?v=30.3.35";
     document.body.appendChild(app);
   });
 </script>
