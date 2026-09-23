@@ -5370,3 +5370,43 @@ html body .v3036-price-label{
   letter-spacing:.04em!important;text-transform:uppercase!important;color:#7b8490!important;
 }
 html body .v3036-price-field,html body .v3036-price-field input{width:100%!important;max-width:100%!important}
+
+html body .v2972-inline-functions{
+  display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;margin-top:8px!important;
+}
+html body .v2972-inline-functions > label.check-row{
+  display:flex!important;align-items:center!important;gap:8px!important;margin:0!important;
+  min-height:36px!important;padding:6px 8px!important;border:1px solid #eceff3!important;
+  border-radius:10px!important;background:#fafbfc!important;white-space:nowrap!important;
+}
+html body .v2972-inline-functions > label.check-row span{
+  font-size:12px!important;font-weight:650!important;overflow:visible!important;white-space:nowrap!important;
+}
+html body .v2972-inline-functions > label.check-row input[type="checkbox"]{
+  appearance:none!important;-webkit-appearance:none!important;
+  width:34px!important;height:20px!important;min-width:34px!important;border:0!important;
+  border-radius:999px!important;background:#d8dde3!important;position:relative!important;
+  flex:0 0 34px!important;cursor:pointer!important;
+}
+html body .v2972-inline-functions > label.check-row input[type="checkbox"]::after{
+  content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;
+  box-shadow:0 1px 3px rgba(0,0,0,.18);
+}
+html body .v2972-inline-functions > label.check-row input[type="checkbox"]:checked{background:#e8c000!important}
+html body .v2972-inline-functions > label.check-row input[type="checkbox"]:checked::after{transform:translateX(14px)}
+html body .v3036-product-head,
+html body .v3036-product-row{
+  display:grid!important;
+  grid-template-columns:minmax(78px,1.15fr) 54px 54px 54px 32px!important;
+  gap:6px!important;align-items:center!important;min-width:0!important;flex-direction:unset!important;
+}
+html body .v3036-product-row{
+  padding:6px 0!important;border:0!important;border-bottom:1px solid #eef1f4!important;
+  border-radius:0!important;background:transparent!important;
+}
+html body .v3036-product-title{display:flex!important;flex-direction:column!important;min-width:0!important}
+html body .v3036-product-title strong{font-size:12px!important;color:#1d2127!important}
+html body .v3036-product-title span{font-size:10px!important;color:#8a929c!important}
+html body .v3036-price-field span{display:none!important}
+html body .v3036-price-field input{width:54px!important;max-width:54px!important;height:28px!important;min-height:28px!important;padding:0 4px!important;text-align:right!important;font-size:11px!important}
+html body .v3036-product-main,html body .v3036-product-prices,html body .v3036-price-label{display:none!important}
