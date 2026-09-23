@@ -597,7 +597,8 @@ function updateActiveMotifColorButton(color, label) {
 
 enhanceMotifColorCards();
 renderProductSelector();
-applyProductColorRules(getCurrentProduct());
+try { applyProductColorRules(getCurrentProduct()); }
+catch (err) { console.error("Produktfarben:", err); }
 
 function getBaseSrc(view) {
   const product = getCurrentProduct();
@@ -880,6 +881,17 @@ function changeShirtColor(color, name, colorId, pattern) {
 shirtColorButtons.forEach(button => button.addEventListener("click", () => {
   changeShirtColor(button.dataset.color, button.dataset.name, button.dataset.id, button.dataset.pattern || "");
 }));
+document.addEventListener("click", (event) => {
+  const colorBtn=event.target.closest(".shirt-color");
+  if(colorBtn && document.contains(colorBtn)){
+    changeShirtColor(colorBtn.dataset.color, colorBtn.dataset.name, colorBtn.dataset.id, colorBtn.dataset.pattern || "");
+    return;
+  }
+  const viewBtn=event.target.closest(".view-btn");
+  if(viewBtn && viewBtn.dataset.view){
+    switchView(viewBtn.dataset.view);
+  }
+});
 
 function hexToRgb(hex) {
   const clean = String(hex || "#000000").replace("#", "");
@@ -1232,27 +1244,28 @@ canvas.on("object:modified", function(event) {
 // v14: Mehrere unterschiedliche Shirts in einer Bestellung
 const shirtSize = document.getElementById("shirtSize");
 function renderSizePills(){
+  const select=document.getElementById("shirtSize");
   const host=document.getElementById("sizePills");
-  if(!shirtSize || !host) return;
-  if(shirtSize.options.length<=1){
+  if(!select || !host) return;
+  if(select.options.length<=1){
     ["S","M","L","XL","2XL","3XL","4XL","5XL"].forEach(size=>{
       const option=document.createElement("option");
       option.value=size;
       option.textContent=size;
-      shirtSize.appendChild(option);
+      select.appendChild(option);
     });
   }
-  const sizes=Array.from(shirtSize.options).map(opt=>opt.value).filter(Boolean);
+  const sizes=Array.from(select.options).map(opt=>opt.value).filter(Boolean);
   host.replaceChildren();
   sizes.forEach(size=>{
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="size-pill"+(shirtSize.value===size?" active":"");
+    btn.className="size-pill"+(select.value===size?" active":"");
     btn.textContent=size;
     btn.dataset.size=size;
     btn.setAttribute("role","option");
     btn.addEventListener("click",()=>{
-      shirtSize.value=size;
+      select.value=size;
       host.querySelectorAll(".size-pill").forEach(el=>el.classList.toggle("active",el.dataset.size===size));
     });
     host.appendChild(btn);
