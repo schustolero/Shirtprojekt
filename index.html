@@ -452,11 +452,23 @@
 <script src="/shop-loader.js?v=30.3.27"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
-  loadShopConfig(function(){
-    const app=document.createElement("script");
-    app.src="/script.js?v=30.3.61";
-    document.body.appendChild(app);
-  });
+  (function(){
+    var loaded=false;
+    function boot(){
+      if(loaded) return;
+      loaded=true;
+      document.body.classList.remove("shop-loading");
+      var app=document.createElement("script");
+      app.src="/script.js?v=30.3.62";
+      app.onerror=function(){ document.body.classList.remove("shop-loading"); };
+      document.body.appendChild(app);
+    }
+    try{
+      if(typeof loadShopConfig==="function") loadShopConfig(boot);
+      else boot();
+    }catch(e){ boot(); }
+    setTimeout(function(){ document.body.classList.remove("shop-loading"); if(!loaded) boot(); }, 2500);
+  })();
 </script>
 
 </body>

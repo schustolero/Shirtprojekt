@@ -358,8 +358,7 @@ function getAllowedMotifColorNames(){
     if(shirtColorSection.parentElement!==workspace){
       workspace.insertBefore(shirtColorSection, workspace.firstChild);
     }
-    shirtColorButtons=document.querySelectorAll(".shirt-color");
-    shirtColorButtons.forEach(button=>{
+    document.querySelectorAll(".shirt-color").forEach(button=>{
       let hex=button.dataset.color||"";
       if(!hex && typeof MASTER_COLOR_VARIANTS==="object"){
         for(const list of Object.values(MASTER_COLOR_VARIANTS)){
@@ -375,7 +374,8 @@ function getAllowedMotifColorNames(){
   })();
 })();
 
-setTimeout(() => document.body.classList.remove("shop-loading"), 2500);
+setTimeout(() => document.body.classList.remove("shop-loading"), 400);
+document.body.classList.remove("shop-loading");
 
 // v28.2.3: Die sichtbare Druckzone bekommt zusätzliche Reserve NUR nach oben.
 // Dadurch können große Motive höher positioniert werden, ohne am Canvas-Rand abgeschnitten zu werden.
@@ -384,13 +384,19 @@ const PRINT_BASE_HEIGHT = 340;
 const PRINT_HEADROOM = 90;
 const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM;
 
-const canvas = new fabric.Canvas("designCanvas", {
-  width: PRINT_BASE_WIDTH,
-  height: PRINT_CANVAS_HEIGHT,
-  backgroundColor: "transparent",
-  selection: true,
-  preserveObjectStacking: true
-});
+let canvas;
+try{
+  canvas = new fabric.Canvas("designCanvas", {
+    width: PRINT_BASE_WIDTH,
+    height: PRINT_CANVAS_HEIGHT,
+    backgroundColor: "transparent",
+    selection: true,
+    preserveObjectStacking: true
+  });
+}catch(err){
+  console.error("Canvas start failed", err);
+  canvas = { getObjects(){return [];}, requestRenderAll(){}, add(){}, remove(){}, clear(){}, setWidth(){}, setHeight(){}, on(){}, off(){}, renderAll(){}, getActiveObject(){return null;}, discardActiveObject(){}, setActiveObject(){} };
+}
 
 const resetBtn = document.getElementById("resetBtn");
 const viewButtons = document.querySelectorAll(".view-btn");
@@ -915,7 +921,7 @@ function changeShirtColor(color, name, colorId, pattern) {
   currentShirtColor = color || lookupMasterHex(colorId) || "#ffffff";
   currentShirtColorId = colorId || "white";
   currentPattern = pattern || "";
-  currentColorName.textContent = name || "White";
+  if(currentColorName) currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
   updateSizeOptionsForCurrentSelection();
   renderShirt();

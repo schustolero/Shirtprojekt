@@ -845,50 +845,68 @@ function friendlySizeLabel(value){
 }
 
 function renderAdminColorRail(){
+  try{
   const stage=document.getElementById("positionStage");
   const layout=document.querySelector(".position-editor-layout");
   if(!stage||!layout) return;
+  layout.classList.add("has-color-rail");
   let rail=document.getElementById("adminColorRail");
   if(!rail){
-    rail=document.createElement("div");
+    rail=document.createElement("section");
     rail.id="adminColorRail";
-    rail.className="admin-color-rail";
-    stage.prepend(rail);
-  } else if(rail.parentElement!==stage){
-    stage.prepend(rail);
+    rail.className="tool-section color-section color-rail";
+    rail.innerHTML='<h3>Textilfarbe</h3><div class="shirt-colors"></div><p class="current-color">Ausgewählt: <strong id="adminCurrentColorName">White</strong></p>';
+    layout.insertBefore(rail,stage);
+  } else if(rail.parentElement!==layout){
+    layout.insertBefore(rail,stage);
   }
+  const host=rail.querySelector(".shirt-colors");
+  const nameEl=rail.querySelector("#adminCurrentColorName");
   const product=(workingProducts||[]).find(item=>item.id===(positionProduct?.value||"tshirt"))||{};
-  const ids=Array.isArray(product.allowedShirtColorIds)&&product.allowedShirtColorIds.length?product.allowedShirtColorIds:(product.colorVariants||[]).map(v=>v.id);
+  const catalog=typeof MASTER_COLOR_VARIANTS==="object"?(MASTER_COLOR_VARIANTS[product.articleNo]||MASTER_COLOR_VARIANTS.F140||[]):[];
+  const catalogMap=Object.fromEntries(catalog.map(v=>[v.id,v]));
+  const ids=Array.isArray(product.allowedShirtColorIds)&&product.allowedShirtColorIds.length
+    ?product.allowedShirtColorIds
+    :(product.colorVariants||catalog).map(v=>v.id);
   const hexMap=product.shirtColorHex||{};
   const variants=Object.fromEntries((product.colorVariants||[]).map(v=>[v.id,v.color||v.hex||""]));
-  const catalog=typeof MASTER_COLOR_VARIANTS==="object"?(MASTER_COLOR_VARIANTS[product.articleNo]||MASTER_COLOR_VARIANTS.F140||[]):[];
-  const catalogMap=Object.fromEntries(catalog.map(v=>[v.id,v.color]));
-  const current=String(shopFields.fixedShirtHex?.value||"").toLowerCase();
-  rail.replaceChildren();
+  const currentHex=String(shopFields.fixedShirtHex?.value||"").toLowerCase();
+  host.replaceChildren();
+  let selectedName="White";
   ids.forEach(id=>{
-    const hex=hexMap[id]||variants[id]||catalogMap[id]||"#555555";
+    const hex=hexMap[id]||variants[id]||catalogMap[id]?.color||"#555555";
+    const label=product.shirtColorLabels?.[id]||catalogMap[id]?.name||id;
     const btn=document.createElement("button");
     btn.type="button";
-    btn.className="admin-color-dot";
+    btn.className="shirt-color";
+    btn.dataset.id=id;
+    btn.dataset.color=hex;
+    btn.dataset.name=label;
+    btn.dataset.pattern=catalogMap[id]?.pattern||"";
+    btn.style.setProperty("--swatch",hex);
     btn.style.background=hex;
-    btn.title=product.shirtColorLabels?.[id]||id;
-    if(hex.toLowerCase()===current) btn.classList.add("is-active");
+    btn.title=label;
+    btn.setAttribute("aria-label",label);
+    btn.innerHTML='<span class="color-swatch"></span><span class="color-label"></span>';
+    if(hex.toLowerCase()===currentHex || product.defaultShirtColorId===id){
+      btn.classList.add("active");
+      selectedName=label;
+    }
     btn.addEventListener("click",()=>{
       if(shopFields.fixedShirtHex) shopFields.fixedShirtHex.value=hex;
-      if(shopFields.fixedShirtName){
-        const name=product.shirtColorLabels?.[id]||id;
-        shopFields.fixedShirtName.value=`${name}||default=${id}||allowed=${ids.join(",")}`;
-      }
+      if(shopFields.fixedShirtName) shopFields.fixedShirtName.value=`${label}||default=${id}||allowed=${ids.join(",")}`;
       product.defaultShirtColorId=id;
       refreshPositionEditor();
     });
-    rail.appendChild(btn);
+    host.appendChild(btn);
   });
+  if(nameEl) nameEl.textContent=selectedName;
+  }catch(err){ console.error("admin color rail", err); }
 }
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
-  const product = positionProduct.value || "tshirt";
-  const side = positionSide.value || "front";
+  const product = positionProduct?.value || "tshirt";
+  const side = positionSide?.value || "front";
   const fields = getPositionFieldSet(product, side);
   const x = Number(fields.x?.value || (side === "front" ? 68 : 50));
   const y = Number(fields.y?.value || (side === "front" ? 20 : 36));
