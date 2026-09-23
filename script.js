@@ -36,7 +36,11 @@ const FEATURES = Object.assign({
   showResetButton: true,
   maxUploadMB: 8
 }, SHOP.features || {});
-if(!["tg-solingen"].includes(String(SHOP.customerId||""))) FEATURES.allowInitials = true;
+if(SHOP.features && Object.prototype.hasOwnProperty.call(SHOP.features,"allowInitials")){
+  FEATURES.allowInitials=!!SHOP.features.allowInitials;
+}else if(String(SHOP.customerId||"")!=="tg-solingen"){
+  FEATURES.allowInitials=true;
+}
 
 function featureEnabled(name) { return FEATURES[name] !== false; }
 
@@ -1299,11 +1303,11 @@ function updateInitialsOnCanvas() {
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.06em";
   overlay.style.color = color;
-  overlay.style.pointerEvents = value ? "auto" : "none";
-  overlay.style.cursor = value ? "grab" : "default";
+  overlay.style.pointerEvents = "none";
+  overlay.style.cursor = "default";
   overlay.style.zIndex = "40";
-  overlay.setAttribute("aria-hidden", "false");
-  if(!overlay.dataset.dragBound){
+  overlay.setAttribute("aria-hidden", "true");
+  if(false){
     overlay.dataset.dragBound = "1";
     let dragging = false;
     const moveTo = (clientX, clientY) => {
