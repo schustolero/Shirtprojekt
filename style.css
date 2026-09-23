@@ -3466,3 +3466,104 @@ html[data-theme="dark"] body .shirt-color:focus-visible,
 html[data-theme="dark"] body .motif-color:focus-visible{
   outline-color:#f2f2f4!important;
 }
+
+/* v30.3.37 – Namen, Leerraum, linke Spalte */
+html body .product-btn,
+html body .product-section .product-switch .product-btn{
+  display:inline-flex!important;
+  grid-template-columns:none!important;
+  width:auto!important;
+  max-width:none!important;
+  min-width:0!important;
+  height:36px!important;
+  min-height:36px!important;
+  padding:0 14px!important;
+  overflow:visible!important;
+  position:relative!important;
+}
+html body .product-btn::before,
+html body .product-btn::after{
+  content:none!important;
+  display:none!important;
+}
+html body .product-btn-name{
+  display:block!important;
+  overflow:visible!important;
+  text-overflow:clip!important;
+  white-space:nowrap!important;
+  max-width:none!important;
+  font-size:13px!important;
+}
+html body .product-btn-price{display:none!important}
+
+html body .workspace,
+html body .workspace.has-color-rail{
+  display:grid!important;
+  grid-template-columns:52px minmax(0,1fr)!important;
+  width:100%!important;
+  max-width:none!important;
+  margin:0!important;
+  min-height:0!important;
+  height:auto!important;
+  padding:16px 20px 16px 10px!important;
+  background:#eef0f3!important;
+  justify-items:stretch!important;
+}
+html body .workspace.has-color-rail .color-rail,
+html body .workspace .color-section{
+  grid-column:1!important;
+  width:52px!important;
+  max-width:52px!important;
+  margin:0!important;
+  padding:8px 0!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+html body .workspace .color-rail h3{display:none!important}
+html body .workspace.has-color-rail .mockup-stage,
+html body .workspace .mockup-stage{
+  grid-column:2!important;
+  justify-self:center!important;
+  width:min(520px,100%)!important;
+  max-width:100%!important;
+}
+html body .workspace .current-color{
+  grid-column:1/-1!important;
+  grid-row:2!important;
+  text-align:center!important;
+  max-width:none!important;
+}
+
+html body .sidebar{
+  width:300px!important;
+  min-width:280px!important;
+  padding:16px 16px 20px!important;
+}
+html body .sidebar .tool-section{
+  padding:12px 0!important;
+  background:transparent!important;
+}
+html body .size-pills{
+  display:flex!important;
+  visibility:visible!important;
+  opacity:1!important;
+  min-height:40px!important;
+}
+html body .size-pill{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+html body .designer-header{padding:12px 20px!important;min-height:0!important}
+html body .designer-footer{display:none!important}
+html body .designer-status{display:none!important}
+@media(max-width:900px){
+  html body .workspace.has-color-rail,
+  html body .workspace{
+    grid-template-columns:40px minmax(0,1fr)!important;
+    padding:8px!important;
+    min-height:0!important;
+    height:auto!important;
+  }
+}
