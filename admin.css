@@ -5744,3 +5744,36 @@ html body .v2853-preview-shell.has-color-rail .position-readout{
   grid-column:1/-1!important;
   grid-row:4!important;
 }
+html body .shop-logo-inline{
+  display:grid!important;
+  grid-template-columns:56px minmax(0,1fr) 56px!important;
+  align-items:center!important;
+  gap:10px!important;
+}
+html body .shop-logo-mini-preview,
+html body .shop-logo-file,
+html body .shop-logo-accent input[type="color"]{
+  width:56px!important;
+  height:56px!important;
+  min-width:56px!important;
+  min-height:56px!important;
+  border-radius:12px!important;
+  border:1px solid #e4e7ec!important;
+  box-sizing:border-box!important;
+}
+html body .shop-logo-file{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin:0!important;
+  padding:0 4px!important;
+  text-align:center!important;
+  font-size:9px!important;
+  font-weight:800!important;
+  background:#fff!important;
+}
+html body .shop-logo-file input{display:none!important}
+html body .v2972-inline-functions #followMasterRow,
+html body .v2972-inline-functions #pushMasterRow{
+  display:flex!important;
+}

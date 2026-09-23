@@ -41,7 +41,7 @@ function featureEnabled(name) { return FEATURES[name] !== false; }
 
 function enforceCustomerPriceVisibility() {
   if (FEATURES.showPrices !== false) return;
-  document.querySelectorAll(".product-btn-price,.order-price-info,#addToOrderPrice,.cart-item-price,#cartTotal,#checkoutTotal").forEach(element => {
+  document.querySelectorAll(".product-btn-price,.order-price-info,#addToOrderPrice,.cart-item-price,#cartTotal,#checkoutTotal,#pricePatch").forEach(element => {
     if (element.style.getPropertyValue("display") !== "none" || element.style.getPropertyPriority("display") !== "important") {
       element.style.setProperty("display", "none", "important");
     }
@@ -358,6 +358,19 @@ function getAllowedMotifColorNames(){
     if(shirtColorSection.parentElement!==workspace){
       workspace.insertBefore(shirtColorSection, workspace.firstChild);
     }
+    let railNav=shirtColorSection.querySelector(".rail-nav");
+    if(!railNav){
+      railNav=document.createElement("div");
+      railNav.className="rail-nav";
+      railNav.innerHTML='<button type="button" class="rail-nav-btn" data-dir="-1" aria-label="Farben nach oben">↑</button><button type="button" class="rail-nav-btn" data-dir="1" aria-label="Farben nach unten">↓</button>';
+      shirtColorSection.appendChild(railNav);
+      const palette=shirtColorSection.querySelector(".shirt-colors");
+      railNav.addEventListener("click",event=>{
+        const btn=event.target.closest(".rail-nav-btn");
+        if(!btn||!palette) return;
+        palette.scrollBy({top:Number(btn.dataset.dir)*88,behavior:"smooth"});
+      });
+    }
     document.querySelectorAll(".shirt-color").forEach(button=>{
       let hex=button.dataset.color||"";
       if(!hex && typeof MASTER_COLOR_VARIANTS==="object"){
@@ -627,6 +640,10 @@ function updateProductPriceLabel() {
   if (liveAddPrice) {
     liveAddPrice.textContent = formatEuro(unitPrice * qty);
   }
+  const patch=document.getElementById("pricePatch");
+  const patchValue=document.getElementById("pricePatchValue");
+  if(patchValue) patchValue.textContent=formatEuro(unitPrice);
+  if(patch) patch.hidden=FEATURES.showPrices===false;
 }
 
 function enhanceMotifColorCards() {

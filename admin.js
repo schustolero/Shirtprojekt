@@ -1427,7 +1427,7 @@ function configurePositionProducts(cfg){
 }
 function selectShop(id){
   const cfg=deepClone(shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||"";
-  shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=id==="_master"?"Master Shop – zentrale Vorlage":(cfg.customerName||id||"Neuer Shop");
+  shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=id==="_master"?`${cfg.customerName||"Vorlage"} – zentrale Vorlage`:(cfg.customerName||id||"Neuer Shop");
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
   shopFields.accent.value=/^#[0-9a-f]{6}$/i.test(cfg.accentColor||"")?cfg.accentColor:"#111111"; shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=cfg.features?.previewMode||"single"; shopFields.subtitle.value=cfg.brandSubtitle||""; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
   fillProductToggles(cfg); configurePositionProducts(cfg);

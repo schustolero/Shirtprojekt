@@ -3855,3 +3855,47 @@ html body .workspace.has-color-rail .current-color{
   margin:6px 0 0!important;
 }
 html body .sidebar .current-color{display:none!important}
+html body .workspace{position:relative!important}
+html body .price-patch{
+  position:absolute!important;
+  right:18px!important;
+  bottom:18px!important;
+  z-index:8!important;
+  min-width:118px!important;
+  padding:10px 14px!important;
+  border-radius:16px!important;
+  background:#111!important;
+  color:#fff!important;
+  box-shadow:0 10px 24px rgba(17,17,17,.18)!important;
+}
+html body .price-patch span{
+  display:block!important;
+  font-size:10px!important;
+  letter-spacing:.08em!important;
+  text-transform:uppercase!important;
+  opacity:.7!important;
+}
+html body .price-patch strong{
+  display:block!important;
+  font-size:20px!important;
+  line-height:1.1!important;
+  font-weight:800!important;
+}
+html body .color-rail .rail-nav{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  margin:8px auto 0!important;
+  width:28px!important;
+}
+html body .rail-nav-btn{
+  width:28px!important;height:28px!important;
+  border:1px solid #d7dbe1!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#111!important;
+  font-size:13px!important;
+  line-height:1!important;
+  cursor:pointer!important;
+  padding:0!important;
+}
