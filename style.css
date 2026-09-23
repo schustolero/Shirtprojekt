@@ -4011,3 +4011,62 @@ html body .workspace.has-color-rail .shirt-colors{
 }
 html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar{width:8px!important;background:#d9dde3!important}
 html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar-thumb{background:#111!important;border-radius:8px!important}
+html body .initials-tab{display:none!important}
+html body .mockup-stage .initials-pop{
+  left:6%!important;
+  bottom:22%!important;
+  display:flex!important;
+}
+html body .shirt-initials-overlay{
+  left:28%!important;
+  top:76%!important;
+  font-size:22px!important;
+  color:#fff!important;
+  text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
+}
+html body .price-patch{
+  right:14%!important;
+  bottom:12%!important;
+}
+html body .product-section .product-switch,
+html body .product-switch{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:8px!important;
+}
+html body .product-section .product-switch .product-btn,
+html body .product-btn{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:2px!important;
+  height:58px!important;
+  min-height:58px!important;
+  max-height:58px!important;
+  padding:6px 4px!important;
+  border-radius:12px!important;
+  border:1px solid #e2e6ec!important;
+  background:#fff!important;
+  box-shadow:none!important;
+}
+html body .product-btn .product-btn-name{
+  font-size:12px!important;
+  font-weight:800!important;
+  line-height:1.1!important;
+  white-space:nowrap!important;
+}
+html body .product-btn .product-btn-price{
+  font-size:11px!important;
+  font-weight:700!important;
+  color:#6b7280!important;
+  background:transparent!important;
+  padding:0!important;
+  border:0!important;
+}
+html body .product-btn.active{
+  background:#111!important;
+  color:#fff!important;
+  border-color:#111!important;
+}
+html body .product-btn.active .product-btn-price{color:#f5d000!important}

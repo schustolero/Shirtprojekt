@@ -5837,3 +5837,18 @@ html body .v2972-inline-functions #pushMasterRow span{
   font-size:11px!important;
   font-weight:700!important;
 }
+html body .shop-form .v2972-inline-functions #followMasterRow,
+html body .shop-form .v2972-inline-functions #pushMasterRow{
+  min-height:29px!important;
+  height:29px!important;
+  max-height:29px!important;
+  padding:5px 7px!important;
+  overflow:hidden!important;
+}
+html body .shop-form .v2972-inline-functions #followMasterRow span,
+html body .shop-form .v2972-inline-functions #pushMasterRow span{
+  font-size:8.8px!important;
+  font-weight:750!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+}

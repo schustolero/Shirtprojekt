@@ -290,7 +290,10 @@ function getAllowedMotifColorNames(){
 
   const initialsTab=document.getElementById("initialsTab");
   const initialsPop=document.getElementById("initialsPop");
-  if(initialsTab) initialsTab.hidden=!FEATURES.allowInitials;
+  if(initialsTab) initialsTab.hidden=true;
+  if(initialsPop) initialsPop.hidden=!FEATURES.allowInitials;
+  if(FEATURES.allowInitials && initialsInput && !initialsInput.value) initialsInput.value="AF";
+  queueMicrotask(updateInitialsOnCanvas);
   if(FEATURES.allowInitials && initialsTab && initialsPop && !initialsTab.dataset.bound){
     initialsTab.dataset.bound="1";
     initialsTab.addEventListener("click",()=>{
@@ -1253,9 +1256,9 @@ function updateInitialsOnCanvas() {
   }
   overlay.textContent = value;
   overlay.hidden = !value;
-  overlay.style.left = `${Number(cfg.stageXPct) || 32}%`;
-  overlay.style.top = `${Number(cfg.stageYPct) || 90}%`;
-  overlay.style.fontSize = `${Number(cfg.fontSize) || 20}px`;
+  overlay.style.left = `${Number(cfg.stageXPct) || 28}%`;
+  overlay.style.top = `${Number(cfg.stageYPct) || 76}%`;
+  overlay.style.fontSize = `${Number(cfg.fontSize) || 22}px`;
   overlay.style.fontFamily = cfg.fontFamily || "Arial";
   overlay.style.color = color;
 
