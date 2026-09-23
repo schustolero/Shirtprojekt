@@ -853,16 +853,20 @@ function renderAdminColorRail(){
     rail=document.createElement("div");
     rail.id="adminColorRail";
     rail.className="admin-color-rail";
-    layout.insertBefore(rail,stage);
+    stage.prepend(rail);
+  } else if(rail.parentElement!==stage){
+    stage.prepend(rail);
   }
   const product=(workingProducts||[]).find(item=>item.id===(positionProduct?.value||"tshirt"))||{};
   const ids=Array.isArray(product.allowedShirtColorIds)&&product.allowedShirtColorIds.length?product.allowedShirtColorIds:(product.colorVariants||[]).map(v=>v.id);
   const hexMap=product.shirtColorHex||{};
   const variants=Object.fromEntries((product.colorVariants||[]).map(v=>[v.id,v.color||v.hex||""]));
+  const catalog=typeof MASTER_COLOR_VARIANTS==="object"?(MASTER_COLOR_VARIANTS[product.articleNo]||MASTER_COLOR_VARIANTS.F140||[]):[];
+  const catalogMap=Object.fromEntries(catalog.map(v=>[v.id,v.color]));
   const current=String(shopFields.fixedShirtHex?.value||"").toLowerCase();
   rail.replaceChildren();
   ids.forEach(id=>{
-    const hex=hexMap[id]||variants[id]||"#cccccc";
+    const hex=hexMap[id]||variants[id]||catalogMap[id]||"#555555";
     const btn=document.createElement("button");
     btn.type="button";
     btn.className="admin-color-dot";

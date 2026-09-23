@@ -358,6 +358,20 @@ function getAllowedMotifColorNames(){
     if(shirtColorSection.parentElement!==workspace){
       workspace.insertBefore(shirtColorSection, workspace.firstChild);
     }
+    shirtColorButtons=document.querySelectorAll(".shirt-color");
+    shirtColorButtons.forEach(button=>{
+      let hex=button.dataset.color||"";
+      if(!hex && typeof MASTER_COLOR_VARIANTS==="object"){
+        for(const list of Object.values(MASTER_COLOR_VARIANTS)){
+          const hit=(list||[]).find(item=>item.id===button.dataset.id);
+          if(hit?.color){hex=hit.color;break;}
+        }
+      }
+      hex=hex||"#888888";
+      button.dataset.color=hex;
+      button.style.setProperty("--swatch",hex);
+      button.style.background=hex;
+    });
   })();
 })();
 
@@ -889,8 +903,16 @@ function switchView(view) {
 
 viewButtons.forEach(button => button.addEventListener("click", () => switchView(button.dataset.view)));
 
+function lookupMasterHex(colorId){
+  const catalogs=typeof MASTER_COLOR_VARIANTS==="object"?MASTER_COLOR_VARIANTS:{};
+  for(const list of Object.values(catalogs)){
+    const hit=(list||[]).find(item=>item.id===colorId);
+    if(hit?.color) return hit.color;
+  }
+  return "";
+}
 function changeShirtColor(color, name, colorId, pattern) {
-  currentShirtColor = color || "#ffffff";
+  currentShirtColor = color || lookupMasterHex(colorId) || "#ffffff";
   currentShirtColorId = colorId || "white";
   currentPattern = pattern || "";
   currentColorName.textContent = name || "White";

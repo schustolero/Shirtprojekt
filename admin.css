@@ -5572,3 +5572,27 @@ html body .admin-color-dot{
 }
 html body .admin-color-dot.is-active{box-shadow:0 0 0 2px #111!important}
 html body .position-readout{grid-column:1/-1!important}
+html body .position-editor-layout{
+  display:block!important;
+  position:relative!important;
+}
+html body .admin-color-rail{
+  position:absolute!important;
+  left:8px!important;
+  top:18px!important;
+  z-index:6!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:6px!important;
+  max-height:360px!important;
+  overflow-y:auto!important;
+  padding:4px!important;
+  width:28px!important;
+}
+html body .admin-color-dot{
+  width:18px!important;height:18px!important;border-radius:50%!important;
+  border:2px solid #fff!important;box-shadow:0 0 0 1px #111!important;
+  padding:0!important;flex:0 0 18px!important;
+}
+html body .position-stage{position:relative!important}
+html body .position-readout{grid-column:auto!important}

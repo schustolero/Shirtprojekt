@@ -3813,3 +3813,10 @@ html body .workspace.has-color-rail .shirt-color{
 html body .workspace.has-color-rail .shirt-color .color-swatch,
 html body .workspace.has-color-rail .shirt-color .color-label{display:none!important}
 html body .workspace.has-color-rail .mockup-stage{grid-column:2!important}
+html body .workspace.has-color-rail{
+  display:grid!important;
+  grid-template-columns:40px minmax(0,1fr)!important;
+}
+html body .workspace.has-color-rail .color-rail .shirt-color{
+  background:var(--swatch,#888)!important;
+}
