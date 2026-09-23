@@ -296,7 +296,7 @@ function getAllowedMotifColorNames(){
   if(initialsField){
     initialsField.maxLength=3;
     initialsField.setAttribute("maxlength","3");
-    if(FEATURES.allowInitials && !initialsField.value) initialsField.value="AF";
+    initialsField.value="";
     initialsField.addEventListener("input",()=>{
       initialsField.value=String(initialsField.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
       if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
@@ -556,7 +556,7 @@ function applyProductColorRules(product, forceDefault = false) {
   const allowed = Array.isArray(product?.allowedShirtColorIds) && product.allowedShirtColorIds.length
     ? product.allowedShirtColorIds
     : variants.map(variant=>variant.id);
-  let shopAllowed=getAllowedShirtColorIds();
+  let shopAllowed=FEATURES.showShirtColorPicker===false ? getAllowedShirtColorIds() : null;
   if(shopAllowed && !Array.from(shirtColorButtons).some(button=>shopAllowed.includes(button.dataset.id))) shopAllowed=null;
   const labels = product?.shirtColorLabels || {};
   shirtColorButtons.forEach(button => {
@@ -587,7 +587,6 @@ function applyProductColorRules(product, forceDefault = false) {
     changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "");
   }
   updateSizeOptionsForCurrentSelection();
-  if(typeof window.dockShirtColorRail==="function") window.dockShirtColorRail();
 }
 
 function renderProductSelector() {
@@ -1935,17 +1934,20 @@ window.dockShirtColorRail=function(){
   if(section.parentElement!==workspace) workspace.insertBefore(section, workspace.firstChild);
   const host=section.querySelector(".shirt-colors");
   if(!host) return;
-  const product=typeof getCurrentProduct==="function"?getCurrentProduct():null;
-  const key=product?.articleNo||"F140";
-  const catalog=(typeof MASTER_COLOR_VARIANTS==="object"&&(MASTER_COLOR_VARIANTS[key]||MASTER_COLOR_VARIANTS.F140))||[];
-  const allowed=Array.isArray(product?.allowedShirtColorIds)&&product.allowedShirtColorIds.length
-    ? product.allowedShirtColorIds
-    : catalog.map(item=>item.id);
-  const visibleCount=host.querySelectorAll(".shirt-color:not([hidden])").length;
-  if(catalog.length && visibleCount<4){
-    host.replaceChildren();
+  const existing=host.querySelectorAll(".shirt-color");
+  existing.forEach(button=>{
+    const hex=button.dataset.color||button.style.getPropertyValue("--swatch")||"#888";
+    button.hidden=false;
+    button.removeAttribute("hidden");
+    button.style.setProperty("--swatch",hex);
+    button.style.background=hex;
+    button.style.display="block";
+  });
+  if(existing.length<4 && typeof MASTER_COLOR_VARIANTS==="object"){
+    const product=typeof getCurrentProduct==="function"?getCurrentProduct():null;
+    const catalog=MASTER_COLOR_VARIANTS[product?.articleNo]||MASTER_COLOR_VARIANTS.F140||[];
     catalog.forEach(item=>{
-      if(allowed.length && !allowed.includes(item.id)) return;
+      if(host.querySelector(`.shirt-color[data-id="${item.id}"]`)) return;
       const button=document.createElement("button");
       button.type="button";
       button.className="shirt-color";
@@ -1960,14 +1962,8 @@ window.dockShirtColorRail=function(){
       button.innerHTML='<span class="color-swatch"></span><span class="color-label"></span>';
       host.appendChild(button);
     });
-    shirtColorButtons=document.querySelectorAll(".shirt-color");
+    if(typeof shirtColorButtons!=="undefined") shirtColorButtons=document.querySelectorAll(".shirt-color");
   }
-  host.querySelectorAll(".shirt-color").forEach(button=>{
-    const hex=button.dataset.color||"#888";
-    button.hidden=false;
-    button.style.setProperty("--swatch",hex);
-    button.style.background=hex;
-  });
 };
 
 (function hardenInitials(){
@@ -1975,7 +1971,7 @@ window.dockShirtColorRail=function(){
   if(!field) return;
   field.maxLength=3;
   field.setAttribute("maxlength","3");
-  field.value=String(field.value||"AF").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3)||"AF";
+  field.value="";
   const clamp=()=>{
     field.value=String(field.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
     if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
