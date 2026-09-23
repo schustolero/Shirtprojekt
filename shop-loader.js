@@ -172,6 +172,10 @@
           }
 
           const finalConfig = normalizeTemplateDemo(merged);
+          if (slug === "_master") {
+            finalConfig.fixedPrint = finalConfig.fixedPrint || {};
+            finalConfig.fixedPrint.back = { ...(finalConfig.fixedPrint.back || {}), enabled: false };
+          }
           if (finalConfig.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;

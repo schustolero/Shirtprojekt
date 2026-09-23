@@ -133,7 +133,7 @@ window.CENTRAL_CONFIG = {
       productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},
       fixedPrint:{
         front:{enabled:true,motifId:"motiv1",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},
-        back:{enabled:true,motifId:"motiv1",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}
+        back:{enabled:false,motifId:"motiv1",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}
       },
       motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
     },

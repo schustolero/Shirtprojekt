@@ -5047,8 +5047,7 @@ body.v32-admin .v2853-workspace[data-v32-view="print"] .v2853-left{display:none!
   body.v32-admin .v2853-left{order:1}
   body.v32-admin .v2853-right{order:2}
   body.v32-admin .v2853-bottom{order:3}
-  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right .position-readout,
-  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-preview-shell{display:none!important}
+  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right{display:none!important}
 }
 
 /* v32 Sidebar – hell, wie im Admin-Screenshot */

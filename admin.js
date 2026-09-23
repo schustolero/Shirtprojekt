@@ -2250,7 +2250,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.26');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.27');
 })();
 
 // ============================================================
@@ -2291,7 +2291,8 @@ saveShopBtn.addEventListener("click",async()=>{
 
   left?.querySelector(".v2853-basic-card")?.classList.add("v32-view-shop");
   left?.querySelector(".v2853-appearance-card")?.classList.add("v32-view-design");
-  right?.classList.add("v32-view-shop","v32-view-print");
+  right?.classList.add("v32-view-print");
+  if(window.matchMedia("(min-width:721px)").matches) right?.classList.add("v32-view-shop");
   bottom?.classList.add("v32-view-print");
   workspace.querySelectorAll(".v2853-print-card,.v284-card[data-card='production'],.v284-card[data-card='fixed'],.v284-card[data-card='functions']").forEach(el=>{
     el.classList.add("v32-view-print");
@@ -2313,7 +2314,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.26");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.27");
   return true;
   }
   if(!boot()){
