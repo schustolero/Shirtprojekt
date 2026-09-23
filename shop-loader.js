@@ -10,12 +10,18 @@
   window.SHOP_SLUG = slug;
 
   const templateDemos = {
-    _master: { customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment", brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment", shopType:"simple", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] },
+    _master: { customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment", brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment", shopType:"simple", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.17"}] },
     _simple: { customerName:"Vorlage Simple", pageTitle:"Vorlage Simple – T-Shirt Shop", brandTitle:"Vorlage Simple", brandSubtitle:"Einfach auswählen und bestellen", shopType:"simple", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] },
     _motifs: { customerName:"Vorlage Motive", pageTitle:"Vorlage Motive – T-Shirt Shop", brandTitle:"Vorlage Motive", brandSubtitle:"Mehrere Motive zur Auswahl", shopType:"motifs", fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"}, motifs:[{id:"motiv1",name:"NOVA Wappen",file:"demo-motiv-1.png?v=30.1.87"},{id:"motiv2",name:"NOVA Dynamik",file:"demo-motiv-2.png?v=30.1.87"}] },
     _designer: { customerName:"Vorlage Designer", pageTitle:"Vorlage Designer – T-Shirt Shop", brandTitle:"Vorlage Designer", brandSubtitle:"Dein Textil frei gestalten", shopType:"designer", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] }
   };
+  function mergeMasterProductData(config){
+    const master=new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
+    const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product}));
+    return {...(config||{}),products};
+  }
   function normalizeTemplateDemo(config){
+    config=mergeMasterProductData(config);
     const template = templateDemos[slug];
     if (!template) return config;
     const features = { ...(config.features || {}), allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true };
@@ -31,7 +37,7 @@
 
   function loadFileFallback(callback){
     const script = document.createElement("script");
-    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.16`;
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.17`;
     script.onload = () => {
       window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
       callback && callback(window.SHOP_CONFIG);
@@ -52,8 +58,9 @@
           const seed = (central.seedShops && central.seedShops[slug]) || {};
           const seedProducts = Array.isArray(seed.products) ? seed.products : [];
           const dataProducts = Array.isArray(data.products) ? data.products : [];
-          const productMap = new Map(seedProducts.map(p => [p.id, {...p}]));
-          dataProducts.forEach(p => productMap.set(p.id, {...(productMap.get(p.id)||{}), ...p}));
+          const masterProducts = new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
+          const productMap = new Map(seedProducts.map(p => [p.id, {...(masterProducts.get(p.id)||{}), ...p}]));
+          dataProducts.forEach(p => productMap.set(p.id, {...(masterProducts.get(p.id)||{}), ...(productMap.get(p.id)||{}), ...p}));
           const merged = {
             ...seed,
             ...data,
@@ -154,7 +161,7 @@
           }
           if (slug === "tus-hemmerde" && (data.tusProductMotifVersion || 0) < 1) {
             const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
-            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.16",preserveColors:true});
+            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.17",preserveColors:true});
             merged.motifs=motifs;
             merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
             merged.tusProductMotifVersion=1;

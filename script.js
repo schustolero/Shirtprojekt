@@ -168,9 +168,7 @@ function getAllowedMotifColorNames(){
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
   const allowedShirtColorIds = getAllowedShirtColorIds();
   if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
-    shirtColorSection.querySelectorAll(".shirt-color").forEach((button) => {
-      if (!allowedShirtColorIds.includes(button.dataset.id)) button.remove();
-    });
+    shirtColorSection.dataset.allowedColorIds = allowedShirtColorIds.join(",");
   }
   if (shirtColorSection) shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
   if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
@@ -321,7 +319,7 @@ const canvas = new fabric.Canvas("designCanvas", {
 
 const resetBtn = document.getElementById("resetBtn");
 const viewButtons = document.querySelectorAll(".view-btn");
-const shirtColorButtons = document.querySelectorAll(".shirt-color");
+let shirtColorButtons = document.querySelectorAll(".shirt-color");
 const motifButtons = document.querySelectorAll(".motif-btn");
 const motifColorButtons = document.querySelectorAll(".motif-color");
 const shirtMockup = document.getElementById("shirtMockup");
@@ -356,6 +354,30 @@ const PRODUCTS = configuredProducts.length ? configuredProducts : [{
   id: "tshirt", name: "T-Shirt", price: Number(SHOP.shirtPrice) || 15,
   frontTemplate: "shirt-front-template.png", backTemplate: "shirt-back-template.png"
 }];
+function ensureProductColorButtons(products){
+  const host=document.querySelector(".shirt-colors");
+  if(!host) return;
+  const existing=new Map(Array.from(host.querySelectorAll(".shirt-color")).map(button=>[button.dataset.id,button]));
+  products.forEach(product=>(product.colorVariants||[]).forEach(variant=>{
+    if(!variant?.id || existing.has(variant.id)) return;
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="shirt-color";
+    button.dataset.id=variant.id;
+    button.dataset.name=variant.name||variant.id;
+    button.dataset.color=variant.color||"#777777";
+    if(variant.pattern) button.dataset.pattern=variant.pattern;
+    button.setAttribute("aria-label",button.dataset.name);
+    button.title=button.dataset.name;
+    button.style.setProperty("--swatch",button.dataset.color);
+    button.innerHTML=`<span class="color-swatch"></span><span class="color-label"></span>`;
+    button.querySelector(".color-label").textContent=button.dataset.name;
+    host.appendChild(button);
+    existing.set(variant.id,button);
+  }));
+}
+ensureProductColorButtons(PRODUCTS);
+shirtColorButtons=document.querySelectorAll(".shirt-color");
 let currentProductId = PRODUCTS[0].id;
 const productMotifSelections = {};
 let productMotifChoiceSection = null;
@@ -426,13 +448,24 @@ function updateSizeOptionsForCurrentSelection() {
 }
 
 function applyProductColorRules(product, forceDefault = false) {
-  const allowed = Array.isArray(product?.allowedShirtColorIds) ? product.allowedShirtColorIds : [];
+  const variants=Array.isArray(product?.colorVariants)?product.colorVariants:[];
+  const variantMap=new Map(variants.map(variant=>[variant.id,variant]));
+  const allowed = Array.isArray(product?.allowedShirtColorIds) && product.allowedShirtColorIds.length
+    ? product.allowedShirtColorIds
+    : variants.map(variant=>variant.id);
+  const shopAllowed=getAllowedShirtColorIds();
   const labels = product?.shirtColorLabels || {};
   shirtColorButtons.forEach(button => {
     if (!button.dataset.baseName) button.dataset.baseName = button.dataset.name || "";
-    const visible = !allowed.length || allowed.includes(button.dataset.id);
+    if (!button.dataset.baseColor) button.dataset.baseColor = button.dataset.color || "#777777";
+    if (!button.dataset.basePattern) button.dataset.basePattern = button.dataset.pattern || "";
+    const variant=variantMap.get(button.dataset.id);
+    const visible = (!allowed.length || allowed.includes(button.dataset.id)) && (!shopAllowed || shopAllowed.includes(button.dataset.id));
     button.hidden = !visible;
-    const label = labels[button.dataset.id] || button.dataset.baseName;
+    const label = labels[button.dataset.id] || variant?.name || button.dataset.baseName;
+    button.dataset.color=product?.shirtColorHex?.[button.dataset.id] || variant?.color || button.dataset.baseColor;
+    button.dataset.pattern=variant?.pattern || button.dataset.basePattern || "";
+    button.style.setProperty("--swatch",button.dataset.color);
     button.dataset.name = label;
     button.setAttribute("aria-label", label);
     button.title = label;
@@ -441,7 +474,9 @@ function applyProductColorRules(product, forceDefault = false) {
   });
 
   const currentButton = Array.from(shirtColorButtons).find(button => button.dataset.id === currentShirtColorId && !button.hidden);
-  const defaultId = product?.defaultShirtColorId || allowed[0] || F140_ALLOWED_META.defaultId || currentShirtColorId || "";
+  const defaultId = FEATURES.showShirtColorPicker === false
+    ? (F140_ALLOWED_META.defaultId || product?.defaultShirtColorId || allowed[0] || currentShirtColorId || "")
+    : (product?.defaultShirtColorId || F140_ALLOWED_META.defaultId || allowed[0] || currentShirtColorId || "");
   const target = Array.from(shirtColorButtons).find(button => button.dataset.id === defaultId && !button.hidden)
     || Array.from(shirtColorButtons).find(button => !button.hidden);
   if (target && (forceDefault || !currentButton)) {
