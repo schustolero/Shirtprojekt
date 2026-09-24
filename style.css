@@ -5211,57 +5211,11 @@ html[data-theme="dark"] body .sidebar .view-btn.active{
   html body .sidebar .view-btn{min-height:40px!important;height:40px!important}
 }
 
-/* v30.3.126 – Master-Wortmarke in der linken Bedienung. */
-html body[data-customer-id="_master"] .sidebar .brand{
-  display:flex!important;
-  align-items:flex-start!important;
-  padding:4px 2px 14px!important;
-}
-
-/* v30.3.127 – Gespeicherte Shop-Schalter auch bei Layout-Regeln beachten. */
-html body .sidebar .color-section[hidden],
-html body .workspace .color-section[hidden],
-html body .sidebar .motif-section[hidden],
-html body .sidebar .motif-color-section[hidden],
-html body .sidebar .view-section[hidden]{display:none!important}
-html body[data-customer-id="_master"] .sidebar .brand .shop-brand-logo{
-  display:block!important;
-  width:min(100%,260px)!important;
-  max-width:260px!important;
-  height:auto!important;
-  margin:0!important;
-  object-fit:contain!important;
-}
-@media(max-width:900px){
-  html body[data-customer-id="_master"] .sidebar .brand{
-    padding:10px 18px 6px!important;
-  }
-}
-
-/* v30.3.129 – Shop-Logo links über der Textilwahl, Schalter sichtbar wirksam. */
-@media(min-width:901px){
-  html body .sidebar .brand{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important;padding:4px 2px 14px!important}
-  html body .sidebar .brand .shop-brand-logo{display:block!important;width:min(100%,260px)!important;max-width:260px!important;height:auto!important;max-height:90px!important;margin:0!important;object-fit:contain!important;object-position:left center!important}
-  html body .designer-header .shop-brand-logo{display:none!important}
-}
-@media(max-width:900px){
-  html body .designer-header .shop-brand-logo{display:block!important;width:auto!important;max-width:180px!important;height:auto!important;max-height:52px!important;object-fit:contain!important;object-position:left center!important}
-}
-html body[data-show-shirt-colors="false"] .color-section,
-html body[data-show-motif-colors="false"] .motif-color-section{display:none!important}
-html body[data-show-shirt-colors="false"] .workspace{grid-template-columns:minmax(0,1fr)!important}
-html body[data-show-shirt-colors="false"] .workspace .mockup-stage{grid-column:1!important}
-html body .sidebar .shop-nexaro-branding{display:flex;justify-content:flex-start;align-items:center;padding:14px 2px 8px;margin-top:auto}
-html body .sidebar .shop-nexaro-branding img{display:block;width:auto;max-width:130px;max-height:40px;height:auto;object-fit:contain;object-position:left center}
-@media(max-width:900px){html body .sidebar .shop-nexaro-branding{padding:12px 18px}}
-
-/* v30.3.130 – Druckfläche tiefer; Vereinswappen separat auswählen. */
-html body .mockup-stage .print-zone,
-html body .mockup-stage .print-zone.back{
-  top:calc(47% - 55px + clamp(24px,5vw,72px))!important;
-}
-html body .sidebar .club-crest-section[hidden]{display:none!important}
-html body .club-crest-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-html body .club-crest-btn{width:100%;min-width:0;min-height:68px}
-html body .club-crest-btn .motif-preview img{max-height:48px;object-fit:contain}
-html body .club-crest-clear{display:block;margin-top:8px;padding:7px 10px;border:1px solid #d8dce2;border-radius:8px;background:#fff;color:#4e5762;font-size:11px;font-weight:700;cursor:pointer}
+/* Wählbare Logos bleiben als sichtbare Kacheln in zwei Gruppen. */
+html body .motif-section[hidden]{display:none!important}
+html body .motif-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+html body .motif-grid>.motif-btn-off{grid-column:1/-1;height:48px!important;min-height:48px!important;flex-direction:row;align-items:center}
+html body .motif-grid>.motif-btn-off .motif-preview{width:48px;height:30px;min-height:30px}
+html body .motif-category{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
+html body .motif-category-title{grid-column:1/-1;margin:8px 0 0;font-size:11px;color:#596273}
+html body .motif-category .motif-btn{width:100%;min-width:0}

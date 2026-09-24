@@ -6387,35 +6387,6 @@ html body .v2849-version{display:block!important;opacity:1!important}
 #shopForm .v3040-swatch{width:18px!important;height:18px!important;border-radius:50%!important;flex:0 0 18px!important;background:var(--sw,#ccc)!important;box-shadow:none!important}
 .position-stage .position-initials~.position-initials{display:none!important}
 
-/* v30.3.127 – Textil- und Druckfarben kompakt in vier Spalten. */
-#shopForm #f140ColorPicker.v2919-f140-grid,
-#shopForm #poliFlexTurboPicker.v2919-f140-grid{
-  display:grid!important;
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:6px!important;
-}
-#shopForm #f140ColorPicker .v2919-f140-option,
-#shopForm #poliFlexTurboPicker .v2919-f140-option{
-  min-width:0!important;
-  min-height:34px!important;
-  padding:5px 7px!important;
-  gap:6px!important;
-  border-radius:8px!important;
-}
-#shopForm #f140ColorPicker .v2919-name,
-#shopForm #poliFlexTurboPicker .v2919-name{
-  font-size:10.5px!important;
-  overflow:hidden!important;
-  text-overflow:ellipsis!important;
-  white-space:nowrap!important;
-}
-@media(max-width:740px){
-  #shopForm #f140ColorPicker.v2919-f140-grid,
-  #shopForm #poliFlexTurboPicker.v2919-f140-grid{
-    grid-template-columns:repeat(2,minmax(0,1fr))!important;
-  }
-}
-
 /* Initialenposition im Admin ohne sichtbaren Rahmen ziehen. */
 /* Gleiche vergrößerte Druckfläche wie im Shop bei unveränderten Logo-Koordinaten. */
 html body .v2853-preview-shell .position-print-zone{
@@ -6447,11 +6418,20 @@ body.v32-admin .admin-header,
 body.v32-admin .admin-tabs,
 body.v32-admin .shop-list-panel{display:none!important}
 
-/* v30.3.130 – Wappenwerte im Admin und Druckvorschau. */
-#shopForm .club-crest-toggle{display:flex!important;align-items:center;gap:6px;font-size:11px;font-weight:750;color:#26323d}
-#shopForm .club-crest-toggle input{width:16px!important;height:16px!important;min-width:16px!important;accent-color:#cfaa19}
-#shopForm .club-crest-settings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
-#shopForm .club-crest-settings[hidden]{display:none!important}
-#shopForm .club-crest-settings label{display:grid;gap:3px;font-size:10px;font-weight:700;color:#6b7280}
-#shopForm .club-crest-settings input{min-width:0;width:100%;height:32px;padding:4px 6px;border:1px solid #dbe0e6;border-radius:7px;font-size:11px}
-html body .v2853-preview-shell .position-print-zone{top:8.5%!important}
+/* Kundenseitige Logo-Auswahl direkt in Motiv & Druck. */
+.v32-logo-library{margin:10px 0 16px;padding:14px;border:1px solid #e3e8ef;border-radius:12px;background:#fafbfc}
+.v32-logo-library-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px}
+.v32-logo-library-head strong,.logo-library-group h4{display:block;margin:0 0 4px;font-size:13px;color:#222b37}
+.v32-logo-library-head small{display:block;max-width:500px;font-size:11px;line-height:1.4;color:#667085}
+.v32-logo-library-actions{display:flex;gap:6px;flex-wrap:wrap}
+.v32-logo-library-actions button{white-space:nowrap;min-height:34px}
+.v32-logo-library .motifs-editor{display:grid;gap:12px}
+.logo-library-group{display:grid;gap:8px;padding:12px;border:1px solid #e8edf2;border-radius:10px;background:#fff}
+.logo-library-group .section-note{margin:0;font-size:11px}
+.logo-library-group .motif-edit-row{grid-template-columns:64px minmax(0,1fr) auto;gap:10px;padding:8px}
+.logo-library-group .motif-edit-row img{width:60px;height:54px}
+.logo-library-group .motif-fields{min-width:0;gap:6px}
+.logo-library-options{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.logo-library-options select{max-width:190px;min-height:32px;border:1px solid #d8dce2;border-radius:8px;padding:4px 8px;background:#fff}
+.logo-library-check{display:inline-flex;align-items:center;gap:6px;font-size:11px;color:#344054}
+@media(max-width:720px){.v32-logo-library-head{display:grid}.logo-library-group .motif-edit-row{grid-template-columns:48px minmax(0,1fr)}.logo-library-group .motif-edit-row img{width:46px;height:44px}.logo-library-group .danger-btn{grid-column:2;justify-self:end}}

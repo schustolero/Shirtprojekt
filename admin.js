@@ -288,7 +288,6 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
-  const showNexaroBranding = order.showNexaroBranding !== undefined ? order.showNexaroBranding !== false : shopConfigs.get(customerId)?.features?.showNexaroBranding !== false;
   const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.19`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
@@ -385,7 +384,7 @@ function printProductionSlip(order){
   </style></head><body>
   <div class="sheet">
     <div class="head">
-      <div class="brand">${showNexaroBranding?`<img src="${logoUrl}" alt="NEXARO SPORTS Logo">`:""}<p>Produktionsschein</p></div>
+      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Produktionsschein</p></div>
       <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span><strong class="shop-name">${htmlEscape(customerName)}</strong></div>
     </div>
 
@@ -421,7 +420,7 @@ function printProductionSlip(order){
       <div class="notes"><span>Bemerkungen</span></div>
     </section>
 
-    <div class="footer"><span>${showNexaroBranding?"NEXARO SPORTS · Produktion":"Produktion"}</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
+    <div class="footer"><span>NEXARO SPORTS · Produktion</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
   </div>
   <div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div>
   </body></html>`);
@@ -714,30 +713,24 @@ let workingProducts = [];
 let workingLogo = "";
 let workingInitials = {};
 const INITIALS_DEFAULTS = {
-  tshirt:{front:{x:68,y:30,sizePct:5},back:{x:50,y:32,sizePct:5}},
-  polo:{front:{x:68,y:30,sizePct:5},back:{x:50,y:32,sizePct:5}},
-  hoodie:{front:{x:68,y:34,sizePct:5},back:{x:50,y:36,sizePct:5}},
-  jc001:{front:{x:68,y:30,sizePct:5},back:{x:50,y:32,sizePct:5}},
-  bcwu01w:{front:{x:68,y:34,sizePct:5},back:{x:50,y:36,sizePct:5}}
+  tshirt:{front:{x:24,y:90,sizePct:5},back:{x:24,y:90,sizePct:5}},
+  polo:{front:{x:24,y:88,sizePct:5},back:{x:24,y:88,sizePct:5}},
+  hoodie:{front:{x:23,y:91,sizePct:5},back:{x:23,y:89,sizePct:5}},
+  sport:{front:{x:24,y:89,sizePct:5},back:{x:24,y:89,sizePct:5}},
+  sweatshirt:{front:{x:24,y:91,sizePct:5},back:{x:24,y:90,sizePct:5}}
 };
-const INITIALS_OLD_DEFAULTS={tshirt:{front:[24,90],back:[24,90]},polo:{front:[24,88],back:[24,88]},hoodie:{front:[23,91],back:[23,89]},jc001:{front:[24,89],back:[24,89]},bcwu01w:{front:[24,91],back:[24,90]}};
 function currentInitialsPos(){
   const product=positionProduct?.value||"tshirt";
   const side=positionSide?.value||"front";
   workingInitials[product]=workingInitials[product]||{};
   const fallback=INITIALS_DEFAULTS[product]?.[side]||INITIALS_DEFAULTS.tshirt.front;
-  let saved=workingInitials[product][side]||fallback;
-  const old=INITIALS_OLD_DEFAULTS[product]?.[side];
-  if(old && Number(saved.x)===old[0] && Number(saved.y)===old[1]){
-    saved={...fallback,sizePct:Number(saved.sizePct??fallback.sizePct)};
-    workingInitials[product][side]=saved;
-  }
+  const saved=workingInitials[product][side]||fallback;
   return {product,side,x:Number(saved.x??fallback.x),y:Number(saved.y??fallback.y),sizePct:Number(saved.sizePct??fallback.sizePct)};
 }
 function writeInitialsPos(x,y,announce=true){
   const pos=currentInitialsPos();
   x=Math.max(8,Math.min(92,Number(x)));
-  y=Math.max(8,Math.min(92,Number(y)));
+  y=Math.max(50,Math.min(96,Number(y)));
   if(!Number.isFinite(x)||!Number.isFinite(y)) return;
   workingInitials[pos.product]=workingInitials[pos.product]||{};
   const next={x:Math.round(x*2)/2,y:Math.round(y*2)/2,sizePct:pos.sizePct};
@@ -767,11 +760,7 @@ function placeAdminInitialsMark(x,y){
   if(!mark||!stage||!shirt) return;
   if(mark.parentElement!==stage) stage.appendChild(mark);
   const s=stage.getBoundingClientRect();
-  const frame=shirt.getBoundingClientRect();
-  const naturalWidth=shirt.naturalWidth||frame.width,naturalHeight=shirt.naturalHeight||frame.height;
-  const scale=Math.min(frame.width/naturalWidth,frame.height/naturalHeight);
-  const width=naturalWidth*scale,height=naturalHeight*scale;
-  const i={left:frame.left+(frame.width-width)/2,top:frame.top+(frame.height-height)/2,width,height};
+  const i=shirt.getBoundingClientRect();
   mark.style.setProperty("font-size",`${Math.max(10,i.width*currentInitialsPos().sizePct/100)}px`,"important");
   if(!s.width||!i.width){
     mark.style.left=`${x}%`;
@@ -820,17 +809,6 @@ const shopFields = {
   hoodieFrontX: document.getElementById("hoodieFrontX"), hoodieFrontY: document.getElementById("hoodieFrontY"), hoodieFrontW: document.getElementById("hoodieFrontW"),
   hoodieBackX: document.getElementById("hoodieBackX"), hoodieBackY: document.getElementById("hoodieBackY"), hoodieBackW: document.getElementById("hoodieBackW")
 };
-
-const motifColorsMirror=document.getElementById("motifColorsToggleMirror");
-function syncMotifColorsMirror(){
-  if(motifColorsMirror && shopFields.showMotifColors) motifColorsMirror.checked=shopFields.showMotifColors.checked;
-}
-motifColorsMirror?.addEventListener("change",()=>{
-  shopFields.showMotifColors.checked=motifColorsMirror.checked;
-  shopFields.showMotifColors.dispatchEvent(new Event("change",{bubbles:true}));
-});
-shopFields.showMotifColors?.addEventListener("change",syncMotifColorsMirror);
-document.addEventListener("shopconfigloaded",syncMotifColorsMirror);
 
 const printDataFields = {
   front: {method:document.getElementById("pdGlobalFrontMethod"),width:document.getElementById("pdGlobalFrontWidth"),height:document.getElementById("pdGlobalFrontHeight")},
@@ -1073,14 +1051,6 @@ function writePositionValues(x, y, w){
 }
 function bindPositionEditor(){
   if(!positionStage || !positionMotif || !positionPrintZone) return;
-  document.getElementById("positionShirt")?.addEventListener("load",()=>{
-    const pos=currentInitialsPos();
-    placeAdminInitialsMark(pos.x,pos.y);
-  });
-  if(typeof ResizeObserver!=="undefined") new ResizeObserver(()=>{
-    const pos=currentInitialsPos();
-    placeAdminInitialsMark(pos.x,pos.y);
-  }).observe(positionStage);
   [positionProduct, positionSide].forEach(el => el?.addEventListener("change", refreshPositionEditor));
   shopFields.fixedShirtHex?.addEventListener("input", refreshPositionEditor);
   shopFields.fixedMotifHex?.addEventListener("input", refreshPositionEditor);
@@ -1313,7 +1283,7 @@ async function loadShopConfigs(){
       customerName:cfg.customerName||demo.customerName,
       logoFile:cfg.logoFile||demo.logoFile||"/dein-logo.svg?v=30.1.87",
       motifs:Array.isArray(cfg.motifs)&&cfg.motifs.length?cfg.motifs:demo.motifs,
-      features:{...(cfg.features||{})}
+      features:{allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,...(cfg.features||{})}
     });
   });
   renderShopList();
@@ -1604,12 +1574,9 @@ function applyMasterCatalogToWorkingShop(){
   fillProductToggles(master);
   configurePositionProducts(master);
   fillPrintData(master);
-  const inheritedFeatures=master.features||{};
-  const featureFields={allowBackDesign:"allowBack",showShirtColorPicker:"showShirtColors",showMotifPicker:"showMotifs",showMotifColorPicker:"showMotifColors",showPrices:"showPrices",showNexaroBranding:"showNexaroBranding",allowCustomerUpload:"allowUpload",allowText:"allowText",allowInitials:"allowInitials",allowMoveMotif:"allowMove",allowResizeMotif:"allowResize",allowRotateMotif:"allowRotate"};
-  Object.entries(featureFields).forEach(([key,field])=>{ if(key in inheritedFeatures && shopFields[field]) shopFields[field].checked=!!inheritedFeatures[key]; });
   if(shopFields.price) shopFields.price.value=Number(master.shirtPrice ?? shopFields.price.value ?? 15);
   selectedShopOriginal={...(selectedShopOriginal||{}),products:deepClone(master.products||[]),productPrint:deepClone(master.productPrint||{}),printData:deepClone(master.printData||{}),shirtPrice:master.shirtPrice};
-  setShopState("Master-Sortiment und Shop-Funktionen übernommen. Speichern, damit der Shop live aktualisiert.","ok");
+  setShopState("Master-Sortiment übernommen. Speichern, damit der Shop live aktualisiert.","ok");
 }
 
 document.getElementById("applyMasterTemplateBtn")?.addEventListener("click",()=>{
@@ -1663,52 +1630,52 @@ removeLogoBtn.addEventListener("click",()=>{ const id=selectedShopId||shopFields
 
 function renderMotifsEditor(){
   motifsEditor.replaceChildren();
+  const groups={club:document.createElement("section"),general:document.createElement("section")};
+  Object.entries(groups).forEach(([key,section])=>{
+    section.className="logo-library-group";
+    const heading=document.createElement("h4");
+    heading.textContent=key==="club"?"Vereinslogos / Wappen":"Allgemeine Logos";
+    section.appendChild(heading);
+    motifsEditor.appendChild(section);
+  });
   workingMotifs.forEach((motif,index)=>{
     const row=document.createElement("div"); row.className="motif-edit-row";
     const img=document.createElement("img"); img.alt="Motiv"; img.onerror=()=>{ const f=`/shops/${encodeURIComponent(currentAssetSlug())}/motiv-1.png`; if(img.src!==new URL(f,location.href).href){img.src=f;} else {img.onerror=null;} }; img.src=safeAssetUrl(motif.file,currentAssetSlug());
     const fields=document.createElement("div"); fields.className="motif-fields";
-    const name=document.createElement("input"); name.className="motif-name"; name.value=motif.name||`Motiv ${index+1}`; name.placeholder="Motivname"; name.addEventListener("input",()=>{workingMotifs[index].name=name.value});
-    const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Motiv wird vorbereitet …");workingMotifs[index].file=await compressImage(file,800,210000);img.src=workingMotifs[index].file;setShopState("Motiv geändert – noch speichern.","ok")}catch(err){alert(err.message||"Motiv konnte nicht verarbeitet werden.")}upload.value=""});
+    const name=document.createElement("input"); name.className="motif-name"; name.value=motif.name||`Motiv ${index+1}`; name.placeholder="Logoname"; name.setAttribute("aria-label","Logoname"); name.addEventListener("input",()=>{workingMotifs[index].name=name.value;setShopState("Logoname geändert – oben Speichern klicken.")});
+    const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.setAttribute("aria-label",`Bild für ${motif.name||"Logo"} auswählen`); upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Logo wird vorbereitet …");const data=await compressImage(file,700,85000);if(data.length>85000) throw new Error("Dieses Logo ist zu groß. Bitte eine kleinere Bilddatei wählen.");workingMotifs[index].file=data;img.src=data;setShopState("Logo geändert – oben Speichern klicken.","ok")}catch(err){alert(err.message||"Logo konnte nicht verarbeitet werden.")}upload.value=""});
     fields.append(name,upload);
-    const crestToggle=document.createElement("label"); crestToggle.className="club-crest-toggle";
-    const crestInput=document.createElement("input"); crestInput.type="checkbox"; crestInput.checked=!!motif.isClubCrest;
-    crestToggle.append(crestInput,document.createTextNode("Vereinswappen · feste Position und Größe"));
-    const crestSettings=document.createElement("div"); crestSettings.className="club-crest-settings"; crestSettings.hidden=!crestInput.checked;
-    const controls=[["X",68,8,92],["Y",24,8,92],["Größe",18,5,65]];
-    controls.forEach(([label,defaultValue,min,max])=>{
-      const key=label==="Größe"?"widthPct":`${label.toLowerCase()}Pct`;
-      const field=document.createElement("label"); field.textContent=`${label} %`;
-      const input=document.createElement("input"); input.type="number"; input.min=String(min); input.max=String(max); input.step="0.5";
-      input.value=String(motif.crestPosition?.[key]??defaultValue);
-      input.addEventListener("change",()=>{
-        motif.crestPosition=motif.crestPosition||{};
-        motif.crestPosition[key]=Math.max(min,Math.min(max,Number(input.value)||defaultValue));
-        input.value=String(motif.crestPosition[key]);
-        setShopState("Wappenposition geändert – oben Speichern klicken.");
-      });
-      field.appendChild(input); crestSettings.appendChild(field);
-    });
-    crestInput.addEventListener("change",()=>{
-      motif.isClubCrest=crestInput.checked;
-      if(crestInput.checked){motif.preserveColors=true;motif.crestPosition=motif.crestPosition||{xPct:68,yPct:24,widthPct:18};}
-      crestSettings.hidden=!crestInput.checked;
-      setShopState("Wappenauswahl geändert – oben Speichern klicken.");
-    });
-    fields.append(crestToggle,crestSettings);
+    const choices=document.createElement("div"); choices.className="logo-library-options";
+    const category=document.createElement("select"); category.setAttribute("aria-label",`Kategorie für ${motif.name||"Logo"}`); category.innerHTML='<option value="club">Vereinslogo</option><option value="general">Allgemeines Logo</option>'; category.value=motif.category==="general"?"general":"club";
+    category.addEventListener("change",()=>{workingMotifs[index].category=category.value;renderMotifsEditor();setShopState("Logo-Gruppe geändert – oben Speichern klicken.")});
+    const enabled=document.createElement("label"); enabled.className="logo-library-check"; const check=document.createElement("input");check.type="checkbox";check.checked=motif.customerSelectable!==false;check.addEventListener("change",()=>{workingMotifs[index].customerSelectable=check.checked;setShopState("Logo-Freigabe geändert – oben Speichern klicken.")});enabled.append(check,document.createTextNode("Im Shop wählbar"));
+    choices.append(category,enabled);fields.appendChild(choices);
     if(motif.preserveColors){const note=document.createElement("small");note.className="motif-original-colors";note.textContent="Originalfarben / 3D bleiben erhalten";fields.appendChild(note);}
     const del=document.createElement("button"); del.type="button"; del.className="danger-btn"; del.textContent="Entfernen"; del.addEventListener("click",()=>{workingMotifs.splice(index,1);renderMotifsEditor();setShopState("Motiv entfernt – noch speichern.")});
-    row.append(img,fields,del); motifsEditor.appendChild(row);
+    row.append(img,fields,del); groups[category.value].appendChild(row);
   });
-  if(!workingMotifs.length){const p=document.createElement("p");p.className="section-note";p.textContent="Noch keine Motive vorhanden.";motifsEditor.appendChild(p)}
+  Object.values(groups).forEach(group=>{if(group.children.length===1){const p=document.createElement("p");p.className="section-note";p.textContent="Noch keine Logos vorhanden.";group.appendChild(p)}});
   refreshFixedPrintMotifOptions(shopFields.fixedFrontMotif?.value||"",shopFields.fixedBackMotif?.value||"");
   refreshPositionEditor();
 }
-addMotifBtn.addEventListener("click",()=>{ if(workingMotifs.length>=4){alert("Für die direkte Firebase-Verwaltung sind maximal 4 Motive vorgesehen.");return;} const n=workingMotifs.length+1;workingMotifs.push({id:`motiv${n}`,name:`Motiv ${n}`,file:""});renderMotifsEditor();setShopState("Neues Motiv angelegt – Bild auswählen und speichern.") });
+function addLibraryLogo(category){
+  if(workingMotifs.length>=10){alert("Maximal 10 Logos je Shop. Bitte zunächst ein Logo entfernen.");return;}
+  const id=`logo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
+  workingMotifs.push({id,name:category==="club"?"Vereinslogo":"Allgemeines Logo",file:"",category,locked:true,preserveColors:true,customerSelectable:true});
+  if(shopFields.showMotifs) shopFields.showMotifs.checked=true;
+  renderMotifsEditor();
+  setShopState("Logo angelegt – Bild auswählen und oben Speichern klicken.");
+}
+addMotifBtn.addEventListener("click",()=>addLibraryLogo("club"));
+document.addEventListener("click",ev=>{
+  if(ev.target.closest?.("#addClubLogoBtn")) addLibraryLogo("club");
+  if(ev.target.closest?.("#addGeneralLogoBtn")) addLibraryLogo("general");
+});
 addTusPatchBtn?.addEventListener("click",()=>{
   const patchId="tus-3d-patch";
   let motif=workingMotifs.find(item=>item.id===patchId);
   if(!motif){
-    if(workingMotifs.length>=4){alert("Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.");return;}
+    if(workingMotifs.length>=10){alert("Es sind bereits 10 Logos vorhanden. Bitte zuerst eines entfernen.");return;}
     motif={id:patchId,name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.19",preserveColors:true};
     workingMotifs.push(motif);
   }else{
@@ -1767,7 +1734,7 @@ function buildShopConfig(){
   const name=shopFields.name.value.trim(); if(!name) throw new Error("Bitte einen Shopnamen eingeben.");
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowInitials:!!shopFields.allowInitials?.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,allowBackDesign:shopFields.allowBack.checked,allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showMotifColorPicker:shopFields.showMotifColors.checked,showPrices:shopFields.showPrices.checked,showNexaroBranding:shopFields.showNexaroBranding.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
-  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||"",...(m.preserveColors?{preserveColors:true}:{}),...(m.isClubCrest?{isClubCrest:true,crestPosition:{xPct:Number(m.crestPosition?.xPct??68),yPct:Number(m.crestPosition?.yPct??24),widthPct:Number(m.crestPosition?.widthPct??18)}}:{})}))};
+  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file,category:m.category==="general"?"general":"club",locked:!!m.locked,customerSelectable:m.customerSelectable!==false,preserveColors:!!m.preserveColors}))};
   cfg.priceVisibilityVersion=1;
   if(id==="_master"){ cfg.isMasterTemplate=true; cfg.templateVersion=Math.max(1,Number(old.templateVersion)||1); }
   else {
@@ -1805,6 +1772,7 @@ function buildShopConfig(){
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;
+  if(cfg.fixedPrint.back.enabled) cfg.features.allowBackDesign=true;
   return cfg;
 }
 
@@ -1819,10 +1787,7 @@ saveShopBtn.addEventListener("click",async()=>{
       await db.collection("shops").doc("_master").set({templateVersion:cfg.templateVersion},{merge:true});
       for(const [id,shop] of shopConfigs.entries()){
         if(id==="_master" || id.startsWith("_") || shop.followMasterTemplate===false) continue;
-        const inheritedKeys=["allowBackDesign","showShirtColorPicker","showMotifPicker","showMotifColorPicker","showPrices","showNexaroBranding","allowCustomerUpload","allowText","allowInitials","allowMoveMotif","allowResizeMotif","allowRotateMotif"];
-        const inheritedFeatures={...(shop.features||{})};
-        inheritedKeys.forEach(key=>{ if(key in cfg.features) inheritedFeatures[key]=cfg.features[key]; });
-        const next={...shop,features:inheritedFeatures,products:deepClone(cfg.products||[]),productPrint:deepClone(cfg.productPrint||{}),printData:deepClone(cfg.printData||{}),shirtPrice:cfg.shirtPrice,templateSource:"_master",masterTemplateVersion:cfg.templateVersion};
+        const next={...shop,products:deepClone(cfg.products||[]),productPrint:deepClone(cfg.productPrint||{}),printData:deepClone(cfg.printData||{}),shirtPrice:cfg.shirtPrice,templateSource:"_master",masterTemplateVersion:cfg.templateVersion};
         await db.collection("shops").doc(id).set(next,{merge:false});
         shopConfigs.set(id,next);
         synced+=1;
@@ -2429,6 +2394,11 @@ saveShopBtn.addEventListener("click",async()=>{
   motifIntro.className='v2855-motif-intro';
   motifIntro.innerHTML='<strong>Motiv & Position</strong><span>Größe wählen und bei Bedarf direkt auf dem Textil positionieren.</span>';
   print.body.appendChild(motifIntro);
+  const logoLibrary=document.createElement('section');
+  logoLibrary.className='v32-logo-library';
+  logoLibrary.innerHTML='<div class="v32-logo-library-head"><div><strong>Logos für Kunden</strong><small>Vereinswappen und allgemeine Logos im Shop zur Auswahl freigeben. Neue Logos haben eine feste Position und Größe.</small></div><div class="v32-logo-library-actions"><button id="addClubLogoBtn" type="button" class="ghost-btn small">+ Vereinslogo</button><button id="addGeneralLogoBtn" type="button" class="ghost-btn small">+ Allgemeines Logo</button></div></div>';
+  if(motifsEditor) logoLibrary.appendChild(motifsEditor);
+  print.body.appendChild(logoLibrary);
   const mergedTable=document.createElement('div');
   mergedTable.id='v2856PrintTable';
   mergedTable.className='v284-print-table v2855-print-table';
@@ -2537,7 +2507,7 @@ saveShopBtn.addEventListener("click",async()=>{
     table.querySelectorAll('.v3030-product-motif-select').forEach(select=>select.addEventListener('change',()=>{
       const next=select.value;
       if((next==='patch'||next==='both')&&!workingMotifs.some(item=>item.id==='tus-3d-patch')){
-        if(workingMotifs.length>=4){alert('Es sind bereits 4 Motive vorhanden. Bitte zuerst ein Motiv entfernen.');renderMergedPrintTable();return;}
+        if(workingMotifs.length>=10){alert('Es sind bereits 10 Logos vorhanden. Bitte zuerst eines entfernen.');renderMergedPrintTable();return;}
         workingMotifs.push({id:'tus-3d-patch',name:'TuS 3D-Patch',file:'/tus-3d-patch.png?v=30.3.19',preserveColors:true});
         renderMotifsEditor();
       }
@@ -2675,7 +2645,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.130");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.127");
   return true;
   }
   if(!boot()){
@@ -2709,11 +2679,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.addEventListener("pointermove",ev=>{
     if(pointerId!==ev.pointerId) return;
     const shirt=document.getElementById("positionShirt");
-    const frame=shirt.getBoundingClientRect();
-    const naturalWidth=shirt.naturalWidth||frame.width,naturalHeight=shirt.naturalHeight||frame.height;
-    const scale=Math.min(frame.width/naturalWidth,frame.height/naturalHeight);
-    const width=naturalWidth*scale,height=naturalHeight*scale;
-    const box={left:frame.left+(frame.width-width)/2,top:frame.top+(frame.height-height)/2,width,height};
+    const box=shirt.getBoundingClientRect();
     if(!box.width||!box.height) return;
     latest={x:(ev.clientX-offsetX-box.left)/box.width*100,y:(ev.clientY-offsetY-box.top)/box.height*100};
     if(!frame) frame=requestAnimationFrame(paint);
