@@ -5127,3 +5127,10 @@ html body .mockup-stage .shirt-initials-overlay.is-set{
   box-shadow:none!important;
   padding:0!important;
 }
+html body .shirt-initials-overlay,
+html body .shirt-initials-overlay.is-set{
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  background:transparent!important;
+}

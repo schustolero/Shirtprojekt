@@ -637,14 +637,18 @@ function renderProductSelector() {
       dualBaseImage = null;
       document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
       applyProductColorRules(product, true);
-      await applyProductMotifRule(true);
       updateProductPriceLabel();
-      canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
-      canvas.requestRenderAll();
-      saveCurrentView();
       await renderShirt();
       updateInitialsOnCanvas();
-      if (FEATURES.previewMode === "dual") await renderDualPreview();
+      try {
+        await applyProductMotifRule(true);
+        canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
+        canvas.requestRenderAll();
+        saveCurrentView();
+        if (FEATURES.previewMode === "dual") await renderDualPreview();
+      } catch (error) {
+        console.error("Motiv beim Produktwechsel:", error);
+      }
     });
     productSwitch.appendChild(btn);
   });
@@ -765,8 +769,10 @@ async function renderShirtImage(view) {
 
 async function renderShirt() {
   const viewAtStart = currentView;
+  const productAtStart = currentProductId;
+  const colorAtStart = currentShirtColorId;
   const src = await renderShirtImage(viewAtStart);
-  if (viewAtStart !== currentView) return;
+  if (viewAtStart !== currentView || productAtStart !== currentProductId || colorAtStart !== currentShirtColorId) return;
   shirtMockup.src = src;
   shirtMockup.onload = () => updateInitialsOnCanvas();
   updateInitialsOnCanvas();
