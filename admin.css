@@ -6106,3 +6106,77 @@ html,body{background:#f3f5f7!important;color:#15202b!important}
   #shopForm .form-grid>*,
   #shopForm .v2850-main-fields>*{flex:1 1 100%!important}
 }
+
+#shopForm .top-settings-column{
+  display:flex!important;flex-direction:column!important;gap:14px!important;
+}
+#shopForm .editor-box,
+#shopForm .form-section.editor-box,
+#shopForm .v2850-products.editor-box,
+#shopForm .v2850-design.editor-box,
+#shopForm details.editor-box{
+  display:block!important;
+  width:100%!important;
+  margin:0!important;
+  padding:16px!important;
+  border:0!important;
+  border-radius:16px!important;
+  background:#ffffff!important;
+  box-shadow:0 1px 0 rgba(15,23,32,.04),0 8px 24px rgba(15,23,32,.06)!important;
+}
+#shopForm .editor-box>h3,
+#shopForm .editor-box .v2850-subtitle,
+#shopForm .editor-box>summary{
+  display:block!important;
+  margin:0 0 14px!important;
+  padding:0 0 10px!important;
+  border-bottom:1px solid #edf1f4!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  letter-spacing:.04em!important;
+  text-transform:uppercase!important;
+  color:#15202b!important;
+  list-style:none!important;
+}
+#shopForm .editor-box>summary::-webkit-details-marker{display:none}
+#shopForm .v2919-shirt-palette-card,
+#shopForm .v2935-print-color-block,
+#shopForm .compact-colors-section{
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+  margin:0!important;
+}
+#shopForm .v2919-f140-grid,
+#shopForm .v2938-print-grid{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  gap:8px!important;
+}
+#shopForm .v2919-f140-grid button,
+#shopForm .v2938-print-grid button,
+#shopForm .v3040-color-chip{
+  width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;
+  padding:0!important;margin:0!important;border:0!important;border-radius:50%!important;
+  background:var(--swatch,var(--sw,#ccc))!important;
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)!important;
+  overflow:hidden!important;
+}
+#shopForm .v2919-f140-grid button .color-label,
+#shopForm .v2938-print-grid button .color-label,
+#shopForm .v3040-color-chip span{display:none!important}
+#shopForm .v2919-f140-grid button .color-swatch,
+#shopForm .v2938-print-grid button .color-swatch,
+#shopForm .v3040-swatch{
+  display:block!important;width:100%!important;height:100%!important;border-radius:50%!important;
+  background:var(--swatch,var(--sw,currentColor))!important;
+}
+#shopForm .v2919-f140-grid button.is-on,
+#shopForm .v2938-print-grid button.is-on,
+#shopForm .v3040-color-chip.is-on{
+  box-shadow:inset 0 0 0 1px rgba(0,0,0,.16),0 0 0 3px #fff,0 0 0 5px #15202b!important;
+}
+#shopForm .embedded-display-section{
+  margin-top:14px!important;padding:0!important;border:0!important;background:transparent!important;
+}
