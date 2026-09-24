@@ -4018,8 +4018,6 @@ html body .mockup-stage .initials-pop{
   display:flex!important;
 }
 html body .shirt-initials-overlay{
-  left:28%!important;
-  top:76%!important;
   font-size:22px!important;
   color:#fff!important;
   text-shadow:0 1px 2px rgba(0,0,0,.35)!important;
@@ -5113,3 +5111,8 @@ html body .mockup-stage .shirt-initials-overlay{
   touch-action:none!important;
 }
 html body .price-patch,html body #pricePatch{display:none!important}
+
+/* v30.3.118 – Position der Initialen wird vom Textil und der Ziehbewegung bestimmt. */
+html body .mockup-stage .shirt-initials-overlay{touch-action:none!important;user-select:none!important}
+html body .sidebar .initials-section[hidden]{display:none!important}
+html body .mockup-stage .initials-pop,html body .mockup-stage .initials-tab{display:none!important}

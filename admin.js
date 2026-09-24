@@ -729,6 +729,9 @@ function currentInitialsPos(){
 }
 function writeInitialsPos(x,y){
   const pos=currentInitialsPos();
+  x=Math.max(8,Math.min(92,Number(x)));
+  y=Math.max(50,Math.min(96,Number(y)));
+  if(!Number.isFinite(x)||!Number.isFinite(y)) return;
   workingInitials[pos.product]=workingInitials[pos.product]||{};
   workingInitials[pos.product][pos.side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
   const xEl=document.getElementById("initialsPosX");
@@ -736,9 +739,10 @@ function writeInitialsPos(x,y){
   if(xEl) xEl.value=String(workingInitials[pos.product][pos.side].x);
   if(yEl) yEl.value=String(workingInitials[pos.product][pos.side].y);
   placeAdminInitialsMark(workingInitials[pos.product][pos.side].x, workingInitials[pos.product][pos.side].y);
+  setShopState("Initialenposition geändert – oben Speichern klicken.");
 }
 function placeAdminInitialsMark(x,y){
-  const mark=document.getElementById("adminInitialsMark");
+  const mark=document.getElementById("positionInitials");
   const stage=document.getElementById("positionStage");
   const shirt=document.getElementById("positionShirt");
   if(!mark||!stage||!shirt) return;
@@ -1059,22 +1063,6 @@ function bindPositionEditor(){
     positionSaveRequested = true;
     saveShopBtn?.click();
   });
-  const mark=document.getElementById("adminInitialsMark");
-  if(mark && positionStage){
-    let drag=false;
-    const onMove=ev=>{
-      if(!drag) return;
-      const shirt=document.getElementById("positionShirt");
-      const r=shirt?.getBoundingClientRect();
-      if(!r?.width) return;
-      const point=ev.touches?.[0]||ev;
-      writeInitialsPos(((point.clientX-r.left)/r.width)*100, ((point.clientY-r.top)/r.height)*100);
-      ev.preventDefault();
-    };
-    mark.addEventListener("pointerdown", ev=>{ drag=true; ev.preventDefault(); ev.stopPropagation(); });
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", ()=>{ drag=false; });
-  }
   document.getElementById("initialsPosX")?.addEventListener("input", ()=>{
     writeInitialsPos(Number(document.getElementById("initialsPosX").value), currentInitialsPos().y);
   });
@@ -1826,65 +1814,7 @@ saveShopBtn.addEventListener("click",async()=>{
   });
 
 
-(function bindAdminInitials(){
-  const xEl=document.getElementById("initialsPosX");
-  const yEl=document.getElementById("initialsPosY");
-  const mark=document.getElementById("positionInitials");
-  const productEl=document.getElementById("positionProduct");
-  const sideEl=document.getElementById("positionSide");
-  if(!xEl||!yEl||!mark) return;
-  const key=()=>((productEl&&productEl.value)||"tshirt")+":"+((sideEl&&sideEl.value)||"front");
-  const apply=()=>{
-    const x=Math.max(10,Math.min(90,Number(xEl.value)||34));
-    const y=Math.max(55,Math.min(96,Number(yEl.value)||80));
-    mark.style.left=x+"%";
-    mark.style.top=y+"%";
-    window.workingInitials=window.workingInitials||{};
-    if(typeof workingInitials==="object"){
-      const pid=(productEl&&productEl.value)||"tshirt";
-      const side=(sideEl&&sideEl.value)||"front";
-      workingInitials[pid]=workingInitials[pid]||{};
-      workingInitials[pid][side]={x,y};
-    }
-  };
-  xEl.addEventListener("input",apply);
-  yEl.addEventListener("input",apply);
-  productEl&&productEl.addEventListener("change",apply);
-  sideEl&&sideEl.addEventListener("change",apply);
-  if(window.interact){
-    window.interact(mark).draggable({
-      listeners:{
-        move(event){
-          const stage=document.getElementById("positionStage");
-          if(!stage) return;
-          const box=stage.getBoundingClientRect();
-          const pt=event.client||{};
-          xEl.value=String(Math.round((((pt.x||event.pageX)-box.left)/box.width)*200)/2);
-          yEl.value=String(Math.round((((pt.y||event.pageY)-box.top)/box.height)*200)/2);
-          apply();
-        }
-      }
-    });
-  }
-  let drag=false;
-  mark.addEventListener("pointerdown",ev=>{
-    drag=true;
-    mark.setPointerCapture?.(ev.pointerId);
-    ev.preventDefault();
-    ev.stopPropagation();
-  });
-  mark.addEventListener("pointermove",ev=>{
-    if(!drag) return;
-    const stage=document.getElementById("positionStage");
-    if(!stage) return;
-    const box=stage.getBoundingClientRect();
-    xEl.value=String(Math.round(((ev.clientX-box.left)/box.width)*200)/2);
-    yEl.value=String(Math.round(((ev.clientY-box.top)/box.height)*200)/2);
-    apply();
-  });
-  mark.addEventListener("pointerup",()=>{drag=false;});
-  apply();
-})();
+
 
 })();
 
@@ -2319,7 +2249,7 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   left.appendChild(basic.card);
 
-  const appearance=makeCard('Farben','v2853-appearance-card v2869-appearance-colors');
+  const appearance=makeCard('Darstellung & Farben','v2853-appearance-card v2869-appearance-colors');
   let detachedAccent=null;
   if(false){
     detachedAccent=null;
@@ -2363,10 +2293,10 @@ saveShopBtn.addEventListener("click",async()=>{
   (function placeInitialsOnPreview(){
     const host=stage||document.getElementById("positionStage");
     if(!host) return;
-    [...document.querySelectorAll(".position-initials,#positionInitials,#adminInitialsMark")].forEach((el,i)=>{
-      if(i>0) el.remove();
-    });
     let mark=document.getElementById("positionInitials")||document.querySelector(".position-initials");
+    document.querySelectorAll(".position-initials,#adminInitialsMark").forEach(el=>{
+      if(el!==mark) el.remove();
+    });
     if(!mark){
       mark=document.createElement("div");
       mark.className="position-initials";
@@ -2378,41 +2308,7 @@ saveShopBtn.addEventListener("click",async()=>{
     mark.style.zIndex="80";
     mark.style.pointerEvents="auto";
     mark.style.touchAction="none";
-    if(!mark.dataset.dragBound){
-      mark.dataset.dragBound="1";
-      let drag=false;
-      const apply= (x,y) => {
-        mark.style.left=x+"%";
-        mark.style.top=y+"%";
-        const xEl=document.getElementById("initialsPosX");
-        const yEl=document.getElementById("initialsPosY");
-        if(xEl) xEl.value=String(Math.round(x*2)/2);
-        if(yEl) yEl.value=String(Math.round(y*2)/2);
-        const pid=document.getElementById("positionProduct")?.value||"tshirt";
-        const side=document.getElementById("positionSide")?.value||"front";
-        workingInitials=workingInitials||{};
-        workingInitials[pid]=workingInitials[pid]||{};
-        workingInitials[pid][side]={x,y};
-      };
-      mark.addEventListener("pointerdown",ev=>{
-        drag=true;
-        mark.setPointerCapture?.(ev.pointerId);
-        ev.preventDefault();
-        ev.stopPropagation();
-      });
-      mark.addEventListener("pointermove",ev=>{
-        if(!drag) return;
-        const box=host.getBoundingClientRect();
-        if(!box.width) return;
-        apply(
-          Math.max(8,Math.min(92,((ev.clientX-box.left)/box.width)*100)),
-          Math.max(50,Math.min(96,((ev.clientY-box.top)/box.height)*100))
-        );
-        ev.preventDefault();
-      });
-      mark.addEventListener("pointerup",()=>{drag=false;});
-      mark.addEventListener("pointercancel",()=>{drag=false;});
-    }
+
   })();
   const pricePatch=document.createElement("aside");
   pricePatch.id="adminPricePatch";
@@ -2648,7 +2544,7 @@ saveShopBtn.addEventListener("click",async()=>{
   nav.setAttribute("aria-label","Shop-Einstellungen");
   nav.innerHTML=`
     <button type="button" data-v32="shop" class="active">Shop &amp; Sortiment</button>
-    <button type="button" data-v32="design">Farben</button>
+    <button type="button" data-v32="design">Design &amp; Farben</button>
     <button type="button" data-v32="print">Motiv &amp; Druck</button>`;
 
   const hint=document.createElement("p");
@@ -2699,51 +2595,30 @@ saveShopBtn.addEventListener("click",async()=>{
   }
 })();
 
-(function bindInitialsDragAlways(){
-  if(window.__initialsDragAlways) return;
-  window.__initialsDragAlways=true;
-  let active=null;
-  function boxOf(el){
-    const img=document.getElementById("shirtMockup")||document.getElementById("positionShirt");
-    const stage=el.closest(".mockup-stage,.position-stage")||el.parentElement;
-    if(!img||!stage) return null;
-    return {img:img.getBoundingClientRect(), stage:stage.getBoundingClientRect()};
-  }
-  function move(el,cx,cy){
-    const b=boxOf(el); if(!b||!b.img.width) return;
-    const x=Math.max(8,Math.min(92,((cx-b.img.left)/b.img.width)*100));
-    const y=Math.max(50,Math.min(96,((cy-b.img.top)/b.img.height)*100));
-    const sl=((b.img.left-b.stage.left)+b.img.width*(x/100))/b.stage.width*100;
-    const st=((b.img.top-b.stage.top)+b.img.height*(y/100))/b.stage.height*100;
-    el.style.left=sl+"%"; el.style.top=st+"%";
-    window._initialsLivePos=window._initialsLivePos||{};
-    const pid=window.currentProductId||document.getElementById("positionProduct")?.value||"tshirt";
-    const side=window.currentView||document.getElementById("positionSide")?.value||"front";
-    window._initialsLivePos[pid+":"+side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
-    if(typeof workingInitials==="object"){
-      workingInitials[pid]=workingInitials[pid]||{};
-      workingInitials[pid][side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
-    }
-    const xEl=document.getElementById("initialsPosX");
-    const yEl=document.getElementById("initialsPosY");
-    if(xEl) xEl.value=String(Math.round(x*2)/2);
-    if(yEl) yEl.value=String(Math.round(y*2)/2);
-  }
-  function pick(ev){
-    return ev.target.closest?.(".shirt-initials-overlay,.position-initials,#positionInitials");
-  }
-  document.addEventListener("pointerdown",function(ev){
-    const el=pick(ev); if(!el||el.hidden) return;
-    if(el.classList.contains("shirt-initials-overlay") && !el.textContent.trim()) return;
-    active=el; window._initialsDragging=true;
-    el.setPointerCapture?.(ev.pointerId);
-    ev.preventDefault(); ev.stopPropagation();
-  },true);
-  document.addEventListener("pointermove",function(ev){
-    if(!active) return;
-    move(active,ev.clientX,ev.clientY);
+(function bindInitialsDrag(){
+  const mark=document.getElementById("positionInitials");
+  const shirt=document.getElementById("positionShirt");
+  if(!mark||!shirt) return;
+  let pointerId=null;
+  mark.addEventListener("pointerdown",ev=>{
+    pointerId=ev.pointerId;
+    mark.setPointerCapture?.(pointerId);
+    mark.style.cursor="grabbing";
     ev.preventDefault();
-  },true);
-  document.addEventListener("pointerup",function(){ active=null; window._initialsDragging=false; },true);
+    ev.stopPropagation();
+  });
+  mark.addEventListener("pointermove",ev=>{
+    if(pointerId!==ev.pointerId) return;
+    const box=shirt.getBoundingClientRect();
+    if(!box.width||!box.height) return;
+    writeInitialsPos((ev.clientX-box.left)/box.width*100,(ev.clientY-box.top)/box.height*100);
+    ev.preventDefault();
+  });
+  const stop=ev=>{
+    if(pointerId!==ev.pointerId) return;
+    pointerId=null;
+    mark.style.cursor="grab";
+  };
+  mark.addEventListener("pointerup",stop);
+  mark.addEventListener("pointercancel",stop);
 })();
-

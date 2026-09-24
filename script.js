@@ -28,7 +28,7 @@ const FEATURES = Object.assign({
 }, SHOP.features || {});
 if(SHOP.features && Object.prototype.hasOwnProperty.call(SHOP.features,"allowInitials")){
   FEATURES.allowInitials=!!SHOP.features.allowInitials;
-}else{
+}else if(String(SHOP.customerId||"")!=="tg-solingen"){
   FEATURES.allowInitials=true;
 }
 
@@ -1276,8 +1276,8 @@ function applyInitialsOnShirt(overlay, xPct, yPct){
   if(!box||!overlay) return;
   const left=((box.imgBox.left-box.stageBox.left)+box.imgBox.width*(xPct/100))/box.stageBox.width*100;
   const top=((box.imgBox.top-box.stageBox.top)+box.imgBox.height*(yPct/100))/box.stageBox.height*100;
-  overlay.style.left=`${left}%`;
-  overlay.style.top=`${top}%`;
+  overlay.style.setProperty("left", `${left}%`, "important");
+  overlay.style.setProperty("top", `${top}%`, "important");
 }
 function updateInitialsOnCanvas() {
   if(window._initialsDragging) return;
@@ -1287,6 +1287,9 @@ function updateInitialsOnCanvas() {
   const color = paired?.color || currentMotifColor || "#B62820";
   const stage = document.querySelector(".mockup-stage");
   if (!stage) return;
+  stage.querySelectorAll(".shirt-initials-overlay").forEach((extra, index) => {
+    if (index) extra.remove();
+  });
   let overlay = stage.querySelector(".shirt-initials-overlay");
   if (!overlay) {
     overlay = document.createElement("div");
@@ -1294,8 +1297,14 @@ function updateInitialsOnCanvas() {
     overlay.setAttribute("aria-hidden", "true");
     stage.appendChild(overlay);
   }
-  overlay.innerHTML = value ? `<span class="initials-glyph">${value}</span>` : "";
-  overlay.hidden = !value;
+  overlay.textContent = "";
+  if(value){
+    const glyph=document.createElement("span");
+    glyph.className="initials-glyph";
+    glyph.textContent=value;
+    overlay.appendChild(glyph);
+  }
+  overlay.hidden = !value || !FEATURES.allowInitials;
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
@@ -1319,7 +1328,7 @@ function updateInitialsOnCanvas() {
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.02em";
   overlay.style.color = color || "#ffffff";
-  overlay.style.pointerEvents = value ? "auto" : "none";
+  overlay.style.pointerEvents = value && FEATURES.allowInitials ? "auto" : "none";
   overlay.style.cursor = value ? "grab" : "default";
   overlay.style.zIndex = "80";
   overlay.classList.toggle("is-set", !!value);
@@ -1327,10 +1336,6 @@ function updateInitialsOnCanvas() {
   if(!overlay.dataset.dragBound){
     overlay.dataset.dragBound = "1";
     window.addEventListener("resize", () => { if(!window._initialsDragging) updateInitialsOnCanvas(); }, {passive:true});
-    const pointFrom = (ev) => {
-      const src = ev.touches && ev.touches[0] ? ev.touches[0] : ev;
-      return {x: src.clientX, y: src.clientY};
-    };
     const moveTo = (clientX, clientY) => {
       const box=initialsShirtBox();
       if(!box || !box.imgBox.width) return;
@@ -1351,8 +1356,7 @@ function updateInitialsOnCanvas() {
     };
     const move = (ev) => {
       if(!window._initialsDragging) return;
-      const p = pointFrom(ev);
-      moveTo(p.x, p.y);
+      moveTo(ev.clientX, ev.clientY);
       ev.preventDefault();
     };
     const stop = () => {
@@ -1363,9 +1367,6 @@ function updateInitialsOnCanvas() {
     overlay.addEventListener("pointermove", move);
     overlay.addEventListener("pointerup", stop);
     overlay.addEventListener("pointercancel", stop);
-    overlay.addEventListener("touchstart", start, {passive:false});
-    overlay.addEventListener("touchmove", move, {passive:false});
-    overlay.addEventListener("touchend", stop);
   }
 }
 
@@ -2112,9 +2113,8 @@ function ensureInitialsField(){
     sidebar.appendChild(box);
   }
   if(box){
-    box.hidden=false;
-    box.removeAttribute("hidden");
-    box.style.display="block";
+    box.hidden=!FEATURES.allowInitials;
+    box.style.display=FEATURES.allowInitials?"":"none";
     const product=document.getElementById("productSection");
     if(product && product.parentElement) product.insertAdjacentElement("afterend", box);
   }
@@ -2142,52 +2142,3 @@ function dockPricePatch(){
 }
 setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); dockPricePatch(); updateInitialsOnCanvas(); },0);
 setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); dockPricePatch(); updateInitialsOnCanvas(); },250);
-
-(function bindInitialsDragAlways(){
-  if(window.__initialsDragAlways) return;
-  window.__initialsDragAlways=true;
-  let active=null;
-  function boxOf(el){
-    const img=document.getElementById("shirtMockup")||document.getElementById("positionShirt");
-    const stage=el.closest(".mockup-stage,.position-stage")||el.parentElement;
-    if(!img||!stage) return null;
-    return {img:img.getBoundingClientRect(), stage:stage.getBoundingClientRect()};
-  }
-  function move(el,cx,cy){
-    const b=boxOf(el); if(!b||!b.img.width) return;
-    const x=Math.max(8,Math.min(92,((cx-b.img.left)/b.img.width)*100));
-    const y=Math.max(50,Math.min(96,((cy-b.img.top)/b.img.height)*100));
-    const sl=((b.img.left-b.stage.left)+b.img.width*(x/100))/b.stage.width*100;
-    const st=((b.img.top-b.stage.top)+b.img.height*(y/100))/b.stage.height*100;
-    el.style.left=sl+"%"; el.style.top=st+"%";
-    window._initialsLivePos=window._initialsLivePos||{};
-    const pid=window.currentProductId||document.getElementById("positionProduct")?.value||"tshirt";
-    const side=window.currentView||document.getElementById("positionSide")?.value||"front";
-    window._initialsLivePos[pid+":"+side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
-    if(typeof workingInitials==="object"){
-      workingInitials[pid]=workingInitials[pid]||{};
-      workingInitials[pid][side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
-    }
-    const xEl=document.getElementById("initialsPosX");
-    const yEl=document.getElementById("initialsPosY");
-    if(xEl) xEl.value=String(Math.round(x*2)/2);
-    if(yEl) yEl.value=String(Math.round(y*2)/2);
-  }
-  function pick(ev){
-    return ev.target.closest?.(".shirt-initials-overlay,.position-initials,#positionInitials");
-  }
-  document.addEventListener("pointerdown",function(ev){
-    const el=pick(ev); if(!el||el.hidden) return;
-    if(el.classList.contains("shirt-initials-overlay") && !el.textContent.trim()) return;
-    active=el; window._initialsDragging=true;
-    el.setPointerCapture?.(ev.pointerId);
-    ev.preventDefault(); ev.stopPropagation();
-  },true);
-  document.addEventListener("pointermove",function(ev){
-    if(!active) return;
-    move(active,ev.clientX,ev.clientY);
-    ev.preventDefault();
-  },true);
-  document.addEventListener("pointerup",function(){ active=null; window._initialsDragging=false; },true);
-})();
-
