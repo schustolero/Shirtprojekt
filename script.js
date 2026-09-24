@@ -1233,12 +1233,13 @@ const textColorSwatches = [...document.querySelectorAll(".text-color-swatch")];
 const initialsInput = document.getElementById("initialsInput");
 
 function initialsValue() {
+  const field = document.getElementById("initialsInput") || initialsInput;
   const maxLength = Math.min(3, Number(SHOP.initialsConfig?.maxLength) || 3);
-  const value = String(initialsInput?.value || "")
+  const value = String(field?.value || "")
     .toUpperCase()
     .replace(/[^A-ZÄÖÜ0-9]/g, "")
     .slice(0, maxLength);
-  if (initialsInput && initialsInput.value !== value) initialsInput.value = value;
+  if (field && field.value !== value) field.value = value;
   return value;
 }
 
@@ -1257,7 +1258,6 @@ function applyInitialsOnShirt(overlay, xPct, yPct){
   overlay.style.top=`${top}%`;
 }
 function updateInitialsOnCanvas() {
-  if (!FEATURES.allowInitials) return;
   const value = initialsValue();
   const cfg = SHOP.initialsConfig || {};
   const paired = SHOP.shirtMotifColors?.[currentShirtColorId];
@@ -2103,5 +2103,16 @@ function orderCustomerSidebar(){
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);
   });
 }
-setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); },0);
-setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); },250);
+document.addEventListener("input",(ev)=>{
+  if(ev.target && ev.target.id==="initialsInput"){
+    ev.target.value=String(ev.target.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+    updateInitialsOnCanvas();
+  }
+});
+function dockPricePatch(){
+  const stage=document.querySelector(".mockup-stage");
+  const patch=document.getElementById("pricePatch");
+  if(stage && patch && patch.parentElement!==stage) stage.appendChild(patch);
+}
+setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); dockPricePatch(); updateInitialsOnCanvas(); },0);
+setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); dockPricePatch(); updateInitialsOnCanvas(); },250);

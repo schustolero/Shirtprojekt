@@ -5049,3 +5049,34 @@ html body .designer-status{
   }
   html body .designer-header h1{font-size:18px!important}
 }
+html body .designer-status{display:none!important}
+html body .workspace .current-color,
+html body .color-rail .current-color,
+html body .color-section .current-color{display:none!important}
+html body .designer-header .shop-brand-logo{
+  height:72px!important;
+  max-width:220px!important;
+}
+html body .mockup-stage>.price-patch,
+html body .price-patch{
+  position:absolute!important;
+  right:6%!important;
+  bottom:8%!important;
+  left:auto!important;
+  top:auto!important;
+  z-index:8!important;
+  pointer-events:none!important;
+}
+html body .shirt-initials-overlay{
+  display:block!important;
+  color:#fff!important;
+  text-shadow:0 1px 0 #000,0 0 4px rgba(0,0,0,.55)!important;
+  z-index:40!important;
+}
+html body .shirt-initials-overlay[hidden]{display:none!important}
+@media (max-width:900px){
+  html body .designer-header .shop-brand-logo{
+    height:56px!important;
+    max-width:180px!important;
+  }
+}
