@@ -1850,13 +1850,31 @@ saveShopBtn.addEventListener("click",async()=>{
           const stage=document.getElementById("positionStage");
           if(!stage) return;
           const box=stage.getBoundingClientRect();
-          xEl.value=String(Math.round(((event.client.x-box.left)/box.width)*200)/2);
-          yEl.value=String(Math.round(((event.client.y-box.top)/box.height)*200)/2);
+          const pt=event.client||{};
+          xEl.value=String(Math.round((((pt.x||event.pageX)-box.left)/box.width)*200)/2);
+          yEl.value=String(Math.round((((pt.y||event.pageY)-box.top)/box.height)*200)/2);
           apply();
         }
       }
     });
   }
+  let drag=false;
+  mark.addEventListener("pointerdown",ev=>{
+    drag=true;
+    mark.setPointerCapture?.(ev.pointerId);
+    ev.preventDefault();
+    ev.stopPropagation();
+  });
+  mark.addEventListener("pointermove",ev=>{
+    if(!drag) return;
+    const stage=document.getElementById("positionStage");
+    if(!stage) return;
+    const box=stage.getBoundingClientRect();
+    xEl.value=String(Math.round(((ev.clientX-box.left)/box.width)*200)/2);
+    yEl.value=String(Math.round(((ev.clientY-box.top)/box.height)*200)/2);
+    apply();
+  });
+  mark.addEventListener("pointerup",()=>{drag=false;});
   apply();
 })();
 
@@ -2327,6 +2345,43 @@ saveShopBtn.addEventListener("click",async()=>{
   previewShell.className='v2853-preview-shell';
   previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
   if(stage) previewShell.appendChild(stage);
+  (function placeInitialsOnPreview(){
+    const host=stage||document.getElementById("positionStage");
+    if(!host) return;
+    let mark=document.getElementById("positionInitials");
+    if(!mark){
+      mark=document.createElement("div");
+      mark.id="positionInitials";
+      mark.className="position-initials";
+      mark.textContent="ABC";
+    }
+    host.appendChild(mark);
+    mark.style.zIndex="30";
+    mark.style.pointerEvents="auto";
+    if(window.interact && !mark.dataset.interacted){
+      mark.dataset.interacted="1";
+      window.interact(mark).draggable({
+        listeners:{
+          move(event){
+            const box=host.getBoundingClientRect();
+            const x=Math.max(10,Math.min(90,((event.client.x-box.left)/box.width)*100));
+            const y=Math.max(55,Math.min(96,((event.client.y-box.top)/box.height)*100));
+            mark.style.left=x+"%";
+            mark.style.top=y+"%";
+            const xEl=document.getElementById("initialsPosX");
+            const yEl=document.getElementById("initialsPosY");
+            if(xEl) xEl.value=String(Math.round(x*2)/2);
+            if(yEl) yEl.value=String(Math.round(y*2)/2);
+            const pid=document.getElementById("positionProduct")?.value||"tshirt";
+            const side=document.getElementById("positionSide")?.value||"front";
+            workingInitials=workingInitials||{};
+            workingInitials[pid]=workingInitials[pid]||{};
+            workingInitials[pid][side]={x,y};
+          }
+        }
+      });
+    }
+  })();
   const pricePatch=document.createElement("aside");
   pricePatch.id="adminPricePatch";
   pricePatch.hidden=true;
