@@ -5233,3 +5233,8 @@ html body .initials-section[hidden]{display:none!important}
   html body .mobile-after-shirt-controls #initialsInput{display:block!important;width:100%!important;min-height:48px!important;font-size:16px!important;touch-action:manipulation!important;pointer-events:auto!important}
   html body #productSwitch .product-btn{min-height:48px!important;touch-action:manipulation!important;pointer-events:auto!important}
 }
+
+/* Die gesamte Textilreihe muss oberhalb benachbarter mobiler Bedienfelder liegen. */
+html body #productSection{position:relative!important;z-index:20!important;isolation:isolate!important}
+html body #productSwitch{position:relative!important;z-index:1!important}
+html body #productSwitch .product-btn{position:relative!important;z-index:2!important;cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation!important}

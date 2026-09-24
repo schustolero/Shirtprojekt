@@ -617,34 +617,43 @@ function renderProductSelector() {
     if (FEATURES.showPrices === false) productPrice.style.setProperty("display", "none", "important");
     btn.append(productName, productPrice);
     btn.classList.toggle("active", product.id === currentProductId);
-    btn.addEventListener("click", async () => {
-      if (product.id === currentProductId) return;
-      const request=++productSelectionRequest;
-      currentProductId = product.id;
-      if(productTag) productTag.textContent=product.name||"Textil";
-      dualBaseImage = null;
-      document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
-      updateProductPriceLabel();
-      updateInitialsOnCanvas();
-      try {
-        applyProductColorRules(product, true);
-        await renderShirt();
-        if(request!==productSelectionRequest || currentProductId!==product.id) return;
-        await applyProductMotifRule(true);
-        if(request!==productSelectionRequest || currentProductId!==product.id) return;
-        canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
-        canvas.requestRenderAll();
-        saveCurrentView();
-        if (FEATURES.previewMode === "dual") await renderDualPreview();
-      } catch (error) {
-        console.error("Produktwechsel:", error);
-      }
-    });
+    btn.setAttribute("aria-pressed", String(product.id === currentProductId));
     productSwitch.appendChild(btn);
   });
   updateProductPriceLabel();
 }
 let productSelectionRequest=0;
+// Ein gemeinsamer Handler bleibt auch nach einem Neuaufbau der Schaltflächen aktiv.
+productSwitch?.addEventListener("click", async event => {
+  const button=event.target.closest("button[data-product]");
+  if(!button || !productSwitch.contains(button)) return;
+  const product=PRODUCTS.find(item=>item.id===button.dataset.product);
+  if(!product || product.id===currentProductId) return;
+  const request=++productSelectionRequest;
+  saveCurrentView();
+  currentProductId=product.id;
+  const tag=document.getElementById("selectedProductTag");
+  if(tag) tag.textContent=product.name||"Textil";
+  dualBaseImage=null;
+  productSwitch.querySelectorAll("button[data-product]").forEach(item=>{
+    const active=item.dataset.product===product.id;
+    item.classList.toggle("active",active);
+    item.setAttribute("aria-pressed",String(active));
+  });
+  updateProductPriceLabel();
+  updateInitialsOnCanvas();
+  try {
+    applyProductColorRules(product,true);
+    await renderShirt();
+    if(request!==productSelectionRequest) return;
+    await applyProductMotifRule(true);
+    if(request!==productSelectionRequest) return;
+    canvas.getObjects().forEach(obj=>{if(obj?.motifId) applyFixedMotifLayout(obj,obj.motifId)});
+    canvas.requestRenderAll();
+    saveCurrentView();
+    if(FEATURES.previewMode==="dual") await renderDualPreview();
+  } catch(error) { console.error("Produktwechsel:",error); }
+});
 
 // v29.9.6: Produktwechsel darf vor der späteren Order-Initialisierung nicht abbrechen.
 function updateProductPriceLabel() {
@@ -914,7 +923,7 @@ function updateDualInitials(){
       mark.className=`dual-initials dual-initials-${side}`;
       dualCompositeStage.appendChild(mark);
     }
-    mark.hidden=!value||!FEATURES.allowInitials;
+    mark.hidden=side!=="front"||!value||!FEATURES.allowInitials;
     mark.textContent=value;
     const defaults=side==="front"?{x:24,y:90}:{x:24,y:90};
     const saved=SHOP.initialsByProduct?.[currentProductId]?.[side]||{};
@@ -1331,7 +1340,7 @@ function updateInitialsOnCanvas() {
     glyph.textContent=value;
     overlay.appendChild(glyph);
   }
-  overlay.hidden = !value || !FEATURES.allowInitials;
+  overlay.hidden = currentView !== "front" || !value || !FEATURES.allowInitials;
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
@@ -1357,8 +1366,8 @@ function updateInitialsOnCanvas() {
   overlay.style.pointerEvents = "none";
   overlay.style.cursor = "default";
   overlay.style.zIndex = "80";
-  overlay.classList.toggle("is-set", !!value);
-  overlay.setAttribute("aria-hidden", value ? "false" : "true");
+  overlay.classList.toggle("is-set", !overlay.hidden);
+  overlay.setAttribute("aria-hidden", String(overlay.hidden));
   if(FEATURES.previewMode==="dual") updateDualInitials();
   if(!overlay.dataset.resizeBound){
     overlay.dataset.resizeBound="1";
