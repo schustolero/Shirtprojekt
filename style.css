@@ -5217,6 +5217,13 @@ html body[data-customer-id="_master"] .sidebar .brand{
   align-items:flex-start!important;
   padding:4px 2px 14px!important;
 }
+
+/* v30.3.127 – Gespeicherte Shop-Schalter auch bei Layout-Regeln beachten. */
+html body .sidebar .color-section[hidden],
+html body .workspace .color-section[hidden],
+html body .sidebar .motif-section[hidden],
+html body .sidebar .motif-color-section[hidden],
+html body .sidebar .view-section[hidden]{display:none!important}
 html body[data-customer-id="_master"] .sidebar .brand .shop-brand-logo{
   display:block!important;
   width:min(100%,260px)!important;

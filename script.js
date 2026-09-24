@@ -195,7 +195,7 @@ function getAllowedMotifColorNames(){
     shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
     if (FEATURES.showShirtColorPicker !== false) shirtColorSection.removeAttribute("hidden");
   }
-  if (motifSection) motifSection.hidden = !hasPresetMotifs;
+  if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
     motifColorSection.querySelectorAll(".motif-color").forEach((button) => {

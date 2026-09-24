@@ -1283,7 +1283,7 @@ async function loadShopConfigs(){
       customerName:cfg.customerName||demo.customerName,
       logoFile:cfg.logoFile||demo.logoFile||"/dein-logo.svg?v=30.1.87",
       motifs:Array.isArray(cfg.motifs)&&cfg.motifs.length?cfg.motifs:demo.motifs,
-      features:{allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,...(cfg.features||{})}
+      features:{...(cfg.features||{})}
     });
   });
   renderShopList();
@@ -1574,9 +1574,12 @@ function applyMasterCatalogToWorkingShop(){
   fillProductToggles(master);
   configurePositionProducts(master);
   fillPrintData(master);
+  const inheritedFeatures=master.features||{};
+  const featureFields={allowBackDesign:"allowBack",showShirtColorPicker:"showShirtColors",showMotifPicker:"showMotifs",showMotifColorPicker:"showMotifColors",showPrices:"showPrices",showNexaroBranding:"showNexaroBranding",allowCustomerUpload:"allowUpload",allowText:"allowText",allowInitials:"allowInitials",allowMoveMotif:"allowMove",allowResizeMotif:"allowResize",allowRotateMotif:"allowRotate"};
+  Object.entries(featureFields).forEach(([key,field])=>{ if(key in inheritedFeatures && shopFields[field]) shopFields[field].checked=!!inheritedFeatures[key]; });
   if(shopFields.price) shopFields.price.value=Number(master.shirtPrice ?? shopFields.price.value ?? 15);
   selectedShopOriginal={...(selectedShopOriginal||{}),products:deepClone(master.products||[]),productPrint:deepClone(master.productPrint||{}),printData:deepClone(master.printData||{}),shirtPrice:master.shirtPrice};
-  setShopState("Master-Sortiment übernommen. Speichern, damit der Shop live aktualisiert.","ok");
+  setShopState("Master-Sortiment und Shop-Funktionen übernommen. Speichern, damit der Shop live aktualisiert.","ok");
 }
 
 document.getElementById("applyMasterTemplateBtn")?.addEventListener("click",()=>{
@@ -1747,7 +1750,6 @@ function buildShopConfig(){
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;
-  if(cfg.fixedPrint.back.enabled) cfg.features.allowBackDesign=true;
   return cfg;
 }
 
@@ -1762,7 +1764,10 @@ saveShopBtn.addEventListener("click",async()=>{
       await db.collection("shops").doc("_master").set({templateVersion:cfg.templateVersion},{merge:true});
       for(const [id,shop] of shopConfigs.entries()){
         if(id==="_master" || id.startsWith("_") || shop.followMasterTemplate===false) continue;
-        const next={...shop,products:deepClone(cfg.products||[]),productPrint:deepClone(cfg.productPrint||{}),printData:deepClone(cfg.printData||{}),shirtPrice:cfg.shirtPrice,templateSource:"_master",masterTemplateVersion:cfg.templateVersion};
+        const inheritedKeys=["allowBackDesign","showShirtColorPicker","showMotifPicker","showMotifColorPicker","showPrices","showNexaroBranding","allowCustomerUpload","allowText","allowInitials","allowMoveMotif","allowResizeMotif","allowRotateMotif"];
+        const inheritedFeatures={...(shop.features||{})};
+        inheritedKeys.forEach(key=>{ if(key in cfg.features) inheritedFeatures[key]=cfg.features[key]; });
+        const next={...shop,features:inheritedFeatures,products:deepClone(cfg.products||[]),productPrint:deepClone(cfg.productPrint||{}),printData:deepClone(cfg.printData||{}),shirtPrice:cfg.shirtPrice,templateSource:"_master",masterTemplateVersion:cfg.templateVersion};
         await db.collection("shops").doc(id).set(next,{merge:false});
         shopConfigs.set(id,next);
         synced+=1;
@@ -2615,7 +2620,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.126");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.127");
   return true;
   }
   if(!boot()){

@@ -6387,6 +6387,35 @@ html body .v2849-version{display:block!important;opacity:1!important}
 #shopForm .v3040-swatch{width:18px!important;height:18px!important;border-radius:50%!important;flex:0 0 18px!important;background:var(--sw,#ccc)!important;box-shadow:none!important}
 .position-stage .position-initials~.position-initials{display:none!important}
 
+/* v30.3.127 – Textil- und Druckfarben kompakt in vier Spalten. */
+#shopForm #f140ColorPicker.v2919-f140-grid,
+#shopForm #poliFlexTurboPicker.v2919-f140-grid{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:6px!important;
+}
+#shopForm #f140ColorPicker .v2919-f140-option,
+#shopForm #poliFlexTurboPicker .v2919-f140-option{
+  min-width:0!important;
+  min-height:34px!important;
+  padding:5px 7px!important;
+  gap:6px!important;
+  border-radius:8px!important;
+}
+#shopForm #f140ColorPicker .v2919-name,
+#shopForm #poliFlexTurboPicker .v2919-name{
+  font-size:10.5px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+@media(max-width:740px){
+  #shopForm #f140ColorPicker.v2919-f140-grid,
+  #shopForm #poliFlexTurboPicker.v2919-f140-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+}
+
 /* Initialenposition im Admin ohne sichtbaren Rahmen ziehen. */
 /* Gleiche vergrößerte Druckfläche wie im Shop bei unveränderten Logo-Koordinaten. */
 html body .v2853-preview-shell .position-print-zone{
