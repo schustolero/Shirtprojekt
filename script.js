@@ -154,9 +154,8 @@ function getAllowedMotifColorNames(){
   document.querySelectorAll(".shop-brand-logo").forEach(el=>el.remove());
   if (cfg.logoFile) {
     const header = document.querySelector(".designer-header");
-    const masterBrand = String(cfg.customerId || window.SHOP_SLUG || "") === "_master"
-      ? document.querySelector(".sidebar .brand") : null;
-    const host = masterBrand || header || document.querySelector(".brand");
+    const brand = document.querySelector(".sidebar .brand");
+    const host = brand || header;
     if (host) {
       const img = document.createElement("img");
       img.src = window.shopAssetUrl ? window.shopAssetUrl(cfg.logoFile) : cfg.logoFile;
@@ -165,11 +164,30 @@ function getAllowedMotifColorNames(){
       img.style.height = `${Number(cfg.logoHeight) || 48}px`;
       img.onerror = () => img.remove();
       host.insertBefore(img, host.firstChild);
+      const mobile = window.matchMedia("(max-width:900px)");
+      const positionLogo = () => {
+        const destination = mobile.matches ? header : brand;
+        if(destination && img.parentElement!==destination) destination.insertBefore(img,destination.firstChild);
+      };
+      positionLogo();
+      mobile.addEventListener?.("change",positionLogo);
     }
+  }
+
+  const sidebarBranding=document.querySelector(".sidebar");
+  document.getElementById("shopNexaroBranding")?.remove();
+  if(sidebarBranding && FEATURES.showNexaroBranding!==false){
+    const nexaro=document.createElement("div");
+    nexaro.id="shopNexaroBranding";
+    nexaro.className="shop-nexaro-branding";
+    nexaro.innerHTML='<img src="/nexaro-logo-compact-v2.jpg?v=30.3.19" alt="Nexaro Sports">';
+    sidebarBranding.appendChild(nexaro);
   }
 
   document.body.dataset.shopLayout = FEATURES.layout || "simple";
   document.body.dataset.showPrices = FEATURES.showPrices === false ? "false" : "true";
+  document.body.dataset.showShirtColors = FEATURES.showShirtColorPicker === false ? "false" : "true";
+  document.body.dataset.showMotifColors = FEATURES.showMotifColorPicker === false ? "false" : "true";
   enforceCustomerPriceVisibility();
   if (FEATURES.showPrices === false) {
     new MutationObserver(enforceCustomerPriceVisibility).observe(document.body, { childList: true, subtree: true });
@@ -2033,6 +2051,12 @@ window.dockShirtColorRail=function(){
   const workspace=document.querySelector(".workspace");
   const section=document.querySelector(".color-section");
   if(!workspace||!section) return;
+  if(FEATURES.showShirtColorPicker===false){
+    section.hidden=true;
+    section.classList.remove("color-rail");
+    workspace.classList.remove("has-color-rail");
+    return;
+  }
   section.hidden=false;
   section.removeAttribute("hidden");
   section.classList.add("color-rail");

@@ -5237,3 +5237,20 @@ html body[data-customer-id="_master"] .sidebar .brand .shop-brand-logo{
     padding:10px 18px 6px!important;
   }
 }
+
+/* v30.3.129 – Shop-Logo links über der Textilwahl, Schalter sichtbar wirksam. */
+@media(min-width:901px){
+  html body .sidebar .brand{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:5px!important;padding:4px 2px 14px!important}
+  html body .sidebar .brand .shop-brand-logo{display:block!important;width:min(100%,260px)!important;max-width:260px!important;height:auto!important;max-height:90px!important;margin:0!important;object-fit:contain!important;object-position:left center!important}
+  html body .designer-header .shop-brand-logo{display:none!important}
+}
+@media(max-width:900px){
+  html body .designer-header .shop-brand-logo{display:block!important;width:auto!important;max-width:180px!important;height:auto!important;max-height:52px!important;object-fit:contain!important;object-position:left center!important}
+}
+html body[data-show-shirt-colors="false"] .color-section,
+html body[data-show-motif-colors="false"] .motif-color-section{display:none!important}
+html body[data-show-shirt-colors="false"] .workspace{grid-template-columns:minmax(0,1fr)!important}
+html body[data-show-shirt-colors="false"] .workspace .mockup-stage{grid-column:1!important}
+html body .sidebar .shop-nexaro-branding{display:flex;justify-content:flex-start;align-items:center;padding:14px 2px 8px;margin-top:auto}
+html body .sidebar .shop-nexaro-branding img{display:block;width:auto;max-width:130px;max-height:40px;height:auto;object-fit:contain;object-position:left center}
+@media(max-width:900px){html body .sidebar .shop-nexaro-branding{padding:12px 18px}}

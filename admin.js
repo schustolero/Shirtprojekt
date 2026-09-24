@@ -288,6 +288,7 @@ function printOrderSlip(order){
 function printProductionSlip(order){
   const customerId = order.customerId || "_template";
   const customerName = order.customerName || customerId || "Shirtprojekt";
+  const showNexaroBranding = order.showNexaroBranding !== undefined ? order.showNexaroBranding !== false : shopConfigs.get(customerId)?.features?.showNexaroBranding !== false;
   const logoUrl = `${location.origin}/nexaro-logo-compact-v2.jpg?v=30.3.19`;
   const items = Array.isArray(order.items) ? order.items : [];
   const printData = order.printData || {};
@@ -384,7 +385,7 @@ function printProductionSlip(order){
   </style></head><body>
   <div class="sheet">
     <div class="head">
-      <div class="brand"><img src="${logoUrl}" alt="NEXARO SPORTS Logo"><p>Produktionsschein</p></div>
+      <div class="brand">${showNexaroBranding?`<img src="${logoUrl}" alt="NEXARO SPORTS Logo">`:""}<p>Produktionsschein</p></div>
       <div class="meta"><strong>${htmlEscape(order.orderNumber||"-")}</strong><span>${htmlEscape(dateText(order.createdAt))}</span><strong class="shop-name">${htmlEscape(customerName)}</strong></div>
     </div>
 
@@ -420,7 +421,7 @@ function printProductionSlip(order){
       <div class="notes"><span>Bemerkungen</span></div>
     </section>
 
-    <div class="footer"><span>NEXARO SPORTS · Produktion</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
+    <div class="footer"><span>${showNexaroBranding?"NEXARO SPORTS · Produktion":"Produktion"}</span><span>${htmlEscape(order.orderNumber||"")}</span></div>
   </div>
   <div class="actions"><button class="print" onclick="window.print()">Drucken / PDF</button><button class="close" onclick="window.close()">Schließen</button></div>
   </body></html>`);
@@ -819,6 +820,17 @@ const shopFields = {
   hoodieFrontX: document.getElementById("hoodieFrontX"), hoodieFrontY: document.getElementById("hoodieFrontY"), hoodieFrontW: document.getElementById("hoodieFrontW"),
   hoodieBackX: document.getElementById("hoodieBackX"), hoodieBackY: document.getElementById("hoodieBackY"), hoodieBackW: document.getElementById("hoodieBackW")
 };
+
+const motifColorsMirror=document.getElementById("motifColorsToggleMirror");
+function syncMotifColorsMirror(){
+  if(motifColorsMirror && shopFields.showMotifColors) motifColorsMirror.checked=shopFields.showMotifColors.checked;
+}
+motifColorsMirror?.addEventListener("change",()=>{
+  shopFields.showMotifColors.checked=motifColorsMirror.checked;
+  shopFields.showMotifColors.dispatchEvent(new Event("change",{bubbles:true}));
+});
+shopFields.showMotifColors?.addEventListener("change",syncMotifColorsMirror);
+document.addEventListener("shopconfigloaded",syncMotifColorsMirror);
 
 const printDataFields = {
   front: {method:document.getElementById("pdGlobalFrontMethod"),width:document.getElementById("pdGlobalFrontWidth"),height:document.getElementById("pdGlobalFrontHeight")},
@@ -2638,7 +2650,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.128");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.129");
   return true;
   }
   if(!boot()){
