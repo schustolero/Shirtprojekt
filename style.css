@@ -5103,3 +5103,4 @@ html body .motif-more-select{
   border:1px solid #d7dee3!important;border-radius:10px!important;padding:8px 10px!important;
   font-size:13px!important;background:#fff!important;
 }
+html body .shirt-initials-overlay,html body .mockup-stage .shirt-initials-overlay{z-index:80!important;pointer-events:auto!important;touch-action:none!important;cursor:grab!important}

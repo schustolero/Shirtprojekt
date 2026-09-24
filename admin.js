@@ -2375,30 +2375,43 @@ saveShopBtn.addEventListener("click",async()=>{
     mark.id="positionInitials";
     mark.className="position-initials";
     host.appendChild(mark);
-    mark.style.zIndex="30";
+    mark.style.zIndex="80";
     mark.style.pointerEvents="auto";
-    if(window.interact && !mark.dataset.interacted){
-      mark.dataset.interacted="1";
-      window.interact(mark).draggable({
-        listeners:{
-          move(event){
-            const box=host.getBoundingClientRect();
-            const x=Math.max(10,Math.min(90,((event.client.x-box.left)/box.width)*100));
-            const y=Math.max(55,Math.min(96,((event.client.y-box.top)/box.height)*100));
-            mark.style.left=x+"%";
-            mark.style.top=y+"%";
-            const xEl=document.getElementById("initialsPosX");
-            const yEl=document.getElementById("initialsPosY");
-            if(xEl) xEl.value=String(Math.round(x*2)/2);
-            if(yEl) yEl.value=String(Math.round(y*2)/2);
-            const pid=document.getElementById("positionProduct")?.value||"tshirt";
-            const side=document.getElementById("positionSide")?.value||"front";
-            workingInitials=workingInitials||{};
-            workingInitials[pid]=workingInitials[pid]||{};
-            workingInitials[pid][side]={x,y};
-          }
-        }
+    mark.style.touchAction="none";
+    if(!mark.dataset.dragBound){
+      mark.dataset.dragBound="1";
+      let drag=false;
+      const apply= (x,y) => {
+        mark.style.left=x+"%";
+        mark.style.top=y+"%";
+        const xEl=document.getElementById("initialsPosX");
+        const yEl=document.getElementById("initialsPosY");
+        if(xEl) xEl.value=String(Math.round(x*2)/2);
+        if(yEl) yEl.value=String(Math.round(y*2)/2);
+        const pid=document.getElementById("positionProduct")?.value||"tshirt";
+        const side=document.getElementById("positionSide")?.value||"front";
+        workingInitials=workingInitials||{};
+        workingInitials[pid]=workingInitials[pid]||{};
+        workingInitials[pid][side]={x,y};
+      };
+      mark.addEventListener("pointerdown",ev=>{
+        drag=true;
+        mark.setPointerCapture?.(ev.pointerId);
+        ev.preventDefault();
+        ev.stopPropagation();
       });
+      mark.addEventListener("pointermove",ev=>{
+        if(!drag) return;
+        const box=host.getBoundingClientRect();
+        if(!box.width) return;
+        apply(
+          Math.max(8,Math.min(92,((ev.clientX-box.left)/box.width)*100)),
+          Math.max(50,Math.min(96,((ev.clientY-box.top)/box.height)*100))
+        );
+        ev.preventDefault();
+      });
+      mark.addEventListener("pointerup",()=>{drag=false;});
+      mark.addEventListener("pointercancel",()=>{drag=false;});
     }
   })();
   const pricePatch=document.createElement("aside");
@@ -2613,7 +2626,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.114');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.115');
 })();
 
 // ============================================================
@@ -2677,7 +2690,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.114");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.115");
   return true;
   }
   if(!boot()){
