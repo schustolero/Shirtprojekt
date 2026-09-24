@@ -5219,3 +5219,17 @@ html body .motif-grid>.motif-btn-off .motif-preview{width:48px;height:30px;min-h
 html body .motif-category{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;min-width:0}
 html body .motif-category-title{grid-column:1/-1;margin:8px 0 0;font-size:11px;color:#596273}
 html body .motif-category .motif-btn{width:100%;min-width:0}
+.selected-product-tag{display:inline-flex;align-items:center;min-height:28px;padding:4px 10px;border:1px solid #e1e5eb;border-radius:999px;background:#f8f9fb;color:#344054;font-size:11px;font-weight:750;white-space:nowrap}
+@media(max-width:900px){html body .designer-header .selected-product-tag{margin-left:auto;font-size:11px;flex:0 0 auto}}
+
+/* Mobile Bedienung: Eingabe direkt unter der Vorschau und echte Trefferflächen. */
+html body .shirt-color[hidden],
+html body .color-section[hidden],
+html body .motif-btn[hidden],
+html body .initials-section[hidden]{display:none!important}
+@media(max-width:900px){
+  html body .mobile-after-shirt-controls{display:grid!important;gap:8px!important;width:100%!important;padding:8px 14px!important;box-sizing:border-box!important;background:#fff!important}
+  html body .mobile-after-shirt-controls .initials-section{display:block!important;width:100%!important;margin:0!important;padding:10px 0!important}
+  html body .mobile-after-shirt-controls #initialsInput{display:block!important;width:100%!important;min-height:48px!important;font-size:16px!important;touch-action:manipulation!important;pointer-events:auto!important}
+  html body #productSwitch .product-btn{min-height:48px!important;touch-action:manipulation!important;pointer-events:auto!important}
+}

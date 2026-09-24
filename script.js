@@ -64,12 +64,12 @@ function syncMobileAfterShirtControls() {
     const anchor = dualWorkspace && !dualWorkspace.hidden ? dualWorkspace : workspace;
     if (anchor) anchor.insertAdjacentElement("afterend", host);
     if (logoChoice) host.appendChild(logoChoice);
+    if (initials && FEATURES.allowInitials) host.appendChild(initials);
     return;
   }
 
   if (logoChoice && productSection) productSection.insertAdjacentElement("afterend", logoChoice);
-  if (initials && shirtColorSection) shirtColorSection.insertAdjacentElement("afterend", initials);
-  else if (initials && logoChoice) logoChoice.insertAdjacentElement("afterend", initials);
+  if (initials && productSection) productSection.insertAdjacentElement("afterend", initials);
   host?.remove();
 }
 
@@ -183,7 +183,7 @@ function getAllowedMotifColorNames(){
   const backButton = document.querySelector('.view-btn[data-view="back"]');
   const resetSection = document.querySelector('.sidebar-bottom');
 
-  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
+  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.some(motif=>motif?.file && !motif.locked);
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
   const allowedShirtColorIds = getAllowedShirtColorIds();
   if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
@@ -289,17 +289,12 @@ function getAllowedMotifColorNames(){
   const initialsTab=document.getElementById("initialsTab");
   if(initialsTab) initialsTab.hidden=true;
   if(initialsPop){
-    initialsPop.hidden=false;
-    initialsPop.removeAttribute("hidden");
+    initialsPop.hidden=!FEATURES.allowInitials;
+    if(FEATURES.allowInitials) initialsPop.removeAttribute("hidden");
   }
   if(initialsField){
     initialsField.maxLength=3;
     initialsField.setAttribute("maxlength","3");
-    initialsField.value="";
-    initialsField.addEventListener("input",()=>{
-      initialsField.value=String(initialsField.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
-      if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
-    });
   }
   queueMicrotask(()=>{ if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas(); });
 
@@ -323,21 +318,13 @@ function getAllowedMotifColorNames(){
     motifGrid.appendChild(noneBtn);
   }
   if (motifGrid && Array.isArray(cfg.motifs)) {
-    const groups={club:document.createElement("div"),general:document.createElement("div")};
-    for(const [key,group] of Object.entries(groups)){
-      group.className=`motif-category motif-category-${key}`;
-      const title=document.createElement("strong");
-      title.className="motif-category-title";
-      title.textContent=key==="club"?"Vereinslogos / Wappen":"Allgemeine Logos";
-      group.appendChild(title);
-    }
     cfg.motifs.forEach((motif) => {
-      if (!motif || !motif.id || !motif.file || motif.customerSelectable===false) return;
+      // Die neue Logo-Bibliothek wird ausschließlich im Admin verwaltet.
+      if (!motif || !motif.id || !motif.file || motif.locked || motif.customerSelectable===false) return;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "motif-btn";
       btn.dataset.motif = motif.id;
-      btn.dataset.category = motif.category==="general"?"general":"club";
       btn.dataset.src = window.shopAssetUrl ? window.shopAssetUrl(motif.file) : motif.file;
       btn.dataset.preserveColors = motif.preserveColors ? "true" : "false";
       btn.setAttribute("aria-label", `${motif.name || motif.id} Motiv`);
@@ -350,9 +337,8 @@ function getAllowedMotifColorNames(){
       label.textContent = motif.name || motif.id;
       preview.appendChild(img);
       btn.append(preview, label);
-      groups[btn.dataset.category].appendChild(btn);
+      motifGrid.appendChild(btn);
     });
-    for(const group of Object.values(groups)) if(group.children.length>1) motifGrid.appendChild(group);
   }
 
   (function dockColorRailNextToShirt(){
@@ -604,6 +590,14 @@ function applyProductColorRules(product, forceDefault = false) {
 
 function renderProductSelector() {
   if (!productSection || !productSwitch) return;
+  let productTag=document.getElementById("selectedProductTag");
+  if(!productTag){
+    productTag=document.createElement("span");
+    productTag.id="selectedProductTag";
+    productTag.className="selected-product-tag";
+    document.querySelector(".designer-header")?.appendChild(productTag);
+  }
+  if(productTag) productTag.textContent=getCurrentProduct().name||"Textil";
   productSection.hidden = PRODUCTS.length <= 1;
   productSwitch.replaceChildren();
   PRODUCTS.forEach(product => {
@@ -625,27 +619,32 @@ function renderProductSelector() {
     btn.classList.toggle("active", product.id === currentProductId);
     btn.addEventListener("click", async () => {
       if (product.id === currentProductId) return;
+      const request=++productSelectionRequest;
       currentProductId = product.id;
+      if(productTag) productTag.textContent=product.name||"Textil";
       dualBaseImage = null;
       document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
-      applyProductColorRules(product, true);
       updateProductPriceLabel();
-      await renderShirt();
       updateInitialsOnCanvas();
       try {
+        applyProductColorRules(product, true);
+        await renderShirt();
+        if(request!==productSelectionRequest || currentProductId!==product.id) return;
         await applyProductMotifRule(true);
+        if(request!==productSelectionRequest || currentProductId!==product.id) return;
         canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
         canvas.requestRenderAll();
         saveCurrentView();
         if (FEATURES.previewMode === "dual") await renderDualPreview();
       } catch (error) {
-        console.error("Motiv beim Produktwechsel:", error);
+        console.error("Produktwechsel:", error);
       }
     });
     productSwitch.appendChild(btn);
   });
   updateProductPriceLabel();
 }
+let productSelectionRequest=0;
 
 // v29.9.6: Produktwechsel darf vor der späteren Order-Initialisierung nicht abbrechen.
 function updateProductPriceLabel() {
@@ -776,9 +775,10 @@ function getConfiguredMotif(view) {
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   const selectedId=view==="front" && logoEnabled ? selectedLogoByProduct[currentProductId] : null;
   if ((!cfg || !cfg.enabled) && !selectedId) return null;
-  const motif = (SHOP.motifs || []).find(m => m.id === selectedId)
-    || (SHOP.motifs || []).find(m => m.id === cfg?.motifId)
-    || (SHOP.motifs || [])[0];
+  const available=(SHOP.motifs||[]).filter(m=>m.file && !m.locked && m.customerSelectable!==false);
+  const motif = available.find(m => m.id === selectedId)
+    || available.find(m => m.id === cfg?.motifId)
+    || available[0];
   if (!motif) return null;
   return { cfg:cfg||{enabled:true}, motif };
 }
@@ -1349,11 +1349,11 @@ function updateInitialsOnCanvas() {
   const box = initialsShirtBox();
   const sizePct = Math.max(2,Math.min(12,Number(custom.sizePct ?? 5)));
   const px = box ? Math.max(10, box.imgBox.width * sizePct / 100) : 25;
-  overlay.style.fontSize = `${px}px`;
+  overlay.style.setProperty("font-size",`${px}px`,"important");
   overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Impact, sans-serif";
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.02em";
-  overlay.style.color = color || "#ffffff";
+  overlay.style.setProperty("color",color || "#ffffff","important");
   overlay.style.pointerEvents = "none";
   overlay.style.cursor = "default";
   overlay.style.zIndex = "80";
@@ -1366,7 +1366,9 @@ function updateInitialsOnCanvas() {
   }
 }
 
-initialsInput?.addEventListener("input", updateInitialsOnCanvas);
+initialsInput?.addEventListener("input",ev=>{
+  if(!ev.isComposing && ev.target.dataset.composing!=="true") updateInitialsOnCanvas();
+});
 
 function getActiveTextObject() {
   const active = canvas.getActiveObject();
@@ -2017,6 +2019,12 @@ window.dockShirtColorRail=function(){
   const workspace=document.querySelector(".workspace");
   const section=document.querySelector(".color-section");
   if(!workspace||!section) return;
+  if(FEATURES.showShirtColorPicker===false){
+    section.hidden=true;
+    section.classList.remove("color-rail");
+    workspace.classList.remove("has-color-rail");
+    return;
+  }
   section.hidden=false;
   section.removeAttribute("hidden");
   section.classList.add("color-rail");
@@ -2027,39 +2035,16 @@ window.dockShirtColorRail=function(){
   const existing=host.querySelectorAll(".shirt-color");
   existing.forEach(button=>{
     const hex=button.dataset.color||button.style.getPropertyValue("--swatch")||"#888";
-    button.hidden=false;
-    button.removeAttribute("hidden");
     button.style.setProperty("--swatch",hex);
     button.style.background=hex;
-    button.style.display="block";
   });
-  if(existing.length<4 && typeof MASTER_COLOR_VARIANTS==="object"){
-    const product=typeof getCurrentProduct==="function"?getCurrentProduct():null;
-    const catalog=MASTER_COLOR_VARIANTS[product?.articleNo]||MASTER_COLOR_VARIANTS.F140||[];
-    catalog.forEach(item=>{
-      if(host.querySelector(`.shirt-color[data-id="${item.id}"]`)) return;
-      const button=document.createElement("button");
-      button.type="button";
-      button.className="shirt-color";
-      button.dataset.id=item.id;
-      button.dataset.name=item.name;
-      button.dataset.color=item.color;
-      if(item.pattern) button.dataset.pattern=item.pattern;
-      button.style.setProperty("--swatch",item.color);
-      button.style.background=item.color;
-      button.title=item.name;
-      button.setAttribute("aria-label",item.name);
-      button.innerHTML='<span class="color-swatch"></span><span class="color-label"></span>';
-      host.appendChild(button);
-    });
-    if(typeof shirtColorButtons!=="undefined") shirtColorButtons=document.querySelectorAll(".shirt-color");
-  }
 };
 
 function validateInitialsField(){
   const field=document.getElementById("initialsInput");
   const err=document.getElementById("initialsError");
   if(!field) return true;
+  if(field.dataset.composing==="true") return true;
   const raw=String(field.value||"");
   const clean=raw.toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
   if(field.value!==clean) field.value=clean;
@@ -2083,16 +2068,9 @@ function validateInitialsField(){
   field.setAttribute("maxlength","3");
   field.setAttribute("pattern","[A-Za-zÄÖÜäöü0-9]{0,3}");
   field.value="";
-  field.addEventListener("beforeinput",(ev)=>{
-    if(ev.inputType==="insertFromPaste"||ev.inputType==="insertText"){
-      const next=String(field.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"");
-      const incoming=String(ev.data||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"");
-      if(ev.inputType==="insertText" && (next.length>=3 || !incoming)){
-        ev.preventDefault();
-        validateInitialsField();
-      }
-    }
-  });
+  field.addEventListener("compositionstart",()=>{field.dataset.composing="true"});
+  field.addEventListener("compositionend",()=>{delete field.dataset.composing;validateInitialsField()});
+  // iOS liefert beim Tippen teils leere beforeinput-Daten. Erst nach der Eingabe bereinigen.
   field.addEventListener("input", validateInitialsField);
   field.addEventListener("blur", validateInitialsField);
   field.addEventListener("paste",()=>setTimeout(validateInitialsField,0));
@@ -2113,7 +2091,7 @@ function ensureInitialsField(){
     box.hidden=!FEATURES.allowInitials;
     box.style.display=FEATURES.allowInitials?"":"none";
     const product=document.getElementById("productSection");
-    if(product && product.parentElement) product.insertAdjacentElement("afterend", box);
+    if(product && product.parentElement && !window.matchMedia("(max-width:900px)").matches) product.insertAdjacentElement("afterend", box);
   }
   return box;
 }
@@ -2121,14 +2099,15 @@ function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
   ensureInitialsField();
-  const seq=["productSection","#initialsPop",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
+  const seq=["productSection",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);
   });
+  syncMobileAfterShirtControls();
 }
 document.addEventListener("input",(ev)=>{
-  if(ev.target && ev.target.id==="initialsInput"){
+  if(ev.target && ev.target.id==="initialsInput" && !ev.isComposing && ev.target.dataset.composing!=="true"){
     ev.target.value=String(ev.target.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
     updateInitialsOnCanvas();
   }
