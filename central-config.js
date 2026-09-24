@@ -42,7 +42,7 @@ const MASTER_PRODUCT_CATALOG = [
   {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F140"),...masterColorSettings("F140","white")},
   {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F502"),...masterColorSettings("F502","white")},
   {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F421"),...masterColorSettings("F421","white")},
-  {id:"jc001",name:"Sport",articleNo:"JC001",price:12,purchasePrice:2.86,purchasePriceBySize:{S:7.62,M:7.62,L:7.62,XL:7.62,"2XL":7.62,"3XL":7.62,"4XL":9.55,"5XL":9.55},printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JC001"),...masterColorSettings("JC001","red")},
+  {id:"jc001",name:"Sport",articleNo:"JC001",price:12,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JC001"),...masterColorSettings("JC001","red")},
   {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")}
 ];
 window.CENTRAL_CONFIG = {
@@ -91,7 +91,7 @@ window.CENTRAL_CONFIG = {
       fixedShirtColor:{id:"white",name:"White||default=white||allowed=white,red,heather-grey",color:"#ffffff"},fixedMotifColor:{name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"},shirtMotifColors:{white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}},tusColorPairsVersion:1,defaultMotifId:"vereinslogo",
       products:[
         {id:"tshirt",name:"T-Shirt",articleNo:"F140",price:10,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white",sizes:["S","M","L","XL","2XL","3XL"]},
-        {id:"jc001",name:"Sport",articleNo:"JC001",price:12,purchasePrice:2.86,purchasePriceBySize:{S:7.62,M:7.62,L:7.62,XL:7.62,"2XL":7.62,"3XL":7.62,"4XL":9.55,"5XL":9.55},printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"},sizesByColor:{red:["S","M","L","XL","2XL","3XL"],"heather-grey":["S","M","L","XL","2XL"]}},
+        {id:"jc001",name:"Sport",articleNo:"JC001",price:12,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"},sizesByColor:{red:["S","M","L","XL","2XL","3XL"],"heather-grey":["S","M","L","XL","2XL"]}},
         {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",enabled:false},
         {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",enabled:false}
       ],
@@ -100,42 +100,14 @@ window.CENTRAL_CONFIG = {
       productMotifModes:{tshirt:"normal",jc001:"both",polo:"normal",hoodie:"normal"},
       productPrint:{tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}}},
       fixedPrint:{front:{enabled:true,motifId:"vereinslogo",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},back:{enabled:false,motifId:"vereinslogo",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}},
-      motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.19",preserveColors:true}]
+      motifs:[{id:"vereinslogo",name:"Vereinslogo",file:"motiv-1.png"},{id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.17",preserveColors:true}]
     },
     "_master": {
-      customerId:"_master", customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment",
-      brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment",
-      designerHeading:"Dein Shop. Dein Sortiment.", designerIntro:"Alle verfügbaren Textilien als zentrale Vorlage.",
-      accentColor:"#c99a1b", logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90,
-      shirtPrice:15, currency:"EUR", orderEmail:"shirtzentrale@gmail.com",
-      orderSubject:"Neue Master-Shop Bestellung",
-      customerExtraFieldLabel:"Team / Abteilung", customerExtraFieldName:"Team / Abteilung",
-      orderPrefix:"MAS", shopType:"simple", active:true, isMasterTemplate:true, templateVersion:1,
-      fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},
+      customerId:"_master",customerName:"Master Shop",pageTitle:"Master Shop – Gesamtsortiment",brandTitle:"DEIN VEREINSSHOP",brandSubtitle:"Komplettes Textilsortiment",designerHeading:"Dein Shop. Dein Sortiment.",designerIntro:"Alle verfügbaren Textilien als zentrale Vorlage.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Master-Shop Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"MAS",shopType:"simple",active:true,fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},
       products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:true})),
-      features:{
-        layout:"simple", motifMode:"single",
-        allowCustomerUpload:false, allowText:false, allowInitials:false,
-        allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true,
-        allowBackDesign:true, allowMotifColor:true,
-        showShirtColorPicker:true, showMotifPicker:false, showMotifColorPicker:true,
-        showPrices:false, showNexaroBranding:false, showResetButton:false,
-        autoSelectSingleMotif:false, maxUploadMB:8, previewMode:"single"
-      },
-      initialsConfig:{label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"},
-      productPrint:{
-        tshirt:{front:{xPct:68,yPct:18,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
-        polo:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
-        hoodie:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
-        jc001:{front:{xPct:68,yPct:18,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
-        bcwu01w:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}}
-      },
-      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},
-      fixedPrint:{
-        front:{enabled:false,motifId:"motiv1",position:"left-chest",size:"small",topPct:18,sidePct:32,scalePct:100},
-        back:{enabled:false,motifId:"motiv1",position:"center",size:"small",topPct:32,shiftXPct:0,scalePct:100}
-      },
-      motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
+      features:{layout:"simple",motifMode:"single",allowCustomerUpload:false,allowText:false,allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:false,showMotifColorPicker:true,showPrices:false,showNexaroBranding:false,autoSelectSingleMotif:true,maxUploadMB:8,previewMode:"single"},
+      productPrint:{tshirt:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},polo:{front:{xPct:68,yPct:22,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},hoodie:{front:{xPct:68,yPct:22,widthPct:36},back:{xPct:50,yPct:34,widthPct:78}},jc001:{front:{xPct:68,yPct:16,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}},bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}}},
+      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},fixedPrint:{front:{enabled:true,motifId:"motiv1",position:"left-chest",size:"small",topPct:16,sidePct:32,scalePct:100},back:{enabled:true,motifId:"motiv1",position:"center",size:"large",topPct:36,shiftXPct:0,scalePct:100}},motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.17"}]
     },
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach Farbe, Größe und Menge auswählen.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,

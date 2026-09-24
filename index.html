@@ -28,16 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.85">
-  <script>
-    (function(){
-      try{
-        var saved=localStorage.getItem("shirtprojekt-theme");
-        var theme=saved||(window.matchMedia&&matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light");
-        document.documentElement.dataset.theme=theme;
-      }catch(e){document.documentElement.dataset.theme="light"}
-    })();
-  </script>
+  <link rel="stylesheet" href="/style.css?v=30.3.17">
 
 <style id="v3-centering-fix">
 @media (max-width:760px){
@@ -129,14 +120,11 @@
   <aside class="sidebar">
 
     <div class="brand">
-      <div class="brand-copy">
-        <div class="brand-title" id="brandTitle">ShirtDesigner</div>
-        <div class="brand-subtitle" id="brandSubtitle">Logo-Konfigurator</div>
-      </div>
-      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Darstellung umschalten">Dunkel</button>
+      <div class="brand-title" id="brandTitle">ShirtDesigner</div>
+      <div class="brand-subtitle" id="brandSubtitle">Logo-Konfigurator</div>
     </div>
 
-    <section class="tool-section color-section">
+    <section class="tool-section color-section" hidden>
       <h3>Textilfarbe</h3>
 
       <div class="shirt-colors">
@@ -180,8 +168,8 @@
     </section>
 
     <section class="tool-section motif-section">
-      <h3>Logo</h3>
-      <p class="motif-help">Logo wählen oder ausschalten.</p>
+      <h3>Motive</h3>
+      <p class="motif-help">Bitte ein Motiv auswählen. Es wird automatisch fest auf der Vorderseite platziert.</p>
       <div class="motif-grid" id="motifGrid"></div>
     </section>
 
@@ -257,13 +245,6 @@
       <p class="current-color">Motiv: <strong id="currentMotifColorName">Black</strong></p>
     </section>
 
-
-    <section class="tool-section initials-section" id="initialsPop">
-      <h3>Initialen</h3>
-      <input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="" autocomplete="off" autocapitalize="characters" aria-label="Initialen">
-      <p class="hint">Maximal 3 Zeichen · unten links am Saum</p>
-    </section>
-
     <section class="tool-section view-section">
       <h3>Ansicht</h3>
 
@@ -287,16 +268,15 @@
       <h3>Größe & Menge</h3>
       <div class="order-price-info"><span>Aktuelles Textil</span><strong id="currentProductPrice">15,00 € pro T-Shirt</strong></div>
       <div class="order-fields">
-        <label class="order-field size-field">
+        <label class="order-field">
           <span>Größe</span>
-          <select id="shirtSize" class="size-select-fallback" aria-hidden="true" tabindex="-1">
+          <select id="shirtSize">
             <option value="">Bitte wählen</option>
             <option>XS</option><option>S</option><option>M</option><option>L</option>
             <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option>
           </select>
-          <div class="size-pills" id="sizePills" role="listbox" aria-label="Größe"></div>
         </label>
-        <label class="order-field qty-field">
+        <label class="order-field">
           <span>Menge</span>
           <input id="shirtQuantity" type="number" min="1" max="99" value="1" inputmode="numeric">
         </label>
@@ -357,12 +337,9 @@
         <div class="print-zone" id="printZone">
           <canvas id="designCanvas" width="260" height="430"></canvas>
         </div>
-        <aside class="price-patch" id="pricePatch" aria-label="Preis">
-          <em id="pricePatchName">T-Shirt</em>
-          <span>Preis</span>
-          <strong id="pricePatchValue">15,00 €</strong>
-        </aside>
+
       </div>
+
     </div>
 
     <div class="dual-workspace" id="dualWorkspace" hidden>
@@ -455,30 +432,18 @@
   </div>
 </div>
 
-<script src="/central-config.js?v=30.3.27"></script>
+<script src="/central-config.js?v=30.3.17"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.3.27"></script>
+<script src="/shop-loader.js?v=30.3.17"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script>
-  (function(){
-    var loaded=false;
-    function boot(){
-      if(loaded) return;
-      loaded=true;
-      document.body.classList.remove("shop-loading");
-      var app=document.createElement("script");
-      app.src="/script.js?v=30.3.85";
-      app.onerror=function(){ document.body.classList.remove("shop-loading"); };
-      document.body.appendChild(app);
-    }
-    try{
-      if(typeof loadShopConfig==="function") loadShopConfig(boot);
-      else boot();
-    }catch(e){ boot(); }
-    setTimeout(function(){ document.body.classList.remove("shop-loading"); if(!loaded) boot(); }, 2500);
-  })();
+  loadShopConfig(function(){
+    const app=document.createElement("script");
+    app.src="/script.js?v=30.3.17";
+    document.body.appendChild(app);
+  });
 </script>
 
 </body>
