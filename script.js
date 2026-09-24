@@ -1995,18 +1995,9 @@ initializeFixedPrints()
     const stage = document.querySelector('.mockup-stage');
     if (!stage) return;
 
-    if (window.innerWidth > 900) {
-      stage.style.removeProperty('--mobile-preview-scale');
-      return;
-    }
-
-    // Bisherige sichtbare Shirt-Höhen beibehalten, aber ohne Verzerrung.
-    const targetHeight = window.innerWidth <= 390 ? 352 : 382;
-    const scaleByHeight = targetHeight / BASE_STAGE_HEIGHT;
-    const scaleByWidth = Math.max(0.1, (window.innerWidth - 8) / BASE_STAGE_WIDTH);
-    const scale = Math.min(scaleByHeight, scaleByWidth);
-
-    stage.style.setProperty('--mobile-preview-scale', String(scale));
+    stage.style.removeProperty('--mobile-preview-scale');
+    stage.style.transform = "none";
+    return;
   }
 
   update();

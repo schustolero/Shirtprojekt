@@ -4828,3 +4828,52 @@ html body .sidebar .initials-section{
     max-height:52vh!important;
   }
 }
+
+/* v30.3.92 – Designer-Korrektur Mobil: ganzes Shirt, keine Leere */
+@media (max-width:900px){
+  html body .designer-header{
+    padding:10px 14px 8px!important;
+    min-height:0!important;
+  }
+  html body .designer-header h1{font-size:17px!important}
+  html body .designer-header p{font-size:12px!important}
+  html body .workspace,
+  html body .workspace.has-color-rail{
+    min-height:0!important;
+    height:auto!important;
+    padding:4px 8px 8px!important;
+    margin:0!important;
+    overflow:visible!important;
+    align-items:start!important;
+  }
+  html body .workspace .mockup-stage,
+  html body .mockup-stage{
+    width:calc(100vw - 52px)!important;
+    max-width:340px!important;
+    min-width:0!important;
+    height:auto!important;
+    min-height:0!important;
+    aspect-ratio:auto!important;
+    transform:none!important;
+    overflow:visible!important;
+    margin:0 auto!important;
+  }
+  html body #shirtMockup,
+  html body .shirt-mockup{
+    width:100%!important;
+    height:auto!important;
+    max-height:46vh!important;
+    object-fit:contain!important;
+    object-position:center center!important;
+  }
+  html body .workspace .current-color{
+    font-size:10px!important;
+    line-height:1.2!important;
+    margin-top:4px!important;
+  }
+  html body .mobile-after-shirt-controls,
+  html body .sidebar{
+    margin-top:0!important;
+    padding-top:8px!important;
+  }
+}
