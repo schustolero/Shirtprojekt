@@ -64,12 +64,12 @@ function syncMobileAfterShirtControls() {
     const anchor = dualWorkspace && !dualWorkspace.hidden ? dualWorkspace : workspace;
     if (anchor) anchor.insertAdjacentElement("afterend", host);
     if (logoChoice) host.appendChild(logoChoice);
-    if (initials && FEATURES.allowInitials) host.appendChild(initials);
     return;
   }
 
   if (logoChoice && productSection) productSection.insertAdjacentElement("afterend", logoChoice);
-  if (initials && productSection) productSection.insertAdjacentElement("afterend", initials);
+  if (initials && shirtColorSection) shirtColorSection.insertAdjacentElement("afterend", initials);
+  else if (initials && logoChoice) logoChoice.insertAdjacentElement("afterend", initials);
   host?.remove();
 }
 
@@ -183,7 +183,7 @@ function getAllowedMotifColorNames(){
   const backButton = document.querySelector('.view-btn[data-view="back"]');
   const resetSection = document.querySelector('.sidebar-bottom');
 
-  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.some(motif=>motif?.file && !motif.locked);
+  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
   const allowedShirtColorIds = getAllowedShirtColorIds();
   if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
@@ -193,7 +193,7 @@ function getAllowedMotifColorNames(){
     shirtColorSection.hidden = FEATURES.showShirtColorPicker === false;
     if (FEATURES.showShirtColorPicker !== false) shirtColorSection.removeAttribute("hidden");
   }
-  if (motifSection) motifSection.hidden = !showPresetMotifs || FEATURES.showMotifPicker === false;
+  if (motifSection) motifSection.hidden = !hasPresetMotifs;
   const allowedMotifColorNames = getAllowedMotifColorNames();
   if (motifColorSection && allowedMotifColorNames && allowedMotifColorNames.length) {
     motifColorSection.querySelectorAll(".motif-color").forEach((button) => {
@@ -289,12 +289,17 @@ function getAllowedMotifColorNames(){
   const initialsTab=document.getElementById("initialsTab");
   if(initialsTab) initialsTab.hidden=true;
   if(initialsPop){
-    initialsPop.hidden=!FEATURES.allowInitials;
-    if(FEATURES.allowInitials) initialsPop.removeAttribute("hidden");
+    initialsPop.hidden=false;
+    initialsPop.removeAttribute("hidden");
   }
   if(initialsField){
     initialsField.maxLength=3;
     initialsField.setAttribute("maxlength","3");
+    initialsField.value="";
+    initialsField.addEventListener("input",()=>{
+      initialsField.value=String(initialsField.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+      if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
+    });
   }
   queueMicrotask(()=>{ if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas(); });
 
@@ -319,8 +324,7 @@ function getAllowedMotifColorNames(){
   }
   if (motifGrid && Array.isArray(cfg.motifs)) {
     cfg.motifs.forEach((motif) => {
-      // Die neue Logo-Bibliothek wird ausschließlich im Admin verwaltet.
-      if (!motif || !motif.id || !motif.file || motif.locked || motif.customerSelectable===false) return;
+      if (!motif || !motif.id || !motif.file) return;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "motif-btn";
@@ -339,6 +343,28 @@ function getAllowedMotifColorNames(){
       btn.append(preview, label);
       motifGrid.appendChild(btn);
     });
+    const tiles=[...motifGrid.querySelectorAll(".motif-btn:not(.motif-btn-off)")];
+    if(tiles.length>2){
+      const extra=document.createElement("select");
+      extra.id="motifMoreSelect";
+      extra.className="motif-more-select";
+      extra.setAttribute("aria-label","Weitere Logos");
+      extra.innerHTML='<option value="">Weitere Logos</option>';
+      tiles.slice(2).forEach(btn=>{
+        btn.hidden=true;
+        const opt=document.createElement("option");
+        opt.value=btn.dataset.motif;
+        opt.textContent=btn.querySelector("span:last-child")?.textContent||btn.dataset.motif;
+        extra.appendChild(opt);
+      });
+      extra.addEventListener("change",()=>{
+        const id=extra.value;
+        if(!id) return;
+        const btn=motifGrid.querySelector(`.motif-btn[data-motif="${id}"]`);
+        if(btn) btn.click();
+      });
+      motifGrid.appendChild(extra);
+    }
   }
 
   (function dockColorRailNextToShirt(){
@@ -393,15 +419,13 @@ document.body.classList.remove("shop-loading");
 // Dadurch können große Motive höher positioniert werden, ohne am Canvas-Rand abgeschnitten zu werden.
 const PRINT_BASE_WIDTH = 260;
 const PRINT_BASE_HEIGHT = 340;
-const PRINT_HEADROOM = 135;
-const PRINT_CANVAS_WIDTH = 320;
-const PRINT_CANVAS_HEIGHT = 500;
-const PRINT_SIDE_MARGIN = 30;
+const PRINT_HEADROOM = 90;
+const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM;
 
 let canvas;
 try{
   canvas = new fabric.Canvas("designCanvas", {
-    width: PRINT_CANVAS_WIDTH,
+    width: PRINT_BASE_WIDTH,
     height: PRINT_CANVAS_HEIGHT,
     backgroundColor: "transparent",
     selection: true,
@@ -476,7 +500,6 @@ ensureProductColorButtons(PRODUCTS);
 shirtColorButtons=document.querySelectorAll(".shirt-color");
 let currentProductId = PRODUCTS[0].id;
 const productMotifSelections = {};
-const selectedLogoByProduct = {};
 let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
@@ -489,8 +512,7 @@ function getMotifButtonByKind(kind){
   const buttons=Array.from(document.querySelectorAll(".motif-btn"));
   const usable=buttons.filter(button=>button.dataset.motif && button.dataset.motif!=="none" && button.dataset.src);
   if(kind === "patch") return usable.find(button => button.dataset.motif === "tus-3d-patch") || null;
-  return usable.find(button => button.dataset.motif === selectedLogoByProduct[currentProductId] && button.dataset.motif !== "tus-3d-patch")
-    || usable.find(button => button.dataset.motif !== "tus-3d-patch") || usable[0] || null;
+  return usable.find(button => button.dataset.motif !== "tus-3d-patch") || usable[0] || null;
 }
 
 function ensureProductMotifChoiceSection(){
@@ -583,21 +605,13 @@ function applyProductColorRules(product, forceDefault = false) {
   const target = Array.from(shirtColorButtons).find(button => button.dataset.id === defaultId && !button.hidden)
     || Array.from(shirtColorButtons).find(button => !button.hidden);
   if (target && (forceDefault || !currentButton)) {
-    changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "", false);
+    changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "");
   }
   updateSizeOptionsForCurrentSelection();
 }
 
 function renderProductSelector() {
   if (!productSection || !productSwitch) return;
-  let productTag=document.getElementById("selectedProductTag");
-  if(!productTag){
-    productTag=document.createElement("span");
-    productTag.id="selectedProductTag";
-    productTag.className="selected-product-tag";
-    document.querySelector(".designer-header")?.appendChild(productTag);
-  }
-  if(productTag) productTag.textContent=getCurrentProduct().name||"Textil";
   productSection.hidden = PRODUCTS.length <= 1;
   productSwitch.replaceChildren();
   PRODUCTS.forEach(product => {
@@ -619,32 +633,23 @@ function renderProductSelector() {
     btn.classList.toggle("active", product.id === currentProductId);
     btn.addEventListener("click", async () => {
       if (product.id === currentProductId) return;
-      const request=++productSelectionRequest;
+      saveCurrentView();
       currentProductId = product.id;
-      if(productTag) productTag.textContent=product.name||"Textil";
       dualBaseImage = null;
       document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
+      applyProductColorRules(product, true);
+      try { await applyProductMotifRule(true); } catch (error) { console.error("Motivwechsel:", error); }
       updateProductPriceLabel();
+      canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
+      canvas.requestRenderAll();
+      await renderShirt();
       updateInitialsOnCanvas();
-      try {
-        applyProductColorRules(product, true);
-        await renderShirt();
-        if(request!==productSelectionRequest || currentProductId!==product.id) return;
-        await applyProductMotifRule(true);
-        if(request!==productSelectionRequest || currentProductId!==product.id) return;
-        canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
-        canvas.requestRenderAll();
-        saveCurrentView();
-        if (FEATURES.previewMode === "dual") await renderDualPreview();
-      } catch (error) {
-        console.error("Produktwechsel:", error);
-      }
+      if (FEATURES.previewMode === "dual") await renderDualPreview();
     });
     productSwitch.appendChild(btn);
   });
   updateProductPriceLabel();
 }
-let productSelectionRequest=0;
 
 // v29.9.6: Produktwechsel darf vor der späteren Order-Initialisierung nicht abbrechen.
 function updateProductPriceLabel() {
@@ -760,10 +765,8 @@ async function renderShirtImage(view) {
 
 async function renderShirt() {
   const viewAtStart = currentView;
-  const productAtStart = currentProductId;
-  const colorAtStart = currentShirtColorId;
   const src = await renderShirtImage(viewAtStart);
-  if (viewAtStart !== currentView || productAtStart !== currentProductId || colorAtStart !== currentShirtColorId) return;
+  if (viewAtStart !== currentView) return;
   shirtMockup.src = src;
   shirtMockup.onload = () => updateInitialsOnCanvas();
   updateInitialsOnCanvas();
@@ -771,16 +774,11 @@ async function renderShirt() {
 }
 
 function getConfiguredMotif(view) {
-  if(view==="front" && !logoEnabled) return null;
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
-  const selectedId=view==="front" && logoEnabled ? selectedLogoByProduct[currentProductId] : null;
-  if ((!cfg || !cfg.enabled) && !selectedId) return null;
-  const available=(SHOP.motifs||[]).filter(m=>m.file && !m.locked && m.customerSelectable!==false);
-  const motif = available.find(m => m.id === selectedId)
-    || available.find(m => m.id === cfg?.motifId)
-    || available[0];
+  if (!cfg || !cfg.enabled) return null;
+  const motif = (SHOP.motifs || []).find(m => m.id === cfg.motifId) || (SHOP.motifs || [])[0];
   if (!motif) return null;
-  return { cfg:cfg||{enabled:true}, motif };
+  return { cfg, motif };
 }
 
 function clampPrintValue(value, min, max, fallback) {
@@ -793,9 +791,9 @@ function getUnifiedPrintLayout(view, cfg) {
   const product = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][view];
   if (product) {
     return {
-      xPct: clampPrintValue(product.xPct,-20,120,view==="front"?68:50),
-      yPct: clampPrintValue(product.yPct,-20,120,view==="front"?18:32),
-      widthPct: clampPrintValue(product.widthPct,5,110,SHARED_LOGO_WIDTH_PCT)
+      xPct: view === "front" ? 68 : 50,
+      yPct: view === "front" ? 18 : 32,
+      widthPct: SHARED_LOGO_WIDTH_PCT
     };
   }
   const size = cfg?.size || "medium";
@@ -901,28 +899,6 @@ async function renderDualPreview() {
     dualCompositeShirt.src = await renderDualShirtImage();
   }
   await Promise.all([renderDualMotif("front", dualFrontMotif), renderDualMotif("back", dualBackMotif)]);
-  updateDualInitials();
-}
-
-function updateDualInitials(){
-  if(!dualCompositeStage) return;
-  const value=initialsValue();
-  for(const [index,side] of ["front","back"].entries()){
-    let mark=dualCompositeStage.querySelector(`.dual-initials-${side}`);
-    if(!mark){
-      mark=document.createElement("span");
-      mark.className=`dual-initials dual-initials-${side}`;
-      dualCompositeStage.appendChild(mark);
-    }
-    mark.hidden=!value||!FEATURES.allowInitials;
-    mark.textContent=value;
-    const defaults=side==="front"?{x:24,y:90}:{x:24,y:90};
-    const saved=SHOP.initialsByProduct?.[currentProductId]?.[side]||{};
-    mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
-    mark.style.top=`${Number(saved.y??defaults.y)}%`;
-    mark.style.fontSize=`${dualCompositeStage.clientWidth/2*Math.max(2,Math.min(12,Number(saved.sizePct??5)))/100}px`;
-    mark.style.color=SHOP.shirtMotifColors?.[currentShirtColorId]?.color||currentMotifColor||"#ffffff";
-  }
 }
 
 function applyPreviewMode() {
@@ -968,12 +944,12 @@ function switchView(view) {
     shirtMockup.alt = "T-Shirt Vorderseite";
     designerStatus.textContent = "Vorderseite";
     printZone.classList.remove("back");
-    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_CANVAS_WIDTH);
+    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_BASE_WIDTH);
   } else {
     shirtMockup.alt = "T-Shirt Rückseite";
     designerStatus.textContent = "Rückseite";
     printZone.classList.add("back");
-    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_CANVAS_WIDTH);
+    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_BASE_WIDTH);
   }
   renderShirt();
   loadView(view);
@@ -990,17 +966,15 @@ function lookupMasterHex(colorId){
   }
   return "";
 }
-function changeShirtColor(color, name, colorId, pattern, redraw = true) {
+function changeShirtColor(color, name, colorId, pattern) {
   currentShirtColor = color || lookupMasterHex(colorId) || "#ffffff";
   currentShirtColorId = colorId || "white";
   currentPattern = pattern || "";
   if(currentColorName) currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
   updateSizeOptionsForCurrentSelection();
-  if (redraw) {
-    renderShirt();
-    if (FEATURES.previewMode === "dual") renderDualPreview();
-  }
+  renderShirt();
+  if (FEATURES.previewMode === "dual") renderDualPreview();
   const pairedMotifColor = SHOP.shirtMotifColors && SHOP.shirtMotifColors[currentShirtColorId];
   if (pairedMotifColor?.color) {
     void recolorActiveMotif(pairedMotifColor.color, pairedMotifColor.name || "Druckfarbe");
@@ -1008,11 +982,18 @@ function changeShirtColor(color, name, colorId, pattern, redraw = true) {
   updateInitialsOnCanvas();
 }
 
+shirtColorButtons.forEach(button => button.addEventListener("click", () => {
+  changeShirtColor(button.dataset.color, button.dataset.name, button.dataset.id, button.dataset.pattern || "");
+}));
 document.addEventListener("click", (event) => {
   const colorBtn=event.target.closest(".shirt-color");
   if(colorBtn && document.contains(colorBtn)){
     changeShirtColor(colorBtn.dataset.color, colorBtn.dataset.name, colorBtn.dataset.id, colorBtn.dataset.pattern || "");
     return;
+  }
+  const viewBtn=event.target.closest(".view-btn");
+  if(viewBtn && viewBtn.dataset.view){
+    switchView(viewBtn.dataset.view);
   }
 });
 
@@ -1089,13 +1070,12 @@ function applyFixedMotifLayout(image, motifId) {
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
   const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
-  const locked=!!(SHOP.motifs||[]).find(m=>m.id===motifId)?.locked;
-  const movable = !locked && !!FEATURES.allowMoveMotif;
-  const resizable = !locked && !!FEATURES.allowResizeMotif;
-  const rotatable = !locked && !!FEATURES.allowRotateMotif;
+  const movable = !!FEATURES.allowMoveMotif;
+  const resizable = !!FEATURES.allowResizeMotif;
+  const rotatable = !!FEATURES.allowRotateMotif;
   const editable = movable || resizable || rotatable;
   image.set({
-    left: PRINT_SIDE_MARGIN + PRINT_BASE_WIDTH * layout.left,
+    left: PRINT_BASE_WIDTH * layout.left,
     // Y-Werte bleiben auf die bisherige 340px-Druckzone bezogen.
     // PRINT_HEADROOM liegt unsichtbar darüber und verhindert Clipping.
     top: PRINT_HEADROOM + (PRINT_BASE_HEIGHT * layout.top),
@@ -1155,8 +1135,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
-  await addMotifToView("front", motifId, motifSrc, true);
-  if(FEATURES.previewMode==="dual") await renderDualPreview();
+  return addMotifToView("front", motifId, motifSrc, true);
 }
 
 function clearShirtLogos(){
@@ -1177,23 +1156,16 @@ function clearShirtLogos(){
     }catch(e){}
   }
   document.querySelectorAll(".motif-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.motif==="none"));
-  if(FEATURES.previewMode==="dual") void renderDualPreview();
 }
 
 document.addEventListener("click",(event)=>{
   const button=event.target.closest(".motif-btn");
   if(!button) return;
   if(button.dataset.motif==="none"){
-    delete selectedLogoByProduct[currentProductId];
     clearShirtLogos();
     return;
   }
-  if(button.dataset.src){
-    selectedLogoByProduct[currentProductId]=button.dataset.motif;
-    productMotifSelections[currentProductId]=button.dataset.motif==="tus-3d-patch"?"patch":"normal";
-    logoEnabled=true;
-    addSelectedMotif(button.dataset.motif, button.dataset.src);
-  }
+  if(button.dataset.src) addSelectedMotif(button.dataset.motif, button.dataset.src);
 });
 
 async function recolorActiveMotif(color, label) {
@@ -1335,11 +1307,11 @@ function updateInitialsOnCanvas() {
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
-    tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
-    polo:{front:{x:24,y:88},back:{x:24,y:88}},
-    hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
-    sport:{front:{x:24,y:89},back:{x:24,y:89}},
-    sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
+    tshirt:{front:{x:34,y:78},back:{x:34,y:78}},
+    polo:{front:{x:34,y:76},back:{x:34,y:76}},
+    hoodie:{front:{x:34,y:80},back:{x:34,y:78}},
+    sport:{front:{x:34,y:77},back:{x:34,y:77}},
+    sweatshirt:{front:{x:34,y:80},back:{x:34,y:78}}
   };
   const custom = SHOP.initialsByProduct?.[productId]?.[view] || {};
   const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
@@ -1347,28 +1319,24 @@ function updateInitialsOnCanvas() {
   const y = Number(custom.y ?? fallback.y);
   applyInitialsOnShirt(overlay, x, y);
   const box = initialsShirtBox();
-  const sizePct = Math.max(2,Math.min(12,Number(custom.sizePct ?? 5)));
-  const px = box ? Math.max(10, box.imgBox.width * sizePct / 100) : 25;
-  overlay.style.setProperty("font-size",`${px}px`,"important");
+  const px = box ? Math.max(42, Math.round(box.imgBox.width * 0.16)) : 56;
+  overlay.style.fontSize = `${px}px`;
   overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Impact, sans-serif";
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.02em";
-  overlay.style.setProperty("color",color || "#ffffff","important");
+  overlay.style.color = color || "#ffffff";
   overlay.style.pointerEvents = "none";
   overlay.style.cursor = "default";
   overlay.style.zIndex = "80";
   overlay.classList.toggle("is-set", !!value);
   overlay.setAttribute("aria-hidden", value ? "false" : "true");
-  if(FEATURES.previewMode==="dual") updateDualInitials();
   if(!overlay.dataset.resizeBound){
     overlay.dataset.resizeBound="1";
     window.addEventListener("resize", updateInitialsOnCanvas, {passive:true});
   }
 }
 
-initialsInput?.addEventListener("input",ev=>{
-  if(!ev.isComposing && ev.target.dataset.composing!=="true") updateInitialsOnCanvas();
-});
+initialsInput?.addEventListener("input", updateInitialsOnCanvas);
 
 function getActiveTextObject() {
   const active = canvas.getActiveObject();
@@ -1420,12 +1388,11 @@ if (addTextBtn && customTextInput) addTextBtn.addEventListener("click", function
 
 if (resetBtn) resetBtn.addEventListener("click", function() {
   viewStates.front = null; viewStates.back = null;
-  Object.keys(selectedLogoByProduct).forEach(id=>delete selectedLogoByProduct[id]);
   canvas.clear(); canvas.backgroundColor = "transparent";
   currentView = "front";
   designerStatus.textContent = "Vorderseite";
   printZone.classList.remove("back");
-  canvas.setWidth(PRINT_CANVAS_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
+  canvas.setWidth(PRINT_BASE_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
   viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === "front"));
   motifButtons.forEach(button => button.classList.remove("active"));
   changeShirtColor("#ffffff", "White", "white", "");
@@ -2019,12 +1986,6 @@ window.dockShirtColorRail=function(){
   const workspace=document.querySelector(".workspace");
   const section=document.querySelector(".color-section");
   if(!workspace||!section) return;
-  if(FEATURES.showShirtColorPicker===false){
-    section.hidden=true;
-    section.classList.remove("color-rail");
-    workspace.classList.remove("has-color-rail");
-    return;
-  }
   section.hidden=false;
   section.removeAttribute("hidden");
   section.classList.add("color-rail");
@@ -2035,16 +1996,39 @@ window.dockShirtColorRail=function(){
   const existing=host.querySelectorAll(".shirt-color");
   existing.forEach(button=>{
     const hex=button.dataset.color||button.style.getPropertyValue("--swatch")||"#888";
+    button.hidden=false;
+    button.removeAttribute("hidden");
     button.style.setProperty("--swatch",hex);
     button.style.background=hex;
+    button.style.display="block";
   });
+  if(existing.length<4 && typeof MASTER_COLOR_VARIANTS==="object"){
+    const product=typeof getCurrentProduct==="function"?getCurrentProduct():null;
+    const catalog=MASTER_COLOR_VARIANTS[product?.articleNo]||MASTER_COLOR_VARIANTS.F140||[];
+    catalog.forEach(item=>{
+      if(host.querySelector(`.shirt-color[data-id="${item.id}"]`)) return;
+      const button=document.createElement("button");
+      button.type="button";
+      button.className="shirt-color";
+      button.dataset.id=item.id;
+      button.dataset.name=item.name;
+      button.dataset.color=item.color;
+      if(item.pattern) button.dataset.pattern=item.pattern;
+      button.style.setProperty("--swatch",item.color);
+      button.style.background=item.color;
+      button.title=item.name;
+      button.setAttribute("aria-label",item.name);
+      button.innerHTML='<span class="color-swatch"></span><span class="color-label"></span>';
+      host.appendChild(button);
+    });
+    if(typeof shirtColorButtons!=="undefined") shirtColorButtons=document.querySelectorAll(".shirt-color");
+  }
 };
 
 function validateInitialsField(){
   const field=document.getElementById("initialsInput");
   const err=document.getElementById("initialsError");
   if(!field) return true;
-  if(field.dataset.composing==="true") return true;
   const raw=String(field.value||"");
   const clean=raw.toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
   if(field.value!==clean) field.value=clean;
@@ -2068,9 +2052,16 @@ function validateInitialsField(){
   field.setAttribute("maxlength","3");
   field.setAttribute("pattern","[A-Za-zÄÖÜäöü0-9]{0,3}");
   field.value="";
-  field.addEventListener("compositionstart",()=>{field.dataset.composing="true"});
-  field.addEventListener("compositionend",()=>{delete field.dataset.composing;validateInitialsField()});
-  // iOS liefert beim Tippen teils leere beforeinput-Daten. Erst nach der Eingabe bereinigen.
+  field.addEventListener("beforeinput",(ev)=>{
+    if(ev.inputType==="insertFromPaste"||ev.inputType==="insertText"){
+      const next=String(field.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"");
+      const incoming=String(ev.data||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"");
+      if(ev.inputType==="insertText" && (next.length>=3 || !incoming)){
+        ev.preventDefault();
+        validateInitialsField();
+      }
+    }
+  });
   field.addEventListener("input", validateInitialsField);
   field.addEventListener("blur", validateInitialsField);
   field.addEventListener("paste",()=>setTimeout(validateInitialsField,0));
@@ -2091,7 +2082,7 @@ function ensureInitialsField(){
     box.hidden=!FEATURES.allowInitials;
     box.style.display=FEATURES.allowInitials?"":"none";
     const product=document.getElementById("productSection");
-    if(product && product.parentElement && !window.matchMedia("(max-width:900px)").matches) product.insertAdjacentElement("afterend", box);
+    if(product && product.parentElement) product.insertAdjacentElement("afterend", box);
   }
   return box;
 }
@@ -2099,15 +2090,14 @@ function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
   ensureInitialsField();
-  const seq=["productSection",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
+  const seq=["productSection","#initialsPop",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);
   });
-  syncMobileAfterShirtControls();
 }
 document.addEventListener("input",(ev)=>{
-  if(ev.target && ev.target.id==="initialsInput" && !ev.isComposing && ev.target.dataset.composing!=="true"){
+  if(ev.target && ev.target.id==="initialsInput"){
     ev.target.value=String(ev.target.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
     updateInitialsOnCanvas();
   }

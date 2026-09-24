@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.129">
+  <link rel="stylesheet" href="/style.css?v=30.3.120">
   <script>
     (function(){
       try{
@@ -266,13 +266,13 @@
     <section class="tool-section view-section">
       <h3>Ansicht</h3>
 
-      <div class="view-switch" role="group" aria-label="Textilansicht">
-        <button type="button" class="view-btn active" data-view="front" aria-label="Vorderseite">
-          Vorne
+      <div class="view-switch">
+        <button type="button" class="view-btn active" data-view="front">
+          Vorderseite
         </button>
 
-        <button type="button" class="view-btn" data-view="back" aria-label="Rückseite">
-          Hinten
+        <button type="button" class="view-btn" data-view="back">
+          Rückseite
         </button>
       </div>
     </section>
@@ -322,7 +322,7 @@
       <button type="button" id="resetBtn" class="secondary-btn">
         Design zurücksetzen
       </button>
-    </div>
+    </section>
 
   </aside>
 
@@ -335,9 +335,7 @@
         <p id="designerIntro">Logo hochladen, positionieren, skalieren und drehen.</p>
       </div>
 
-      <div class="designer-status" id="designerStatus">
-        Vorderseite
-      </div>
+      <div class="designer-status" id="designerStatus" hidden></div>
     </header>
 
 
@@ -354,7 +352,7 @@
         <div id="shirtColorLayer" class="shirt-color-overlay" aria-hidden="true" style="display:none"></div>
 
         <div class="print-zone" id="printZone">
-          <canvas id="designCanvas" width="320" height="500"></canvas>
+          <canvas id="designCanvas" width="260" height="430"></canvas>
         </div>
         <aside class="price-patch" id="pricePatch" hidden></aside>
       </div>
@@ -465,7 +463,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.129";
+      app.src="/script.js?v=30.3.120";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
