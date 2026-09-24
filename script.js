@@ -433,7 +433,7 @@ try{
   });
 }catch(err){
   console.error("Canvas start failed", err);
-  canvas = { getObjects(){return [];}, requestRenderAll(){}, add(){}, remove(){}, clear(){}, setWidth(){}, setHeight(){}, on(){}, off(){}, renderAll(){}, getActiveObject(){return null;}, discardActiveObject(){}, setActiveObject(){} };
+  canvas = { getObjects(){return [];}, toJSON(){return {objects:[]}}, requestRenderAll(){}, add(){}, remove(){}, clear(){}, setWidth(){}, setHeight(){}, on(){}, off(){}, renderAll(){}, getActiveObject(){return null;}, discardActiveObject(){}, setActiveObject(){}, loadFromJSON(_state,done){done?.()} };
 }
 
 const resetBtn = document.getElementById("resetBtn");
@@ -610,46 +610,68 @@ function applyProductColorRules(product, forceDefault = false) {
   updateSizeOptionsForCurrentSelection();
 }
 
+let productSelectionSerial = 0;
+async function selectProduct(productId) {
+  const product = PRODUCTS.find(item => item.id === productId);
+  if (!product || product.id === currentProductId) return;
+  const selection = ++productSelectionSerial;
+  try { saveCurrentView(); } catch (error) { console.error("Ansicht speichern:", error); }
+  currentProductId = product.id;
+  dualBaseImage = null;
+  productSwitch.querySelectorAll(".product-btn").forEach(button => {
+    const active = button.dataset.product === productId;
+    button.classList.toggle("active", active);
+    button.setAttribute("aria-pressed", String(active));
+  });
+  // Bild und Farben sofort wechseln, auch wenn ein Motiv später geladen wird.
+  shirtMockup.src = getBaseSrc(currentView);
+  applyProductColorRules(product, true);
+  updateProductPriceLabel();
+  updateInitialsOnCanvas();
+  await renderShirt();
+  if (selection !== productSelectionSerial) return;
+  try { await applyProductMotifRule(true); }
+  catch (error) { console.error("Motivwechsel:", error); }
+  if (selection !== productSelectionSerial) return;
+  try {
+    canvas.getObjects().forEach(obj => {
+      if (obj?.motifId) applyFixedMotifLayout(obj, obj.motifId);
+    });
+    canvas.requestRenderAll();
+  } catch (error) { console.error("Motivposition:", error); }
+  updateInitialsOnCanvas();
+  if (FEATURES.previewMode === "dual") await renderDualPreview();
+}
 function renderProductSelector() {
   if (!productSection || !productSwitch) return;
   productSection.hidden = PRODUCTS.length <= 1;
   productSwitch.replaceChildren();
+  const names = {tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat"};
   PRODUCTS.forEach(product => {
-    const btn = document.createElement("button");
-    btn.type = "button";
-    btn.className = "product-btn";
-    btn.dataset.product = product.id;
-    const productName = document.createElement("span");
-    productName.className = "product-btn-name";
-    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat"};
-    productName.textContent = shortNames[product.id] || product.name || product.id;
-    const priceText = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
-    btn.dataset.price = priceText;
-    const productPrice = document.createElement("small");
-    productPrice.className = "product-btn-price";
-    productPrice.textContent = priceText;
-    if (FEATURES.showPrices === false) productPrice.style.setProperty("display", "none", "important");
-    btn.append(productName, productPrice);
-    btn.classList.toggle("active", product.id === currentProductId);
-    btn.addEventListener("click", async () => {
-      if (product.id === currentProductId) return;
-      saveCurrentView();
-      currentProductId = product.id;
-      dualBaseImage = null;
-      document.querySelectorAll(".product-btn").forEach(el => el.classList.toggle("active", el.dataset.product === currentProductId));
-      applyProductColorRules(product, true);
-      try { await applyProductMotifRule(true); } catch (error) { console.error("Motivwechsel:", error); }
-      updateProductPriceLabel();
-      canvas.getObjects().forEach(obj => { if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId); });
-      canvas.requestRenderAll();
-      await renderShirt();
-      updateInitialsOnCanvas();
-      if (FEATURES.previewMode === "dual") await renderDualPreview();
-    });
-    productSwitch.appendChild(btn);
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "product-btn";
+    button.dataset.product = product.id;
+    button.setAttribute("aria-label", `${names[product.id] || product.name || product.id} auswählen`);
+    button.setAttribute("aria-pressed", String(product.id === currentProductId));
+    button.classList.toggle("active", product.id === currentProductId);
+    const label = document.createElement("span");
+    label.className = "product-btn-name";
+    label.textContent = names[product.id] || product.name || product.id;
+    const price = document.createElement("small");
+    price.className = "product-btn-price";
+    price.textContent = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
+    if (FEATURES.showPrices === false) price.style.setProperty("display", "none", "important");
+    button.append(label, price);
+    productSwitch.appendChild(button);
   });
   updateProductPriceLabel();
 }
+productSwitch?.addEventListener("click", event => {
+  const button = event.target.closest("button[data-product]");
+  if (!button || !productSwitch.contains(button)) return;
+  void selectProduct(button.dataset.product).catch(error => console.error("Textilwechsel:", error));
+});
 
 // v29.9.6: Produktwechsel darf vor der späteren Order-Initialisierung nicht abbrechen.
 function updateProductPriceLabel() {
@@ -763,10 +785,13 @@ async function renderShirtImage(view) {
   }
 }
 
+let shirtRenderSerial = 0;
 async function renderShirt() {
+  const render = ++shirtRenderSerial;
   const viewAtStart = currentView;
+  const productAtStart = currentProductId;
   const src = await renderShirtImage(viewAtStart);
-  if (viewAtStart !== currentView) return;
+  if (render !== shirtRenderSerial || viewAtStart !== currentView || productAtStart !== currentProductId) return;
   shirtMockup.src = src;
   shirtMockup.onload = () => updateInitialsOnCanvas();
   updateInitialsOnCanvas();
