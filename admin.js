@@ -769,7 +769,7 @@ const PRODUCT_SIZES = ["XS","S","M","L","XL","2XL","3XL","4XL","5XL"];
 let currentVariantProductId = "";
 function hansaSweatshirtProduct(){
   const extended=["XS","S","M","L","XL","2XL","3XL","4XL","5XL"];
-  return {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",enabled:true,allowedShirtColorIds:["white","black","navy","red","royal-blue","bottle-green","heather-grey"],defaultShirtColorId:"black",shirtColorLabels:{white:"White",black:"Black Pure",navy:"Navy Blue",red:"Red","royal-blue":"Royal","bottle-green":"Forest Green","heather-grey":"Heather Grey"},sizesByColor:{white:[...extended],black:[...extended],navy:[...extended],red:[...extended],"royal-blue":[...extended],"heather-grey":[...extended],"bottle-green":["XS","S","M","L","XL","2XL","3XL"]}};
+  return {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",enabled:true,allowedShirtColorIds:["white","black","navy","red","royal-blue","bottle-green","heather-grey"],defaultShirtColorId:"black",shirtColorLabels:{white:"White",black:"Black Pure",navy:"Navy Blue",red:"Red","royal-blue":"Royal","bottle-green":"Forest Green","heather-grey":"Heather Grey"},sizesByColor:{white:[...extended],black:[...extended],navy:[...extended],red:[...extended],"royal-blue":[...extended],"heather-grey":[...extended],"bottle-green":["XS","S","M","L","XL","2XL","3XL"]}};
 }
 
 const shopFields = {
@@ -1371,6 +1371,11 @@ function renderProductPriceEditor(){
     purchaseWrap.className="v3036-price-field v3036-purchase-field";
     const purchase=document.createElement("input");
     purchase.type="number"; purchase.min="0"; purchase.step="0.01"; purchase.inputMode="decimal";
+    const catalogCosts={tshirt:2.60,polo:5.61,hoodie:9.90,jc001:7.62,bcwu01w:8.20};
+    if(product.purchasePrice==null && catalogCosts[product.id]!=null){
+      product.purchasePrice=catalogCosts[product.id];
+    }
+    if(product.printCost==null) product.printCost=1.50;
     purchase.value=product.purchasePrice == null ? "" : Number(product.purchasePrice||0).toFixed(2);
     purchase.placeholder="EK";
     purchase.setAttribute("aria-label",`EK-Preis ${product.name||product.id||"Textil"}`);

@@ -5080,3 +5080,5 @@ html body .shirt-initials-overlay[hidden]{display:none!important}
     max-width:180px!important;
   }
 }
+
+html body .price-patch,html body #pricePatch,html body .admin-price-patch{display:none!important}

@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=30.3.101">
+  <link rel="stylesheet" href="admin.css?v=30.3.102">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -866,22 +866,22 @@
                   <div class="template-sync-bar wide" id="templateSyncBar">
                     <button type="button" id="applyMasterTemplateBtn" class="secondary-btn small">Von Vorlage übernehmen</button>
                   </div>
-                  <div class="v2972-inline-functions" aria-label="Funktionen">
-                    <label class="check-row"><input id="allowBack" type="checkbox"><span>Rückseite</span></label>
-                    <label class="check-row"><input id="showShirtColors" type="checkbox"><span>Farben</span></label>
-                    <label class="check-row"><input id="showMotifs" type="checkbox"><span>Logo</span></label>
-                    <label class="check-row"><input id="showMotifColors" type="checkbox"><span>Druck</span></label>
-                    <label class="check-row"><input id="showPrices" type="checkbox" checked><span>Preise</span></label>
-                    <label class="check-row" hidden><input id="showNexaroBranding" type="checkbox"><span>Nexaro</span></label>
-                    <label class="check-row"><input id="allowUpload" type="checkbox"><span>Upload</span></label>
-                    <label class="check-row"><input id="allowText" type="checkbox"><span>Text</span></label>
-                    <label class="check-row"><input id="allowInitials" type="checkbox"><span>Initialen</span></label>
-                    <label class="check-row" id="followMasterRow"><input id="followMasterTemplate" type="checkbox" checked><span>Folgen</span></label>
-                    <label class="check-row" id="pushMasterRow"><input id="pushMasterOnSave" type="checkbox"><span>Vererben</span></label>
-                    <div id="designerFeatureTools" class="designer-feature-tools v2972-designer-tools" hidden>
-                      <label><input id="allowMove" type="checkbox"><span>Verschieben</span></label>
-                      <label><input id="allowResize" type="checkbox"><span>Skalieren</span></label>
-                      <label><input id="allowRotate" type="checkbox"><span>Drehen</span></label>
+                  <div class="v2972-inline-functions shop-switch-grid" aria-label="Funktionen">
+                    <label class="check-row shop-switch"><span>Rückseite</span><input id="allowBack" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Farben</span><input id="showShirtColors" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Logo</span><input id="showMotifs" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Druck</span><input id="showMotifColors" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Preise</span><input id="showPrices" type="checkbox" checked></label>
+                    <label class="check-row shop-switch" hidden><span>Nexaro</span><input id="showNexaroBranding" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Upload</span><input id="allowUpload" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Text</span><input id="allowText" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Initialen</span><input id="allowInitials" type="checkbox"></label>
+                    <label class="check-row shop-switch" id="followMasterRow"><span>Folgen</span><input id="followMasterTemplate" type="checkbox" checked></label>
+                    <label class="check-row shop-switch" id="pushMasterRow"><span>Vererben</span><input id="pushMasterOnSave" type="checkbox"></label>
+                    <div id="designerFeatureTools" class="designer-feature-tools v2972-designer-tools shop-switch-grid">
+                      <label class="check-row shop-switch"><span>Verschieben</span><input id="allowMove" type="checkbox"></label>
+                      <label class="check-row shop-switch"><span>Skalieren</span><input id="allowResize" type="checkbox"></label>
+                      <label class="check-row shop-switch"><span>Drehen</span><input id="allowRotate" type="checkbox"></label>
                     </div>
                     <div id="hiddenDesignerFeatureInputs" hidden></div>
                   </div>
@@ -1143,7 +1143,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.101'; b.hidden=false; b.removeAttribute('hidden');}
+  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.102'; b.hidden=false; b.removeAttribute('hidden');}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
