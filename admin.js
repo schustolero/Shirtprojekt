@@ -713,24 +713,30 @@ let workingProducts = [];
 let workingLogo = "";
 let workingInitials = {};
 const INITIALS_DEFAULTS = {
-  tshirt:{front:{x:24,y:90,sizePct:5},back:{x:24,y:90,sizePct:5}},
-  polo:{front:{x:24,y:88,sizePct:5},back:{x:24,y:88,sizePct:5}},
-  hoodie:{front:{x:23,y:91,sizePct:5},back:{x:23,y:89,sizePct:5}},
-  sport:{front:{x:24,y:89,sizePct:5},back:{x:24,y:89,sizePct:5}},
-  sweatshirt:{front:{x:24,y:91,sizePct:5},back:{x:24,y:90,sizePct:5}}
+  tshirt:{front:{x:68,y:30,sizePct:5},back:{x:50,y:32,sizePct:5}},
+  polo:{front:{x:68,y:30,sizePct:5},back:{x:50,y:32,sizePct:5}},
+  hoodie:{front:{x:68,y:34,sizePct:5},back:{x:50,y:36,sizePct:5}},
+  jc001:{front:{x:68,y:30,sizePct:5},back:{x:50,y:32,sizePct:5}},
+  bcwu01w:{front:{x:68,y:34,sizePct:5},back:{x:50,y:36,sizePct:5}}
 };
+const INITIALS_OLD_DEFAULTS={tshirt:{front:[24,90],back:[24,90]},polo:{front:[24,88],back:[24,88]},hoodie:{front:[23,91],back:[23,89]},jc001:{front:[24,89],back:[24,89]},bcwu01w:{front:[24,91],back:[24,90]}};
 function currentInitialsPos(){
   const product=positionProduct?.value||"tshirt";
   const side=positionSide?.value||"front";
   workingInitials[product]=workingInitials[product]||{};
   const fallback=INITIALS_DEFAULTS[product]?.[side]||INITIALS_DEFAULTS.tshirt.front;
-  const saved=workingInitials[product][side]||fallback;
+  let saved=workingInitials[product][side]||fallback;
+  const old=INITIALS_OLD_DEFAULTS[product]?.[side];
+  if(old && Number(saved.x)===old[0] && Number(saved.y)===old[1]){
+    saved={...fallback,sizePct:Number(saved.sizePct??fallback.sizePct)};
+    workingInitials[product][side]=saved;
+  }
   return {product,side,x:Number(saved.x??fallback.x),y:Number(saved.y??fallback.y),sizePct:Number(saved.sizePct??fallback.sizePct)};
 }
 function writeInitialsPos(x,y,announce=true){
   const pos=currentInitialsPos();
   x=Math.max(8,Math.min(92,Number(x)));
-  y=Math.max(50,Math.min(96,Number(y)));
+  y=Math.max(8,Math.min(92,Number(y)));
   if(!Number.isFinite(x)||!Number.isFinite(y)) return;
   workingInitials[pos.product]=workingInitials[pos.product]||{};
   const next={x:Math.round(x*2)/2,y:Math.round(y*2)/2,sizePct:pos.sizePct};
@@ -760,7 +766,11 @@ function placeAdminInitialsMark(x,y){
   if(!mark||!stage||!shirt) return;
   if(mark.parentElement!==stage) stage.appendChild(mark);
   const s=stage.getBoundingClientRect();
-  const i=shirt.getBoundingClientRect();
+  const frame=shirt.getBoundingClientRect();
+  const naturalWidth=shirt.naturalWidth||frame.width,naturalHeight=shirt.naturalHeight||frame.height;
+  const scale=Math.min(frame.width/naturalWidth,frame.height/naturalHeight);
+  const width=naturalWidth*scale,height=naturalHeight*scale;
+  const i={left:frame.left+(frame.width-width)/2,top:frame.top+(frame.height-height)/2,width,height};
   mark.style.setProperty("font-size",`${Math.max(10,i.width*currentInitialsPos().sizePct/100)}px`,"important");
   if(!s.width||!i.width){
     mark.style.left=`${x}%`;
@@ -1051,6 +1061,14 @@ function writePositionValues(x, y, w){
 }
 function bindPositionEditor(){
   if(!positionStage || !positionMotif || !positionPrintZone) return;
+  document.getElementById("positionShirt")?.addEventListener("load",()=>{
+    const pos=currentInitialsPos();
+    placeAdminInitialsMark(pos.x,pos.y);
+  });
+  if(typeof ResizeObserver!=="undefined") new ResizeObserver(()=>{
+    const pos=currentInitialsPos();
+    placeAdminInitialsMark(pos.x,pos.y);
+  }).observe(positionStage);
   [positionProduct, positionSide].forEach(el => el?.addEventListener("change", refreshPositionEditor));
   shopFields.fixedShirtHex?.addEventListener("input", refreshPositionEditor);
   shopFields.fixedMotifHex?.addEventListener("input", refreshPositionEditor);
@@ -2620,7 +2638,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.127");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.128");
   return true;
   }
   if(!boot()){
@@ -2654,7 +2672,11 @@ saveShopBtn.addEventListener("click",async()=>{
   document.addEventListener("pointermove",ev=>{
     if(pointerId!==ev.pointerId) return;
     const shirt=document.getElementById("positionShirt");
-    const box=shirt.getBoundingClientRect();
+    const frame=shirt.getBoundingClientRect();
+    const naturalWidth=shirt.naturalWidth||frame.width,naturalHeight=shirt.naturalHeight||frame.height;
+    const scale=Math.min(frame.width/naturalWidth,frame.height/naturalHeight);
+    const width=naturalWidth*scale,height=naturalHeight*scale;
+    const box={left:frame.left+(frame.width-width)/2,top:frame.top+(frame.height-height)/2,width,height};
     if(!box.width||!box.height) return;
     latest={x:(ev.clientX-offsetX-box.left)/box.width*100,y:(ev.clientY-offsetY-box.top)/box.height*100};
     if(!frame) frame=requestAnimationFrame(paint);

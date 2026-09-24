@@ -924,10 +924,20 @@ function updateDualInitials(){
     }
     mark.hidden=!value||!FEATURES.allowInitials;
     mark.textContent=value;
-    const defaults=side==="front"?{x:24,y:90}:{x:24,y:90};
+    const defaultsByProduct={
+      tshirt:{front:{x:68,y:30},back:{x:50,y:32}},
+      polo:{front:{x:68,y:30},back:{x:50,y:32}},
+      hoodie:{front:{x:68,y:34},back:{x:50,y:36}},
+      jc001:{front:{x:68,y:30},back:{x:50,y:32}},
+      bcwu01w:{front:{x:68,y:34},back:{x:50,y:36}}
+    };
+    const defaults=defaultsByProduct[currentProductId]?.[side]||defaultsByProduct.tshirt[side];
     const saved=SHOP.initialsByProduct?.[currentProductId]?.[side]||{};
-    mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
-    mark.style.top=`${Number(saved.y??defaults.y)}%`;
+    const oldDefaults={tshirt:{front:[24,90],back:[24,90]},polo:{front:[24,88],back:[24,88]},hoodie:{front:[23,91],back:[23,89]},jc001:{front:[24,89],back:[24,89]},bcwu01w:{front:[24,91],back:[24,90]}};
+    const old=oldDefaults[currentProductId]?.[side];
+    const legacy=old&&Number(saved.x)===old[0]&&Number(saved.y)===old[1];
+    mark.style.left=`${index*50+Number(legacy?defaults.x:saved.x??defaults.x)/2}%`;
+    mark.style.top=`${Number(legacy?defaults.y:saved.y??defaults.y)}%`;
     mark.style.fontSize=`${dualCompositeStage.clientWidth/2*Math.max(2,Math.min(12,Number(saved.sizePct??5)))/100}px`;
     mark.style.color=SHOP.shirtMotifColors?.[currentShirtColorId]?.color||currentMotifColor||"#ffffff";
   }
@@ -974,12 +984,12 @@ function switchView(view) {
   viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === view));
   if (view === "front") {
     shirtMockup.alt = "T-Shirt Vorderseite";
-    designerStatus.textContent = "Vorderseite";
+    if (designerStatus) designerStatus.textContent = "Vorderseite";
     printZone.classList.remove("back");
     canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_CANVAS_WIDTH);
   } else {
     shirtMockup.alt = "T-Shirt Rückseite";
-    designerStatus.textContent = "Rückseite";
+    if (designerStatus) designerStatus.textContent = "Rückseite";
     printZone.classList.add("back");
     canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_CANVAS_WIDTH);
   }
@@ -1296,7 +1306,12 @@ function initialsShirtBox(){
   const stage=document.querySelector(".mockup-stage");
   const img=document.getElementById("shirtMockup");
   if(!stage||!img) return null;
-  return {stage, img, stageBox:stage.getBoundingClientRect(), imgBox:img.getBoundingClientRect()};
+  const frame=img.getBoundingClientRect();
+  const naturalWidth=img.naturalWidth||frame.width, naturalHeight=img.naturalHeight||frame.height;
+  const scale=Math.min(frame.width/naturalWidth,frame.height/naturalHeight);
+  const width=naturalWidth*scale,height=naturalHeight*scale;
+  const imgBox={left:frame.left+(frame.width-width)/2,top:frame.top+(frame.height-height)/2,width,height};
+  return {stage,img,stageBox:stage.getBoundingClientRect(),imgBox};
 }
 function applyInitialsOnShirt(overlay, xPct, yPct){
   const box=initialsShirtBox();
@@ -1334,21 +1349,24 @@ function updateInitialsOnCanvas() {
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
-    tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
-    polo:{front:{x:24,y:88},back:{x:24,y:88}},
-    hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
-    sport:{front:{x:24,y:89},back:{x:24,y:89}},
-    sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
+    tshirt:{front:{x:68,y:30},back:{x:50,y:32}},
+    polo:{front:{x:68,y:30},back:{x:50,y:32}},
+    hoodie:{front:{x:68,y:34},back:{x:50,y:36}},
+    jc001:{front:{x:68,y:30},back:{x:50,y:32}},
+    bcwu01w:{front:{x:68,y:34},back:{x:50,y:36}}
   };
   const custom = SHOP.initialsByProduct?.[productId]?.[view] || {};
   const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
-  const x = Number(custom.x ?? fallback.x);
-  const y = Number(custom.y ?? fallback.y);
+  const oldDefaults={tshirt:{front:[24,90],back:[24,90]},polo:{front:[24,88],back:[24,88]},hoodie:{front:[23,91],back:[23,89]},jc001:{front:[24,89],back:[24,89]},bcwu01w:{front:[24,91],back:[24,90]}};
+  const old=oldDefaults[productId]?.[view];
+  const legacyPosition=old && Number(custom.x)===old[0] && Number(custom.y)===old[1];
+  const x = Number(legacyPosition ? fallback.x : custom.x ?? fallback.x);
+  const y = Number(legacyPosition ? fallback.y : custom.y ?? fallback.y);
   applyInitialsOnShirt(overlay, x, y);
   const box = initialsShirtBox();
   const sizePct = Math.max(2,Math.min(12,Number(custom.sizePct ?? 5)));
   const px = box ? Math.max(10, box.imgBox.width * sizePct / 100) : 25;
-  overlay.style.fontSize = `${px}px`;
+  overlay.style.setProperty("font-size",`${px}px`,"important");
   overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Impact, sans-serif";
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.02em";
@@ -1419,7 +1437,7 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   viewStates.front = null; viewStates.back = null;
   canvas.clear(); canvas.backgroundColor = "transparent";
   currentView = "front";
-  designerStatus.textContent = "Vorderseite";
+  if (designerStatus) designerStatus.textContent = "Vorderseite";
   printZone.classList.remove("back");
   canvas.setWidth(PRINT_CANVAS_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
   viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === "front"));
