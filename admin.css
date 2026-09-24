@@ -6374,3 +6374,13 @@ html body .position-initials{
 .v2853-card.v2853-appearance-card>.v2853-card-head h3{display:block!important}
 html body .v2849-version{display:block!important;opacity:1!important}
 .position-initials,#positionInitials{z-index:80!important;pointer-events:auto!important;touch-action:none!important;cursor:grab!important}
+
+#shopForm .v3040-color-chip{
+  width:auto!important;height:34px!important;min-height:34px!important;min-width:0!important;
+  border-radius:10px!important;border:1px solid #e2e6ea!important;background:#fff!important;
+  display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;
+  padding:4px 8px!important;box-shadow:none!important;overflow:hidden!important;
+}
+#shopForm .v3040-color-chip span{display:block!important;font-size:11px!important;color:#1b2430!important}
+#shopForm .v3040-swatch{width:18px!important;height:18px!important;border-radius:50%!important;flex:0 0 18px!important;background:var(--sw,#ccc)!important;box-shadow:none!important}
+.position-stage .position-initials~.position-initials{display:none!important}
