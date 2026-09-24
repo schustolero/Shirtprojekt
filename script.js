@@ -154,7 +154,9 @@ function getAllowedMotifColorNames(){
   document.querySelectorAll(".shop-brand-logo").forEach(el=>el.remove());
   if (cfg.logoFile) {
     const header = document.querySelector(".designer-header");
-    const host = header || document.querySelector(".brand");
+    const masterBrand = String(cfg.customerId || window.SHOP_SLUG || "") === "_master"
+      ? document.querySelector(".sidebar .brand") : null;
+    const host = masterBrand || header || document.querySelector(".brand");
     if (host) {
       const img = document.createElement("img");
       img.src = window.shopAssetUrl ? window.shopAssetUrl(cfg.logoFile) : cfg.logoFile;
