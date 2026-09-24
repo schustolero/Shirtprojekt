@@ -5112,7 +5112,18 @@ html body .mockup-stage .shirt-initials-overlay{
 }
 html body .price-patch,html body #pricePatch{display:none!important}
 
-/* v30.3.118 – Position der Initialen wird vom Textil und der Ziehbewegung bestimmt. */
+/* v30.3.119 – Position der Initialen wird vom Textil und der Ziehbewegung bestimmt. */
 html body .mockup-stage .shirt-initials-overlay{touch-action:none!important;user-select:none!important}
 html body .sidebar .initials-section[hidden]{display:none!important}
 html body .mockup-stage .initials-pop,html body .mockup-stage .initials-tab{display:none!important}
+
+/* Shop: Initialen sind ein Druckelement, kein verschiebbarer Griff. */
+html body .mockup-stage .shirt-initials-overlay{
+  pointer-events:none!important;
+  cursor:default!important;
+}
+html body .mockup-stage .shirt-initials-overlay.is-set{
+  border:0!important;
+  box-shadow:none!important;
+  padding:0!important;
+}

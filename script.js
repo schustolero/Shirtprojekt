@@ -1280,7 +1280,6 @@ function applyInitialsOnShirt(overlay, xPct, yPct){
   overlay.style.setProperty("top", `${top}%`, "important");
 }
 function updateInitialsOnCanvas() {
-  if(window._initialsDragging) return;
   const value = initialsValue();
   const cfg = SHOP.initialsConfig || {};
   const paired = SHOP.shirtMotifColors?.[currentShirtColorId];
@@ -1314,9 +1313,7 @@ function updateInitialsOnCanvas() {
     sport:{front:{x:34,y:77},back:{x:34,y:77}},
     sweatshirt:{front:{x:34,y:80},back:{x:34,y:78}}
   };
-  window._initialsLivePos = window._initialsLivePos || {};
-  const liveKey = `${productId}:${view}`;
-  const custom = window._initialsLivePos[liveKey] || SHOP.initialsByProduct?.[productId]?.[view] || {};
+  const custom = SHOP.initialsByProduct?.[productId]?.[view] || {};
   const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
   const x = Number(custom.x ?? fallback.x);
   const y = Number(custom.y ?? fallback.y);
@@ -1328,45 +1325,14 @@ function updateInitialsOnCanvas() {
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.02em";
   overlay.style.color = color || "#ffffff";
-  overlay.style.pointerEvents = value && FEATURES.allowInitials ? "auto" : "none";
-  overlay.style.cursor = value ? "grab" : "default";
+  overlay.style.pointerEvents = "none";
+  overlay.style.cursor = "default";
   overlay.style.zIndex = "80";
   overlay.classList.toggle("is-set", !!value);
   overlay.setAttribute("aria-hidden", value ? "false" : "true");
-  if(!overlay.dataset.dragBound){
-    overlay.dataset.dragBound = "1";
-    window.addEventListener("resize", () => { if(!window._initialsDragging) updateInitialsOnCanvas(); }, {passive:true});
-    const moveTo = (clientX, clientY) => {
-      const box=initialsShirtBox();
-      if(!box || !box.imgBox.width) return;
-      const nx=Math.max(8, Math.min(92, ((clientX-box.imgBox.left)/box.imgBox.width)*100));
-      const ny=Math.max(50, Math.min(96, ((clientY-box.imgBox.top)/box.imgBox.height)*100));
-      applyInitialsOnShirt(overlay, nx, ny);
-      const pid = (typeof currentProductId === "string" && currentProductId) || "tshirt";
-      const side = (typeof currentView === "string" && currentView) || "front";
-      window._initialsLivePos[`${pid}:${side}`] = {x: Math.round(nx*2)/2, y: Math.round(ny*2)/2};
-    };
-    const start = (ev) => {
-      if(!overlay.textContent) return;
-      window._initialsDragging = true;
-      overlay.style.cursor = "grabbing";
-      overlay.setPointerCapture?.(ev.pointerId);
-      ev.preventDefault();
-      ev.stopPropagation();
-    };
-    const move = (ev) => {
-      if(!window._initialsDragging) return;
-      moveTo(ev.clientX, ev.clientY);
-      ev.preventDefault();
-    };
-    const stop = () => {
-      window._initialsDragging = false;
-      overlay.style.cursor = overlay.textContent ? "grab" : "default";
-    };
-    overlay.addEventListener("pointerdown", start);
-    overlay.addEventListener("pointermove", move);
-    overlay.addEventListener("pointerup", stop);
-    overlay.addEventListener("pointercancel", stop);
+  if(!overlay.dataset.resizeBound){
+    overlay.dataset.resizeBound="1";
+    window.addEventListener("resize", updateInitialsOnCanvas, {passive:true});
   }
 }
 

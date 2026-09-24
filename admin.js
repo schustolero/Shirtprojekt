@@ -2300,10 +2300,14 @@ saveShopBtn.addEventListener("click",async()=>{
     if(!mark){
       mark=document.createElement("div");
       mark.className="position-initials";
-      mark.textContent="ABC";
     }
     mark.id="positionInitials";
     mark.className="position-initials";
+    mark.textContent="";
+    mark.setAttribute("role","button");
+    mark.tabIndex=0;
+    mark.setAttribute("aria-label","Initialenposition verschieben");
+    mark.title="Initialenposition ziehen";
     host.appendChild(mark);
     mark.style.zIndex="80";
     mark.style.pointerEvents="auto";
@@ -2522,7 +2526,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.118');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.119');
 })();
 
 // ============================================================
@@ -2586,7 +2590,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.118");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.119");
   return true;
   }
   if(!boot()){
@@ -2596,29 +2600,42 @@ saveShopBtn.addEventListener("click",async()=>{
 })();
 
 (function bindInitialsDrag(){
-  const mark=document.getElementById("positionInitials");
-  const shirt=document.getElementById("positionShirt");
-  if(!mark||!shirt) return;
   let pointerId=null;
-  mark.addEventListener("pointerdown",ev=>{
+  let offsetX=0,offsetY=0;
+  document.addEventListener("pointerdown",ev=>{
+    const mark=ev.target.closest?.("#positionInitials");
+    if(!mark || !document.getElementById("shopForm")?.contains(mark)) return;
+    const rect=mark.getBoundingClientRect();
     pointerId=ev.pointerId;
-    mark.setPointerCapture?.(pointerId);
+    offsetX=ev.clientX-(rect.left+rect.width/2);
+    offsetY=ev.clientY-(rect.top+rect.height/2);
     mark.style.cursor="grabbing";
     ev.preventDefault();
     ev.stopPropagation();
-  });
-  mark.addEventListener("pointermove",ev=>{
+  },true);
+  document.addEventListener("pointermove",ev=>{
     if(pointerId!==ev.pointerId) return;
+    const shirt=document.getElementById("positionShirt");
     const box=shirt.getBoundingClientRect();
     if(!box.width||!box.height) return;
-    writeInitialsPos((ev.clientX-box.left)/box.width*100,(ev.clientY-box.top)/box.height*100);
+    writeInitialsPos((ev.clientX-offsetX-box.left)/box.width*100,(ev.clientY-offsetY-box.top)/box.height*100);
     ev.preventDefault();
-  });
+    ev.stopPropagation();
+  },true);
   const stop=ev=>{
     if(pointerId!==ev.pointerId) return;
     pointerId=null;
-    mark.style.cursor="grab";
+    const mark=document.getElementById("positionInitials");
+    if(mark) mark.style.cursor="grab";
   };
-  mark.addEventListener("pointerup",stop);
-  mark.addEventListener("pointercancel",stop);
+  document.addEventListener("pointerup",stop,true);
+  document.addEventListener("pointercancel",stop,true);
+  document.addEventListener("keydown",ev=>{
+    if(ev.target?.id!=="positionInitials") return;
+    const delta={ArrowLeft:[-0.5,0],ArrowRight:[0.5,0],ArrowUp:[0,-0.5],ArrowDown:[0,0.5]}[ev.key];
+    if(!delta) return;
+    const pos=currentInitialsPos();
+    writeInitialsPos(pos.x+delta[0],pos.y+delta[1]);
+    ev.preventDefault();
+  });
 })();

@@ -6384,3 +6384,23 @@ html body .v2849-version{display:block!important;opacity:1!important}
 #shopForm .v3040-color-chip span{display:block!important;font-size:11px!important;color:#1b2430!important}
 #shopForm .v3040-swatch{width:18px!important;height:18px!important;border-radius:50%!important;flex:0 0 18px!important;background:var(--sw,#ccc)!important;box-shadow:none!important}
 .position-stage .position-initials~.position-initials{display:none!important}
+
+/* Nur ein leerer Griffrahmen in der Admin-Vorschau. */
+html body #positionStage #positionInitials{
+  width:46px!important;
+  height:32px!important;
+  min-width:46px!important;
+  min-height:32px!important;
+  padding:0!important;
+  border:2px dashed #f3c52a!important;
+  border-radius:5px!important;
+  background:rgba(15,23,42,.14)!important;
+  box-shadow:0 0 0 2px rgba(15,23,42,.72)!important;
+  color:transparent!important;
+  font-size:0!important;
+  z-index:999!important;
+  pointer-events:auto!important;
+  touch-action:none!important;
+  cursor:grab!important;
+}
+html body #positionStage #positionInitials:active{cursor:grabbing!important}
