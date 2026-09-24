@@ -1280,16 +1280,16 @@ function updateInitialsOnCanvas() {
     overlay.setAttribute("aria-hidden", "true");
     stage.appendChild(overlay);
   }
-  overlay.textContent = value;
+  overlay.innerHTML = value ? `<span class="initials-glyph">${value}</span>` : "";
   overlay.hidden = !value;
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
-    tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
-    polo:{front:{x:24,y:88},back:{x:24,y:88}},
-    hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
-    sport:{front:{x:24,y:89},back:{x:24,y:89}},
-    sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
+    tshirt:{front:{x:34,y:78},back:{x:34,y:78}},
+    polo:{front:{x:34,y:76},back:{x:34,y:76}},
+    hoodie:{front:{x:34,y:80},back:{x:34,y:78}},
+    sport:{front:{x:34,y:77},back:{x:34,y:77}},
+    sweatshirt:{front:{x:34,y:80},back:{x:34,y:78}}
   };
   window._initialsLivePos = window._initialsLivePos || {};
   const liveKey = `${productId}:${view}`;
@@ -1298,16 +1298,19 @@ function updateInitialsOnCanvas() {
   const x = Number(custom.x ?? fallback.x);
   const y = Number(custom.y ?? fallback.y);
   applyInitialsOnShirt(overlay, x, y);
-  overlay.style.fontSize = "30px";
-  overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Arial, sans-serif";
+  const box = initialsShirtBox();
+  const px = box ? Math.max(42, Math.round(box.imgBox.width * 0.16)) : 56;
+  overlay.style.fontSize = `${px}px`;
+  overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Impact, sans-serif";
   overlay.style.fontWeight = "900";
-  overlay.style.letterSpacing = "0.06em";
-  overlay.style.color = color;
-  overlay.style.pointerEvents = "none";
-  overlay.style.cursor = "default";
+  overlay.style.letterSpacing = "0.02em";
+  overlay.style.color = color || "#ffffff";
+  overlay.style.pointerEvents = value ? "auto" : "none";
+  overlay.style.cursor = value ? "grab" : "default";
   overlay.style.zIndex = "40";
-  overlay.setAttribute("aria-hidden", "true");
-  if(false){
+  overlay.classList.toggle("is-set", !!value);
+  overlay.setAttribute("aria-hidden", value ? "false" : "true");
+  if(!overlay.dataset.dragBound){
     overlay.dataset.dragBound = "1";
     let dragging = false;
     const moveTo = (clientX, clientY) => {
@@ -2057,5 +2060,14 @@ window.dockShirtColorRail=function(){
   clamp();
 })();
 
-setTimeout(()=>window.dockShirtColorRail(),0);
-setTimeout(()=>window.dockShirtColorRail(),250);
+function orderCustomerSidebar(){
+  const sidebar=document.querySelector(".sidebar");
+  if(!sidebar) return;
+  const seq=["productSection",".motif-section",".motif-color-section","#initialsPop",".view-section",".order-section",".sidebar-bottom"];
+  seq.forEach(sel=>{
+    const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
+    if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);
+  });
+}
+setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); },0);
+setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); },250);
