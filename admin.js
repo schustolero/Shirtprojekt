@@ -2284,10 +2284,8 @@ saveShopBtn.addEventListener("click",async()=>{
   previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
   if(stage) previewShell.appendChild(stage);
   const pricePatch=document.createElement("aside");
-  pricePatch.className="price-patch admin-price-patch";
   pricePatch.id="adminPricePatch";
-  pricePatch.innerHTML='<span>Preis</span><strong id="adminPricePatchValue">15,00 €</strong>';
-  (stage||previewShell).appendChild(pricePatch);
+  pricePatch.hidden=true;
   // v28.6.1: Motivgröße wieder direkt unter der Vorschau sichtbar machen.
   // Der bestehende Range-Regler steuert weiterhin exakt die gespeicherte Breite,
   // zeigt aber bewusst keine Prozentwerte – nur Klein / Mittel / Groß.

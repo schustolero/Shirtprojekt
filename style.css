@@ -5082,3 +5082,4 @@ html body .shirt-initials-overlay[hidden]{display:none!important}
 }
 
 html body .price-patch,html body #pricePatch,html body .admin-price-patch{display:none!important}
+html body .price-patch,html body #pricePatch,html body .admin-price-patch,html body #adminPricePatch{display:none!important;visibility:hidden!important}
