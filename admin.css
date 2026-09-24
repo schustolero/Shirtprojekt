@@ -5867,3 +5867,114 @@ html body .shop-form .v2972-inline-functions #pushMasterRow span{
 .initials-pos-field{display:flex!important;flex-direction:column!important;gap:2px!important;margin:0 0 6px!important}
 .initials-pos-field span{font-size:10px!important;font-weight:700!important;color:#667085!important}
 .initials-pos-field input{height:28px!important;width:88px!important}
+
+/* v30.3.99 – Admin sauber */
+html,body{background:#f3f5f7!important;color:#15202b!important}
+.admin-shell{max-width:1280px!important;margin:0 auto!important;padding:16px 18px 40px!important}
+.admin-header{display:flex!important;align-items:center!important;justify-content:space-between!important;padding:8px 0 16px!important;border:0!important;background:transparent!important}
+.admin-header h1{margin:0!important;font-size:20px!important}
+.admin-header p{margin:2px 0 0!important;font-size:12px!important;color:#66707a!important}
+.admin-tabs{display:flex!important;gap:8px!important;padding:6px!important;border-radius:12px!important;background:#fff!important;border:1px solid #e4eaee!important}
+.admin-tabs .tab-btn{min-height:40px!important;padding:8px 14px!important;border-radius:9px!important;border:0!important;font-size:13px!important;font-weight:700!important;background:transparent!important}
+.admin-tabs .tab-btn.active{background:#15202b!important;color:#fff!important}
+.shop-admin-grid{display:grid!important;grid-template-columns:280px minmax(0,1fr)!important;gap:14px!important;align-items:start!important}
+.shop-list-panel,.shop-editor-panel,.panel{border:1px solid #e4eaee!important;border-radius:14px!important;background:#fff!important;box-shadow:none!important}
+.panel-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;padding:12px 14px!important;border-bottom:1px solid #eef2f5!important}
+.panel-head h2{margin:0!important;font-size:16px!important}
+.panel-head p{margin:3px 0 0!important;font-size:12px!important;color:#6b7680!important}
+.form-section{padding:12px 14px!important;border-bottom:1px solid #eef2f5!important}
+.form-section h3{margin:0 0 10px!important;font-size:13px!important;letter-spacing:.04em!important;text-transform:uppercase!important;color:#5d6872!important}
+.form-grid,.v2850-main-fields{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px 12px!important}
+.primary-btn,.ghost-btn,button.primary-btn,button.ghost-btn{
+  min-height:36px!important;padding:7px 12px!important;border-radius:9px!important;font-size:12px!important;font-weight:700!important
+}
+.primary-btn.small,.ghost-btn.small{min-height:32px!important;padding:5px 9px!important;font-size:11px!important}
+.stats-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px!important;margin:0 0 12px!important}
+.stat-card{padding:12px 14px!important;border-radius:12px!important;background:#fff!important;border:1px solid #e4eaee!important}
+.stat-card span{font-size:11px!important;color:#6b7680!important}
+.stat-card strong{display:block!important;margin-top:4px!important;font-size:22px!important}
+@media(max-width:900px){
+  .shop-admin-grid{grid-template-columns:1fr!important}
+  .form-grid,.v2850-main-fields{grid-template-columns:1fr!important}
+  .stats-grid{grid-template-columns:1fr 1fr!important}
+}
+
+/* v30.3.100 – Shop-Editor Formular-Design */
+#shopForm .form-section{padding:16px 16px 18px!important}
+#shopForm .form-section h3{
+  margin:0 0 12px!important;font-size:11px!important;font-weight:800!important;
+  letter-spacing:.08em!important;text-transform:uppercase!important;color:#6a747d!important
+}
+#shopForm .v2850-subtitle{
+  margin:0 0 8px!important;font-size:12px!important;font-weight:800!important;color:#1b2730!important
+}
+#shopForm label span,#shopForm .form-grid label>span{
+  display:block!important;margin:0 0 5px!important;font-size:11px!important;font-weight:700!important;color:#52606b!important
+}
+#shopForm input[type="text"],#shopForm input[type="email"],#shopForm input[type="number"],#shopForm select,#shopForm textarea{
+  width:100%!important;min-height:38px!important;padding:8px 10px!important;border:1px solid #d7dee3!important;
+  border-radius:9px!important;background:#fff!important;font-size:13px!important;color:#15202b!important
+}
+#shopForm input:focus,#shopForm select:focus{outline:2px solid #c99a1b55!important;border-color:#c99a1b!important}
+#shopForm .check-row,#shopForm .v2972-inline-functions .check-row{
+  display:inline-flex!important;align-items:center!important;gap:6px!important;min-height:32px!important;
+  padding:4px 9px!important;margin:0 6px 6px 0!important;border:1px solid #e1e7eb!important;
+  border-radius:999px!important;background:#f7f9fa!important;font-size:12px!important;font-weight:700!important
+}
+#shopForm .v2972-inline-functions{display:flex!important;flex-wrap:wrap!important;gap:0!important}
+#shopForm .v3036-product-head{
+  display:grid!important;grid-template-columns:minmax(0,1.4fr) 72px 72px 72px 44px!important;
+  gap:8px!important;padding:0 2px 6px!important;font-size:10px!important;font-weight:800!important;
+  letter-spacing:.04em!important;text-transform:uppercase!important;color:#7a858e!important
+}
+#shopForm .v3036-product-list{display:grid!important;gap:6px!important}
+#shopForm .shop-logo-inline{
+  display:grid!important;grid-template-columns:64px minmax(0,1fr) 88px!important;gap:12px!important;align-items:center!important
+}
+#shopForm .shop-logo-mini-preview{
+  width:64px!important;height:64px!important;border:1px solid #e4eaee!important;border-radius:12px!important;
+  display:grid!important;place-items:center!important;background:#f8fafb!important;overflow:hidden!important
+}
+#shopForm .shop-logo-mini-preview img{max-width:56px!important;max-height:56px!important;object-fit:contain!important}
+#shopForm .v2919-shirt-palette-card,#shopForm .v2935-print-color-block{
+  padding:12px!important;border:1px solid #e6ecef!important;border-radius:12px!important;background:#fbfcfd!important;margin-top:10px!important
+}
+#shopForm .v3052-article-tabs{display:flex!important;flex-wrap:wrap!important;gap:6px!important;margin:10px 0!important}
+#shopForm .v3052-article-tabs button{
+  min-height:32px!important;padding:5px 10px!important;border-radius:8px!important;border:1px solid #d7dee3!important;
+  background:#fff!important;font-size:12px!important;font-weight:700!important
+}
+#shopForm .v3052-article-tabs button.is-active{background:#15202b!important;color:#fff!important;border-color:#15202b!important}
+#shopForm .v2919-f140-grid{display:grid!important;grid-template-columns:repeat(auto-fill,minmax(92px,1fr))!important;gap:8px!important}
+@media(max-width:760px){
+  #shopForm .shop-logo-inline{grid-template-columns:1fr!important}
+  #shopForm .v3036-product-head{grid-template-columns:minmax(0,1fr) 64px 64px 40px!important}
+}
+
+@media (max-width:900px){
+  .admin-shell{padding:10px 10px 28px!important}
+  .admin-header{padding:4px 0 10px!important}
+  .admin-header h1{font-size:17px!important}
+  .admin-tabs{overflow-x:auto!important;flex-wrap:nowrap!important}
+  .admin-tabs .tab-btn{flex:0 0 auto!important;white-space:nowrap!important}
+  .shop-admin-grid{grid-template-columns:1fr!important;gap:10px!important}
+  .shop-list-panel{order:2!important}
+  .shop-editor-panel{order:1!important}
+  .panel-head{flex-wrap:wrap!important;gap:8px!important;padding:10px!important}
+  .editor-actions{width:100%!important;display:flex!important;gap:8px!important}
+  .editor-actions .primary-btn,.editor-actions .ghost-btn{flex:1!important}
+  #shopForm .form-section{padding:12px 10px!important}
+  #shopForm .form-grid,#shopForm .v2850-main-fields{grid-template-columns:1fr!important}
+  #shopForm .shop-logo-inline{grid-template-columns:56px minmax(0,1fr)!important}
+  #shopForm .shop-logo-accent{grid-column:1/-1!important}
+  #shopForm .v3036-product-head{display:none!important}
+  #shopForm .v2919-f140-grid{grid-template-columns:repeat(auto-fill,minmax(76px,1fr))!important}
+  .stats-grid{grid-template-columns:1fr 1fr!important}
+  .orders-toolbar.panel{display:grid!important;grid-template-columns:1fr 1fr!important;gap:8px!important}
+  .orders-toolbar-title{grid-column:1/-1!important}
+}
+@media (max-width:560px){
+  .stats-grid{grid-template-columns:1fr!important}
+  .orders-toolbar.panel{grid-template-columns:1fr!important}
+  #shopForm .v3052-article-tabs{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
