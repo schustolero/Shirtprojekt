@@ -727,19 +727,21 @@ function currentInitialsPos(){
   const saved=workingInitials[product][side]||fallback;
   return {product,side,x:Number(saved.x??fallback.x),y:Number(saved.y??fallback.y)};
 }
-function writeInitialsPos(x,y){
+function writeInitialsPos(x,y,announce=true){
   const pos=currentInitialsPos();
   x=Math.max(8,Math.min(92,Number(x)));
   y=Math.max(50,Math.min(96,Number(y)));
   if(!Number.isFinite(x)||!Number.isFinite(y)) return;
   workingInitials[pos.product]=workingInitials[pos.product]||{};
-  workingInitials[pos.product][pos.side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
+  const next={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
+  if(workingInitials[pos.product][pos.side]?.x===next.x && workingInitials[pos.product][pos.side]?.y===next.y) return;
+  workingInitials[pos.product][pos.side]=next;
   const xEl=document.getElementById("initialsPosX");
   const yEl=document.getElementById("initialsPosY");
   if(xEl) xEl.value=String(workingInitials[pos.product][pos.side].x);
   if(yEl) yEl.value=String(workingInitials[pos.product][pos.side].y);
   placeAdminInitialsMark(workingInitials[pos.product][pos.side].x, workingInitials[pos.product][pos.side].y);
-  setShopState("Initialenposition geändert – oben Speichern klicken.");
+  if(announce) setShopState("Initialenposition geändert – oben Speichern klicken.");
 }
 function placeAdminInitialsMark(x,y){
   const mark=document.getElementById("positionInitials");
@@ -879,6 +881,7 @@ function stagePctToStoredY(stagePct){
 
 const positionShirtPreviewCache = new Map();
 const positionMotifPreviewCache = new Map();
+let positionPreviewRequest = 0;
 function loadPositionImage(src){return new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>resolve(img);img.onerror=reject;img.src=src;});}
 async function coloredPositionShirt(src,color){const key=`${src}|${color}`;if(positionShirtPreviewCache.has(key))return positionShirtPreviewCache.get(key);try{const img=await loadPositionImage(src);const c=document.createElement("canvas");c.width=img.naturalWidth||img.width;c.height=img.naturalHeight||img.height;const ctx=c.getContext("2d");ctx.drawImage(img,0,0,c.width,c.height);if(color&&String(color).toLowerCase()!=="#ffffff"){ctx.globalCompositeOperation="multiply";ctx.fillStyle=String(color).toLowerCase()==="#111015"?"#3a3a3d":color;ctx.fillRect(0,0,c.width,c.height);ctx.globalCompositeOperation="destination-in";ctx.drawImage(img,0,0,c.width,c.height);ctx.globalCompositeOperation="source-over";}const out=c.toDataURL("image/png");positionShirtPreviewCache.set(key,out);return out;}catch(e){return src;}}
 function positionHexToRgb(hex){const clean=String(hex||"#000000").replace("#","");const value=clean.length===3?clean.split("").map(char=>char+char).join(""):clean.padEnd(6,"0").slice(0,6);return{r:parseInt(value.slice(0,2),16),g:parseInt(value.slice(2,4),16),b:parseInt(value.slice(4,6),16)};}
@@ -952,6 +955,7 @@ function renderAdminColorRail(){
 }
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
+  const request=++positionPreviewRequest;
   const product = positionProduct?.value || "tshirt";
   const side = positionSide?.value || "front";
   const fields = getPositionFieldSet(product, side);
@@ -962,7 +966,9 @@ function refreshPositionEditor(){
   const shirtSrc=side==="front"
     ? (productConfig.frontTemplate||(product==="polo"?"polo-front-template.png":product==="hoodie"?"hoodie-front-template.png":"shirt-front-template.png"))
     : (productConfig.backTemplate||(product==="polo"?"polo-back-template.png":product==="hoodie"?"hoodie-back-template.png":"shirt-back-template.png"));
-  coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => { positionShirt.src = src; });
+  coloredPositionShirt(shirtSrc, shopFields.fixedShirtHex?.value || "#ffffff").then(src => {
+    if(request===positionPreviewRequest) positionShirt.src=src;
+  });
   renderAdminColorRail();
   const priceEl=document.getElementById("adminPricePatchValue");
   const productCfg=(workingProducts||[]).find(item=>item.id===product)||{};
@@ -981,7 +987,7 @@ function refreshPositionEditor(){
     const motifPreview=motif.preserveColors
       ? Promise.resolve(motifSrc)
       : coloredPositionMotif(motifSrc,shopFields.fixedMotifHex?.value||"#000000");
-    motifPreview.then(src=>{positionMotif.src=src;});
+    motifPreview.then(src=>{if(request===positionPreviewRequest) positionMotif.src=src;});
     positionMotif.hidden = false;
   } else {
     positionMotif.hidden = true;
@@ -1528,6 +1534,7 @@ function selectShop(id){
   if(productionFileUrl) productionFileUrl.value = cfg.productionFile || cfg.printData?.productionFile || "";
   updateFeatureVisibility(cfg.shopType||"simple");
   updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=!id; if(id) previewShopBtn.href=`/?shop=${encodeURIComponent(id)}`; setShopState(id==="_master"?"Zentrale Vorlage: Änderungen hier sind die Basis für „Neuer Shop“.":"Bereit zum Bearbeiten."); renderShopList();
+  document.dispatchEvent(new Event("shopconfigloaded"));
   syncTemplateBar(id,cfg);
 }
 
@@ -1673,6 +1680,7 @@ newShopBtn.addEventListener("click",()=>{
   shopFields.poloFrontX.value=Number(pp.polo?.front?.xPct??68); shopFields.poloFrontY.value=Number(pp.polo?.front?.yPct??22); shopFields.poloFrontW.value=Number(pp.polo?.front?.widthPct??28); shopFields.poloBackX.value=Number(pp.polo?.back?.xPct??50); shopFields.poloBackY.value=Number(pp.polo?.back?.yPct??36); shopFields.poloBackW.value=Number(pp.polo?.back?.widthPct??50);
   shopFields.hoodieFrontX.value=Number(pp.hoodie?.front?.xPct??68); shopFields.hoodieFrontY.value=Number(pp.hoodie?.front?.yPct??22); shopFields.hoodieFrontW.value=Number(pp.hoodie?.front?.widthPct??36); shopFields.hoodieBackX.value=Number(pp.hoodie?.back?.xPct??50); shopFields.hoodieBackY.value=Number(pp.hoodie?.back?.yPct??34); shopFields.hoodieBackW.value=Number(pp.hoodie?.back?.widthPct??78);
   fillPrintData(template); updateLogoPreview(); renderMotifsEditor(); refreshPositionEditor(); previewShopBtn.hidden=true; setShopState("Master übernommen: Sortiment, Preise und Druckpositionen. Name eintragen, Artikel bei Bedarf abschalten, speichern."); renderShopList();
+  document.dispatchEvent(new Event("shopconfigloaded"));
   if(shopFields.followMasterTemplate) shopFields.followMasterTemplate.checked=true;
   syncTemplateBar("",template);
 });
@@ -2526,7 +2534,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.121');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.122');
 })();
 
 // ============================================================
@@ -2590,7 +2598,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.121");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.122");
   return true;
   }
   if(!boot()){
@@ -2602,6 +2610,14 @@ saveShopBtn.addEventListener("click",async()=>{
 (function bindInitialsDrag(){
   let pointerId=null;
   let offsetX=0,offsetY=0;
+  let frame=0,latest=null;
+  const paint=()=>{
+    frame=0;
+    if(!latest) return;
+    const {x,y}=latest;
+    latest=null;
+    writeInitialsPos(x,y,false);
+  };
   document.addEventListener("pointerdown",ev=>{
     const mark=ev.target.closest?.("#positionInitials");
     if(!mark || !document.getElementById("shopForm")?.contains(mark)) return;
@@ -2618,15 +2634,18 @@ saveShopBtn.addEventListener("click",async()=>{
     const shirt=document.getElementById("positionShirt");
     const box=shirt.getBoundingClientRect();
     if(!box.width||!box.height) return;
-    writeInitialsPos((ev.clientX-offsetX-box.left)/box.width*100,(ev.clientY-offsetY-box.top)/box.height*100);
+    latest={x:(ev.clientX-offsetX-box.left)/box.width*100,y:(ev.clientY-offsetY-box.top)/box.height*100};
+    if(!frame) frame=requestAnimationFrame(paint);
     ev.preventDefault();
     ev.stopPropagation();
   },true);
   const stop=ev=>{
     if(pointerId!==ev.pointerId) return;
+    if(frame){ cancelAnimationFrame(frame); paint(); }
     pointerId=null;
     const mark=document.getElementById("positionInitials");
     if(mark) mark.style.cursor="grab";
+    setShopState("Initialenposition geändert – oben Speichern klicken.");
   };
   document.addEventListener("pointerup",stop,true);
   document.addEventListener("pointercancel",stop,true);

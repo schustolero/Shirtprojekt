@@ -605,7 +605,7 @@ function applyProductColorRules(product, forceDefault = false) {
   const target = Array.from(shirtColorButtons).find(button => button.dataset.id === defaultId && !button.hidden)
     || Array.from(shirtColorButtons).find(button => !button.hidden);
   if (target && (forceDefault || !currentButton)) {
-    changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "");
+    changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "", false);
   }
   updateSizeOptionsForCurrentSelection();
 }
@@ -972,15 +972,17 @@ function lookupMasterHex(colorId){
   }
   return "";
 }
-function changeShirtColor(color, name, colorId, pattern) {
+function changeShirtColor(color, name, colorId, pattern, redraw = true) {
   currentShirtColor = color || lookupMasterHex(colorId) || "#ffffff";
   currentShirtColorId = colorId || "white";
   currentPattern = pattern || "";
   if(currentColorName) currentColorName.textContent = name || "White";
   shirtColorButtons.forEach(button => button.classList.toggle("active", button.dataset.id === currentShirtColorId));
   updateSizeOptionsForCurrentSelection();
-  renderShirt();
-  if (FEATURES.previewMode === "dual") renderDualPreview();
+  if (redraw) {
+    renderShirt();
+    if (FEATURES.previewMode === "dual") renderDualPreview();
+  }
   const pairedMotifColor = SHOP.shirtMotifColors && SHOP.shirtMotifColors[currentShirtColorId];
   if (pairedMotifColor?.color) {
     void recolorActiveMotif(pairedMotifColor.color, pairedMotifColor.name || "Druckfarbe");
