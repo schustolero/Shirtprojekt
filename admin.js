@@ -1716,7 +1716,16 @@ function buildShopConfig(){
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,-20,120,68),yPct:clamp(shopFields.poloFrontY.value,-20,120,22),widthPct:clamp(shopFields.poloFrontW.value,5,110,28)},back:{xPct:clamp(shopFields.poloBackX.value,-20,120,50),yPct:clamp(shopFields.poloBackY.value,-20,120,36),widthPct:clamp(shopFields.poloBackW.value,5,110,50)}},
     hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,-20,120,68),yPct:clamp(shopFields.hoodieFrontY.value,-20,120,22),widthPct:clamp(shopFields.hoodieFrontW.value,5,110,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,-20,120,50),yPct:clamp(shopFields.hoodieBackY.value,-20,120,34),widthPct:clamp(shopFields.hoodieBackW.value,5,110,78)}}
   };
+  const ix=Number(document.getElementById("initialsPosX")?.value);
+  const iy=Number(document.getElementById("initialsPosY")?.value);
+  const pid=positionProduct?.value||"tshirt";
+  const side=positionSide?.value||"front";
+  workingInitials=workingInitials||{};
+  workingInitials[pid]=workingInitials[pid]||{};
+  if(Number.isFinite(ix)&&Number.isFinite(iy)) workingInitials[pid][side]={x:ix,y:iy};
   cfg.initialsByProduct=deepClone(workingInitials||{});
+  const live=workingInitials[pid][side]||{};
+  cfg.initialsConfig={label:"Initialen",placeholder:"",maxLength:3,fontSize:30,fontFamily:"Arial Black",stageXPct:live.x??34,stageYPct:live.y??80};
   cfg.printData=collectPrintData();
   cfg.productMotifModes={...workingProductMotifModes};
   cfg.productionFile=(productionFileUrl?.value||"").trim();
@@ -1726,7 +1735,6 @@ function buildShopConfig(){
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;
   if(cfg.fixedPrint.back.enabled) cfg.features.allowBackDesign=true;
-  cfg.initialsConfig={label:"Initialen",placeholder:"",maxLength:3,fontSize:30,fontFamily:"Arial Black"};
   return cfg;
 }
 
@@ -2348,13 +2356,17 @@ saveShopBtn.addEventListener("click",async()=>{
   (function placeInitialsOnPreview(){
     const host=stage||document.getElementById("positionStage");
     if(!host) return;
-    let mark=document.getElementById("positionInitials");
+    [...document.querySelectorAll(".position-initials,#positionInitials,#adminInitialsMark")].forEach((el,i)=>{
+      if(i>0) el.remove();
+    });
+    let mark=document.getElementById("positionInitials")||document.querySelector(".position-initials");
     if(!mark){
       mark=document.createElement("div");
-      mark.id="positionInitials";
       mark.className="position-initials";
       mark.textContent="ABC";
     }
+    mark.id="positionInitials";
+    mark.className="position-initials";
     host.appendChild(mark);
     mark.style.zIndex="30";
     mark.style.pointerEvents="auto";

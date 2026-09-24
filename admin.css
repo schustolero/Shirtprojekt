@@ -6242,3 +6242,4 @@ html body .position-initials{
   margin:0!important;
   display:none!important;
 }
+.position-stage .position-initials~.position-initials,.position-stage #adminInitialsMark{display:none!important}
