@@ -5040,6 +5040,8 @@ body.v32-admin .v2853-workspace[data-v32-view="print"] .v32-view-design{display:
 body.v32-admin .v2853-workspace[data-v32-view="design"] .v2853-right{display:none!important}
 body.v32-admin .v2853-workspace[data-v32-view="design"] .v2853-left{grid-column:1/-1}
 body.v32-admin .v2853-workspace[data-v32-view="print"] .v2853-left{display:none!important}
+body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right,
+body.v32-admin .v2853-workspace[data-v32-view="print"] .v2853-right{display:grid!important}
 @media(max-width:720px){
   #v32ShopNav{width:100%!important;display:grid!important;grid-template-columns:repeat(3,1fr)!important;position:sticky;top:52px;z-index:30;margin:0 0 8px!important}
   #v32ShopNav button{padding:10px 8px!important;font-size:12px!important;text-align:center}
@@ -5047,7 +5049,7 @@ body.v32-admin .v2853-workspace[data-v32-view="print"] .v2853-left{display:none!
   body.v32-admin .v2853-left{order:1}
   body.v32-admin .v2853-right{order:2}
   body.v32-admin .v2853-bottom{order:3}
-  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right{display:none!important}
+  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right{display:grid!important}
 }
 
 /* v32 Sidebar – hell, wie im Admin-Screenshot */

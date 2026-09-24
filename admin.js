@@ -2592,8 +2592,8 @@ saveShopBtn.addEventListener("click",async()=>{
 
   left?.querySelector(".v2853-basic-card")?.classList.add("v32-view-shop");
   left?.querySelector(".v2853-appearance-card")?.classList.add("v32-view-design");
-  right?.classList.add("v32-view-print");
-  if(window.matchMedia("(min-width:721px)").matches) right?.classList.add("v32-view-shop");
+  // Die Spalte selbst bleibt sichtbar; die einzelnen Karten steuern ihre Ansichten.
+  right?.querySelector(".v2853-article-card")?.classList.add("v32-shared-preview");
   bottom?.classList.add("v32-view-print");
   workspace.querySelectorAll(".v2853-print-card,.v284-card[data-card='production'],.v284-card[data-card='fixed'],.v284-card[data-card='functions']").forEach(el=>{
     el.classList.add("v32-view-print");
@@ -2615,7 +2615,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.125");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.126");
   return true;
   }
   if(!boot()){
