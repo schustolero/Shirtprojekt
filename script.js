@@ -1,19 +1,9 @@
 // Shop-/Vereinsbranding aus shop-config.js anwenden.
 (function initThemeToggle(){
   const root=document.documentElement;
-  const btn=document.getElementById("themeToggle");
-  const header=document.querySelector(".designer-header");
-  if(btn && header && btn.parentElement!==header) header.appendChild(btn);
-  const apply=theme=>{
-    root.dataset.theme=theme;
-    try{localStorage.setItem("shirtprojekt-theme",theme)}catch(e){}
-    if(btn){
-      btn.textContent=theme==="dark"?"Hell":"Dunkel";
-      btn.setAttribute("aria-pressed",theme==="dark"?"true":"false");
-    }
-  };
-  apply("light");
-  if(btn) btn.addEventListener("click",()=>apply(root.dataset.theme==="dark"?"light":"dark"));
+  root.dataset.theme="light";
+  try{localStorage.setItem("shirtprojekt-theme","light")}catch(e){}
+  document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
 const FEATURES = Object.assign({
@@ -161,21 +151,18 @@ function getAllowedMotifColorNames(){
   const next = document.getElementById("formNext");
   if (next) next.value = new URL(`/danke.html?shop=${encodeURIComponent(cfg.customerId || window.SHOP_SLUG || "")}`, window.location.origin).href;
 
+  document.querySelectorAll(".designer-header .shop-brand-logo").forEach(el=>el.remove());
   if (cfg.logoFile) {
-    const header = document.querySelector(".designer-header");
     const brand = document.querySelector(".brand");
-    const host = header || brand;
-    if (host) {
-      host.querySelectorAll(".shop-brand-logo").forEach(el => el.remove());
+    if (brand) {
+      brand.querySelectorAll(".shop-brand-logo").forEach(el => el.remove());
       const img = document.createElement("img");
       img.src = window.shopAssetUrl ? window.shopAssetUrl(cfg.logoFile) : cfg.logoFile;
       img.alt = cfg.brandTitle || "Shop Logo";
       img.className = "shop-brand-logo";
-      img.style.height = `${Number(cfg.logoHeight) || 44}px`;
+      img.style.height = `${Number(cfg.logoHeight) || 52}px`;
       img.onerror = () => img.remove();
-      const titleBlock = header?.querySelector("div");
-      if(titleBlock) titleBlock.appendChild(img);
-      else host.prepend(img);
+      brand.prepend(img);
     }
   }
 
@@ -296,6 +283,7 @@ function getAllowedMotifColorNames(){
     insertAfter(anchor && anchor.parentNode === sidebar ? anchor : motifSection, textSection);
   }
 
+  if(typeof ensureInitialsField==="function") ensureInitialsField();
   const initialsField=document.getElementById("initialsInput");
   const initialsPop=document.getElementById("initialsPop");
   const initialsTab=document.getElementById("initialsTab");
@@ -303,11 +291,6 @@ function getAllowedMotifColorNames(){
   if(initialsPop){
     initialsPop.hidden=false;
     initialsPop.removeAttribute("hidden");
-    if(FEATURES.allowInitials===false) initialsPop.hidden=true;
-    const motifColors=document.querySelector(".motif-color-section");
-    const sidebar=document.querySelector(".sidebar");
-    if(motifColors) motifColors.insertAdjacentElement("afterend", initialsPop);
-    else if(sidebar) sidebar.appendChild(initialsPop);
   }
   if(initialsField){
     initialsField.maxLength=3;
@@ -2091,9 +2074,29 @@ function validateInitialsField(){
   validateInitialsField();
 })();
 
+function ensureInitialsField(){
+  const sidebar=document.querySelector(".sidebar");
+  let box=document.getElementById("initialsPop");
+  if(!box && sidebar){
+    box=document.createElement("section");
+    box.className="tool-section initials-section";
+    box.id="initialsPop";
+    box.innerHTML='<h3>Initialen</h3><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p><p class="field-error" id="initialsError" hidden></p>';
+    sidebar.appendChild(box);
+  }
+  if(box){
+    box.hidden=false;
+    box.removeAttribute("hidden");
+    box.style.display="block";
+    const product=document.getElementById("productSection");
+    if(product && product.parentElement) product.insertAdjacentElement("afterend", box);
+  }
+  return box;
+}
 function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
+  ensureInitialsField();
   const seq=["productSection","#initialsPop",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);

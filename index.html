@@ -28,12 +28,11 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.92">
+  <link rel="stylesheet" href="/style.css?v=30.3.94">
   <script>
     (function(){
       try{
-        var saved=localStorage.getItem("shirtprojekt-theme");
-        document.documentElement.dataset.theme=saved==="dark"?"dark":"light";
+        document.documentElement.dataset.theme="light";
       }catch(e){document.documentElement.dataset.theme="light"}
     })();
   </script>
@@ -469,7 +468,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.92";
+      app.src="/script.js?v=30.3.94";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
