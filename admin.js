@@ -713,11 +713,11 @@ let workingProducts = [];
 let workingLogo = "";
 let workingInitials = {};
 const INITIALS_DEFAULTS = {
-  tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
-  polo:{front:{x:24,y:88},back:{x:24,y:88}},
-  hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
-  sport:{front:{x:24,y:89},back:{x:24,y:89}},
-  sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
+  tshirt:{front:{x:24,y:90,sizePct:5},back:{x:24,y:90,sizePct:5}},
+  polo:{front:{x:24,y:88,sizePct:5},back:{x:24,y:88,sizePct:5}},
+  hoodie:{front:{x:23,y:91,sizePct:5},back:{x:23,y:89,sizePct:5}},
+  sport:{front:{x:24,y:89,sizePct:5},back:{x:24,y:89,sizePct:5}},
+  sweatshirt:{front:{x:24,y:91,sizePct:5},back:{x:24,y:90,sizePct:5}}
 };
 function currentInitialsPos(){
   const product=positionProduct?.value||"tshirt";
@@ -725,7 +725,7 @@ function currentInitialsPos(){
   workingInitials[product]=workingInitials[product]||{};
   const fallback=INITIALS_DEFAULTS[product]?.[side]||INITIALS_DEFAULTS.tshirt.front;
   const saved=workingInitials[product][side]||fallback;
-  return {product,side,x:Number(saved.x??fallback.x),y:Number(saved.y??fallback.y)};
+  return {product,side,x:Number(saved.x??fallback.x),y:Number(saved.y??fallback.y),sizePct:Number(saved.sizePct??fallback.sizePct)};
 }
 function writeInitialsPos(x,y,announce=true){
   const pos=currentInitialsPos();
@@ -733,8 +733,8 @@ function writeInitialsPos(x,y,announce=true){
   y=Math.max(50,Math.min(96,Number(y)));
   if(!Number.isFinite(x)||!Number.isFinite(y)) return;
   workingInitials[pos.product]=workingInitials[pos.product]||{};
-  const next={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
-  if(workingInitials[pos.product][pos.side]?.x===next.x && workingInitials[pos.product][pos.side]?.y===next.y) return;
+  const next={x:Math.round(x*2)/2,y:Math.round(y*2)/2,sizePct:pos.sizePct};
+  if(workingInitials[pos.product][pos.side]?.x===next.x && workingInitials[pos.product][pos.side]?.y===next.y && workingInitials[pos.product][pos.side]?.sizePct===next.sizePct) return;
   workingInitials[pos.product][pos.side]=next;
   const xEl=document.getElementById("initialsPosX");
   const yEl=document.getElementById("initialsPosY");
@@ -742,6 +742,16 @@ function writeInitialsPos(x,y,announce=true){
   if(yEl) yEl.value=String(workingInitials[pos.product][pos.side].y);
   placeAdminInitialsMark(workingInitials[pos.product][pos.side].x, workingInitials[pos.product][pos.side].y);
   if(announce) setShopState("Initialenposition geändert – oben Speichern klicken.");
+}
+function writeInitialsSize(value){
+  const pos=currentInitialsPos();
+  const sizePct=Math.max(2,Math.min(12,Number(value)));
+  if(!Number.isFinite(sizePct)) return;
+  workingInitials[pos.product][pos.side]={x:pos.x,y:pos.y,sizePct};
+  placeAdminInitialsMark(pos.x,pos.y);
+  const label=document.getElementById("initialsSizeValue");
+  if(label) label.textContent=`${sizePct} %`;
+  setShopState("Initialengröße geändert – oben Speichern klicken.");
 }
 function placeAdminInitialsMark(x,y){
   const mark=document.getElementById("positionInitials");
@@ -751,6 +761,7 @@ function placeAdminInitialsMark(x,y){
   if(mark.parentElement!==stage) stage.appendChild(mark);
   const s=stage.getBoundingClientRect();
   const i=shirt.getBoundingClientRect();
+  mark.style.setProperty("font-size",`${Math.max(10,i.width*currentInitialsPos().sizePct/100)}px`,"important");
   if(!s.width||!i.width){
     mark.style.left=`${x}%`;
     mark.style.top=`${y}%`;
@@ -993,9 +1004,10 @@ function refreshPositionEditor(){
     positionMotif.hidden = true;
     positionMotif.removeAttribute("src");
   }
-  positionMotif.style.left = `${x}%`;
-  positionMotif.style.top = `${y}%`;
-  positionMotif.style.width = `${w}%`;
+  // Alter gespeicherter Logo-Koordinatenraum bleibt erhalten; die sichtbare Druckfläche wächst ringsum.
+  positionMotif.style.left = `${(30+260*x/100)/320*100}%`;
+  positionMotif.style.top = `${(135+340*y/100)/500*100}%`;
+  positionMotif.style.width = `${260*w/320}%`;
   if(positionSize) positionSize.value = String(w);
   const sizePct=document.getElementById("positionSizeValue")||positionSizeValue;
   if(sizePct) sizePct.textContent = friendlySizeLabel(w);
@@ -1023,6 +1035,10 @@ function refreshPositionEditor(){
   const yEl=document.getElementById("initialsPosY");
   if(xEl) xEl.value=String(initialsPos.x);
   if(yEl) yEl.value=String(initialsPos.y);
+  const sizeEl=document.getElementById("initialsSize");
+  if(sizeEl) sizeEl.value=String(initialsPos.sizePct);
+  const sizeLabel=document.getElementById("initialsSizeValue");
+  if(sizeLabel) sizeLabel.textContent=`${initialsPos.sizePct} %`;
   placeAdminInitialsMark(initialsPos.x, initialsPos.y);
 }
 function writePositionValues(x, y, w){
@@ -1050,8 +1066,8 @@ function bindPositionEditor(){
     if(!dragging) return;
     const r = positionPrintZone.getBoundingClientRect();
     const point = ev.touches?.[0] || ev;
-    let x = ((point.clientX - r.left) / r.width) * 100;
-    let y = ((point.clientY - r.top) / r.height) * 100;
+    let x = ((point.clientX - r.left - r.width*30/320) / (r.width*260/320)) * 100;
+    let y = ((point.clientY - r.top - r.height*135/500) / (r.height*340/500)) * 100;
     x = Math.max(-20, Math.min(120, x));
     y = Math.max(-20, Math.min(120, y));
     writePositionValues(x, y, NaN);
@@ -1075,6 +1091,7 @@ function bindPositionEditor(){
   document.getElementById("initialsPosY")?.addEventListener("input", ()=>{
     writeInitialsPos(currentInitialsPos().x, Number(document.getElementById("initialsPosY").value));
   });
+  document.getElementById("initialsSize")?.addEventListener("input", ev=>writeInitialsSize(ev.target.value));
 }
 
 // v29.8.6: robuster Fallback für die Artikelzeile (Kategorie/Modell/Ansicht).
@@ -1718,7 +1735,7 @@ function buildShopConfig(){
   const side=positionSide?.value||"front";
   workingInitials=workingInitials||{};
   workingInitials[pid]=workingInitials[pid]||{};
-  if(Number.isFinite(ix)&&Number.isFinite(iy)) workingInitials[pid][side]={x:ix,y:iy};
+  if(Number.isFinite(ix)&&Number.isFinite(iy)) workingInitials[pid][side]={x:ix,y:iy,sizePct:Number(document.getElementById("initialsSize")?.value)||5};
   cfg.initialsByProduct=deepClone(workingInitials||{});
   const live=workingInitials[pid][side]||{};
   cfg.initialsConfig={label:"Initialen",placeholder:"",maxLength:3,fontSize:30,fontFamily:"Arial Black",stageXPct:live.x??34,stageYPct:live.y??80};
@@ -2311,7 +2328,7 @@ saveShopBtn.addEventListener("click",async()=>{
     }
     mark.id="positionInitials";
     mark.className="position-initials";
-    mark.textContent="Initialen";
+    mark.textContent="2W";
     mark.setAttribute("role","button");
     mark.tabIndex=0;
     mark.setAttribute("aria-label","Initialenposition verschieben");
@@ -2511,7 +2528,7 @@ saveShopBtn.addEventListener("click",async()=>{
   const modelInput=document.getElementById('v2853Model');
   const previewTitle=document.getElementById('v2853PreviewTitle');
   const colorName=document.getElementById('v2853ColorName');
-  const colorDot=colorCard.card.querySelector('.v2853-color-readonly i');
+  const colorDot=document.querySelector('.v2853-color-readonly i');
 
   function refreshReferenceMeta(){
     const map={
@@ -2534,7 +2551,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.122');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.123');
 })();
 
 // ============================================================
@@ -2598,7 +2615,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.122");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.125");
   return true;
   }
   if(!boot()){

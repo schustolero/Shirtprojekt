@@ -5136,6 +5136,23 @@ html body .shirt-initials-overlay.is-set{
 }
 
 /* v30.3.124 – Kompakte Seitenwahl in der Shop-Bedienleiste. */
+/* Größere Druckfläche; der alte Koordinatenraum liegt unverändert mittig darin. */
+html body .mockup-stage .print-zone,
+html body .mockup-stage .print-zone.back{
+  width:320px!important;height:500px!important;
+  top:calc(47% - 55px)!important;
+  overflow:hidden!important;
+}
+html body .mockup-stage .print-zone .canvas-container,
+html body .mockup-stage .print-zone canvas{
+  width:320px!important;height:500px!important;
+}
+.dual-initials{
+  position:absolute;z-index:5;transform:translate(-50%,-50%);
+  font:900 1em/1 "Arial Black",Impact,sans-serif;
+  white-space:nowrap;pointer-events:none;text-shadow:0 1px 2px rgba(0,0,0,.55);
+}
+.dual-initials[hidden]{display:none!important}
 html body .sidebar .view-section{
   display:flex!important;
   align-items:center!important;

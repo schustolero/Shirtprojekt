@@ -419,13 +419,15 @@ document.body.classList.remove("shop-loading");
 // Dadurch können große Motive höher positioniert werden, ohne am Canvas-Rand abgeschnitten zu werden.
 const PRINT_BASE_WIDTH = 260;
 const PRINT_BASE_HEIGHT = 340;
-const PRINT_HEADROOM = 90;
-const PRINT_CANVAS_HEIGHT = PRINT_BASE_HEIGHT + PRINT_HEADROOM;
+const PRINT_HEADROOM = 135;
+const PRINT_CANVAS_WIDTH = 320;
+const PRINT_CANVAS_HEIGHT = 500;
+const PRINT_SIDE_MARGIN = 30;
 
 let canvas;
 try{
   canvas = new fabric.Canvas("designCanvas", {
-    width: PRINT_BASE_WIDTH,
+    width: PRINT_CANVAS_WIDTH,
     height: PRINT_CANVAS_HEIGHT,
     backgroundColor: "transparent",
     selection: true,
@@ -905,6 +907,28 @@ async function renderDualPreview() {
     dualCompositeShirt.src = await renderDualShirtImage();
   }
   await Promise.all([renderDualMotif("front", dualFrontMotif), renderDualMotif("back", dualBackMotif)]);
+  updateDualInitials();
+}
+
+function updateDualInitials(){
+  if(!dualCompositeStage) return;
+  const value=initialsValue();
+  for(const [index,side] of ["front","back"].entries()){
+    let mark=dualCompositeStage.querySelector(`.dual-initials-${side}`);
+    if(!mark){
+      mark=document.createElement("span");
+      mark.className=`dual-initials dual-initials-${side}`;
+      dualCompositeStage.appendChild(mark);
+    }
+    mark.hidden=!value||!FEATURES.allowInitials;
+    mark.textContent=value;
+    const defaults=side==="front"?{x:24,y:90}:{x:24,y:90};
+    const saved=SHOP.initialsByProduct?.[currentProductId]?.[side]||{};
+    mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
+    mark.style.top=`${Number(saved.y??defaults.y)}%`;
+    mark.style.fontSize=`${dualCompositeStage.clientWidth/2*Math.max(2,Math.min(12,Number(saved.sizePct??5)))/100}px`;
+    mark.style.color=SHOP.shirtMotifColors?.[currentShirtColorId]?.color||currentMotifColor||"#ffffff";
+  }
 }
 
 function applyPreviewMode() {
@@ -950,12 +974,12 @@ function switchView(view) {
     shirtMockup.alt = "T-Shirt Vorderseite";
     designerStatus.textContent = "Vorderseite";
     printZone.classList.remove("back");
-    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_BASE_WIDTH);
+    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_CANVAS_WIDTH);
   } else {
     shirtMockup.alt = "T-Shirt Rückseite";
     designerStatus.textContent = "Rückseite";
     printZone.classList.add("back");
-    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_BASE_WIDTH);
+    canvas.setHeight(PRINT_CANVAS_HEIGHT); canvas.setWidth(PRINT_CANVAS_WIDTH);
   }
   renderShirt();
   loadView(view);
@@ -1076,7 +1100,7 @@ function applyFixedMotifLayout(image, motifId) {
   const rotatable = !!FEATURES.allowRotateMotif;
   const editable = movable || resizable || rotatable;
   image.set({
-    left: PRINT_BASE_WIDTH * layout.left,
+    left: PRINT_SIDE_MARGIN + PRINT_BASE_WIDTH * layout.left,
     // Y-Werte bleiben auf die bisherige 340px-Druckzone bezogen.
     // PRINT_HEADROOM liegt unsichtbar darüber und verhindert Clipping.
     top: PRINT_HEADROOM + (PRINT_BASE_HEIGHT * layout.top),
@@ -1308,11 +1332,11 @@ function updateInitialsOnCanvas() {
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
-    tshirt:{front:{x:34,y:78},back:{x:34,y:78}},
-    polo:{front:{x:34,y:76},back:{x:34,y:76}},
-    hoodie:{front:{x:34,y:80},back:{x:34,y:78}},
-    sport:{front:{x:34,y:77},back:{x:34,y:77}},
-    sweatshirt:{front:{x:34,y:80},back:{x:34,y:78}}
+    tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
+    polo:{front:{x:24,y:88},back:{x:24,y:88}},
+    hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
+    sport:{front:{x:24,y:89},back:{x:24,y:89}},
+    sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
   };
   const custom = SHOP.initialsByProduct?.[productId]?.[view] || {};
   const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
@@ -1320,7 +1344,8 @@ function updateInitialsOnCanvas() {
   const y = Number(custom.y ?? fallback.y);
   applyInitialsOnShirt(overlay, x, y);
   const box = initialsShirtBox();
-  const px = box ? Math.max(42, Math.round(box.imgBox.width * 0.16)) : 56;
+  const sizePct = Math.max(2,Math.min(12,Number(custom.sizePct ?? 5)));
+  const px = box ? Math.max(10, box.imgBox.width * sizePct / 100) : 25;
   overlay.style.fontSize = `${px}px`;
   overlay.style.fontFamily = cfg.fontFamily || "Arial Black, Impact, sans-serif";
   overlay.style.fontWeight = "900";
@@ -1331,6 +1356,7 @@ function updateInitialsOnCanvas() {
   overlay.style.zIndex = "80";
   overlay.classList.toggle("is-set", !!value);
   overlay.setAttribute("aria-hidden", value ? "false" : "true");
+  if(FEATURES.previewMode==="dual") updateDualInitials();
   if(!overlay.dataset.resizeBound){
     overlay.dataset.resizeBound="1";
     window.addEventListener("resize", updateInitialsOnCanvas, {passive:true});
@@ -1393,7 +1419,7 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   currentView = "front";
   designerStatus.textContent = "Vorderseite";
   printZone.classList.remove("back");
-  canvas.setWidth(PRINT_BASE_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
+  canvas.setWidth(PRINT_CANVAS_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
   viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === "front"));
   motifButtons.forEach(button => button.classList.remove("active"));
   changeShirtColor("#ffffff", "White", "white", "");

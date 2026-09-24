@@ -6386,6 +6386,11 @@ html body .v2849-version{display:block!important;opacity:1!important}
 .position-stage .position-initials~.position-initials{display:none!important}
 
 /* Initialenposition im Admin ohne sichtbaren Rahmen ziehen. */
+/* Gleiche vergrößerte Druckfläche wie im Shop bei unveränderten Logo-Koordinaten. */
+html body .v2853-preview-shell .position-print-zone{
+  left:22.881%!important;top:2.48%!important;
+  width:54.237%!important;height:72.88%!important;
+}
 html body #positionStage #positionInitials{
   width:auto!important;
   height:auto!important;
