@@ -74,7 +74,6 @@ function syncMobileAfterShirtControls() {
     const anchor = dualWorkspace && !dualWorkspace.hidden ? dualWorkspace : workspace;
     if (anchor) anchor.insertAdjacentElement("afterend", host);
     if (logoChoice) host.appendChild(logoChoice);
-    if (initials) host.appendChild(initials);
     return;
   }
 
@@ -174,7 +173,9 @@ function getAllowedMotifColorNames(){
       img.className = "shop-brand-logo";
       img.style.height = `${Number(cfg.logoHeight) || 44}px`;
       img.onerror = () => img.remove();
-      host.prepend(img);
+      const titleBlock = header?.querySelector("div");
+      if(titleBlock) titleBlock.appendChild(img);
+      else host.prepend(img);
     }
   }
 
@@ -300,7 +301,7 @@ function getAllowedMotifColorNames(){
   const initialsTab=document.getElementById("initialsTab");
   if(initialsTab) initialsTab.hidden=true;
   if(initialsPop){
-    initialsPop.hidden=FEATURES.allowInitials===false;
+    initialsPop.hidden=false;
     initialsPop.removeAttribute("hidden");
     if(FEATURES.allowInitials===false) initialsPop.hidden=true;
     const motifColors=document.querySelector(".motif-color-section");
@@ -2102,7 +2103,7 @@ function validateInitialsField(){
 function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
-  const seq=["productSection",".motif-section",".motif-color-section","#initialsPop",".view-section",".order-section",".sidebar-bottom"];
+  const seq=["productSection","#initialsPop",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);
