@@ -4939,3 +4939,113 @@ html body .sidebar .initials-section .feature-input{
     font-size:16px!important;
   }
 }
+@media (max-width:900px){
+  html body .workspace .shirt-color{
+    width:44px!important;
+    height:44px!important;
+    min-width:44px!important;
+    min-height:44px!important;
+    background:transparent!important;
+    border:0!important;
+    box-shadow:none!important;
+    display:grid!important;
+    place-items:center!important;
+  }
+  html body .workspace .shirt-color::before{
+    content:""!important;
+    width:22px!important;
+    height:22px!important;
+    border-radius:50%!important;
+    background:var(--swatch,#888)!important;
+    box-shadow:0 0 0 2px #fff,0 0 0 3px #cfcfd5!important;
+  }
+  html body .workspace .shirt-color.active::before{
+    box-shadow:0 0 0 2px #fff,0 0 0 3px #111!important;
+  }
+  html body .view-btn{
+    min-height:44px!important;
+    height:44px!important;
+  }
+}
+html body .designer-header{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  align-items:center!important;
+  gap:10px 16px!important;
+}
+html body .designer-header .shop-brand-logo{
+  display:block!important;
+  height:48px!important;
+  width:auto!important;
+  max-width:160px!important;
+  object-fit:contain!important;
+  order:-1!important;
+}
+html body .brand .shop-brand-logo{display:none!important}
+@media (max-width:900px){
+  html body .designer-header{
+    flex-direction:column!important;
+    align-items:flex-start!important;
+  }
+  html body .designer-header .shop-brand-logo{
+    height:40px!important;
+    margin:0 0 4px!important;
+  }
+  html body .brand{display:none!important}
+}
+
+/* v30.3.97 – Header-Positionierung */
+html body .designer-header{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  grid-template-areas:"logo copy status"!important;
+  align-items:center!important;
+  column-gap:16px!important;
+  row-gap:6px!important;
+  padding:14px 24px!important;
+  min-height:72px!important;
+  background:#fff!important;
+}
+html body .designer-header .shop-brand-logo{
+  grid-area:logo!important;
+  display:block!important;
+  height:48px!important;
+  width:auto!important;
+  max-width:140px!important;
+  object-fit:contain!important;
+  margin:0!important;
+}
+html body .designer-header>div:not(.designer-status){
+  grid-area:copy!important;
+  min-width:0!important;
+}
+html body .designer-header h1{
+  margin:0!important;
+  font-size:20px!important;
+  line-height:1.2!important;
+}
+html body .designer-header p{
+  margin:4px 0 0!important;
+  font-size:13px!important;
+}
+html body .designer-status{
+  grid-area:status!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  height:32px!important;
+  padding:0 12px!important;
+  white-space:nowrap!important;
+}
+@media (max-width:900px){
+  html body .designer-header{
+    grid-template-columns:minmax(0,1fr) auto!important;
+    grid-template-areas:"logo status" "copy copy"!important;
+    padding:12px 14px!important;
+    min-height:0!important;
+  }
+  html body .designer-header .shop-brand-logo{
+    height:40px!important;
+    max-width:120px!important;
+  }
+  html body .designer-header h1{font-size:18px!important}
+}

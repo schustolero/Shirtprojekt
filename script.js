@@ -151,18 +151,18 @@ function getAllowedMotifColorNames(){
   const next = document.getElementById("formNext");
   if (next) next.value = new URL(`/danke.html?shop=${encodeURIComponent(cfg.customerId || window.SHOP_SLUG || "")}`, window.location.origin).href;
 
-  document.querySelectorAll(".designer-header .shop-brand-logo").forEach(el=>el.remove());
+  document.querySelectorAll(".shop-brand-logo").forEach(el=>el.remove());
   if (cfg.logoFile) {
-    const brand = document.querySelector(".brand");
-    if (brand) {
-      brand.querySelectorAll(".shop-brand-logo").forEach(el => el.remove());
+    const header = document.querySelector(".designer-header");
+    const host = header || document.querySelector(".brand");
+    if (host) {
       const img = document.createElement("img");
       img.src = window.shopAssetUrl ? window.shopAssetUrl(cfg.logoFile) : cfg.logoFile;
       img.alt = cfg.brandTitle || "Shop Logo";
       img.className = "shop-brand-logo";
-      img.style.height = `${Number(cfg.logoHeight) || 52}px`;
+      img.style.height = `${Number(cfg.logoHeight) || 48}px`;
       img.onerror = () => img.remove();
-      brand.prepend(img);
+      host.insertBefore(img, host.firstChild);
     }
   }
 
