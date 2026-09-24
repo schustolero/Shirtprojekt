@@ -2626,7 +2626,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.115');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.116');
 })();
 
 // ============================================================
@@ -2690,7 +2690,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.115");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.116");
   return true;
   }
   if(!boot()){
@@ -2698,3 +2698,52 @@ saveShopBtn.addEventListener("click",async()=>{
     document.addEventListener("DOMContentLoaded",boot);
   }
 })();
+
+(function bindInitialsDragAlways(){
+  if(window.__initialsDragAlways) return;
+  window.__initialsDragAlways=true;
+  let active=null;
+  function boxOf(el){
+    const img=document.getElementById("shirtMockup")||document.getElementById("positionShirt");
+    const stage=el.closest(".mockup-stage,.position-stage")||el.parentElement;
+    if(!img||!stage) return null;
+    return {img:img.getBoundingClientRect(), stage:stage.getBoundingClientRect()};
+  }
+  function move(el,cx,cy){
+    const b=boxOf(el); if(!b||!b.img.width) return;
+    const x=Math.max(8,Math.min(92,((cx-b.img.left)/b.img.width)*100));
+    const y=Math.max(50,Math.min(96,((cy-b.img.top)/b.img.height)*100));
+    const sl=((b.img.left-b.stage.left)+b.img.width*(x/100))/b.stage.width*100;
+    const st=((b.img.top-b.stage.top)+b.img.height*(y/100))/b.stage.height*100;
+    el.style.left=sl+"%"; el.style.top=st+"%";
+    window._initialsLivePos=window._initialsLivePos||{};
+    const pid=window.currentProductId||document.getElementById("positionProduct")?.value||"tshirt";
+    const side=window.currentView||document.getElementById("positionSide")?.value||"front";
+    window._initialsLivePos[pid+":"+side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
+    if(typeof workingInitials==="object"){
+      workingInitials[pid]=workingInitials[pid]||{};
+      workingInitials[pid][side]={x:Math.round(x*2)/2,y:Math.round(y*2)/2};
+    }
+    const xEl=document.getElementById("initialsPosX");
+    const yEl=document.getElementById("initialsPosY");
+    if(xEl) xEl.value=String(Math.round(x*2)/2);
+    if(yEl) yEl.value=String(Math.round(y*2)/2);
+  }
+  function pick(ev){
+    return ev.target.closest?.(".shirt-initials-overlay,.position-initials,#positionInitials");
+  }
+  document.addEventListener("pointerdown",function(ev){
+    const el=pick(ev); if(!el||el.hidden) return;
+    if(el.classList.contains("shirt-initials-overlay") && !el.textContent.trim()) return;
+    active=el; window._initialsDragging=true;
+    el.setPointerCapture?.(ev.pointerId);
+    ev.preventDefault(); ev.stopPropagation();
+  },true);
+  document.addEventListener("pointermove",function(ev){
+    if(!active) return;
+    move(active,ev.clientX,ev.clientY);
+    ev.preventDefault();
+  },true);
+  document.addEventListener("pointerup",function(){ active=null; window._initialsDragging=false; },true);
+})();
+
