@@ -5083,3 +5083,23 @@ html body .shirt-initials-overlay[hidden]{display:none!important}
 
 html body .price-patch,html body #pricePatch,html body .admin-price-patch{display:none!important}
 html body .price-patch,html body #pricePatch,html body .admin-price-patch,html body #adminPricePatch{display:none!important;visibility:hidden!important}
+
+html body .workspace.has-color-rail .shirt-colors{
+  padding-right:10px!important;
+  overflow-y:auto!important;
+  scrollbar-gutter:stable!important;
+  scrollbar-width:auto!important;
+  scrollbar-color:#1b2430 #e6eaee!important;
+}
+html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar{width:10px!important}
+html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar-track{
+  background:#e6eaee!important;border-radius:999px!important;margin:8px 0!important;
+}
+html body .workspace.has-color-rail .shirt-colors::-webkit-scrollbar-thumb{
+  background:#1b2430!important;border-radius:999px!important;border:2px solid #e6eaee!important;
+}
+html body .motif-more-select{
+  width:100%!important;min-height:40px!important;margin-top:8px!important;
+  border:1px solid #d7dee3!important;border-radius:10px!important;padding:8px 10px!important;
+  font-size:13px!important;background:#fff!important;
+}

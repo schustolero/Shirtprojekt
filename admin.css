@@ -6180,3 +6180,10 @@ html,body{background:#f3f5f7!important;color:#15202b!important}
 #shopForm .embedded-display-section{
   margin-top:14px!important;padding:0!important;border:0!important;background:transparent!important;
 }
+
+.position-initials{
+  position:absolute!important;transform:translate(-50%,-50%)!important;
+  left:34%;top:80%;z-index:8;cursor:grab;font:900 22px/1 Arial Black,sans-serif;
+  color:#fff;text-shadow:0 1px 2px #000;user-select:none;
+  border:1px dashed rgba(255,255,255,.7);padding:2px 6px;
+}

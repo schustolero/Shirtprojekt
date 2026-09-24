@@ -343,6 +343,28 @@ function getAllowedMotifColorNames(){
       btn.append(preview, label);
       motifGrid.appendChild(btn);
     });
+    const tiles=[...motifGrid.querySelectorAll(".motif-btn:not(.motif-btn-off)")];
+    if(tiles.length>2){
+      const extra=document.createElement("select");
+      extra.id="motifMoreSelect";
+      extra.className="motif-more-select";
+      extra.setAttribute("aria-label","Weitere Logos");
+      extra.innerHTML='<option value="">Weitere Logos</option>';
+      tiles.slice(2).forEach(btn=>{
+        btn.hidden=true;
+        const opt=document.createElement("option");
+        opt.value=btn.dataset.motif;
+        opt.textContent=btn.querySelector("span:last-child")?.textContent||btn.dataset.motif;
+        extra.appendChild(opt);
+      });
+      extra.addEventListener("change",()=>{
+        const id=extra.value;
+        if(!id) return;
+        const btn=motifGrid.querySelector(`.motif-btn[data-motif="${id}"]`);
+        if(btn) btn.click();
+      });
+      motifGrid.appendChild(extra);
+    }
   }
 
   (function dockColorRailNextToShirt(){
@@ -1303,42 +1325,24 @@ function updateInitialsOnCanvas() {
   overlay.setAttribute("aria-hidden", value ? "false" : "true");
   if(!overlay.dataset.dragBound){
     overlay.dataset.dragBound = "1";
-    let dragging = false;
-    const moveTo = (clientX, clientY) => {
-      const box=initialsShirtBox();
-      if(!box) return;
-      const nx=Math.max(10, Math.min(90, ((clientX-box.imgBox.left)/box.imgBox.width)*100));
-      const ny=Math.max(55, Math.min(96, ((clientY-box.imgBox.top)/box.imgBox.height)*100));
-      applyInitialsOnShirt(overlay, nx, ny);
-      const pid = (typeof currentProductId === "string" && currentProductId) || "tshirt";
-      const side = (typeof currentView === "string" && currentView) || "front";
-      window._initialsLivePos[`${pid}:${side}`] = {x: Math.round(nx*2)/2, y: Math.round(ny*2)/2};
-    };
-    const onMove = (ev) => {
-      if(!dragging) return;
-      const point = ev.touches ? ev.touches[0] : ev;
-      if(!point) return;
-      moveTo(point.clientX, point.clientY);
-      ev.preventDefault();
-    };
-    const stopDrag = () => { dragging = false; overlay.style.cursor = "grab"; };
-    overlay.addEventListener("pointerdown", (ev) => {
-      if(!overlay.textContent) return;
-      dragging = true;
-      overlay.style.cursor = "grabbing";
-      ev.preventDefault();
-      ev.stopPropagation();
-    });
-    window.addEventListener("pointermove", onMove, {passive:false});
-    window.addEventListener("pointerup", stopDrag);
-    overlay.addEventListener("touchstart", (ev) => {
-      if(!overlay.textContent) return;
-      dragging = true;
-      ev.preventDefault();
-    }, {passive:false});
-    window.addEventListener("touchmove", onMove, {passive:false});
-    window.addEventListener("touchend", stopDrag);
     window.addEventListener("resize", () => updateInitialsOnCanvas(), {passive:true});
+    if(window.interact){
+      window.interact(overlay).draggable({
+        listeners:{
+          move(event){
+            if(!overlay.textContent) return;
+            const box=initialsShirtBox();
+            if(!box) return;
+            const nx=Math.max(10, Math.min(90, ((event.client.x-box.imgBox.left)/box.imgBox.width)*100));
+            const ny=Math.max(55, Math.min(96, ((event.client.y-box.imgBox.top)/box.imgBox.height)*100));
+            applyInitialsOnShirt(overlay, nx, ny);
+            const pid = (typeof currentProductId === "string" && currentProductId) || "tshirt";
+            const side = (typeof currentView === "string" && currentView) || "front";
+            window._initialsLivePos[`${pid}:${side}`] = {x: Math.round(nx*2)/2, y: Math.round(ny*2)/2};
+          }
+        }
+      });
+    }
   }
 }
 

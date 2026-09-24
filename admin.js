@@ -1816,6 +1816,50 @@ saveShopBtn.addEventListener("click",async()=>{
     const btn = e.target.closest(".shop-subtab");
     if(btn) setPanel(btn.dataset.panel);
   });
+
+
+(function bindAdminInitials(){
+  const xEl=document.getElementById("initialsPosX");
+  const yEl=document.getElementById("initialsPosY");
+  const mark=document.getElementById("positionInitials");
+  const productEl=document.getElementById("positionProduct");
+  const sideEl=document.getElementById("positionSide");
+  if(!xEl||!yEl||!mark) return;
+  const key=()=>((productEl&&productEl.value)||"tshirt")+":"+((sideEl&&sideEl.value)||"front");
+  const apply=()=>{
+    const x=Math.max(10,Math.min(90,Number(xEl.value)||34));
+    const y=Math.max(55,Math.min(96,Number(yEl.value)||80));
+    mark.style.left=x+"%";
+    mark.style.top=y+"%";
+    window.workingInitials=window.workingInitials||{};
+    if(typeof workingInitials==="object"){
+      const pid=(productEl&&productEl.value)||"tshirt";
+      const side=(sideEl&&sideEl.value)||"front";
+      workingInitials[pid]=workingInitials[pid]||{};
+      workingInitials[pid][side]={x,y};
+    }
+  };
+  xEl.addEventListener("input",apply);
+  yEl.addEventListener("input",apply);
+  productEl&&productEl.addEventListener("change",apply);
+  sideEl&&sideEl.addEventListener("change",apply);
+  if(window.interact){
+    window.interact(mark).draggable({
+      listeners:{
+        move(event){
+          const stage=document.getElementById("positionStage");
+          if(!stage) return;
+          const box=stage.getBoundingClientRect();
+          xEl.value=String(Math.round(((event.client.x-box.left)/box.width)*200)/2);
+          yEl.value=String(Math.round(((event.client.y-box.top)/box.height)*200)/2);
+          apply();
+        }
+      }
+    });
+  }
+  apply();
+})();
+
 })();
 
 
