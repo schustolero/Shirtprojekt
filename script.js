@@ -163,15 +163,18 @@ function getAllowedMotifColorNames(){
   if (next) next.value = new URL(`/danke.html?shop=${encodeURIComponent(cfg.customerId || window.SHOP_SLUG || "")}`, window.location.origin).href;
 
   if (cfg.logoFile) {
+    const header = document.querySelector(".designer-header");
     const brand = document.querySelector(".brand");
-    if (brand) {
+    const host = header || brand;
+    if (host) {
+      host.querySelectorAll(".shop-brand-logo").forEach(el => el.remove());
       const img = document.createElement("img");
       img.src = window.shopAssetUrl ? window.shopAssetUrl(cfg.logoFile) : cfg.logoFile;
       img.alt = cfg.brandTitle || "Shop Logo";
       img.className = "shop-brand-logo";
-      img.style.height = `${Number(cfg.logoHeight) || 52}px`;
+      img.style.height = `${Number(cfg.logoHeight) || 44}px`;
       img.onerror = () => img.remove();
-      brand.prepend(img);
+      host.prepend(img);
     }
   }
 
@@ -297,9 +300,13 @@ function getAllowedMotifColorNames(){
   const initialsTab=document.getElementById("initialsTab");
   if(initialsTab) initialsTab.hidden=true;
   if(initialsPop){
-    initialsPop.hidden=!FEATURES.allowInitials;
+    initialsPop.hidden=FEATURES.allowInitials===false;
+    initialsPop.removeAttribute("hidden");
+    if(FEATURES.allowInitials===false) initialsPop.hidden=true;
     const motifColors=document.querySelector(".motif-color-section");
+    const sidebar=document.querySelector(".sidebar");
     if(motifColors) motifColors.insertAdjacentElement("afterend", initialsPop);
+    else if(sidebar) sidebar.appendChild(initialsPop);
   }
   if(initialsField){
     initialsField.maxLength=3;
@@ -1636,6 +1643,10 @@ function renderCart() {
 function addCurrentShirtToOrder() {
   orderMessage.textContent = "";
   orderMessage.classList.remove("success");
+  if(typeof validateInitialsField==="function" && !validateInitialsField()){
+    document.getElementById("initialsInput")?.focus();
+    return;
+  }
   const item = getCurrentShirtSelection();
   if (!item) return;
 
@@ -2045,19 +2056,47 @@ window.dockShirtColorRail=function(){
   }
 };
 
+function validateInitialsField(){
+  const field=document.getElementById("initialsInput");
+  const err=document.getElementById("initialsError");
+  if(!field) return true;
+  const raw=String(field.value||"");
+  const clean=raw.toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+  if(field.value!==clean) field.value=clean;
+  let message="";
+  if(/[^A-ZÄÖÜ0-9]/.test(raw.toUpperCase())) message="Nur Buchstaben und Zahlen.";
+  else if(raw.length>3) message="Maximal 3 Zeichen.";
+  const valid=!message;
+  field.setAttribute("aria-invalid", valid?"false":"true");
+  field.classList.toggle("is-invalid", !valid);
+  if(err){
+    err.hidden=valid;
+    err.textContent=message;
+  }
+  if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
+  return valid;
+}
 (function hardenInitials(){
   const field=document.getElementById("initialsInput");
   if(!field) return;
   field.maxLength=3;
   field.setAttribute("maxlength","3");
+  field.setAttribute("pattern","[A-Za-zÄÖÜäöü0-9]{0,3}");
   field.value="";
-  const clamp=()=>{
-    field.value=String(field.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
-    if(typeof updateInitialsOnCanvas==="function") updateInitialsOnCanvas();
-  };
-  field.addEventListener("input",clamp);
-  field.addEventListener("paste",()=>setTimeout(clamp,0));
-  clamp();
+  field.addEventListener("beforeinput",(ev)=>{
+    if(ev.inputType==="insertFromPaste"||ev.inputType==="insertText"){
+      const next=String(field.value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"");
+      const incoming=String(ev.data||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"");
+      if(ev.inputType==="insertText" && (next.length>=3 || !incoming)){
+        ev.preventDefault();
+        validateInitialsField();
+      }
+    }
+  });
+  field.addEventListener("input", validateInitialsField);
+  field.addEventListener("blur", validateInitialsField);
+  field.addEventListener("paste",()=>setTimeout(validateInitialsField,0));
+  validateInitialsField();
 })();
 
 function orderCustomerSidebar(){

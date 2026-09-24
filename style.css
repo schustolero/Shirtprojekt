@@ -4596,3 +4596,62 @@ html body .size-switch{
     grid-template-columns:repeat(6,minmax(0,1fr))!important;
   }
 }
+
+/* v30.3.88 – Logo oben, Shirt sichtbar, Initialenfeld */
+html body .designer-header{
+  display:grid!important;
+  grid-template-columns:auto minmax(0,1fr) auto!important;
+  align-items:center!important;
+  gap:12px!important;
+}
+html body .designer-header .shop-brand-logo{
+  display:block!important;
+  height:44px!important;
+  width:auto!important;
+  max-width:120px!important;
+  object-fit:contain!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+html body .brand .shop-brand-logo{display:none!important}
+html body #shirtMockup,
+html body .shirt-mockup{
+  display:block!important;
+  visibility:visible!important;
+  opacity:1!important;
+  width:100%!important;
+  height:auto!important;
+  max-height:min(72vh,640px)!important;
+  object-fit:contain!important;
+}
+html body .workspace .mockup-stage{
+  overflow:visible!important;
+  min-height:280px!important;
+}
+html body .sidebar .initials-section{
+  display:block!important;
+}
+html body .sidebar .initials-section[hidden]{display:none!important}
+html body .sidebar .initials-section .feature-input{
+  display:block!important;
+  width:100%!important;
+  max-width:200px!important;
+  height:36px!important;
+  text-transform:uppercase!important;
+}
+@media (max-width:900px){
+  html body .designer-header .shop-brand-logo{height:36px!important}
+  html body #shirtMockup,html body .shirt-mockup{max-height:48vh!important}
+}
+html body .initials-section .feature-input.is-invalid,
+html body #initialsInput[aria-invalid="true"]{
+  border-color:#b42318!important;
+  box-shadow:0 0 0 3px rgba(180,35,24,.15)!important;
+}
+html body #initialsError,
+html body .field-error{
+  margin:6px 0 0!important;
+  font-size:11px!important;
+  font-weight:700!important;
+  color:#b42318!important;
+}
