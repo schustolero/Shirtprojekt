@@ -2324,8 +2324,15 @@ saveShopBtn.addEventListener("click",async()=>{
   if(false){
     detachedAccent=null;
   }
+  if(designHost){
+    designHost.querySelectorAll('.v2850-subtitle,h3').forEach(el=>el.remove());
+    if(!designHost.querySelector('.shop-logo-inline') && !designHost.querySelector('.compact-colors-section')){
+      designHost.hidden=true;
+    }
+  }
   if(colors){
     colors.classList.add('v2869-inline-colors');
+    colors.querySelectorAll('h3,.v2850-subtitle').forEach(el=>el.remove());
     appearance.body.appendChild(colors);
     if(detachedAccent){
       let grid=colors.querySelector('.compact-color-row');

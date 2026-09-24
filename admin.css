@@ -6243,3 +6243,132 @@ html body .position-initials{
   display:none!important;
 }
 .position-stage .position-initials~.position-initials,.position-stage #adminInitialsMark{display:none!important}
+
+#shopForm .v3040-color-picker{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  gap:6px!important;
+  padding:2px 0!important;
+}
+#shopForm .v3040-color-chip,
+#shopForm .v3040-color-picker label{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:auto!important;
+  height:34px!important;
+  min-height:34px!important;
+  min-width:0!important;
+  padding:4px 8px!important;
+  margin:0!important;
+  border:1px solid #e2e6ea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+#shopForm .v3040-color-chip.is-on{
+  border-color:#c9a227!important;
+  background:#fffbeb!important;
+  box-shadow:none!important;
+}
+#shopForm .v3040-swatch,
+#shopForm .v3040-color-chip .v3040-swatch{
+  display:block!important;
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  min-height:18px!important;
+  flex:0 0 18px!important;
+  border-radius:50%!important;
+  border:1px solid rgba(0,0,0,.16)!important;
+  box-shadow:none!important;
+  background:var(--sw,#ccc)!important;
+}
+#shopForm .v3040-color-chip span{
+  display:block!important;
+  flex:1 1 auto!important;
+  min-width:0!important;
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:650!important;
+  color:#1b2430!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#shopForm .v2919-f140-grid,
+#shopForm .v2938-print-grid{
+  display:grid!important;
+  grid-template-columns:repeat(auto-fill,minmax(108px,1fr))!important;
+  gap:6px!important;
+}
+#shopForm .v2919-f140-grid button,
+#shopForm .v2938-print-grid button{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  gap:8px!important;
+  width:auto!important;
+  height:34px!important;
+  min-height:34px!important;
+  min-width:0!important;
+  padding:4px 8px!important;
+  border:1px solid #e2e6ea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  overflow:hidden!important;
+}
+#shopForm .v2919-f140-grid button.is-on,
+#shopForm .v2938-print-grid button.is-on{
+  border-color:#c9a227!important;
+  background:#fffbeb!important;
+  box-shadow:none!important;
+}
+#shopForm .v2919-f140-grid button .color-swatch,
+#shopForm .v2938-print-grid button .color-swatch{
+  width:18px!important;
+  height:18px!important;
+  min-width:18px!important;
+  border-radius:50%!important;
+  border:1px solid rgba(0,0,0,.16)!important;
+  box-shadow:none!important;
+  background:var(--swatch,var(--sw,#ccc))!important;
+}
+#shopForm .v2919-f140-grid button .color-label,
+#shopForm .v2938-print-grid button .color-label{
+  display:block!important;
+  font-size:11px!important;
+  font-weight:650!important;
+  color:#1b2430!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+}
+#shopForm .v3036-price-field input,
+#productPriceEditor input[type="number"],
+#shopForm .v3036-product-list input[type="number"]{
+  height:34px!important;
+  min-height:34px!important;
+  border:1px solid #e2e6ea!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-shadow:none!important;
+  padding:0 8px!important;
+}
+#shopForm .v3036-price-field input:focus,
+#productPriceEditor input[type="number"]:focus{
+  border-color:#c9a227!important;
+  box-shadow:0 0 0 3px rgba(201,162,39,.16)!important;
+}
+
+.v2853-appearance-card .v2850-subtitle,
+.v2853-appearance-card h3:not(.v2853-card-head h3),
+.v2853-appearance-card .editor-box>h3,
+.v2853-appearance-card [data-box="darstellung"],
+.v2853-appearance-card [data-box="darstellung"] .v2850-subtitle,
+.v2850-design.editor-box:empty,
+.v2850-design.editor-box[hidden]{display:none!important}
+.v2853-card.v2853-appearance-card>.v2853-card-head h3{display:block!important}
