@@ -203,7 +203,7 @@ function getAllowedMotifColorNames(){
   const backButton = document.querySelector('.view-btn[data-view="back"]');
   const resetSection = document.querySelector('.sidebar-bottom');
 
-  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.length > 0;
+  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.some(motif=>!motif.isClubCrest);
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
   const allowedShirtColorIds = getAllowedShirtColorIds();
   if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
@@ -343,11 +343,12 @@ function getAllowedMotifColorNames(){
     motifGrid.appendChild(noneBtn);
   }
   if (motifGrid && Array.isArray(cfg.motifs)) {
+    const clubCrests=[];
     cfg.motifs.forEach((motif) => {
       if (!motif || !motif.id || !motif.file) return;
       const btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "motif-btn";
+      btn.className = motif.isClubCrest ? "motif-btn club-crest-btn" : "motif-btn";
       btn.dataset.motif = motif.id;
       btn.dataset.src = window.shopAssetUrl ? window.shopAssetUrl(motif.file) : motif.file;
       btn.dataset.preserveColors = motif.preserveColors ? "true" : "false";
@@ -361,8 +362,18 @@ function getAllowedMotifColorNames(){
       label.textContent = motif.name || motif.id;
       preview.appendChild(img);
       btn.append(preview, label);
-      motifGrid.appendChild(btn);
+      if(motif.isClubCrest) clubCrests.push(btn);
+      else motifGrid.appendChild(btn);
     });
+    if(clubCrests.length){
+      const crestSection=document.createElement("section");
+      crestSection.className="tool-section club-crest-section";
+      crestSection.innerHTML='<h3>Vereinswappen</h3><p class="motif-help">Feste Position und Größe.</p><div class="club-crest-grid"></div><button type="button" class="club-crest-clear">Ohne Wappen</button>';
+      const grid=crestSection.querySelector(".club-crest-grid");
+      clubCrests.forEach(button=>grid.appendChild(button));
+      crestSection.querySelector(".club-crest-clear").addEventListener("click",()=>clearShirtLogos());
+      document.querySelector(".sidebar")?.appendChild(crestSection);
+    }
     const tiles=[...motifGrid.querySelectorAll(".motif-btn:not(.motif-btn-off)")];
     if(tiles.length>2){
       const extra=document.createElement("select");
@@ -534,7 +545,7 @@ function getMotifButtonByKind(kind){
   const buttons=Array.from(document.querySelectorAll(".motif-btn"));
   const usable=buttons.filter(button=>button.dataset.motif && button.dataset.motif!=="none" && button.dataset.src);
   if(kind === "patch") return usable.find(button => button.dataset.motif === "tus-3d-patch") || null;
-  return usable.find(button => button.dataset.motif !== "tus-3d-patch") || usable[0] || null;
+  return usable.find(button => button.dataset.motif !== "tus-3d-patch" && !button.classList.contains("club-crest-btn")) || usable.find(button=>!button.classList.contains("club-crest-btn")) || null;
 }
 
 function ensureProductMotifChoiceSection(){
@@ -560,6 +571,11 @@ async function applyProductMotifRule(force=false){
   if(section) section.hidden=mode!=="both";
   const kind=mode==="patch" ? "patch" : (mode==="both" ? (productMotifSelections[currentProductId]||"normal") : "normal");
   if(section) section.querySelectorAll("[data-logo-kind]").forEach(button=>button.classList.toggle("active",button.dataset.logoKind===kind));
+  const chosenCrest=document.querySelector(".club-crest-btn.active");
+  if(chosenCrest && kind==="normal" && chosenCrest.dataset.src){
+    if(force) await addSelectedMotif(chosenCrest.dataset.motif,chosenCrest.dataset.src);
+    return;
+  }
   const target=getMotifButtonByKind(kind);
   if(!target) return;
   const active=document.querySelector(".motif-btn.active");
@@ -802,6 +818,11 @@ async function renderShirt() {
 }
 
 function getConfiguredMotif(view) {
+  const chosenCrest=view==="front" && logoEnabled ? document.querySelector(".club-crest-btn.active") : null;
+  if(chosenCrest){
+    const motif=(SHOP.motifs||[]).find(item=>item.id===chosenCrest.dataset.motif);
+    if(motif) return {cfg:{enabled:true,motifId:motif.id},motif};
+  }
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   if (!cfg || !cfg.enabled) return null;
   const motif = (SHOP.motifs || []).find(m => m.id === cfg.motifId) || (SHOP.motifs || [])[0];
@@ -839,9 +860,13 @@ function getUnifiedPrintLayout(view, cfg) {
   };
 }
 
-function applyDualMotifLayout(img, view, cfg) {
+function applyDualMotifLayout(img, view, cfg, motif) {
   if (!img || !cfg) return;
-  const layout = getUnifiedPrintLayout(view, cfg);
+  const layout = motif?.isClubCrest ? {
+    xPct:clampPrintValue(motif.crestPosition?.xPct,8,92,68),
+    yPct:clampPrintValue(motif.crestPosition?.yPct,8,92,24),
+    widthPct:clampPrintValue(motif.crestPosition?.widthPct,5,65,18)
+  } : getUnifiedPrintLayout(view, cfg);
 
   // Dieselben X/Y/Größe-Werte wie in der Einzelansicht werden in die
   // reale Druckzone der jeweiligen Shirt-Hälfte übertragen.
@@ -909,7 +934,7 @@ async function renderDualMotif(view, img) {
     const src = window.shopAssetUrl ? window.shopAssetUrl(entry.motif.file) : entry.motif.file;
     img.src = entry.motif.preserveColors ? src : await recolorMotifSource(src, currentMotifColor);
     img.hidden = false;
-    applyDualMotifLayout(img, view, entry.cfg);
+    applyDualMotifLayout(img, view, entry.cfg, entry.motif);
   } catch (err) {
     console.error(`Doppelansicht-Motiv ${view} konnte nicht geladen werden`, err);
     img.hidden = true;
@@ -1104,6 +1129,13 @@ const FIXED_MOTIF_LAYOUTS = {
 };
 
 function getFixedPrintLayout(motifId) {
+  const crest=(SHOP.motifs||[]).find(motif=>motif.id===motifId && motif.isClubCrest);
+  if(crest){
+    return {left:clampPrintValue(crest.crestPosition?.xPct,8,92,68)/100,
+      top:clampPrintValue(crest.crestPosition?.yPct,8,92,24)/100,
+      maxWidth:clampPrintValue(crest.crestPosition?.widthPct,5,65,18)/100,
+      maxHeight:clampPrintValue(crest.crestPosition?.widthPct,5,65,18)/100};
+  }
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
   const productLayout = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][currentView];
   // Eine im Admin gespeicherte Artikelposition gilt auch dann, wenn kein
@@ -1122,12 +1154,13 @@ function getFixedPrintLayout(motifId) {
 
 function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
+  const fixedCrest=(SHOP.motifs||[]).some(motif=>motif.id===motifId && motif.isClubCrest);
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
-  const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
-  const movable = !!FEATURES.allowMoveMotif;
-  const resizable = !!FEATURES.allowResizeMotif;
-  const rotatable = !!FEATURES.allowRotateMotif;
+  const scale = Math.min(maxWidth / image.width, maxHeight / image.height, fixedCrest ? Infinity : 1);
+  const movable = !fixedCrest && !!FEATURES.allowMoveMotif;
+  const resizable = !fixedCrest && !!FEATURES.allowResizeMotif;
+  const rotatable = !fixedCrest && !!FEATURES.allowRotateMotif;
   const editable = movable || resizable || rotatable;
   image.set({
     left: PRINT_SIDE_MARGIN + PRINT_BASE_WIDTH * layout.left,
@@ -2161,7 +2194,7 @@ function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
   ensureInitialsField();
-  const seq=["productSection","#initialsPop",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
+  const seq=["productSection",".club-crest-section","#initialsPop",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);

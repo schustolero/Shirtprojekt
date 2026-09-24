@@ -1670,6 +1670,31 @@ function renderMotifsEditor(){
     const name=document.createElement("input"); name.className="motif-name"; name.value=motif.name||`Motiv ${index+1}`; name.placeholder="Motivname"; name.addEventListener("input",()=>{workingMotifs[index].name=name.value});
     const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Motiv wird vorbereitet …");workingMotifs[index].file=await compressImage(file,800,210000);img.src=workingMotifs[index].file;setShopState("Motiv geändert – noch speichern.","ok")}catch(err){alert(err.message||"Motiv konnte nicht verarbeitet werden.")}upload.value=""});
     fields.append(name,upload);
+    const crestToggle=document.createElement("label"); crestToggle.className="club-crest-toggle";
+    const crestInput=document.createElement("input"); crestInput.type="checkbox"; crestInput.checked=!!motif.isClubCrest;
+    crestToggle.append(crestInput,document.createTextNode("Vereinswappen · feste Position und Größe"));
+    const crestSettings=document.createElement("div"); crestSettings.className="club-crest-settings"; crestSettings.hidden=!crestInput.checked;
+    const controls=[["X",68,8,92],["Y",24,8,92],["Größe",18,5,65]];
+    controls.forEach(([label,defaultValue,min,max])=>{
+      const key=label==="Größe"?"widthPct":`${label.toLowerCase()}Pct`;
+      const field=document.createElement("label"); field.textContent=`${label} %`;
+      const input=document.createElement("input"); input.type="number"; input.min=String(min); input.max=String(max); input.step="0.5";
+      input.value=String(motif.crestPosition?.[key]??defaultValue);
+      input.addEventListener("change",()=>{
+        motif.crestPosition=motif.crestPosition||{};
+        motif.crestPosition[key]=Math.max(min,Math.min(max,Number(input.value)||defaultValue));
+        input.value=String(motif.crestPosition[key]);
+        setShopState("Wappenposition geändert – oben Speichern klicken.");
+      });
+      field.appendChild(input); crestSettings.appendChild(field);
+    });
+    crestInput.addEventListener("change",()=>{
+      motif.isClubCrest=crestInput.checked;
+      if(crestInput.checked){motif.preserveColors=true;motif.crestPosition=motif.crestPosition||{xPct:68,yPct:24,widthPct:18};}
+      crestSettings.hidden=!crestInput.checked;
+      setShopState("Wappenauswahl geändert – oben Speichern klicken.");
+    });
+    fields.append(crestToggle,crestSettings);
     if(motif.preserveColors){const note=document.createElement("small");note.className="motif-original-colors";note.textContent="Originalfarben / 3D bleiben erhalten";fields.appendChild(note);}
     const del=document.createElement("button"); del.type="button"; del.className="danger-btn"; del.textContent="Entfernen"; del.addEventListener("click",()=>{workingMotifs.splice(index,1);renderMotifsEditor();setShopState("Motiv entfernt – noch speichern.")});
     row.append(img,fields,del); motifsEditor.appendChild(row);
@@ -1742,7 +1767,7 @@ function buildShopConfig(){
   const name=shopFields.name.value.trim(); if(!name) throw new Error("Bitte einen Shopnamen eingeben.");
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowInitials:!!shopFields.allowInitials?.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,allowBackDesign:shopFields.allowBack.checked,allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showMotifColorPicker:shopFields.showMotifColors.checked,showPrices:shopFields.showPrices.checked,showNexaroBranding:shopFields.showNexaroBranding.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
-  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||"",...(m.preserveColors?{preserveColors:true}:{})}))};
+  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:shopFields.accent.value,logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.name||m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file||"",...(m.preserveColors?{preserveColors:true}:{}),...(m.isClubCrest?{isClubCrest:true,crestPosition:{xPct:Number(m.crestPosition?.xPct??68),yPct:Number(m.crestPosition?.yPct??24),widthPct:Number(m.crestPosition?.widthPct??18)}}:{})}))};
   cfg.priceVisibilityVersion=1;
   if(id==="_master"){ cfg.isMasterTemplate=true; cfg.templateVersion=Math.max(1,Number(old.templateVersion)||1); }
   else {
@@ -2650,7 +2675,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.129");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.130");
   return true;
   }
   if(!boot()){
