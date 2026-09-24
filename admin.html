@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <title>Shirtprojekt – Zentrale</title>
-  <link rel="stylesheet" href="admin.css?v=30.3.119">
+  <link rel="stylesheet" href="admin.css?v=30.3.120">
 
 <style id="v2849-critical">
 /* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
@@ -948,7 +948,7 @@
                   </div>
                   <div class="v2920-quick-actions v3039-shirt-quick-actions" aria-label="Schnellauswahl Textilfarben">
                     <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="all">Alle auswählen</button>
-                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="none">Alle abwählen</button>
+                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="none">Nur Standardfarbe</button>
                   </div>
                   <div id="f140ColorPicker" class="v2919-f140-grid" aria-label="F140 Shirtfarben Auswahl"></div>
                   <div class="v2919-shirt-default-row" hidden>
@@ -968,7 +968,7 @@
                     </div>
                     <div class="v2920-quick-actions" aria-label="Schnellauswahl Poli-Flex Turbo Druckfarben">
                       <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="all">Alle auswählen</button>
-                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="none">Alle abwählen</button>
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="none">Nur Standardfarbe</button>
                       <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="yellow">Nur Yellow</button>
                     </div>
                     <div id="poliFlexTurboPicker" class="v2919-f140-grid v2938-print-grid" aria-label="Poli-Flex Turbo Druckfarben Auswahl"></div>
@@ -1120,7 +1120,7 @@
   
 
   <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-  <script src="/admin.js?v=30.3.119"></script>
+  <script src="/admin.js?v=30.3.120"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1147,7 +1147,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.119'; b.hidden=false; b.removeAttribute('hidden');}
+  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.120'; b.hidden=false; b.removeAttribute('hidden');}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();
@@ -1383,7 +1383,7 @@
       var match=F140_COLORS.find(function(c){ return c.hex.toLowerCase()===rawHex.toLowerCase() || c.name===defaultName; });
       defaultId=match ? match.id : 'royal-blue';
     }
-    if(!allowed.length || allowed.length===1) allowed=F140_COLORS.map(function(c){ return c.id; });
+    if(!allowed.length) allowed=F140_COLORS.map(function(c){ return c.id; });
     allowed=allowed.filter(function(id, idx){ return !!colorById(id) && allowed.indexOf(id)===idx; });
     if(!allowed.length) allowed=F140_COLORS.map(function(c){ return c.id; });
     if(allowed.indexOf(defaultId)===-1) defaultId=allowed[0];
@@ -1485,7 +1485,13 @@
     ensureUI();
     if(bind.done) return; bind.done=true;
     document.addEventListener('change', function(ev){
-      if(ev.target && ev.target.matches('#f140ColorPicker input[type="checkbox"]')) writeBack();
+      if(ev.target && ev.target.matches('#f140ColorPicker input[type="checkbox"]')){
+        if(ev.target.checked){
+          var selected=byId('f140DefaultColor');
+          if(selected) selected.value=ev.target.value;
+        }
+        writeBack();
+      }
       if(ev.target && ev.target.id==='f140DefaultColor') writeBack();
       if(ev.target && ev.target.id==='shirtColorsToggleMirror') syncMirrorCheckbox(false);
       if(ev.target && ev.target.id==='showShirtColors') syncMirrorCheckbox(true);
@@ -1504,17 +1510,6 @@
         }
         return;
       }
-      var option=ev.target.closest('#f140ColorPicker .v2919-f140-option');
-      if(option){
-        var input=option.querySelector('input[type="checkbox"]');
-        if(input){
-          input.checked=true;
-          var select=byId('f140DefaultColor');
-          if(select) select.value=input.value;
-          writeBack();
-        }
-        return;
-      }
       var quick=ev.target.closest('[data-f140-quick]');
       if(!quick) return;
       var mode=quick.getAttribute('data-f140-quick');
@@ -1522,7 +1517,9 @@
       if(mode==='all'){
         boxes.forEach(function(box){ box.checked=true; });
       } else if(mode==='none'){
-        boxes.forEach(function(box){ box.checked=false; });
+        var selected=byId('f140DefaultColor');
+        var keep=selected && selected.value || boxes.find(function(box){return box.checked;})?.value || 'royal-blue';
+        boxes.forEach(function(box){ box.checked=box.value===keep; });
       }
       writeBack();
     });
@@ -1611,7 +1608,10 @@
       var b=ev.target.closest('[data-print-quick]');if(!b)return;
       var mode=b.getAttribute('data-print-quick');var boxes=Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]'));
       if(mode==='all')boxes.forEach(function(x){x.checked=true});
-      else if(mode==='none')boxes.forEach(function(x){x.checked=false});
+      else if(mode==='none'){
+        var select=byId('poliFlexTurboPreset'),keep=select&&select.value||FALLBACK;
+        boxes.forEach(function(x){x.checked=x.value===keep});
+      }
       else boxes.forEach(function(x){x.checked=(x.value===FALLBACK)});
       writeBack();
     });

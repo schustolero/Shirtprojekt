@@ -982,18 +982,11 @@ function changeShirtColor(color, name, colorId, pattern) {
   updateInitialsOnCanvas();
 }
 
-shirtColorButtons.forEach(button => button.addEventListener("click", () => {
-  changeShirtColor(button.dataset.color, button.dataset.name, button.dataset.id, button.dataset.pattern || "");
-}));
 document.addEventListener("click", (event) => {
   const colorBtn=event.target.closest(".shirt-color");
   if(colorBtn && document.contains(colorBtn)){
     changeShirtColor(colorBtn.dataset.color, colorBtn.dataset.name, colorBtn.dataset.id, colorBtn.dataset.pattern || "");
     return;
-  }
-  const viewBtn=event.target.closest(".view-btn");
-  if(viewBtn && viewBtn.dataset.view){
-    switchView(viewBtn.dataset.view);
   }
 });
 

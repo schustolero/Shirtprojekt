@@ -6404,3 +6404,8 @@ html body #positionStage #positionInitials{
   cursor:grab!important;
 }
 html body #positionStage #positionInitials:active{cursor:grabbing!important}
+
+/* Die alte Kopf-Navigation und Shopliste nicht zusätzlich zur neuen Sidebar zeigen. */
+body.v32-admin .admin-header,
+body.v32-admin .admin-tabs,
+body.v32-admin .shop-list-panel{display:none!important}
