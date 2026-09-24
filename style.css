@@ -5134,3 +5134,62 @@ html body .shirt-initials-overlay.is-set{
   box-shadow:none!important;
   background:transparent!important;
 }
+
+/* v30.3.124 – Kompakte Seitenwahl in der Shop-Bedienleiste. */
+html body .sidebar .view-section{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  padding:10px 20px!important;
+}
+html body .sidebar .view-section[hidden]{display:none!important}
+html body .sidebar .view-section h3{
+  margin:0!important;
+  font-size:11px!important;
+  letter-spacing:.09em!important;
+  white-space:nowrap!important;
+}
+html body .sidebar .view-switch{
+  width:164px!important;
+  max-width:100%!important;
+  flex:0 0 auto!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  padding:3px!important;
+  border:1px solid #e7e8eb!important;
+  border-radius:999px!important;
+  background:#f5f5f6!important;
+}
+html body .sidebar .view-btn{
+  width:100%!important;
+  min-height:32px!important;
+  height:32px!important;
+  padding:0 8px!important;
+  border:0!important;
+  border-radius:999px!important;
+  background:transparent!important;
+  color:#55565c!important;
+  font-size:12px!important;
+  line-height:1!important;
+  font-weight:650!important;
+  white-space:nowrap!important;
+  box-shadow:none!important;
+}
+html body .sidebar .view-btn.active{
+  background:#fff!important;
+  color:#17181b!important;
+  box-shadow:0 1px 4px rgba(0,0,0,.12)!important;
+}
+html[data-theme="dark"] body .sidebar .view-switch{
+  border-color:#393940!important;
+  background:#242429!important;
+}
+html[data-theme="dark"] body .sidebar .view-btn{color:#d0d0d5!important}
+html[data-theme="dark"] body .sidebar .view-btn.active{
+  background:#f2f2f4!important;
+  color:#17181b!important;
+}
+@media(max-width:900px){
+  html body .sidebar .view-section{padding:8px 18px!important}
+  html body .sidebar .view-btn{min-height:40px!important;height:40px!important}
+}
