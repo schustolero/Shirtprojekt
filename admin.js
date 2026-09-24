@@ -2319,7 +2319,7 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   left.appendChild(basic.card);
 
-  const appearance=makeCard('Darstellung & Farben','v2853-appearance-card v2869-appearance-colors');
+  const appearance=makeCard('Farben','v2853-appearance-card v2869-appearance-colors');
   let detachedAccent=null;
   if(false){
     detachedAccent=null;
@@ -2626,7 +2626,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.117');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.118');
 })();
 
 // ============================================================
@@ -2648,7 +2648,7 @@ saveShopBtn.addEventListener("click",async()=>{
   nav.setAttribute("aria-label","Shop-Einstellungen");
   nav.innerHTML=`
     <button type="button" data-v32="shop" class="active">Shop &amp; Sortiment</button>
-    <button type="button" data-v32="design">Design &amp; Farben</button>
+    <button type="button" data-v32="design">Farben</button>
     <button type="button" data-v32="print">Motiv &amp; Druck</button>`;
 
   const hint=document.createElement("p");
@@ -2690,7 +2690,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.117");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.118");
   return true;
   }
   if(!boot()){

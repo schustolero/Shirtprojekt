@@ -28,7 +28,7 @@ const FEATURES = Object.assign({
 }, SHOP.features || {});
 if(SHOP.features && Object.prototype.hasOwnProperty.call(SHOP.features,"allowInitials")){
   FEATURES.allowInitials=!!SHOP.features.allowInitials;
-}else if(String(SHOP.customerId||"")!=="tg-solingen"){
+}else{
   FEATURES.allowInitials=true;
 }
 
