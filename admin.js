@@ -2613,7 +2613,7 @@ saveShopBtn.addEventListener("click",async()=>{
   document.getElementById('v284Sidebar')?.classList.add('v32-sidebar');
 
   // Versionsbadge eindeutig aktualisieren.
-  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.53');
+  document.querySelectorAll('.v2849-version').forEach(el=>el.textContent='v30.3.114');
 })();
 
 // ============================================================
@@ -2677,7 +2677,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.56");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.114");
   return true;
   }
   if(!boot()){
