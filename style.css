@@ -5565,3 +5565,32 @@ html body .initials-controls .initials-color-btn.active::after{
   html body .designer-header{grid-template-columns:minmax(0,132px) minmax(0,1fr)!important}
   html body .designer-header .shop-brand-logo{max-width:132px!important}
 }
+
+/* v30.3.140 – Kompakte Größenwahl mit direkt danebenstehender Menge. */
+@media(max-width:900px){
+  html body .sidebar .order-section .order-fields{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 64px!important;
+    align-items:end!important;gap:8px!important;margin-bottom:8px!important;
+  }
+  html body .sidebar .order-section .size-field,
+  html body .sidebar .order-section .qty-field{min-width:0!important;margin:0!important}
+  html body .sidebar .order-section .size-pills{
+    display:flex!important;grid-template-columns:none!important;
+    flex-wrap:nowrap!important;gap:4px!important;
+    width:100%!important;min-width:0!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    -webkit-overflow-scrolling:touch;scrollbar-width:thin;
+  }
+  html body .sidebar .order-section .size-pill{
+    flex:0 0 auto!important;min-width:44px!important;width:44px!important;
+    height:44px!important;padding:0 3px!important;font-size:12px!important;
+  }
+  html body .sidebar .order-section .qty-field input{
+    display:block!important;box-sizing:border-box!important;
+    width:64px!important;max-width:64px!important;
+    height:44px!important;min-height:44px!important;
+    padding:0 4px!important;text-align:center!important;
+  }
+  html body .sidebar .order-section>h3{margin-bottom:6px!important}
+}

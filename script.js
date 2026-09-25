@@ -6,6 +6,7 @@
   document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
+const MASTER_FIXED_CHEST_LOGO = SHOP.isMasterTemplate === true || SHOP.customerId === "_master";
 const FEATURES = Object.assign({
   layout: "simple",
   motifMode: "single",          // single | multiple | upload | mixed
@@ -211,7 +212,7 @@ function getAllowedMotifColorNames(){
   if (viewSection && !FEATURES.allowBackDesign) viewSection.hidden = true;
   if (resetSection && FEATURES.showResetButton === false) resetSection.remove();
   if (motifHelp) {
-    motifHelp.textContent = FEATURES.allowMoveMotif || FEATURES.allowResizeMotif
+    motifHelp.textContent = !MASTER_FIXED_CHEST_LOGO && (FEATURES.allowMoveMotif || FEATURES.allowResizeMotif)
       ? "Motiv auswählen und anschließend auf dem Shirt anpassen."
       : "Motiv auswählen. Es wird automatisch fest platziert.";
   }
@@ -306,7 +307,7 @@ function getAllowedMotifColorNames(){
 
   const footer = document.querySelector(".designer-footer");
   if (footer) {
-    footer.textContent = FEATURES.allowMoveMotif || FEATURES.allowResizeMotif
+    footer.textContent = !MASTER_FIXED_CHEST_LOGO && (FEATURES.allowMoveMotif || FEATURES.allowResizeMotif)
       ? "Element auswählen und direkt auf dem Shirt positionieren."
       : "Das gewählte Motiv wird automatisch auf dem Shirt platziert.";
   }
@@ -781,6 +782,7 @@ async function renderShirt() {
 }
 
 function getConfiguredMotif(view) {
+  if (MASTER_FIXED_CHEST_LOGO && view === "back") return null;
   if(view==="front" && !logoEnabled) return null;
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   const selectedId=view==="front" && logoEnabled ? selectedLogoByProduct[currentProductId] : null;
@@ -958,6 +960,11 @@ function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId",
 function loadView(view) {
   canvas.clear();
   canvas.backgroundColor = "transparent";
+  if (MASTER_FIXED_CHEST_LOGO && view === "back") {
+    viewStates.back = null;
+    canvas.requestRenderAll();
+    return;
+  }
   const state = viewStates[view];
   if (state) canvas.loadFromJSON(state, () => {
     canvas.getObjects().forEach(obj => {
@@ -1093,6 +1100,9 @@ const FIXED_MOTIF_LAYOUTS = {
 };
 
 function getFixedPrintLayout(motifId) {
+  if (MASTER_FIXED_CHEST_LOGO) {
+    return { left: 0.68, top: 0.19, maxWidth: 0.22, maxHeight: 0.18 };
+  }
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
   const productLayout = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][currentView];
   // Eine im Admin gespeicherte Artikelposition gilt auch dann, wenn kein
@@ -1113,11 +1123,13 @@ function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
-  const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
+  const scale = MASTER_FIXED_CHEST_LOGO
+    ? Math.min(maxWidth / image.width, maxHeight / image.height)
+    : Math.min(maxWidth / image.width, maxHeight / image.height, 1);
   const locked=!!(SHOP.motifs||[]).find(m=>m.id===motifId)?.locked;
-  const movable = !locked && !!FEATURES.allowMoveMotif;
-  const resizable = !locked && !!FEATURES.allowResizeMotif;
-  const rotatable = !locked && !!FEATURES.allowRotateMotif;
+  const movable = !MASTER_FIXED_CHEST_LOGO && !locked && !!FEATURES.allowMoveMotif;
+  const resizable = !MASTER_FIXED_CHEST_LOGO && !locked && !!FEATURES.allowResizeMotif;
+  const rotatable = !MASTER_FIXED_CHEST_LOGO && !locked && !!FEATURES.allowRotateMotif;
   const editable = movable || resizable || rotatable;
   image.set({
     left: PRINT_SIDE_MARGIN + PRINT_BASE_WIDTH * layout.left,
@@ -1149,6 +1161,7 @@ function configureFabricImage(image, motifId, motifSrc, preserveColors = false) 
 }
 
 async function addMotifToView(view, motifId, motifSrc, markActive = true) {
+  if (MASTER_FIXED_CHEST_LOGO) view = "front";
   if (!motifId || motifId === "none" || !motifSrc) {
     if (typeof clearShirtLogos === "function") clearShirtLogos();
     return;
@@ -1180,6 +1193,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
+  if (MASTER_FIXED_CHEST_LOGO) viewStates.back = null;
   await addMotifToView("front", motifId, motifSrc, true);
   if(FEATURES.previewMode==="dual") await renderDualPreview();
 }
@@ -1272,7 +1286,7 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
   if (!/^image\//.test(file.type)) { alert("Bitte eine Bilddatei auswählen."); return; }
   const reader = new FileReader();
   reader.onload = () => {
-    if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
+    if (currentView !== "front" && (MASTER_FIXED_CHEST_LOGO || !FEATURES.allowBackDesign)) switchView("front");
     fabric.Image.fromURL(reader.result, function(image) {
       if (FEATURES.motifMode !== "mixed") canvas.clear();
       const maxWidth = canvas.width * 0.72;
@@ -1288,6 +1302,10 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
         hasControls: resizable || rotatable, hasBorders: movable || resizable || rotatable,
         lockMovementX: !movable, lockMovementY: !movable, lockScalingX: !resizable, lockScalingY: !resizable, lockRotation: !rotatable
       });
+      if (MASTER_FIXED_CHEST_LOGO) {
+        viewStates.back = null;
+        applyFixedMotifLayout(image, "customer-upload");
+      }
       if (image.setControlsVisibility) image.setControlsVisibility({ mtr: rotatable });
       canvas.add(image);
       if (image.selectable) canvas.setActiveObject(image); else canvas.discardActiveObject();
@@ -1632,8 +1650,11 @@ function getCurrentShirtSelection() {
   }
 
   const fixedPrintParts = [];
-  if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
-  if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
+  if (MASTER_FIXED_CHEST_LOGO) fixedPrintParts.push("Vorne: Herzseite, feste Logogröße (22 % der Druckzone)");
+  else {
+    if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
+    if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
+  }
   const product = getCurrentProduct();
   return {
     id: Date.now() + Math.random(),
