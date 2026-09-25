@@ -50,7 +50,7 @@ function syncMobileAfterShirtControls() {
   const shirtColorSection = document.querySelector(".color-section");
   const logoChoice = document.querySelector(".product-motif-choice-section");
   const initials = document.querySelector(".initials-section");
-  if (!designerArea || (!logoChoice && !initials)) return;
+  if (!designerArea || (!logoChoice && !initials && !productSection)) return;
 
   let host = document.getElementById("mobileAfterShirtControls");
   if (mobile) {
@@ -65,9 +65,15 @@ function syncMobileAfterShirtControls() {
     if (anchor) anchor.insertAdjacentElement("afterend", host);
     if (logoChoice) host.appendChild(logoChoice);
     if (initials && FEATURES.allowInitials) host.appendChild(initials);
+    if (productSection) host.appendChild(productSection);
     return;
   }
 
+  const sidebar=document.querySelector(".sidebar");
+  const motifSection=sidebar?.querySelector(".motif-section");
+  if (productSection && sidebar && productSection.parentElement!==sidebar) {
+    sidebar.insertBefore(productSection,motifSection||sidebar.querySelector(".view-section")||null);
+  }
   if (logoChoice && productSection) productSection.insertAdjacentElement("afterend", logoChoice);
   if (initials && productSection) productSection.insertAdjacentElement("afterend", initials);
   host?.remove();
@@ -2093,10 +2099,18 @@ function ensureInitialsField(){
     box=document.createElement("section");
     box.className="tool-section initials-section";
     box.id="initialsPop";
-    box.innerHTML='<h3>Initialen</h3><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p><p class="field-error" id="initialsError" hidden></p>';
+    box.innerHTML='<h3>Initialen</h3><div class="initials-field-wrap"><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen" aria-describedby="initialsHint"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p></div><p class="field-error" id="initialsError" hidden></p>';
     sidebar.appendChild(box);
   }
   if(box){
+    const field=box.querySelector("#initialsInput");
+    const hint=box.querySelector("#initialsHint");
+    if(field && hint && !field.closest(".initials-field-wrap")){
+      const wrapper=document.createElement("div");
+      wrapper.className="initials-field-wrap";
+      field.before(wrapper);
+      wrapper.append(field,hint);
+    }
     box.hidden=!FEATURES.allowInitials;
     box.style.display=FEATURES.allowInitials?"":"none";
     const product=document.getElementById("productSection");

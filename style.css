@@ -5238,3 +5238,36 @@ html body .initials-section[hidden]{display:none!important}
 html body #productSection{position:relative!important;z-index:20!important;isolation:isolate!important}
 html body #productSwitch{position:relative!important;z-index:1!important}
 html body #productSwitch .product-btn{position:relative!important;z-index:2!important;cursor:pointer!important;pointer-events:auto!important;touch-action:manipulation!important}
+
+/* Mobil liegen Eingabe und Textilauswahl direkt im selben Bedienbereich. */
+html body .initials-field-wrap{position:relative;width:100%;max-width:100%}
+@media(max-width:900px){
+  html body .mobile-after-shirt-controls #productSection{
+    display:block!important;
+    width:100%!important;
+    margin:0!important;
+    padding:12px 0!important;
+    border-top:1px solid #eceef2!important;
+    background:#fff!important;
+  }
+  html body .mobile-after-shirt-controls #productSection[hidden]{display:none!important}
+  html body .mobile-after-shirt-controls #productSwitch{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  html body .mobile-after-shirt-controls #productSwitch .product-btn{width:100%!important;min-height:48px!important;pointer-events:auto!important}
+  html body .mobile-after-shirt-controls .initials-field-wrap #initialsInput{
+    max-width:100%!important;
+    padding-right:61%!important;
+  }
+  html body .mobile-after-shirt-controls .initials-field-wrap #initialsHint{
+    position:absolute!important;
+    right:12px!important;
+    top:50%!important;
+    transform:translateY(-50%)!important;
+    width:56%!important;
+    margin:0!important;
+    color:#6b7280!important;
+    font-size:10px!important;
+    line-height:1.15!important;
+    text-align:right!important;
+    pointer-events:none!important;
+  }
+}
