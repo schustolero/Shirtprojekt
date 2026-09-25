@@ -5594,3 +5594,100 @@ html body .initials-controls .initials-color-btn.active::after{
   }
   html body .sidebar .order-section>h3{margin-bottom:6px!important}
 }
+
+/* v30.3.141 – Alle Größen mobil ohne Überlauf; Farbleiste mit Platz für Touch-Buttons. */
+html body .sidebar .order-section .size-select-fallback{display:none!important}
+html body .workspace,
+html body .workspace.has-color-rail{
+  grid-template-columns:48px minmax(0,1fr)!important;
+  column-gap:10px!important;
+  padding-left:20px!important;
+}
+html body .workspace .color-section,
+html body .workspace .color-rail,
+html body .workspace.has-color-rail .color-rail{
+  box-sizing:border-box!important;
+  width:48px!important;max-width:48px!important;
+  min-width:48px!important;
+  margin:0!important;padding:0!important;
+  justify-self:center!important;
+}
+html body .workspace .shirt-colors,
+html body .workspace.has-color-rail .shirt-colors,
+html body .workspace .color-rail .shirt-colors{
+  box-sizing:border-box!important;
+  display:flex!important;flex-direction:column!important;
+  align-items:center!important;justify-content:flex-start!important;
+  width:48px!important;max-width:48px!important;min-width:48px!important;
+  gap:5px!important;padding:4px 2px!important;
+  overflow-x:hidden!important;overflow-y:auto!important;
+  scrollbar-gutter:auto!important;scrollbar-width:thin!important;
+}
+html body .workspace .shirt-color,
+html body .workspace .color-rail .shirt-color,
+html body .workspace.has-color-rail .shirt-color{
+  box-sizing:border-box!important;display:grid!important;place-items:center!important;
+  flex:0 0 38px!important;width:38px!important;height:38px!important;
+  min-width:38px!important;min-height:38px!important;
+  margin:0!important;padding:0!important;
+  background:transparent!important;border:0!important;
+  border-radius:50%!important;box-shadow:none!important;
+  cursor:pointer!important;touch-action:manipulation!important;
+}
+html body .workspace .shirt-color::before{
+  content:""!important;box-sizing:border-box!important;display:block!important;
+  width:27px!important;height:27px!important;
+  border-radius:50%!important;background:var(--swatch,#888)!important;
+  border:1px solid rgba(17,24,39,.5)!important;
+  box-shadow:0 0 0 2px #fff!important;
+}
+html body .workspace .shirt-color.active::before{
+  box-shadow:0 0 0 2px #fff,0 0 0 4px #ba9528!important;
+}
+html body .workspace .shirt-color:focus-visible{
+  outline:2px solid #111!important;outline-offset:0!important;
+}
+html body .workspace .shirt-color[hidden],
+html body .workspace .color-rail .shirt-color[hidden]{display:none!important}
+
+@media(max-width:900px){
+  html body .workspace,
+  html body .workspace.has-color-rail{
+    grid-template-columns:44px minmax(0,1fr)!important;
+    column-gap:5px!important;padding:6px 12px 10px 18px!important;
+    overflow:visible!important;
+  }
+  html body .workspace .color-section,
+  html body .workspace .color-rail,
+  html body .workspace.has-color-rail .color-rail{
+    width:44px!important;max-width:44px!important;min-width:44px!important;
+    flex:0 0 44px!important;
+  }
+  html body .workspace .shirt-colors,
+  html body .workspace.has-color-rail .shirt-colors,
+  html body .workspace .color-rail .shirt-colors{
+    width:44px!important;max-width:44px!important;min-width:44px!important;
+    max-height:46vh!important;
+  }
+  html body .workspace .shirt-color,
+  html body .workspace .color-rail .shirt-color,
+  html body .workspace.has-color-rail .shirt-color{
+    width:40px!important;height:40px!important;
+    min-width:40px!important;min-height:40px!important;flex-basis:40px!important;
+  }
+  html body .workspace .mockup-stage{
+    width:min(100%,340px)!important;max-width:100%!important;
+  }
+  html body .sidebar .order-section .size-pills{display:none!important}
+  html body .sidebar .order-section .size-select-fallback,
+  html body .sidebar .order-section .size-field:has(.size-pills:not(:empty)) .size-select-fallback{
+    position:static!important;display:block!important;
+    width:100%!important;height:44px!important;min-height:44px!important;
+    max-width:none!important;overflow:visible!important;
+    clip:auto!important;clip-path:none!important;
+    padding:0 12px!important;border-radius:10px!important;
+    font-size:16px!important;color:#17171a!important;
+    background:#fff!important;
+    appearance:auto!important;-webkit-appearance:menulist!important;
+  }
+}

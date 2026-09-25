@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.140">
+  <link rel="stylesheet" href="/style.css?v=30.3.141">
   <script>
     (function(){
       try{
@@ -296,7 +296,7 @@
       <div class="order-fields">
         <label class="order-field size-field">
           <span>Größe</span>
-          <select id="shirtSize" class="size-select-fallback" aria-hidden="true" tabindex="-1">
+          <select id="shirtSize" class="size-select-fallback">
             <option value="">Bitte wählen</option>
             <option>XS</option><option>S</option><option>M</option><option>L</option>
             <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option>
@@ -473,7 +473,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.140";
+      app.src="/script.js?v=30.3.141";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
