@@ -192,7 +192,7 @@ function getAllowedMotifColorNames(){
   const backButton = document.querySelector('.view-btn[data-view="back"]');
   const resetSection = document.querySelector('.sidebar-bottom');
 
-  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.some(motif=>motif?.file && !motif.locked);
+  const hasPresetMotifs = Array.isArray(cfg.motifs) && cfg.motifs.some(motif=>motif?.file && motif.customerSelectable!==false);
   const showPresetMotifs = hasPresetMotifs && !["upload"].includes(FEATURES.motifMode);
   const allowedShirtColorIds = getAllowedShirtColorIds();
   if (shirtColorSection && allowedShirtColorIds && allowedShirtColorIds.length) {
@@ -329,7 +329,7 @@ function getAllowedMotifColorNames(){
   if (motifGrid && Array.isArray(cfg.motifs)) {
     cfg.motifs.forEach((motif) => {
       // Die neue Logo-Bibliothek wird ausschließlich im Admin verwaltet.
-      if (!motif || !motif.id || !motif.file || motif.locked || motif.customerSelectable===false) return;
+      if (!motif || !motif.id || !motif.file || motif.customerSelectable===false) return;
       const btn = document.createElement("button");
       btn.type = "button";
       btn.className = "motif-btn";
@@ -499,7 +499,7 @@ function getMotifButtonByKind(kind){
   const buttons=Array.from(document.querySelectorAll(".motif-btn"));
   const usable=buttons.filter(button=>button.dataset.motif && button.dataset.motif!=="none" && button.dataset.src);
   if(kind === "patch") return usable.find(button => button.dataset.motif === "tus-3d-patch") || null;
-  return usable.find(button => button.dataset.motif === selectedLogoByProduct[currentProductId] && button.dataset.motif !== "tus-3d-patch")
+  return usable.find(button => button.dataset.motif === (selectedLogoByProduct[currentProductId]?.front || selectedLogoByProduct[currentProductId]) && button.dataset.motif !== "tus-3d-patch")
     || usable.find(button => button.dataset.motif !== "tus-3d-patch") || usable[0] || null;
 }
 
@@ -784,16 +784,16 @@ async function renderShirt() {
 }
 
 function getConfiguredMotif(view) {
-  if (MASTER_FIXED_CHEST_LOGO && view === "back") return null;
-  if(view==="front" && !logoEnabled) return null;
+  if(!logoEnabled) return null;
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
-  const selectedId=view==="front" && logoEnabled ? selectedLogoByProduct[currentProductId] : null;
+  const selections=selectedLogoByProduct[currentProductId];
+  const selectedId=typeof selections==="string" ? (view==="front"?selections:null) : selections?.[view];
   if ((!cfg || !cfg.enabled) && !selectedId) return null;
-  const available=(SHOP.motifs||[]).filter(m=>m.file && !m.locked && m.customerSelectable!==false);
+  const available=(SHOP.motifs||[]).filter(m=>m.file && m.customerSelectable!==false);
   const motif = available.find(m => m.id === selectedId)
     || available.find(m => m.id === cfg?.motifId)
     || available[0];
-  if (!motif) return null;
+  if (!motif || (motif.placement?.side && motif.placement.side!==view)) return null;
   return { cfg:cfg||{enabled:true}, motif };
 }
 
@@ -827,16 +827,16 @@ function getUnifiedPrintLayout(view, cfg) {
   };
 }
 
-function applyDualMotifLayout(img, view, cfg) {
+function applyDualMotifLayout(img, view, cfg, motif) {
   if (!img || !cfg) return;
-  const layout = getUnifiedPrintLayout(view, cfg);
+  const layout = motif?.placement?.side===view ? motif.placement : getUnifiedPrintLayout(view, cfg);
 
   // Dieselben X/Y/Größe-Werte wie in der Einzelansicht werden in die
   // reale Druckzone der jeweiligen Shirt-Hälfte übertragen.
   const zone = { left: 0.28, top: 0.222, width: 0.44, height: 0.496 };
-  const left = (zone.left + zone.width * (layout.xPct / 100)) * 100;
-  const top = (zone.top + zone.height * (layout.yPct / 100)) * 100;
-  const width = zone.width * (layout.widthPct / 100) * 100;
+  const left = (zone.left + zone.width * (clampPrintValue(layout.xPct,-20,120,50) / 100)) * 100;
+  const top = (zone.top + zone.height * (clampPrintValue(layout.yPct,-20,120,30) / 100)) * 100;
+  const width = zone.width * (clampPrintValue(layout.widthPct,5,110,22) / 100) * 100;
 
   img.style.left = `${left}%`;
   img.style.top = `${top}%`;
@@ -897,7 +897,7 @@ async function renderDualMotif(view, img) {
     const src = window.shopAssetUrl ? window.shopAssetUrl(entry.motif.file) : entry.motif.file;
     img.src = entry.motif.preserveColors ? src : await recolorMotifSource(src, currentMotifColor);
     img.hidden = false;
-    applyDualMotifLayout(img, view, entry.cfg);
+    applyDualMotifLayout(img, view, entry.cfg, entry.motif);
   } catch (err) {
     console.error(`Doppelansicht-Motiv ${view} konnte nicht geladen werden`, err);
     img.hidden = true;
@@ -962,11 +962,6 @@ function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId",
 function loadView(view) {
   canvas.clear();
   canvas.backgroundColor = "transparent";
-  if (MASTER_FIXED_CHEST_LOGO && view === "back") {
-    viewStates.back = null;
-    canvas.requestRenderAll();
-    return;
-  }
   const state = viewStates[view];
   if (state) canvas.loadFromJSON(state, () => {
     canvas.getObjects().forEach(obj => {
@@ -1102,8 +1097,19 @@ const FIXED_MOTIF_LAYOUTS = {
 };
 
 function getFixedPrintLayout(motifId) {
+  const saved=(SHOP.motifs||[]).find(m=>m.id===motifId)?.placement;
+  if(saved && (!saved.side || saved.side===currentView)){
+    return {
+      left:clampPrintValue(saved.xPct,-20,120,68)/100,
+      top:clampPrintValue(saved.yPct,-20,120,19)/100,
+      maxWidth:clampPrintValue(saved.widthPct,5,110,22)/100,
+      maxHeight:currentView==="front"?0.24:0.60
+    };
+  }
   if (MASTER_FIXED_CHEST_LOGO) {
-    return { left: 0.68, top: 0.19, maxWidth: 0.22, maxHeight: 0.18 };
+    return currentView==="front"
+      ? { left: 0.68, top: 0.19, maxWidth: 0.22, maxHeight: 0.24 }
+      : { left: 0.50, top: 0.32, maxWidth: 0.40, maxHeight: 0.60 };
   }
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[currentView];
   const productLayout = SHOP.productPrint && SHOP.productPrint[currentProductId] && SHOP.productPrint[currentProductId][currentView];
@@ -1163,7 +1169,6 @@ function configureFabricImage(image, motifId, motifSrc, preserveColors = false) 
 }
 
 async function addMotifToView(view, motifId, motifSrc, markActive = true) {
-  if (MASTER_FIXED_CHEST_LOGO) view = "front";
   if (!motifId || motifId === "none" || !motifSrc) {
     if (typeof clearShirtLogos === "function") clearShirtLogos();
     return;
@@ -1195,8 +1200,10 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
-  if (MASTER_FIXED_CHEST_LOGO) viewStates.back = null;
-  await addMotifToView("front", motifId, motifSrc, true);
+  const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
+  const side=motif?.placement?.side==="back" ? "back" : "front";
+  await addMotifToView(side, motifId, motifSrc, true);
+  motifButtons.forEach(button=>button.classList.toggle("active",button.dataset.motif===motifId));
   if(FEATURES.previewMode==="dual") await renderDualPreview();
 }
 
@@ -1209,12 +1216,13 @@ function clearShirtLogos(){
     target.requestRenderAll();
   };
   removeFrom(canvas);
-  viewStates.front=canvas.toJSON(["motifId","motifSrc","motifColor","motifColorLabel","motifKind","motifName","preserveColors"]);
-  if(viewStates.back){
+  saveCurrentView();
+  for(const side of ["front","back"]){
+    if(side===currentView || !viewStates[side]) continue;
     try{
-      const parsed=typeof viewStates.back==="string"?JSON.parse(viewStates.back):viewStates.back;
-      if(parsed && Array.isArray(parsed.objects)) parsed.objects=parsed.objects.filter(obj=>!obj.motifSrc);
-      viewStates.back=parsed;
+      const parsed=typeof viewStates[side]==="string"?JSON.parse(viewStates[side]):viewStates[side];
+      if(Array.isArray(parsed.objects)) parsed.objects=parsed.objects.filter(obj=>!obj.motifSrc);
+      viewStates[side]=parsed;
     }catch(e){}
   }
   document.querySelectorAll(".motif-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.motif==="none"));
@@ -1230,7 +1238,10 @@ document.addEventListener("click",(event)=>{
     return;
   }
   if(button.dataset.src){
-    selectedLogoByProduct[currentProductId]=button.dataset.motif;
+    const motif=(SHOP.motifs||[]).find(item=>item.id===button.dataset.motif);
+    const side=motif?.placement?.side==="back"?"back":"front";
+    const selections=selectedLogoByProduct[currentProductId];
+    selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[side]:button.dataset.motif};
     productMotifSelections[currentProductId]=button.dataset.motif==="tus-3d-patch"?"patch":"normal";
     logoEnabled=true;
     addSelectedMotif(button.dataset.motif, button.dataset.src);
@@ -1244,12 +1255,7 @@ async function recolorActiveMotif(color, label) {
   updateActiveMotifColorButton(color, label);
   if (FEATURES.previewMode === "dual") await renderDualPreview();
 
-  // Die Motive sind absichtlich nicht auswählbar. Daher direkt das feste Motiv einfärben.
-  if (currentView !== "front") {
-    switchView("front");
-    await new Promise(resolve => requestAnimationFrame(resolve));
-  }
-
+  // Die Farbe gilt für das Motiv auf der gerade angezeigten Druckseite.
   const object = canvas.getObjects().find(obj => obj && obj.motifSrc && obj.type === "image" && obj.motifKind !== "upload");
   if (!object) return;
   if (object.preserveColors) return;
@@ -1288,7 +1294,7 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
   if (!/^image\//.test(file.type)) { alert("Bitte eine Bilddatei auswählen."); return; }
   const reader = new FileReader();
   reader.onload = () => {
-    if (currentView !== "front" && (MASTER_FIXED_CHEST_LOGO || !FEATURES.allowBackDesign)) switchView("front");
+    if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
     fabric.Image.fromURL(reader.result, function(image) {
       if (FEATURES.motifMode !== "mixed") canvas.clear();
       const maxWidth = canvas.width * 0.72;
@@ -1304,10 +1310,7 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
         hasControls: resizable || rotatable, hasBorders: movable || resizable || rotatable,
         lockMovementX: !movable, lockMovementY: !movable, lockScalingX: !resizable, lockScalingY: !resizable, lockRotation: !rotatable
       });
-      if (MASTER_FIXED_CHEST_LOGO) {
-        viewStates.back = null;
-        applyFixedMotifLayout(image, "customer-upload");
-      }
+      if (MASTER_FIXED_CHEST_LOGO) applyFixedMotifLayout(image, "customer-upload");
       if (image.setControlsVisibility) image.setControlsVisibility({ mtr: rotatable });
       canvas.add(image);
       if (image.selectable) canvas.setActiveObject(image); else canvas.discardActiveObject();
@@ -1614,6 +1617,14 @@ function createOrderNumber() {
 }
 
 function getSelectedMotifName() {
+  const selections=selectedLogoByProduct[currentProductId];
+  if(selections && typeof selections==="object"){
+    const names=["front","back"].flatMap(side=>{
+      const motif=(SHOP.motifs||[]).find(item=>item.id===selections[side]);
+      return motif ? [`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}`] : [];
+    });
+    if(names.length) return names.join(" · ");
+  }
   const active = document.querySelector(".motif-btn.active");
   if (active) return active.textContent.replace(/\s+/g, " ").trim();
   const uploaded = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
@@ -1652,7 +1663,13 @@ function getCurrentShirtSelection() {
   }
 
   const fixedPrintParts = [];
-  if (MASTER_FIXED_CHEST_LOGO) fixedPrintParts.push("Vorne: Herzseite, feste Logogröße (22 % der Druckzone)");
+  if (MASTER_FIXED_CHEST_LOGO){
+    const selections=selectedLogoByProduct[currentProductId];
+    for(const side of ["front","back"]){
+      const motif=(SHOP.motifs||[]).find(item=>item.id===selections?.[side]);
+      if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${motif.placement?.xPct??(side==="front"?68:50)} % / ${motif.placement?.yPct??(side==="front"?19:32)} %, Breite ${motif.placement?.widthPct??(side==="front"?22:40)} %`);
+    }
+  }
   else {
     if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
     if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
