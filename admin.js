@@ -63,7 +63,7 @@ function searchableText(entry){
   const o = entry.order || {};
   return [
     o.orderNumber, entry.id, o.customerId, o.customerName, o.name, o.customerClass, o.email, o.phone, o.status,
-    ...(Array.isArray(o.items) ? o.items.flatMap(item => [item.size,item.shirtColor,item.motif,item.motifColor,item.initials]) : [])
+    ...(Array.isArray(o.items) ? o.items.flatMap(item => [item.size,item.shirtColor,item.motif,item.motifColor,item.initials,item.initialsColor]) : [])
   ].filter(Boolean).join(" ").toLowerCase();
 }
 
@@ -185,7 +185,7 @@ function printOrderSlip(order){
     const printAction = printMethod === "DTF" ? "DTF bestellen" : "Transfer selbst drucken";
     return `<tr>
       <td>${index+1}</td>
-      <td><b>${htmlEscape(product)}</b><span>Motiv: ${htmlEscape(orderMotifLabel(order,item))}${item.initials?` · Initialen: ${htmlEscape(item.initials)}`:""}</span></td>
+      <td><b>${htmlEscape(product)}</b><span>Motiv: ${htmlEscape(orderMotifLabel(order,item))}${item.initials?` · Initialen: ${htmlEscape(item.initials)}${item.initialsColor?` (${htmlEscape(item.initialsColor)})`:""}`:""}</span></td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
@@ -309,7 +309,7 @@ function printProductionSlip(order){
     activePrintMethods.push(method);
     return `<tr>
       <td>${index+1}</td>
-      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(orderMotifLabel(order,item))}${item.initials?` · Initialen: ${htmlEscape(item.initials)}`:""}</span></td>
+      <td><b>${htmlEscape(product)}</b><span>${htmlEscape(orderMotifLabel(order,item))}${item.initials?` · Initialen: ${htmlEscape(item.initials)}${item.initialsColor?` (${htmlEscape(item.initialsColor)})`:""}`:""}</span></td>
       <td>${htmlEscape(item.size||"-")}</td>
       <td>${htmlEscape(item.shirtColor||"-")}</td>
       <td>${htmlEscape(item.motifColor||"-")}</td>
@@ -556,7 +556,7 @@ function renderOrder(id,order){
   (Array.isArray(order.items)?order.items:[]).forEach((item,index)=>{
     const row=document.createElement("div");row.className="item-row v2971-item-row";
     const info=document.createElement("div");info.className="v2971-item-info";
-    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${orderMotifLabel(order,item)} · Motivfarbe: ${text(item.motifColor)}${item.initials?` · Initialen: ${text(item.initials)}`:""}`;
+    const main=document.createElement("strong");main.textContent=`${index+1}. ${text(item.quantity,"1")}× ${productLabel(item)} · ${text(item.size)} · ${text(item.shirtColor)} · ${orderMotifLabel(order,item)} · Motivfarbe: ${text(item.motifColor)}${item.initials?` · Initialen: ${text(item.initials)}${item.initialsColor?` (${text(item.initialsColor)})`:""}`:""}`;
     const methodControl=document.createElement("label");methodControl.className="v30169-method-control";
     const methodLabel=document.createElement("span");methodLabel.textContent="Verfahren";
     const methodSelect=document.createElement("select");methodSelect.className="v30169-method-select";methodSelect.setAttribute("aria-label",`Druckverfahren für Artikel ${index+1}`);
@@ -1648,8 +1648,7 @@ function renderMotifsEditor(){
     const choices=document.createElement("div"); choices.className="logo-library-options";
     const category=document.createElement("select"); category.setAttribute("aria-label",`Kategorie für ${motif.name||"Logo"}`); category.innerHTML='<option value="club">Vereinslogo</option><option value="general">Allgemeines Logo</option>'; category.value=motif.category==="general"?"general":"club";
     category.addEventListener("change",()=>{workingMotifs[index].category=category.value;renderMotifsEditor();setShopState("Logo-Gruppe geändert – oben Speichern klicken.")});
-    const enabled=document.createElement("label"); enabled.className="logo-library-check"; const check=document.createElement("input");check.type="checkbox";check.checked=motif.customerSelectable!==false;check.addEventListener("change",()=>{workingMotifs[index].customerSelectable=check.checked;setShopState("Logo-Freigabe geändert – oben Speichern klicken.")});enabled.append(check,document.createTextNode("Im Shop wählbar"));
-    choices.append(category,enabled);fields.appendChild(choices);
+    choices.append(category);fields.appendChild(choices);
     if(motif.preserveColors){const note=document.createElement("small");note.className="motif-original-colors";note.textContent="Originalfarben / 3D bleiben erhalten";fields.appendChild(note);}
     const del=document.createElement("button"); del.type="button"; del.className="danger-btn"; del.textContent="Entfernen"; del.addEventListener("click",()=>{workingMotifs.splice(index,1);renderMotifsEditor();setShopState("Motiv entfernt – noch speichern.")});
     row.append(img,fields,del); groups[category.value].appendChild(row);
@@ -1662,7 +1661,6 @@ function addLibraryLogo(category){
   if(workingMotifs.length>=10){alert("Maximal 10 Logos je Shop. Bitte zunächst ein Logo entfernen.");return;}
   const id=`logo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
   workingMotifs.push({id,name:category==="club"?"Vereinslogo":"Allgemeines Logo",file:"",category,locked:true,preserveColors:true,customerSelectable:true});
-  if(shopFields.showMotifs) shopFields.showMotifs.checked=true;
   renderMotifsEditor();
   setShopState("Logo angelegt – Bild auswählen und oben Speichern klicken.");
 }
@@ -1921,6 +1919,31 @@ saveShopBtn.addEventListener("click",async()=>{
   const shopsToggle=sidebar.querySelector("#v2949ShopsToggle");
   const shopCount=sidebar.querySelector("#v2949ShopCount");
   const shopTypeTabs=[...sidebar.querySelectorAll(".v2959-shop-type")];
+  const mobileMenuBackdrop=document.createElement("button");
+  mobileMenuBackdrop.type="button";
+  mobileMenuBackdrop.className="v284-mobile-backdrop";
+  mobileMenuBackdrop.setAttribute("aria-label","Admin-Menü schließen");
+  mobileMenuBackdrop.hidden=true;
+  sidebar.after(mobileMenuBackdrop);
+  function setMobileMenuOpen(open){
+    sidebar.classList.toggle("mobile-menu-open",open);
+    mobileMenuBackdrop.hidden=!open;
+    document.body.classList.toggle("v284-menu-open",open);
+    const button=sidebar.querySelector("#v284MobileMenu");
+    if(button){
+      button.setAttribute("aria-expanded",String(open));
+      button.setAttribute("aria-label",open?"Admin-Menü schließen":"Admin-Menü öffnen");
+      button.textContent=open?"×":"☰";
+    }
+  }
+  mobileMenuBackdrop.addEventListener("click",()=>setMobileMenuOpen(false));
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape" && sidebar.classList.contains("mobile-menu-open")){
+      setMobileMenuOpen(false);
+      sidebar.querySelector("#v284MobileMenu")?.focus();
+    }
+  });
+  window.matchMedia("(max-width:720px)").addEventListener("change",()=>setMobileMenuOpen(false));
   let activeShopType="simple";
   const SHOP_TYPE_GROUPS=[
     {key:"simple",label:"1 · SIMPLE"},
@@ -1974,8 +1997,7 @@ saveShopBtn.addEventListener("click",async()=>{
         setNavActive("shops");
         renderV2949ShopTree();
         if(window.matchMedia("(max-width:720px)").matches){
-          sidebar.classList.remove("mobile-menu-open");
-          if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+          setMobileMenuOpen(false);
         }
       });
       block.appendChild(btn);
@@ -2030,9 +2052,7 @@ saveShopBtn.addEventListener("click",async()=>{
   sidebar.querySelector("#v284Logout").addEventListener("click",()=>originalLogout?.click());
   const mobileMenuBtn=sidebar.querySelector("#v284MobileMenu");
   mobileMenuBtn?.addEventListener("click",()=>{
-    const open=sidebar.classList.toggle("mobile-menu-open");
-    mobileMenuBtn.setAttribute("aria-expanded",String(open));
-    mobileMenuBtn.textContent=open?"×":"☰";
+    setMobileMenuOpen(!sidebar.classList.contains("mobile-menu-open"));
   });
 
   function setNavActive(name){
@@ -2050,22 +2070,21 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn.dataset.main){ switchAdminTab(btn.dataset.main); setNavActive(btn.dataset.main); }
     else if(btn.dataset.jump) openCard(btn.dataset.jump);
     if(window.matchMedia("(max-width:720px)").matches){
-      sidebar.classList.remove("mobile-menu-open");
-      if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","false"); mobileMenuBtn.textContent="☰"; }
+      setMobileMenuOpen(false);
     }
   }));
 
   let v2959InitialMobileStartDone=false;
   const dashObserver=new MutationObserver(()=>{
     sidebar.hidden=dashboardEl.hidden;
+    if(dashboardEl.hidden) setMobileMenuOpen(false);
     if(!dashboardEl.hidden){
       if(window.matchMedia("(max-width:720px)").matches && !v2959InitialMobileStartDone){
         v2959InitialMobileStartDone=true;
         switchAdminTab("shops");
         setNavActive("shops");
         activeShopType="simple";
-        sidebar.classList.add("mobile-menu-open");
-        if(mobileMenuBtn){ mobileMenuBtn.setAttribute("aria-expanded","true"); mobileMenuBtn.textContent="×"; }
+        setMobileMenuOpen(false);
       } else {
         setNavActive(ordersTab.hidden?"shops":"orders");
       }
@@ -2396,7 +2415,7 @@ saveShopBtn.addEventListener("click",async()=>{
   print.body.appendChild(motifIntro);
   const logoLibrary=document.createElement('section');
   logoLibrary.className='v32-logo-library';
-  logoLibrary.innerHTML='<div class="v32-logo-library-head"><div><strong>Logos für Kunden</strong><small>Vereinswappen und allgemeine Logos im Shop zur Auswahl freigeben. Neue Logos haben eine feste Position und Größe.</small></div><div class="v32-logo-library-actions"><button id="addClubLogoBtn" type="button" class="ghost-btn small">+ Vereinslogo</button><button id="addGeneralLogoBtn" type="button" class="ghost-btn small">+ Allgemeines Logo</button></div></div>';
+  logoLibrary.innerHTML='<div class="v32-logo-library-head"><div><strong>Logo-Bibliothek im Admin</strong><small>Vereinswappen und allgemeine Logos verwalten. Diese Bibliothek wird im Online-Shop nicht angezeigt.</small></div><div class="v32-logo-library-actions"><button id="addClubLogoBtn" type="button" class="ghost-btn small">+ Vereinslogo</button><button id="addGeneralLogoBtn" type="button" class="ghost-btn small">+ Allgemeines Logo</button></div></div>';
   if(motifsEditor) logoLibrary.appendChild(motifsEditor);
   print.body.appendChild(logoLibrary);
   const mergedTable=document.createElement('div');
@@ -2645,7 +2664,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.127");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.128");
   return true;
   }
   if(!boot()){
