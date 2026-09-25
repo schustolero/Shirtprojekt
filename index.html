@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.133">
+  <link rel="stylesheet" href="/style.css?v=30.3.135">
   <script>
     (function(){
       try{
@@ -261,12 +261,12 @@
       <div class="initials-controls">
         <div class="initials-field-wrap">
           <input id="initialsInput" class="feature-input" type="text" maxlength="3" minlength="0" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" pattern="[A-Za-zÄÖÜäöü0-9]{0,3}" aria-label="Initialen" aria-describedby="initialsHint initialsError">
-          <p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p>
         </div>
         <div class="initials-color-choice" role="group" aria-label="Farbe der Initialen">
           <button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button>
           <button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button>
         </div>
+        <p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p>
       </div>
       <p class="field-error" id="initialsError" hidden></p>
     </section>
@@ -473,7 +473,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.133";
+      app.src="/script.js?v=30.3.135";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }

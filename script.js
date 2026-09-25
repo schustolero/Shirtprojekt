@@ -2147,6 +2147,8 @@ function ensureInitialsField(){
       colors.innerHTML='<button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button><button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button>';
       box.querySelector(".initials-controls")?.appendChild(colors);
     }
+    const controls=box.querySelector(".initials-controls");
+    if(controls && hint && hint.parentElement!==controls) controls.appendChild(hint);
     box.hidden=!FEATURES.allowInitials;
     box.style.display=FEATURES.allowInitials?"":"none";
     const product=document.getElementById("productSection");
