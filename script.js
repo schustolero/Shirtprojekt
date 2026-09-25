@@ -6,7 +6,9 @@
   document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
-const MASTER_FIXED_CHEST_LOGO = SHOP.isMasterTemplate === true || SHOP.customerId === "_master";
+const MASTER_FIXED_CHEST_LOGO = typeof SHOP.features?.fixedFrontChestLogo === "boolean"
+  ? SHOP.features.fixedFrontChestLogo
+  : SHOP.isMasterTemplate === true || SHOP.customerId === "_master" || SHOP.templateSource === "_master";
 const FEATURES = Object.assign({
   layout: "simple",
   motifMode: "single",          // single | multiple | upload | mixed
