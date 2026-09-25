@@ -282,7 +282,7 @@ loadShopConfig(function(cfg){
         copy.append(strong);
         if(item.initials){
           const initials=document.createElement("em");
-          initials.textContent=`Initialen: ${text(item.initials)}`;
+          initials.textContent=`Initialen: ${text(item.initials)}${item.initialsColor?` (${text(item.initialsColor)})`:""}`;
           copy.append(initials);
         }
         prod.append(img,copy);

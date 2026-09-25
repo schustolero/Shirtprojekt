@@ -24,10 +24,9 @@
     config=mergeMasterProductData(config);
     const template = templateDemos[slug];
     if (!template) return config;
-    const features = { ...(config.features || {}) };
+    const features = { ...(config.features || {}), allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true };
     const brandSubtitle = typeof config.brandSubtitle === "string" ? config.brandSubtitle : template.brandSubtitle;
-    return { ...template, ...config, brandSubtitle, features, customerId:slug,
-      logoFile:config.logoFile || "/dein-logo.svg?v=30.1.87", logoHeight:config.logoHeight || 90 };
+    return { ...config, ...template, brandSubtitle, features, customerId:slug, logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90, active:true };
   }
 
   window.shopAssetUrl = function(file){
@@ -173,6 +172,10 @@
           }
 
           const finalConfig = normalizeTemplateDemo(merged);
+          if (slug === "_master") {
+            finalConfig.fixedPrint = finalConfig.fixedPrint || {};
+            finalConfig.fixedPrint.back = { ...(finalConfig.fixedPrint.back || {}), enabled: false };
+          }
           if (finalConfig.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;

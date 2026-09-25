@@ -5402,3 +5402,79 @@ html body .initials-controls .initials-color-btn.active::after{
   content:"✓";position:absolute;right:3px;top:2px;font-size:10px;
   color:#856500;font-weight:900;
 }
+
+/* v30.3.137 – Nur mobil: weniger Scrollstrecke bei gleichen Funktionen. */
+@media(max-width:900px){
+  html body .mobile-after-shirt-controls{
+    gap:0!important;padding:3px 14px 0!important;
+  }
+  html body .mobile-after-shirt-controls>.tool-section,
+  html body .mobile-after-shirt-controls .initials-section,
+  html body .mobile-after-shirt-controls #productSection{
+    margin:0!important;padding:9px 0!important;
+  }
+  html body .mobile-after-shirt-controls .initials-section h3,
+  html body .mobile-after-shirt-controls #productSection h3{
+    margin:0 0 6px!important;
+  }
+  html body .mobile-after-shirt-controls #productSwitch{
+    gap:6px!important;
+  }
+  html body .mobile-after-shirt-controls #productSwitch .product-btn{
+    min-height:44px!important;height:44px!important;
+    padding:5px 6px!important;
+  }
+  html body .mobile-after-shirt-controls .initials-controls{
+    row-gap:4px!important;
+  }
+  html body .sidebar{
+    padding:6px 14px 14px!important;
+  }
+  html body .sidebar .tool-section{
+    padding:10px 14px!important;
+  }
+  html body .sidebar .tool-section h3{
+    margin-bottom:7px!important;
+  }
+  html body .sidebar .view-section{
+    min-height:53px!important;padding:7px 14px!important;
+  }
+  html body .sidebar .customer-upload-section .upload-btn{
+    min-height:44px!important;margin-top:0!important;
+  }
+  html body .sidebar .customer-upload-section .hint{
+    margin:4px 0 0!important;
+  }
+  html body .sidebar .motif-section .motif-help{
+    margin:0 0 7px!important;
+  }
+  html body .sidebar .motif-section #motifGrid{
+    display:flex!important;flex-wrap:nowrap!important;align-items:stretch!important;
+    gap:8px!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;
+    overflow-x:auto!important;overflow-y:hidden!important;
+    padding:3px 4px 9px!important;scroll-snap-type:x proximity;
+    -webkit-overflow-scrolling:touch;overscroll-behavior-inline:contain;
+  }
+  html body .sidebar .motif-section #motifGrid>.motif-btn{
+    flex:0 0 118px!important;width:118px!important;min-width:118px!important;
+    min-height:78px!important;height:78px!important;scroll-snap-align:start;
+    padding:5px!important;
+  }
+  html body .sidebar .motif-section #motifGrid>.motif-btn-off{
+    flex-basis:100px!important;width:100px!important;min-width:100px!important;
+    flex-direction:column!important;justify-content:center!important;
+  }
+  html body .sidebar .motif-section #motifGrid .motif-preview{
+    height:43px!important;min-height:43px!important;max-height:43px!important;
+  }
+  html body .sidebar .motif-section #motifGrid .motif-preview img{
+    max-height:40px!important;max-width:100%!important;
+  }
+  html body .sidebar .motif-section #motifGrid>.motif-btn>span:last-child{
+    max-width:100%!important;overflow:hidden!important;text-overflow:ellipsis!important;
+    white-space:nowrap!important;font-size:11px!important;
+  }
+  html body .sidebar .order-section .order-fields{
+    gap:8px!important;
+  }
+}
