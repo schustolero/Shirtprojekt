@@ -446,6 +446,7 @@ let currentShirtColorId = "white";
 let currentPattern = "";
 let currentMotifColor = "#000000";
 let currentMotifColorLabel = "Black";
+let selectedInitialsColor = null;
 
 const viewStates = { front: null, back: null };
 const baseImages = { front: null, back: null };
@@ -556,21 +557,27 @@ function updateSizeOptionsForCurrentSelection() {
 }
 
 function applyProductColorRules(product, forceDefault = false) {
-  const variants=Array.isArray(product?.colorVariants)?product.colorVariants:[];
+  const article=product?.articleNo || ({tshirt:"F140",polo:"F502",hoodie:"F421",jc001:"JC001",sport:"JC001",bcwu01w:"BCWU01W",sweatshirt:"BCWU01W"})[product?.id];
+  const catalog=typeof MASTER_COLOR_VARIANTS!=="undefined" && Array.isArray(MASTER_COLOR_VARIANTS[article]) ? MASTER_COLOR_VARIANTS[article] : [];
+  const variants=Array.isArray(product?.colorVariants)&&product.colorVariants.length ? product.colorVariants : catalog;
   const variantMap=new Map(variants.map(variant=>[variant.id,variant]));
   const allowed = Array.isArray(product?.allowedShirtColorIds) && product.allowedShirtColorIds.length
     ? product.allowedShirtColorIds
     : variants.map(variant=>variant.id);
-  let shopAllowed=FEATURES.showShirtColorPicker===false ? getAllowedShirtColorIds() : null;
-  if(shopAllowed && !Array.from(shirtColorButtons).some(button=>shopAllowed.includes(button.dataset.id))) shopAllowed=null;
+  const catalogIds=new Set(catalog.map(variant=>variant.id));
+  const shopAllowed=getAllowedShirtColorIds();
   const labels = product?.shirtColorLabels || {};
   shirtColorButtons.forEach(button => {
     if (!button.dataset.baseName) button.dataset.baseName = button.dataset.name || "";
     if (!button.dataset.baseColor) button.dataset.baseColor = button.dataset.color || "#777777";
     if (!button.dataset.basePattern) button.dataset.basePattern = button.dataset.pattern || "";
-    const variant=variantMap.get(button.dataset.id);
-    const visible = (!allowed.length || allowed.includes(button.dataset.id)) && (!shopAllowed || shopAllowed.includes(button.dataset.id));
+    const variant=variantMap.get(button.dataset.id) || catalog.find(item=>item.id===button.dataset.id);
+    const visible = allowed.includes(button.dataset.id)
+      && (!catalogIds.size || catalogIds.has(button.dataset.id))
+      && (!shopAllowed || shopAllowed.includes(button.dataset.id));
     button.hidden = !visible;
+    button.disabled = !visible;
+    button.setAttribute("aria-hidden",String(!visible));
     const label = labels[button.dataset.id] || variant?.name || button.dataset.baseName;
     button.dataset.color=product?.shirtColorHex?.[button.dataset.id] || variant?.color || button.dataset.baseColor;
     button.dataset.pattern=variant?.pattern || button.dataset.basePattern || "";
@@ -583,9 +590,7 @@ function applyProductColorRules(product, forceDefault = false) {
   });
 
   const currentButton = Array.from(shirtColorButtons).find(button => button.dataset.id === currentShirtColorId && !button.hidden);
-  const defaultId = FEATURES.showShirtColorPicker === false
-    ? (F140_ALLOWED_META.defaultId || product?.defaultShirtColorId || allowed[0] || currentShirtColorId || "")
-    : (product?.defaultShirtColorId || F140_ALLOWED_META.defaultId || allowed[0] || currentShirtColorId || "");
+  const defaultId = product?.defaultShirtColorId || F140_ALLOWED_META.defaultId || allowed[0] || currentShirtColorId || "";
   const target = Array.from(shirtColorButtons).find(button => button.dataset.id === defaultId && !button.hidden)
     || Array.from(shirtColorButtons).find(button => !button.hidden);
   if (target && (forceDefault || !currentButton)) {
@@ -596,14 +601,6 @@ function applyProductColorRules(product, forceDefault = false) {
 
 function renderProductSelector() {
   if (!productSection || !productSwitch) return;
-  let productTag=document.getElementById("selectedProductTag");
-  if(!productTag){
-    productTag=document.createElement("span");
-    productTag.id="selectedProductTag";
-    productTag.className="selected-product-tag";
-    document.querySelector(".designer-header")?.appendChild(productTag);
-  }
-  if(productTag) productTag.textContent=getCurrentProduct().name||"Textil";
   productSection.hidden = PRODUCTS.length <= 1;
   productSwitch.replaceChildren();
   PRODUCTS.forEach(product => {
@@ -638,8 +635,6 @@ productSwitch?.addEventListener("click", async event => {
   const request=++productSelectionRequest;
   saveCurrentView();
   currentProductId=product.id;
-  const tag=document.getElementById("selectedProductTag");
-  if(tag) tag.textContent=product.name||"Textil";
   dualBaseImage=null;
   productSwitch.querySelectorAll("button[data-product]").forEach(item=>{
     const active=item.dataset.product===product.id;
@@ -936,7 +931,7 @@ function updateDualInitials(){
     mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
     mark.style.top=`${Number(saved.y??defaults.y)}%`;
     mark.style.fontSize=`${dualCompositeStage.clientWidth/2*Math.max(2,Math.min(12,Number(saved.sizePct??5)))/100}px`;
-    mark.style.color=SHOP.shirtMotifColors?.[currentShirtColorId]?.color||currentMotifColor||"#ffffff";
+    mark.style.color=getInitialsColor()==="white"?"#ffffff":"#000000";
   }
 }
 
@@ -1021,11 +1016,13 @@ function changeShirtColor(color, name, colorId, pattern, redraw = true) {
     void recolorActiveMotif(pairedMotifColor.color, pairedMotifColor.name || "Druckfarbe");
   }
   updateInitialsOnCanvas();
+  syncInitialsColorButtons();
 }
 
 document.addEventListener("click", (event) => {
   const colorBtn=event.target.closest(".shirt-color");
   if(colorBtn && document.contains(colorBtn)){
+    if(colorBtn.hidden || colorBtn.disabled) return;
     changeShirtColor(colorBtn.dataset.color, colorBtn.dataset.name, colorBtn.dataset.id, colorBtn.dataset.pattern || "");
     return;
   }
@@ -1308,6 +1305,28 @@ function initialsValue() {
   return value;
 }
 
+function getInitialsColor(){
+  if(selectedInitialsColor) return selectedInitialsColor;
+  const hex=String(currentShirtColor||"#ffffff").replace("#","");
+  const rgb=/^[0-9a-f]{6}$/i.test(hex)?[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)):[255,255,255];
+  return rgb[0]*.299+rgb[1]*.587+rgb[2]*.114<145?"white":"black";
+}
+function syncInitialsColorButtons(){
+  const color=getInitialsColor();
+  document.querySelectorAll("[data-initials-color]").forEach(button=>{
+    const active=button.dataset.initialsColor===color;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
+}
+document.addEventListener("click",event=>{
+  const button=event.target.closest("button[data-initials-color]");
+  if(!button) return;
+  selectedInitialsColor=button.dataset.initialsColor;
+  syncInitialsColorButtons();
+  updateInitialsOnCanvas();
+});
+
 function initialsShirtBox(){
   const stage=document.querySelector(".mockup-stage");
   const img=document.getElementById("shirtMockup");
@@ -1325,8 +1344,7 @@ function applyInitialsOnShirt(overlay, xPct, yPct){
 function updateInitialsOnCanvas() {
   const value = initialsValue();
   const cfg = SHOP.initialsConfig || {};
-  const paired = SHOP.shirtMotifColors?.[currentShirtColorId];
-  const color = paired?.color || currentMotifColor || "#B62820";
+  const color = getInitialsColor()==="white"?"#ffffff":"#000000";
   const stage = document.querySelector(".mockup-stage");
   if (!stage) return;
   stage.querySelectorAll(".shirt-initials-overlay").forEach((extra, index) => {
@@ -1610,6 +1628,7 @@ function getCurrentShirtSelection() {
     motif: getSelectedMotifName(),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
     initials: initialsValue(),
+    initialsColor: initialsValue() ? (getInitialsColor()==="white"?"Weiß":"Schwarz") : "",
     printLayout: fixedPrintParts.join(" · "),
     size,
     quantity
@@ -1648,7 +1667,7 @@ function renderCart() {
     // Kundenseitig kompakt halten: Motiv-, Druckfarben- und Positionsdetails
     // werden weiterhin im Bestellobjekt gespeichert, aber nicht unter jedem
     // Shirt als langer Text angezeigt.
-    meta.textContent = `${item.shirtColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}`;
+    meta.textContent = `${item.shirtColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || "Schwarz"})` : ""}`;
     info.append(top, meta);
 
     const remove = document.createElement("button");
@@ -1683,6 +1702,7 @@ function addCurrentShirtToOrder() {
     entry.motif === item.motif &&
     entry.motifColor === item.motifColor &&
     entry.initials === item.initials &&
+    entry.initialsColor === item.initialsColor &&
     entry.size === item.size
   );
 
@@ -1696,7 +1716,7 @@ function addCurrentShirtToOrder() {
 
 function orderItemsAsText() {
   return orderItems.map((item, i) =>
-    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.initials ? ` | Initialen: ${item.initials}` : ""}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
+    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.initials ? ` | Initialen: ${item.initials} (${item.initialsColor || "Schwarz"})` : ""}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
   ).join("\n");
 }
 
@@ -1717,7 +1737,7 @@ function openOrderSummary() {
     const visiblePrice = FEATURES.showPrices === false ? "" : ` · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`;
     orderSummary.appendChild(summaryRow(
       `Position ${i + 1}`,
-      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials}` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}${visiblePrice}`
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || "Schwarz"})` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}${visiblePrice}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
@@ -1880,6 +1900,7 @@ if (orderForm) {
           motif: item.motif || "",
           motifColor: item.motifColor || "",
           initials: item.initials || "",
+          initialsColor: item.initialsColor || "",
           printLayout: item.printLayout || "",
           size: item.size || "",
           quantity: Number(item.quantity) || 1,
@@ -2099,7 +2120,7 @@ function ensureInitialsField(){
     box=document.createElement("section");
     box.className="tool-section initials-section";
     box.id="initialsPop";
-    box.innerHTML='<h3>Initialen</h3><div class="initials-field-wrap"><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen" aria-describedby="initialsHint"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p></div><p class="field-error" id="initialsError" hidden></p>';
+    box.innerHTML='<h3>Initialen</h3><div class="initials-controls"><div class="initials-field-wrap"><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen" aria-describedby="initialsHint"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p></div><div class="initials-color-choice" role="group" aria-label="Farbe der Initialen"><button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button><button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button></div></div><p class="field-error" id="initialsError" hidden></p>';
     sidebar.appendChild(box);
   }
   if(box){
@@ -2110,6 +2131,21 @@ function ensureInitialsField(){
       wrapper.className="initials-field-wrap";
       field.before(wrapper);
       wrapper.append(field,hint);
+    }
+    const wrap=box.querySelector(".initials-field-wrap");
+    if(wrap && !wrap.closest(".initials-controls")){
+      const controls=document.createElement("div");
+      controls.className="initials-controls";
+      wrap.before(controls);
+      controls.appendChild(wrap);
+    }
+    if(!box.querySelector(".initials-color-choice")){
+      const colors=document.createElement("div");
+      colors.className="initials-color-choice";
+      colors.setAttribute("role","group");
+      colors.setAttribute("aria-label","Farbe der Initialen");
+      colors.innerHTML='<button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button><button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button>';
+      box.querySelector(".initials-controls")?.appendChild(colors);
     }
     box.hidden=!FEATURES.allowInitials;
     box.style.display=FEATURES.allowInitials?"":"none";

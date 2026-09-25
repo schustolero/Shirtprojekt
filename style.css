@@ -395,6 +395,8 @@ input {
   }
 }
 
+
+
 /* Erweiterte Shirt-Farbpalette */
 .shirt-colors {
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -5271,3 +5273,45 @@ html body .initials-field-wrap{position:relative;width:100%;max-width:100%}
     pointer-events:none!important;
   }
 }
+
+/* Kompakte Initialen mit eigener Druckfarbe. */
+html body .selected-product-tag{display:none!important}
+html body .initials-controls{display:grid;grid-template-columns:minmax(0,1fr) 110px;align-items:stretch;gap:8px;width:100%}
+html body .initials-controls .initials-field-wrap{
+  display:grid;grid-template-columns:78px minmax(0,1fr);align-items:center;
+  box-sizing:border-box;min-width:0;min-height:48px;width:100%;
+  border:1px solid #d9dfe7;border-radius:10px;background:#fff;
+}
+html body .initials-controls #initialsInput,
+html body .mobile-after-shirt-controls .initials-controls .initials-field-wrap #initialsInput{
+  display:block!important;box-sizing:border-box!important;width:100%!important;
+  max-width:none!important;min-width:0!important;height:46px!important;
+  min-height:46px!important;padding:6px 8px!important;
+  border:0!important;box-shadow:none!important;background:transparent!important;
+  font-size:16px!important;letter-spacing:.07em!important;
+}
+html body .initials-controls .initials-field-wrap:focus-within{outline:2px solid #d8b700;outline-offset:1px}
+html body .initials-controls #initialsHint,
+html body .mobile-after-shirt-controls .initials-controls .initials-field-wrap #initialsHint{
+  position:static!important;transform:none!important;width:auto!important;min-width:0!important;
+  margin:0!important;padding:2px 6px 2px 0!important;
+  font-size:10px!important;line-height:1.15!important;text-align:left!important;
+  color:#6b7280!important;pointer-events:none!important;
+}
+html body .initials-color-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:stretch;gap:4px;min-width:0}
+html body .initials-color-btn{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  min-width:0;min-height:48px;padding:3px 1px;
+  border:1px solid #d9dfe7;border-radius:10px;background:#fff;color:#27303c;
+  font-family:inherit;font-size:10px;font-weight:700;line-height:1.1;cursor:pointer;touch-action:manipulation;
+}
+html body .initials-color-btn.active{border:2px solid #d2aa00;background:#fffcf0}
+html body .initials-color-dot{display:block;width:17px;height:17px;border:1px solid #8e9299;border-radius:50%;background:#fff}
+html body [data-initials-color="black"] .initials-color-dot{background:#111}
+@media(max-width:900px){html body .mobile-after-shirt-controls .initials-controls{grid-template-columns:minmax(0,1fr) 110px!important}}
+
+/* Nur die für das gewählte Textil verfügbaren Farbfelder anzeigen. */
+html body .workspace .color-rail .shirt-color[hidden],
+html body .workspace.has-color-rail .shirt-color[hidden],
+html body .workspace .shirt-color[hidden],
+html body .shirt-color[hidden]{display:none!important;pointer-events:none!important}
