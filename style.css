@@ -5385,3 +5385,20 @@ html body .mobile-after-shirt-controls .initials-controls #initialsHint{
   html body .initials-controls .initials-color-btn{gap:3px!important;padding:4px 2px!important;font-size:10px!important}
   html body .initials-controls .initials-color-dot{width:17px!important;height:17px!important;min-width:17px!important}
 }
+
+/* v30.3.136: Farbauswahl auf dem Shirt und als Touch-Ziel absichern. */
+html body .mockup-stage .shirt-initials-overlay .initials-glyph{
+  color:var(--initials-ink,#000)!important;
+}
+html body .initials-section{
+  position:relative!important;z-index:25!important;isolation:isolate!important;
+}
+html body .initials-controls .initials-color-choice,
+html body .initials-controls .initials-color-btn{
+  position:relative!important;z-index:2!important;pointer-events:auto!important;
+  touch-action:manipulation!important;cursor:pointer!important;
+}
+html body .initials-controls .initials-color-btn.active::after{
+  content:"✓";position:absolute;right:3px;top:2px;font-size:10px;
+  color:#856500;font-weight:900;
+}

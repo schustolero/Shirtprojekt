@@ -931,7 +931,7 @@ function updateDualInitials(){
     mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
     mark.style.top=`${Number(saved.y??defaults.y)}%`;
     mark.style.fontSize=`${dualCompositeStage.clientWidth/2*Math.max(2,Math.min(12,Number(saved.sizePct??5)))/100}px`;
-    mark.style.color=getInitialsColor()==="white"?"#ffffff":"#000000";
+    mark.style.setProperty("color",getInitialsColor()==="white"?"#ffffff":"#000000","important");
   }
 }
 
@@ -1320,12 +1320,12 @@ function syncInitialsColorButtons(){
   });
 }
 document.addEventListener("click",event=>{
-  const button=event.target.closest("button[data-initials-color]");
+  const button=event.target instanceof Element ? event.target.closest("button[data-initials-color]") : null;
   if(!button) return;
   selectedInitialsColor=button.dataset.initialsColor;
   syncInitialsColorButtons();
   updateInitialsOnCanvas();
-});
+},true);
 
 function initialsShirtBox(){
   const stage=document.querySelector(".mockup-stage");
@@ -1387,6 +1387,8 @@ function updateInitialsOnCanvas() {
   overlay.style.fontWeight = "900";
   overlay.style.letterSpacing = "0.02em";
   overlay.style.setProperty("color",color || "#ffffff","important");
+  overlay.style.setProperty("--initials-ink",color,"important");
+  overlay.querySelector(".initials-glyph")?.style.setProperty("color",color,"important");
   overlay.style.pointerEvents = "none";
   overlay.style.cursor = "default";
   overlay.style.zIndex = "80";
