@@ -970,10 +970,19 @@ function loadView(view) {
 }
 
 function switchView(view) {
-  if (view === currentView) return;
+  if (view !== "front" && view !== "back") return;
+  if (view === currentView) {
+    renderShirt();
+    updateInitialsOnCanvas();
+    return;
+  }
   saveCurrentView();
   currentView = view;
-  viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === view));
+  viewButtons.forEach(button => {
+    const active=button.dataset.view === view;
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
   if (view === "front") {
     shirtMockup.alt = "T-Shirt Vorderseite";
     designerStatus.textContent = "Vorderseite";
@@ -990,7 +999,11 @@ function switchView(view) {
   updateInitialsOnCanvas();
 }
 
-viewButtons.forEach(button => button.addEventListener("click", () => switchView(button.dataset.view)));
+viewButtons.forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.view===currentView)));
+document.addEventListener("click",event=>{
+  const button=event.target instanceof Element ? event.target.closest(".view-section .view-btn[data-view]") : null;
+  if(button && !button.hidden && !button.disabled) switchView(button.dataset.view);
+},true);
 
 function lookupMasterHex(colorId){
   const catalogs=typeof MASTER_COLOR_VARIANTS==="object"?MASTER_COLOR_VARIANTS:{};
@@ -1461,7 +1474,11 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   designerStatus.textContent = "Vorderseite";
   printZone.classList.remove("back");
   canvas.setWidth(PRINT_CANVAS_WIDTH); canvas.setHeight(PRINT_CANVAS_HEIGHT);
-  viewButtons.forEach(button => button.classList.toggle("active", button.dataset.view === "front"));
+  viewButtons.forEach(button => {
+    const active=button.dataset.view === "front";
+    button.classList.toggle("active",active);
+    button.setAttribute("aria-pressed",String(active));
+  });
   motifButtons.forEach(button => button.classList.remove("active"));
   changeShirtColor("#ffffff", "White", "white", "");
   recolorActiveMotif("#000000", "Black");

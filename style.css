@@ -5536,3 +5536,32 @@ html body .initials-controls .initials-color-btn.active::after{
     font-size:10px!important;
   }
 }
+
+/* v30.3.139 – Größeres Shoplogo und bedienbare Seitenwahl auf Mobilgeräten. */
+@media(max-width:900px){
+  html body .designer-header{
+    grid-template-columns:minmax(0,150px) minmax(0,1fr)!important;
+    column-gap:10px!important;min-height:0!important;padding:8px 14px!important;
+  }
+  html body .designer-header .shop-brand-logo{
+    width:100%!important;max-width:150px!important;
+    height:54px!important;max-height:54px!important;
+  }
+  html body .designer-header h1{font-size:14px!important;line-height:1.18!important}
+  html body .sidebar .view-section{
+    position:relative!important;z-index:35!important;isolation:isolate!important;
+    pointer-events:auto!important;
+  }
+  html body .sidebar .view-switch,
+  html body .sidebar .view-btn{
+    position:relative!important;z-index:2!important;pointer-events:auto!important;
+    touch-action:manipulation!important;cursor:pointer!important;
+  }
+  html body .sidebar .view-btn{
+    min-height:44px!important;height:44px!important;
+  }
+}
+@media(max-width:360px){
+  html body .designer-header{grid-template-columns:minmax(0,132px) minmax(0,1fr)!important}
+  html body .designer-header .shop-brand-logo{max-width:132px!important}
+}
