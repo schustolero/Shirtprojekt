@@ -6541,3 +6541,283 @@ body.v32-admin .shop-list-panel{display:none!important}
   body.v32-admin .v284-editor-head .editor-actions{width:100%!important}
   body.v32-admin .v284-editor-head .editor-actions>*{flex:1!important}
 }
+
+/* v30.3.142 – Mobile Admin: Vorschau nach Name/Logo, lesbare Eingaben. */
+@media(max-width:720px){
+  body.v32-admin .admin-shell{
+    width:min(100%,540px)!important;margin:0 auto!important;
+    padding:0 12px calc(28px + env(safe-area-inset-bottom))!important;
+  }
+  body.v32-admin .v284-editor-head{min-height:54px!important;padding:8px 0!important}
+  body.v32-admin .v284-editor-head h2{font-size:17px!important}
+  body.v32-admin #v32ShopNav{
+    width:calc(100% + 24px)!important;margin:0 -12px 8px!important;
+    padding:5px 12px!important;
+  }
+  body.v32-admin #v32ShopNav button{min-height:40px!important;font-size:11px!important;padding:4px 2px!important}
+  body.v32-admin .v2853-workspace{gap:8px!important}
+  body.v32-admin .v2853-card-head{min-height:36px!important;padding:7px 10px!important}
+  body.v32-admin .v2853-card-body{padding:9px 10px!important}
+  body.v32-admin #shopForm .v2854-name-logo-row{gap:6px!important;margin-bottom:6px!important}
+  body.v32-admin #shopForm .v2854-name-logo-row .v2853-name{margin:0!important}
+  body.v32-admin #shopForm .v2854-name-logo-row .v2853-name input,
+  body.v32-admin #shopForm .v2853-basic-grid input:not([type="checkbox"]):not([type="radio"]),
+  body.v32-admin #shopForm .v2853-basic-grid select{
+    box-sizing:border-box!important;width:100%!important;
+    height:42px!important;min-height:42px!important;
+    padding:8px 10px!important;font-size:16px!important;line-height:1.25!important;
+  }
+  body.v32-admin #shopForm .v2853-basic-grid{gap:7px!important}
+  body.v32-admin #shopForm .v2853-basic-grid>label:has(#shopEmail){grid-column:1/-1!important}
+  body.v32-admin #shopForm .v2853-basic-grid label>span{
+    font-size:12px!important;line-height:1.2!important;margin-bottom:3px!important;
+    white-space:normal!important;overflow:visible!important;
+  }
+  body.v32-admin #shopForm .v2853-basic-card .v2853-display label,
+  body.v32-admin #shopForm .v2853-basic-card .v2853-display label>span{
+    min-width:0!important;font-size:12px!important;line-height:1.25!important;
+  }
+  body.v32-admin #shopForm .v2853-basic-card .v2853-display input[type="text"],
+  body.v32-admin #shopForm .v2853-basic-card .v2853-display select,
+  body.v32-admin #shopForm .v2853-basic-card .v2853-display textarea{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    height:42px!important;min-height:42px!important;
+    padding:7px 10px!important;font-size:16px!important;line-height:1.25!important;
+    overflow:visible!important;
+  }
+  body.v32-admin .v2853-article-card.v32-mobile-preview-inline{
+    display:block!important;width:100%!important;max-width:none!important;
+    margin:6px 0 9px!important;padding:8px!important;
+    border:1px solid #e5eaf0!important;border-radius:12px!important;
+    background:#f8fafc!important;box-shadow:none!important;overflow:hidden!important;
+  }
+  body.v32-admin .v32-mobile-preview-inline>.v2853-card-head{display:none!important}
+  body.v32-admin .v32-mobile-preview-inline>.v2853-card-body{
+    display:flex!important;flex-direction:column!important;gap:7px!important;padding:0!important;
+  }
+  body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell{
+    order:0!important;width:100%!important;max-width:320px!important;margin:0 auto!important;
+  }
+  body.v32-admin .v32-mobile-preview-inline .v2853-article-controls{
+    order:1!important;display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;margin:0!important;
+  }
+  body.v32-admin .v32-mobile-preview-inline .v2853-article-controls label{min-width:0!important;margin:0!important}
+  body.v32-admin .v32-mobile-preview-inline .v2853-article-controls label span{
+    font-size:11px!important;line-height:1.25!important;white-space:normal!important;
+  }
+  body.v32-admin .v32-mobile-preview-inline .v2853-article-controls select,
+  body.v32-admin .v32-mobile-preview-inline .v2853-article-controls input{
+    box-sizing:border-box!important;width:100%!important;max-width:100%!important;
+    height:40px!important;min-height:40px!important;font-size:16px!important;
+  }
+  body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right:empty{display:none!important}
+  body.v32-admin #shopForm .v2972-inline-functions,
+  body.v32-admin #shopForm .v2972-inline-functions .v2972-designer-tools{
+    display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;min-width:0!important;
+  }
+  body.v32-admin #shopForm .v2972-inline-functions label.check-row{
+    box-sizing:border-box!important;display:flex!important;align-items:center!important;
+    justify-content:space-between!important;gap:6px!important;
+    width:100%!important;min-width:0!important;min-height:40px!important;
+    padding:5px 7px!important;margin:0!important;
+  }
+  body.v32-admin #shopForm .v2972-inline-functions label.check-row span{
+    min-width:0!important;max-width:none!important;
+    font-size:11px!important;line-height:1.2!important;
+    white-space:normal!important;overflow:visible!important;text-overflow:clip!important;
+  }
+  body.v32-admin #shopForm .v2972-inline-functions label.check-row input[type="checkbox"]{
+    flex:0 0 34px!important;min-width:34px!important;width:34px!important;
+  }
+  body.v32-admin #shopForm .v2853-basic-card .v2850-products{
+    min-width:0!important;padding:8px!important;margin-top:8px!important;
+  }
+  body.v32-admin #shopForm .v3036-product-head,
+  body.v32-admin #shopForm .v3036-product-row{
+    display:grid!important;
+    grid-template-columns:minmax(84px,1fr) repeat(3,60px) 34px!important;
+    gap:4px!important;align-items:center!important;min-width:0!important;
+  }
+  body.v32-admin #shopForm .v3036-product-head{
+    padding:0 2px 5px!important;font-size:10px!important;
+  }
+  body.v32-admin #shopForm .v3036-product-row{
+    padding:6px 2px!important;min-height:46px!important;
+    border-bottom:1px solid #e8ecf1!important;
+  }
+  body.v32-admin #shopForm .v3036-product-title strong{
+    font-size:12px!important;line-height:1.2!important;
+    white-space:normal!important;overflow-wrap:anywhere!important;
+  }
+  body.v32-admin #shopForm .v3036-price-field{display:block!important;min-width:0!important;margin:0!important}
+  body.v32-admin #shopForm .v3036-price-field input[type="number"]{
+    box-sizing:border-box!important;display:block!important;
+    width:100%!important;max-width:100%!important;
+    height:36px!important;min-height:36px!important;
+    padding:3px 4px!important;font-size:14px!important;text-align:center!important;
+  }
+  body.v32-admin #shopForm .v3036-product-toggle{min-width:34px!important;margin:0!important}
+}
+@media(max-width:380px){
+  body.v32-admin #shopForm .v3036-product-head{display:none!important}
+  body.v32-admin #shopForm .v3036-product-row{
+    grid-template-columns:repeat(3,minmax(0,1fr)) 38px!important;
+    grid-template-rows:auto auto!important;gap:5px!important;
+  }
+  body.v32-admin #shopForm .v3036-product-title{grid-column:1/4!important;grid-row:1!important}
+  body.v32-admin #shopForm .v3036-product-toggle{grid-column:4!important;grid-row:1!important}
+  body.v32-admin #shopForm .v3036-price-field{grid-row:2!important}
+  body.v32-admin #shopForm .v3036-price-field:nth-child(2){grid-column:1!important}
+  body.v32-admin #shopForm .v3036-purchase-field{grid-column:2!important}
+  body.v32-admin #shopForm .v3036-print-field{grid-column:3!important}
+  body.v32-admin #shopForm .v3036-price-field::before{
+    content:"VK · €";display:block;margin:0 0 3px;
+    font-size:10px;font-weight:700;color:#64717d;
+  }
+  body.v32-admin #shopForm .v3036-purchase-field::before{content:"EK · €"}
+  body.v32-admin #shopForm .v3036-print-field::before{content:"Druck · €"}
+  body.v32-admin #shopForm .v3036-price-field input[type="number"]{font-size:16px!important}
+}
+
+/* v30.3.143 – Feste Platzierung für Logos im Admin. */
+#shopForm .fixed-chest-logo-setting{
+  display:flex!important;align-items:center!important;gap:12px!important;
+  margin:10px 0 14px!important;padding:11px 12px!important;
+  border:1px solid #e2d29b!important;border-radius:12px!important;background:#fffcf1!important;
+  cursor:pointer!important;
+}
+#shopForm .fixed-chest-logo-setting input[type="checkbox"]{
+  flex:0 0 20px!important;width:20px!important;height:20px!important;
+  min-width:20px!important;min-height:20px!important;margin:0!important;
+  accent-color:#b68a12!important;
+}
+#shopForm .fixed-chest-logo-setting span{min-width:0!important;display:grid!important;gap:3px!important;margin:0!important}
+#shopForm .fixed-chest-logo-setting strong{font-size:13px!important;line-height:1.25!important;color:#242628!important}
+#shopForm .fixed-chest-logo-setting small{font-size:11px!important;line-height:1.35!important;color:#5f6670!important}
+#shopForm #positionSize:disabled{opacity:.48!important;cursor:not-allowed!important}
+
+/* Die ausgewählte Logoposition ist im Admin jederzeit erkennbar. */
+#shopForm .motif-edit-row.is-placing{border-color:#bd9428;box-shadow:0 0 0 1px #bd9428;background:#fffdf5}
+#shopForm .logo-place-btn{min-width:92px;min-height:32px}
+@media(max-width:720px){
+  #shopForm .logo-library-options{gap:6px}
+  #shopForm .logo-library-options select{max-width:130px;min-width:0;font-size:12px}
+  #shopForm .logo-place-btn{font-size:12px}
+}
+
+/* v30.3.145: Mobil tatsächliche Höhen und Abstände reduzieren. */
+@media(max-width:720px){
+  html body.v32-admin .admin-shell{
+    width:min(100%,470px)!important;padding-left:16px!important;padding-right:16px!important;
+  }
+  html body.v32-admin .v284-sidebar.v32-sidebar{
+    height:52px!important;min-height:52px!important;max-height:52px!important;
+    padding:5px 12px!important;
+  }
+  html body.v32-admin .v32-sidebar .v284-brand{height:40px!important;min-height:40px!important}
+  html body.v32-admin .v32-sidebar .v284-mobile-menu{width:38px!important;min-width:38px!important;height:38px!important}
+  html body.v32-admin .v284-editor-head{min-height:48px!important;padding:5px 0!important;gap:5px!important}
+  html body.v32-admin .v284-editor-head h2{font-size:16px!important}
+  html body.v32-admin .v284-editor-head .editor-actions>*{
+    min-height:36px!important;height:36px!important;padding:0 9px!important;font-size:11px!important;
+  }
+  html body.v32-admin #v32ShopNav{
+    top:52px!important;width:calc(100% + 32px)!important;
+    margin-left:-16px!important;margin-right:-16px!important;
+    padding:4px 16px!important;margin-bottom:5px!important;
+  }
+  html body.v32-admin #v32ShopNav button{
+    min-height:34px!important;padding:3px 2px!important;font-size:10.5px!important;
+  }
+  html body.v32-admin .v2853-workspace{gap:6px!important}
+  html body.v32-admin .v2853-card-head{height:32px!important;min-height:32px!important;padding:4px 9px!important}
+  html body.v32-admin .v2853-card-head h3{font-size:13px!important}
+  html body.v32-admin .v2853-card-body{padding:7px 9px!important}
+  html body.v32-admin #shopForm input:is([type="text"],[type="email"],[type="url"],[type="tel"],[type="number"],[type="search"]),
+  html body.v32-admin #shopForm select{
+    box-sizing:border-box!important;max-width:100%!important;
+    height:36px!important;min-height:36px!important;
+    padding:5px 8px!important;font-size:16px!important;line-height:1.2!important;
+  }
+  html body.v32-admin #shopForm textarea{
+    box-sizing:border-box!important;max-width:100%!important;
+    min-height:56px!important;padding:7px 8px!important;
+    font-size:16px!important;line-height:1.3!important;
+  }
+  html body.v32-admin #shopForm label>span{font-size:11px!important;line-height:1.25!important}
+  html body.v32-admin #shopForm .v2854-name-logo-row{gap:5px!important;margin-bottom:5px!important}
+  html body.v32-admin #shopForm .v2854-name-logo-row .v2853-name>span,
+  html body.v32-admin #shopForm .v2854-name-logo-row .v2853-name label>span{
+    font-size:11px!important;margin-bottom:2px!important;
+  }
+  html body.v32-admin #shopForm .v2854-name-logo-row .v2853-name input{
+    height:36px!important;min-height:36px!important;padding:4px 9px!important;font-size:16px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+    grid-template-columns:42px minmax(0,1fr) 34px!important;
+    min-height:50px!important;padding:5px 7px!important;gap:7px!important;
+    align-items:center!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-mini-preview{
+    width:40px!important;min-width:40px!important;height:40px!important;min-height:40px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls{min-width:0!important;gap:2px!important}
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls strong{font-size:11px!important}
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-file{
+    width:auto!important;min-width:0!important;min-height:28px!important;height:28px!important;
+    padding:2px 9px!important;font-size:11px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-accent{
+    width:32px!important;min-width:0!important;transform:none!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-accent input[type="color"]{
+    width:27px!important;min-width:27px!important;height:27px!important;min-height:27px!important;
+  }
+  html body.v32-admin .v2853-article-card.v32-mobile-preview-inline{
+    margin:2px 0 5px!important;padding:5px!important;border-radius:9px!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline>.v2853-card-body{padding:0!important;gap:4px!important}
+  html body.v32-admin .v32-mobile-preview-inline .v2853-article-controls{
+    order:0!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px!important;margin:0!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-article-controls label:has(#v2853Model){display:none!important}
+  html body.v32-admin .v32-mobile-preview-inline .v2853-article-controls label span{
+    display:block!important;font-size:10px!important;margin:0 0 2px!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-article-controls select{
+    height:36px!important;min-height:36px!important;padding:2px 7px!important;font-size:16px!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell{
+    order:1!important;max-width:292px!important;margin:0 auto!important;
+    border:0!important;border-radius:8px!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-head{display:none!important}
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail{
+    grid-template-columns:34px minmax(0,1fr)!important;column-gap:4px!important;
+    grid-template-rows:auto auto auto!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .color-rail{
+    grid-row:1!important;width:34px!important;padding-top:4px!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .shirt-colors{
+    gap:6px!important;max-height:330px!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .position-stage{
+    grid-row:1!important;width:100%!important;height:auto!important;min-height:0!important;
+    aspect-ratio:.86!important;
+  }
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .v2859-size-wrap{grid-row:2!important}
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .position-readout{grid-row:3!important}
+  html body.v32-admin #shopForm .v2853-basic-grid{gap:5px!important}
+  html body.v32-admin #shopForm .v2853-basic-grid input:not([type="checkbox"]):not([type="radio"]),
+  html body.v32-admin #shopForm .v2853-basic-grid select,
+  html body.v32-admin #shopForm .v2853-basic-card .v2853-display input[type="text"],
+  html body.v32-admin #shopForm .v2853-basic-card .v2853-display select{
+    height:36px!important;min-height:36px!important;padding:5px 8px!important;font-size:16px!important;
+  }
+  html body.v32-admin #shopForm .v2853-basic-grid label>span{font-size:11px!important;margin-bottom:2px!important}
+}
