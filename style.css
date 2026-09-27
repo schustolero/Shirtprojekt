@@ -5149,6 +5149,8 @@ html body .mockup-stage .print-zone .canvas-container,
 html body .mockup-stage .print-zone canvas{
   width:320px!important;height:500px!important;
 }
+
+
 .dual-initials{
   position:absolute;z-index:5;transform:translate(-50%,-50%);
   font:900 1em/1 "Arial Black",Impact,sans-serif;
@@ -5690,4 +5692,33 @@ html body .workspace .color-rail .shirt-color[hidden]{display:none!important}
     background:#fff!important;
     appearance:auto!important;-webkit-appearance:menulist!important;
   }
+}
+
+/* v30.3.147: Shirt und Druckcanvas teilen auf allen Breiten dieselbe
+   590 × 686 Referenzfläche. Die Motivkoordinaten bleiben unverändert. */
+html body .workspace .mockup-stage{
+  height:auto!important;
+  min-height:0!important;
+  aspect-ratio:.86!important;
+}
+html body .workspace .mockup-stage #shirtMockup{
+  position:absolute!important;
+  inset:0!important;
+  width:100%!important;
+  height:100%!important;
+  max-height:none!important;
+  object-fit:contain!important;
+}
+html body .mockup-stage .print-zone,
+html body .mockup-stage .print-zone.back{
+  left:22.881%!important;
+  top:2.48%!important;
+  width:54.237%!important;
+  height:72.88%!important;
+  transform:none!important;
+}
+html body .mockup-stage .print-zone .canvas-container,
+html body .mockup-stage .print-zone canvas{
+  width:100%!important;
+  height:100%!important;
 }
