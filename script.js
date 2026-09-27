@@ -1129,6 +1129,10 @@ function getFixedPrintLayout(motifId) {
 
 function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
+  // v30.3.150: kleine Korrektur der Herzseiten-Position, in derselben
+  // 260 x 340-Druckfläche wie die Admin-Vorschau.
+  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? 0.05 : 0;
+  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? -0.02 : 0;
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
   const scale = MASTER_FIXED_CHEST_LOGO
@@ -1140,10 +1144,10 @@ function applyFixedMotifLayout(image, motifId) {
   const rotatable = !MASTER_FIXED_CHEST_LOGO && !locked && !!FEATURES.allowRotateMotif;
   const editable = movable || resizable || rotatable;
   image.set({
-    left: PRINT_SIDE_MARGIN + PRINT_BASE_WIDTH * layout.left,
+    left: PRINT_SIDE_MARGIN + PRINT_BASE_WIDTH * (layout.left + chestX),
     // Y-Werte bleiben auf die bisherige 340px-Druckzone bezogen.
     // PRINT_HEADROOM liegt unsichtbar darüber und verhindert Clipping.
-    top: PRINT_HEADROOM + (PRINT_BASE_HEIGHT * layout.top),
+    top: PRINT_HEADROOM + (PRINT_BASE_HEIGHT * (layout.top + chestY)),
     originX: "center", originY: "center",
     angle: 0,
     scaleX: scale, scaleY: scale,

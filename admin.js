@@ -1022,8 +1022,10 @@ function refreshPositionEditor(){
     positionMotif.removeAttribute("src");
   }
   // Alter gespeicherter Logo-Koordinatenraum bleibt erhalten; die sichtbare Druckfläche wächst ringsum.
-  positionMotif.style.left = `${(30+260*x/100)/320*100}%`;
-  positionMotif.style.top = `${(135+340*y/100)/500*100}%`;
+  const chestOffsetX = fixedChestLogoEnabled() && side === "front" ? 5 : 0;
+  const chestOffsetY = fixedChestLogoEnabled() && side === "front" ? -2 : 0;
+  positionMotif.style.left = `${(30+260*(x+chestOffsetX)/100)/320*100}%`;
+  positionMotif.style.top = `${(135+340*(y+chestOffsetY)/100)/500*100}%`;
   // Fabric begrenzt Breite UND Höhe des Logos. Dieselbe Begrenzung gilt
   // hier, damit auch hohe Motive exakt gleich groß erscheinen.
   const fitMotifPreview = () => {
@@ -1118,8 +1120,9 @@ function bindPositionEditor(){
     if(!dragging) return;
     const r = positionPrintZone.getBoundingClientRect();
     const point = ev.touches?.[0] || ev;
-    let x = ((point.clientX - r.left - r.width*30/320) / (r.width*260/320)) * 100;
-    let y = ((point.clientY - r.top - r.height*135/500) / (r.height*340/500)) * 100;
+    const chestFront=fixedChestLogoEnabled() && (positionSide?.value||"front")==="front";
+    let x = ((point.clientX - r.left - r.width*30/320) / (r.width*260/320)) * 100 - (chestFront ? 5 : 0);
+    let y = ((point.clientY - r.top - r.height*135/500) / (r.height*340/500)) * 100 + (chestFront ? 2 : 0);
     x = Math.max(-20, Math.min(120, x));
     y = Math.max(-20, Math.min(120, y));
     writePositionValues(x, y, NaN);
