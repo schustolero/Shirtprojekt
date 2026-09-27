@@ -5694,12 +5694,23 @@ html body .workspace .color-rail .shirt-color[hidden]{display:none!important}
   }
 }
 
-/* v30.3.147: Shirt und Druckcanvas teilen auf allen Breiten dieselbe
-   590 × 686 Referenzfläche. Die Motivkoordinaten bleiben unverändert. */
+/* v30.3.148: Die Farbleisten-Variante muss dieselbe Skalierung erhalten.
+   Gespeicherte Motivkoordinaten bleiben unverändert. */
+html body .workspace.has-color-rail .mockup-stage,
 html body .workspace .mockup-stage{
+  width:min(420px,56vw)!important;
+  max-width:100%!important;
   height:auto!important;
   min-height:0!important;
   aspect-ratio:.86!important;
+}
+@media(max-width:900px){
+  html body .workspace.has-color-rail .mockup-stage,
+  html body .workspace .mockup-stage{
+    width:min(100%,340px)!important;
+    min-width:0!important;
+    max-width:100%!important;
+  }
 }
 html body .workspace .mockup-stage #shirtMockup{
   position:absolute!important;
