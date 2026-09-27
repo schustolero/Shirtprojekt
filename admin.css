@@ -6821,3 +6821,29 @@ body.v32-admin .shop-list-panel{display:none!important}
   }
   html body.v32-admin #shopForm .v2853-basic-grid label>span{font-size:11px!important;margin-bottom:2px!important}
 }
+
+/* v30.3.149: dieselben Proportionen und dieselbe Druckzone wie im Shop. */
+html body .v2853-preview-shell .position-stage,
+html body .v2853-preview-shell.has-color-rail .position-stage{
+  box-sizing:border-box!important;
+  aspect-ratio:43/50!important;
+  height:auto!important;
+  min-height:0!important;
+}
+html body .v2853-preview-shell .position-stage .position-shirt{
+  object-position:center center!important;
+}
+html body .v2853-preview-shell .position-stage .position-print-zone{
+  left:22.881%!important;
+  top:2.48%!important;
+  width:54.237%!important;
+  height:72.88%!important;
+}
+@media(max-width:760px){
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell .position-stage,
+  html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .position-stage{
+    aspect-ratio:43/50!important;
+    height:auto!important;
+    min-height:0!important;
+  }
+}

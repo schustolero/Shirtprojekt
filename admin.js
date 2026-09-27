@@ -1024,7 +1024,18 @@ function refreshPositionEditor(){
   // Alter gespeicherter Logo-Koordinatenraum bleibt erhalten; die sichtbare Druckfläche wächst ringsum.
   positionMotif.style.left = `${(30+260*x/100)/320*100}%`;
   positionMotif.style.top = `${(135+340*y/100)/500*100}%`;
+  // Fabric begrenzt Breite UND Höhe des Logos. Dieselbe Begrenzung gilt
+  // hier, damit auch hohe Motive exakt gleich groß erscheinen.
+  const fitMotifPreview = () => {
+    if(request!==positionPreviewRequest || !positionMotif.naturalWidth || !positionMotif.naturalHeight) return;
+    const maxWidth=260*w/100;
+    const maxHeight=340*(editingLogo ? (side==="front" ? .24 : .60) : w/100);
+    const scale=Math.min(maxWidth/positionMotif.naturalWidth,maxHeight/positionMotif.naturalHeight);
+    positionMotif.style.width=`${positionMotif.naturalWidth*scale/320*100}%`;
+  };
   positionMotif.style.width = `${260*w/320}%`;
+  positionMotif.onload=fitMotifPreview;
+  if(positionMotif.complete) fitMotifPreview();
   positionMotif.style.removeProperty("pointer-events");
   positionMotif.style.removeProperty("cursor");
   if(positionSize){ positionSize.value = String(w); positionSize.disabled = false; }

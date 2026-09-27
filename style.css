@@ -5733,3 +5733,17 @@ html body .mockup-stage .print-zone canvas{
   width:100%!important;
   height:100%!important;
 }
+
+/* v30.3.149: Bild und Druckfläche teilen auf jedem Viewport denselben
+   Koordinatenraum. Die Farbleiste darf die Shirt-Proportionen nicht ändern. */
+html body .workspace .mockup-stage,
+html body .workspace.has-color-rail .mockup-stage{
+  box-sizing:border-box!important;
+  flex:none!important;
+  aspect-ratio:43/50!important;
+  height:auto!important;
+  min-height:0!important;
+}
+html body .workspace .mockup-stage #shirtMockup{
+  object-position:center center!important;
+}
