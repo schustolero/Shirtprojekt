@@ -726,7 +726,7 @@ let workingProducts = [];
 let workingLogo = "";
 let workingInitials = {};
 const INITIALS_DEFAULTS = {
-  tshirt:{front:{x:24,y:90,sizePct:5},back:{x:24,y:90,sizePct:5}},
+  tshirt:{front:{x:24,y:84,sizePct:5},back:{x:24,y:90,sizePct:5}},
   polo:{front:{x:24,y:88,sizePct:5},back:{x:24,y:88,sizePct:5}},
   hoodie:{front:{x:23,y:91,sizePct:5},back:{x:23,y:89,sizePct:5}},
   sport:{front:{x:24,y:89,sizePct:5},back:{x:24,y:89,sizePct:5}},

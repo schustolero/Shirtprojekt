@@ -5747,3 +5747,12 @@ html body .workspace.has-color-rail .mockup-stage{
 html body .workspace .mockup-stage #shirtMockup{
   object-position:center center!important;
 }
+
+/* v30.3.151: Farbauswahl mobil mit Abstand zum Bildschirmrand. */
+@media(max-width:900px){
+  html body .workspace,
+  html body .workspace.has-color-rail{
+    padding-left:28px!important;
+    column-gap:7px!important;
+  }
+}

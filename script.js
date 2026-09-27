@@ -1408,7 +1408,7 @@ function updateInitialsOnCanvas() {
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
   const defaults = {
-    tshirt:{front:{x:24,y:90},back:{x:24,y:90}},
+    tshirt:{front:{x:24,y:84},back:{x:24,y:90}},
     polo:{front:{x:24,y:88},back:{x:24,y:88}},
     hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
     sport:{front:{x:24,y:89},back:{x:24,y:89}},
