@@ -7348,3 +7348,107 @@ html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{
     font-size:16px!important;
   }
 }
+
+/* v30.3.163: Shopstatus neben Logo und Typ; Sortiment flacher und lesbar. */
+html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+  grid-template-columns:42px minmax(0,1fr) minmax(83px,102px) 84px!important;
+  column-gap:6px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+  box-sizing:border-box!important;display:flex!important;flex-direction:column!important;
+  justify-content:center!important;align-items:center!important;
+  gap:3px!important;width:84px!important;min-width:0!important;
+  max-width:84px!important;min-height:50px!important;height:auto!important;
+  margin:0!important;padding:3px!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active > span{
+  order:0!important;margin:0!important;text-align:center!important;
+  white-space:nowrap!important;font-size:10px!important;line-height:1.1!important;
+  color:#556170!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active > input[type="checkbox"]{
+  order:1!important;flex:0 0 20px!important;width:34px!important;min-width:34px!important;
+  height:20px!important;min-height:20px!important;margin:0!important;
+}
+html body.v32-admin #shopForm .v2853-basic-grid > .v2972-status-functions{
+  margin-top:2px!important;
+}
+html body.v32-admin #shopForm .v2850-products{
+  box-sizing:border-box!important;margin-top:6px!important;padding:8px!important;
+  box-shadow:none!important;
+}
+html body.v32-admin #shopForm .v2850-products .v2850-subtitle{
+  margin:0 0 3px!important;font-size:13px!important;
+  line-height:1.2!important;letter-spacing:0!important;
+}
+html body.v32-admin #shopForm .v2850-products .v3042-catalog-hint{
+  margin:0 0 7px!important;font-size:11px!important;line-height:1.25!important;
+}
+html body.v32-admin #shopForm .v3036-product-list{gap:3px!important}
+html body.v32-admin #shopForm .v3036-product-row{
+  min-height:0!important;padding:5px 6px!important;border:1px solid #e7ebf0!important;
+  border-radius:8px!important;background:#fff!important;
+}
+html body.v32-admin #shopForm .v3036-product-title strong{
+  font-size:12px!important;line-height:1.2!important;
+}
+html body.v32-admin #shopForm .v3036-product-title span{
+  font-size:10px!important;line-height:1.2!important;
+}
+html body.v32-admin #shopForm .v3040-variants{
+  margin-top:7px!important;
+}
+@media(max-width:760px){
+  html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+    grid-template-columns:40px minmax(0,1fr) minmax(83px,98px) 78px!important;
+    padding:5px 7px!important;gap:4px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+    width:78px!important;max-width:78px!important;
+  }
+  html body.v32-admin #shopForm .v3036-product-row{
+    grid-template-columns:repeat(3,minmax(0,1fr)) 34px!important;
+    grid-template-rows:auto auto!important;
+    gap:3px 5px!important;padding:4px 6px!important;
+  }
+  html body.v32-admin #shopForm .v3036-product-title{
+    grid-column:1/4!important;grid-row:1!important;
+    flex-direction:row!important;align-items:baseline!important;gap:6px!important;
+  }
+  html body.v32-admin #shopForm .v3036-product-toggle{grid-column:4!important;grid-row:1!important}
+  html body.v32-admin #shopForm .v3036-price-field{grid-row:2!important}
+  html body.v32-admin #shopForm .v3036-price-field::before{
+    margin-bottom:2px!important;font-size:10px!important;
+  }
+  html body.v32-admin #shopForm .v3036-price-field input[type="number"]{
+    height:32px!important;min-height:32px!important;font-size:16px!important;
+  }
+  html body.v32-admin #shopForm .v3036-price-field > span{height:32px!important}
+}
+@media(min-width:410px) and (max-width:760px){
+  html body.v32-admin #shopForm .v3036-product-row{
+    grid-template-columns:minmax(80px,1.1fr) repeat(3,minmax(54px,.8fr)) 32px!important;
+    grid-template-rows:auto!important;
+    gap:5px!important;
+  }
+  html body.v32-admin #shopForm .v3036-product-title{
+    grid-column:1!important;grid-row:1!important;
+    flex-direction:column!important;gap:0!important;
+  }
+  html body.v32-admin #shopForm .v3036-price-field,
+  html body.v32-admin #shopForm .v3036-price-field:nth-child(2),
+  html body.v32-admin #shopForm .v3036-purchase-field,
+  html body.v32-admin #shopForm .v3036-print-field{
+    grid-column:auto!important;grid-row:1!important;
+  }
+  html body.v32-admin #shopForm .v3036-product-toggle{grid-column:5!important;grid-row:1!important}
+}
+@media(max-width:340px){
+  html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+    grid-template-columns:40px minmax(0,1fr) 78px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+    grid-column:3!important;grid-row:2!important;justify-self:center!important;
+  }
+}

@@ -2474,6 +2474,11 @@ saveShopBtn.addEventListener("click",async()=>{
         typeLabel.classList.add('v32-shop-type');
         logo.appendChild(typeLabel);
       }
+      const activeLabel=mainGrid.querySelector('.v2972-status-functions > .v2850-active-field');
+      if(activeLabel){
+        activeLabel.classList.add('v32-shop-active');
+        logo.appendChild(activeLabel);
+      }
       nameLogoRow.appendChild(logo);
     }
     if(nameLogoRow.childElementCount) basic.body.appendChild(nameLogoRow);
