@@ -351,21 +351,26 @@ function getAllowedMotifColorNames(){
     });
   }
 
-  if(MASTER_FIXED_CHEST_LOGO && motifGrid && motifSection){
+  if(motifGrid && motifSection){
     const clubMotifs=(cfg.motifs||[]).filter(m=>m?.file && m.customerSelectable!==false &&
-      (m.category!=="general" || /vereinslogo|vereinswappen/i.test(m.name||"")));
+      (m.category==="club" || (m.category!=="general" && /vereinslogo|vereinswappen/i.test(m.name||""))));
     const clubSection=document.createElement("section");
     clubSection.className="tool-section club-logo-section";
-    clubSection.innerHTML='<h3>Vereinslogo</h3><p class="hint">Vom Verein vorbereitet und fest auf dem Textil platziert.</p><div class="motif-grid club-logo-grid"></div>';
+    clubSection.innerHTML='<h3>Vereinslogos</h3><p class="hint">Vom Verein vorbereitete Logos für diesen Shop.</p><div class="motif-grid club-logo-grid"></div>';
     const clubGrid=clubSection.querySelector(".club-logo-grid");
     const none=motifGrid.querySelector('.motif-btn[data-motif="none"]');
-    if(none) clubGrid.appendChild(none);
+    if(none && clubMotifs.length && FEATURES.showClubLogos!==false) clubGrid.appendChild(none);
     for(const motif of clubMotifs){
       const button=Array.from(motifGrid.querySelectorAll(".motif-btn")).find(item=>item.dataset.motif===motif.id);
       if(button) clubGrid.appendChild(button);
     }
+    if(!clubMotifs.length){
+      const empty=document.createElement("p");empty.className="hint club-logo-empty";
+      empty.textContent="Hier erscheinen die im Admin freigegebenen Vereinslogos.";
+      clubSection.appendChild(empty);
+    }
     motifSection.insertAdjacentElement("beforebegin",clubSection);
-    clubSection.hidden=!clubMotifs.length || FEATURES.showClubLogos===false;
+    clubSection.hidden=FEATURES.showClubLogos===false;
     motifSection.hidden=!motifGrid.querySelector('.motif-btn[data-src]') || FEATURES.showMotifPicker===false;
     motifSection.querySelector("h3").textContent="Allgemeine Logos";
   }
@@ -812,8 +817,7 @@ function getConfiguredMotif(view) {
   if ((!cfg || !cfg.enabled) && !selectedId) return null;
   const available=(SHOP.motifs||[]).filter(m=>{
     if(!m.file || m.customerSelectable===false) return false;
-    if(!MASTER_FIXED_CHEST_LOGO) return true;
-    const club=m.category!=="general" || /vereinslogo|vereinswappen/i.test(m.name||"");
+    const club=m.category==="club" || (m.category!=="general" && /vereinslogo|vereinswappen/i.test(m.name||""));
     return club ? FEATURES.showClubLogos!==false : FEATURES.showMotifPicker!==false;
   });
   const motif = available.find(m => m.id === selectedId)
