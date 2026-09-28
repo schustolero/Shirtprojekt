@@ -263,7 +263,12 @@ function getAllowedMotifColorNames(){
       <h3>Eigene Datei</h3>
       <label class="upload-btn">Bild hochladen<input id="customerLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" aria-label="Eigenes Motiv hochladen"></label>
       <p class="hint">PNG, JPG, WEBP oder SVG · max. ${Number(FEATURES.maxUploadMB) || 8} MB</p>
-      <p class="upload-file-name" aria-live="polite" hidden></p>`;
+      <p class="upload-file-name" aria-live="polite" hidden></p>
+      <div class="customer-upload-tools" hidden>
+        <div class="customer-upload-size-head"><label for="customerUploadSize">Größe</label><output for="customerUploadSize">100 %</output></div>
+        <div class="customer-upload-size-row"><input id="customerUploadSize" type="range" min="25" max="200" value="100" aria-label="Größe des eigenen Motivs"><button class="customer-upload-center" type="button">Mittig platzieren</button></div>
+        <p class="hint">Motiv auf dem Textil antippen und verschieben.</p>
+      </div>`;
     insertAfter(motifSection || document.querySelector(".color-section"), uploadSection);
   }
 
@@ -677,11 +682,15 @@ productSwitch?.addEventListener("click", async event => {
     applyProductColorRules(product,true);
     await renderShirt();
     if(request!==productSelectionRequest) return;
-    await applyProductMotifRule(true);
+    if(!canvas.getObjects().some(obj=>obj?.motifKind==="upload")) await applyProductMotifRule(true);
     if(request!==productSelectionRequest) return;
-    canvas.getObjects().forEach(obj=>{if(obj?.motifId) applyFixedMotifLayout(obj,obj.motifId)});
+    canvas.getObjects().forEach(obj=>{
+      if(obj?.motifKind==="upload") restoreUploadedEditing(obj);
+      else if(obj?.motifId) applyFixedMotifLayout(obj,obj.motifId);
+    });
     canvas.requestRenderAll();
     saveCurrentView();
+    syncCustomerUploadControls();
     if(FEATURES.previewMode==="dual") await renderDualPreview();
   } catch(error) { console.error("Produktwechsel:",error); }
 });
@@ -989,7 +998,7 @@ function applyPreviewMode() {
 }
 
 function getActiveObject() { return canvas.getActiveObject(); }
-function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName", "preserveColors"]); }
+function saveCurrentView() { viewStates[currentView] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName", "preserveColors", "uploadBaseScale"]); }
 
 function loadView(view) {
   canvas.clear();
@@ -997,12 +1006,14 @@ function loadView(view) {
   const state = viewStates[view];
   if (state) canvas.loadFromJSON(state, () => {
     canvas.getObjects().forEach(obj => {
-      if (obj && obj.motifId) applyFixedMotifLayout(obj, obj.motifId);
+      if (obj?.motifKind==="upload") restoreUploadedEditing(obj);
+      else if (obj?.motifId) applyFixedMotifLayout(obj, obj.motifId);
     });
     canvas.discardActiveObject();
     canvas.requestRenderAll();
+    syncCustomerUploadControls();
   });
-  else canvas.requestRenderAll();
+  else {canvas.requestRenderAll();syncCustomerUploadControls();}
 }
 
 function switchView(view) {
@@ -1226,6 +1237,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
         canvas.requestRenderAll();
         viewStates[view] = canvas.toJSON(["motifId", "motifSrc", "motifColor", "motifColorLabel", "motifKind", "motifName", "preserveColors"]);
         if (markActive && view === "front") motifButtons.forEach(btn => btn.classList.toggle("active", btn.dataset.motif === motifId));
+        syncCustomerUploadControls();
         resolve();
       }, { crossOrigin: "anonymous" });
     });
@@ -1262,6 +1274,7 @@ function clearShirtLogos(){
     }catch(e){}
   }
   document.querySelectorAll(".motif-btn").forEach(btn=>btn.classList.toggle("active",btn.dataset.motif==="none"));
+  syncCustomerUploadControls();
   if(FEATURES.previewMode==="dual") void renderDualPreview();
 }
 
@@ -1319,6 +1332,49 @@ motifColorButtons.forEach(button => button.addEventListener("click", () => {
 
 const customerLogoFiles = new Map();
 const customerLogoUpload = document.getElementById("customerLogoUpload");
+function restoreUploadedEditing(image){
+  image.set({selectable:true,evented:true,hasControls:true,hasBorders:true,
+    lockMovementX:false,lockMovementY:false,lockScalingX:false,lockScalingY:false,lockRotation:true,
+    cornerSize:18,touchCornerSize:32,transparentCorners:false,cornerStyle:"circle",cornerColor:"#ffffff",
+    cornerStrokeColor:"#ad8423",borderColor:"#ad8423",hoverCursor:"move",moveCursor:"move"});
+  image.setControlsVisibility?.({mtr:false});
+  image.setCoords();
+}
+function currentUploadedMotif(){
+  return canvas.getObjects().find(object=>object?.motifKind==="upload") || null;
+}
+function syncCustomerUploadControls(){
+  const section=document.querySelector(".customer-upload-section");
+  if(!section) return;
+  const image=currentUploadedMotif();
+  const tools=section.querySelector(".customer-upload-tools");
+  const filename=section.querySelector(".upload-file-name");
+  if(tools) tools.hidden=!image;
+  if(filename){filename.hidden=!image;filename.textContent=image?.motifName||"";}
+  const slider=section.querySelector("#customerUploadSize");
+  if(slider && image){
+    const value=Math.round(100*image.scaleX/(image.uploadBaseScale||image.scaleX||1));
+    slider.value=String(Math.max(Number(slider.min),Math.min(Number(slider.max),value)));
+    const output=section.querySelector("output[for=customerUploadSize]");
+    if(output) output.textContent=`${slider.value} %`;
+  }
+  document.body.classList.toggle("has-editable-upload",!!image);
+}
+const uploadSection=customerLogoUpload?.closest(".customer-upload-section");
+uploadSection?.querySelector("#customerUploadSize")?.addEventListener("input",event=>{
+  const image=currentUploadedMotif();
+  if(!image)return;
+  const base=image.uploadBaseScale||image.scaleX||1;
+  image.scale(base*Number(event.target.value)/100);
+  image.setCoords();canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();
+  syncCustomerUploadControls();
+});
+uploadSection?.querySelector(".customer-upload-center")?.addEventListener("click",()=>{
+  const image=currentUploadedMotif();
+  if(!image)return;
+  image.set({left:PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31});
+  image.setCoords();canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();
+});
 if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(event) {
   const file = event.target.files && event.target.files[0];
   if (!file) return;
@@ -1332,33 +1388,29 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
   const reader = new FileReader();
   reader.onload = () => {
     if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
+    if(FEATURES.previewMode==="dual"){
+      FEATURES.previewMode="single";
+      applyPreviewMode();
+    }
     fabric.Image.fromURL(reader.result, function(image) {
-      if (!image) { alert("Die Bilddatei konnte nicht geöffnet werden."); return; }
+      if (!image?.width || !image.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); event.target.value=""; return; }
       if (FEATURES.motifMode !== "mixed") canvas.clear();
-      const maxWidth = canvas.width * 0.72;
-      const maxHeight = canvas.height * 0.36;
-      const scale = Math.min(maxWidth / image.width, maxHeight / image.height, 1);
-      const movable = !!FEATURES.allowMoveMotif;
-      const resizable = !!FEATURES.allowResizeMotif;
-      const rotatable = !!FEATURES.allowRotateMotif;
+      const scale = Math.min(PRINT_BASE_WIDTH*.5/image.width,PRINT_BASE_HEIGHT*.32/image.height);
       image.set({
-        left: canvas.width / 2, top: canvas.height * 0.31, originX: "center", originY: "center",
-        scaleX: scale, scaleY: scale, motifId: "customer-upload", motifSrc: reader.result, motifName: file.name, motifKind: "upload",
-        selectable: movable || resizable || rotatable, evented: movable || resizable || rotatable,
-        hasControls: resizable || rotatable, hasBorders: movable || resizable || rotatable,
-        lockMovementX: !movable, lockMovementY: !movable, lockScalingX: !resizable, lockScalingY: !resizable, lockRotation: !rotatable
+        left: PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
+        originX: "center", originY: "center",scaleX:scale,scaleY:scale,
+        motifId: "customer-upload",motifSrc: reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
       });
-      if (MASTER_FIXED_CHEST_LOGO) applyFixedMotifLayout(image, "customer-upload");
-      if (image.setControlsVisibility) image.setControlsVisibility({ mtr: rotatable });
+      restoreUploadedEditing(image);
       canvas.add(image);
-      if (image.selectable) canvas.setActiveObject(image); else canvas.discardActiveObject();
+      canvas.setActiveObject(image);
       canvas.requestRenderAll();
       saveCurrentView();
       logoEnabled = true;
+      if(selectedLogoByProduct[currentProductId]) delete selectedLogoByProduct[currentProductId][currentView];
       motifButtons.forEach(btn => btn.classList.remove("active"));
-      const fileName=event.target.closest(".customer-upload-section")?.querySelector(".upload-file-name");
-      if(fileName){fileName.textContent=file.name;fileName.hidden=false;}
       customerLogoFiles.set(file.name,file);
+      syncCustomerUploadControls();
       if(FEATURES.previewMode==="dual") void renderDualPreview();
       event.target.value="";
     });
@@ -1563,6 +1615,7 @@ canvas.on("object:modified", function(event) {
   if (bounds.top < 0) top += -bounds.top;
   if (bounds.top + bounds.height > canvas.height) top -= bounds.top + bounds.height - canvas.height;
   object.set({ left, top }); object.setCoords(); canvas.requestRenderAll(); saveCurrentView();
+  if(object.motifKind==="upload")syncCustomerUploadControls();
 });
 
 
@@ -1661,8 +1714,9 @@ function createOrderNumber() {
 }
 
 function getSelectedMotifName() {
-  const uploaded = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
-  if (uploaded) return `Eigenes Logo (${uploaded.motifName || "Upload"})`;
+  const uploads=getCustomerUploads();
+  if(uploads.length) return uploads.map(({side,image})=>
+    `${uploads.length>1?(side==="front"?"Vorne: ":"Hinten: "):""}Eigenes Logo (${image.motifName||"Upload"})`).join(" · ");
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
     const names=["front","back"].flatMap(side=>{
@@ -1676,6 +1730,14 @@ function getSelectedMotifName() {
   const text = canvas.getObjects().find(obj => obj && obj.motifKind === "text");
   if (text) return `Eigener Text: ${text.text || text.motifName || "Text"}`;
   return "Noch kein Motiv gewählt";
+}
+
+function getCustomerUploads(){
+  return ["front","back"].flatMap(side=>{
+    const objects=side===currentView ? canvas.getObjects() : viewStates[side]?.objects||[];
+    const image=objects.find(object=>object?.motifKind==="upload");
+    return image?[{side,image}]:[];
+  });
 }
 
 function summaryRow(label, value) {
@@ -1694,8 +1756,8 @@ function getCurrentShirtSelection() {
   const quantity = Math.max(1, Math.min(99, Number(shirtQuantity.value) || 1));
   shirtQuantity.value = quantity;
   const activeMotif = document.querySelector(".motif-btn.active");
-  const hasCustomDesign = canvas.getObjects().some(obj => obj && (obj.motifKind === "upload" || obj.motifKind === "text"));
-  const uploadedMotif = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
+  const uploads=getCustomerUploads();
+  const hasCustomDesign = uploads.length>0 || canvas.getObjects().some(obj => obj?.motifKind === "text");
 
   if (!size) {
     orderMessage.textContent = "Bitte zuerst eine Größe auswählen.";
@@ -1711,6 +1773,7 @@ function getCurrentShirtSelection() {
   if (MASTER_FIXED_CHEST_LOGO){
     const selections=selectedLogoByProduct[currentProductId];
     for(const side of ["front","back"]){
+      if(uploads.some(upload=>upload.side===side))continue;
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections?.[side]);
       if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${motif.placement?.xPct??(side==="front"?68:50)} % / ${motif.placement?.yPct??(side==="front"?19:32)} %, Breite ${motif.placement?.widthPct??(side==="front"?22:40)} %`);
     }
@@ -1719,6 +1782,12 @@ function getCurrentShirtSelection() {
     if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
     if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
   }
+  uploads.forEach(({side,image})=>{
+    const x=Math.round((image.left-PRINT_SIDE_MARGIN)/PRINT_BASE_WIDTH*100);
+    const y=Math.round((image.top-PRINT_HEADROOM)/PRINT_BASE_HEIGHT*100);
+    const width=Math.round(image.width*image.scaleX/PRINT_BASE_WIDTH*100);
+    fixedPrintParts.push(`${side==="front"?"Vorne":"Hinten"}: eigenes Motiv, X ${x} %, Y ${y} %, Breite ${width} %`);
+  });
   const product = getCurrentProduct();
   return {
     id: Date.now() + Math.random(),
@@ -1730,7 +1799,8 @@ function getCurrentShirtSelection() {
     printCost: Number(product.printCost) || 0,
     shirtColor: currentColorName.textContent || "White",
     motif: getSelectedMotifName(),
-    uploadFileName: uploadedMotif?.motifName || "",
+    uploadFileName: uploads[0]?.image.motifName || "",
+    uploadFileNames: uploads.map(({image})=>image.motifName).filter(Boolean),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
     initials: initialsValue(),
     initialsColor: initialsValue() ? (getInitialsColor()==="white"?"Weiß":"Schwarz") : "",
@@ -1946,7 +2016,7 @@ if (orderForm) {
         return;
       }
 
-      const attachments=[...new Set(orderItems.map(item=>item.uploadFileName).filter(Boolean))]
+      const attachments=[...new Set(orderItems.flatMap(item=>item.uploadFileNames||[item.uploadFileName]).filter(Boolean))]
         .map(fileName=>customerLogoFiles.get(fileName)).filter(Boolean);
       if(attachments.reduce((sum,file)=>sum+file.size,0)>10*1024*1024){
         if(sendOrderMessage) sendOrderMessage.textContent="Eigene Bilddateien dürfen zusammen höchstens 10 MB groß sein. Bitte kleinere Dateien verwenden.";
@@ -2011,6 +2081,7 @@ if (orderForm) {
           shirtColor: item.shirtColor || "",
           motif: item.motif || "",
           uploadFileName: item.uploadFileName || "",
+          uploadFileNames: item.uploadFileNames || [],
           motifColor: item.motifColor || "",
           initials: item.initials || "",
           initialsColor: item.initialsColor || "",

@@ -5694,6 +5694,43 @@ html body .workspace .color-rail .shirt-color[hidden]{display:none!important}
   }
 }
 
+/* v30.3.166: Eigene Motive bleiben frei bearbeitbar, auch auf Touch-Geräten. */
+html body .customer-upload-section{box-sizing:border-box;min-width:0}
+html body .customer-upload-section .customer-upload-tools[hidden]{display:none!important}
+html body .customer-upload-section .customer-upload-tools{min-width:0;margin-top:9px}
+html body .customer-upload-section .customer-upload-size-head,
+html body .customer-upload-section .customer-upload-size-row{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;min-width:0;
+}
+html body .customer-upload-section .customer-upload-size-head{
+  margin-bottom:4px;font-size:12px;font-weight:700;color:#343c48;
+}
+html body .customer-upload-section .customer-upload-size-head output{
+  color:#745b1c;font-variant-numeric:tabular-nums;
+}
+html body .customer-upload-section #customerUploadSize{
+  flex:1 1 0;width:100%;min-width:0;accent-color:#c79716;touch-action:pan-x;
+}
+html body .customer-upload-section .customer-upload-center{
+  flex:0 0 auto;min-height:40px;padding:6px 10px;border:1px solid #d9dee5;
+  border-radius:9px;background:#fff;color:#252b34;font-family:inherit;font-size:12px;font-weight:600;line-height:1.2;
+  cursor:pointer;touch-action:manipulation;
+}
+html body .customer-upload-section .customer-upload-tools .hint{
+  text-align:left;margin:5px 0 0;font-size:11px;
+}
+html body.has-editable-upload .mockup-stage .print-zone .upper-canvas{
+  cursor:move!important;touch-action:none!important;
+}
+@media(max-width:900px){
+  html body .sidebar .customer-upload-section{width:100%!important;max-width:100%!important}
+  html body .customer-upload-section .customer-upload-center{min-height:44px}
+}
+@media(max-width:350px){
+  html body .customer-upload-section .customer-upload-size-row{flex-wrap:wrap}
+  html body .customer-upload-section .customer-upload-center{width:100%}
+}
+
 /* v30.3.148: Die Farbleisten-Variante muss dieselbe Skalierung erhalten.
    Gespeicherte Motivkoordinaten bleiben unverändert. */
 html body .workspace.has-color-rail .mockup-stage,
