@@ -2775,7 +2775,7 @@ saveShopBtn.addEventListener("click",async()=>{
   nav.innerHTML=`
     <button type="button" data-v32="shop" class="active">Shop &amp; Sortiment</button>
     <button type="button" data-v32="design">Design &amp; Farben</button>
-    <button type="button" data-v32="print">Logos &amp; Druck</button>`;
+    <button type="button" data-v32="print">Logoordner &amp; Druck</button>`;
 
   const hint=document.createElement("p");
   hint.className="v32-hint";
@@ -2792,42 +2792,41 @@ saveShopBtn.addEventListener("click",async()=>{
   const bottom=workspace.querySelector(".v2853-bottom");
   const previewCard=right?.querySelector(".v2853-article-card");
   const nameLogoRow=left?.querySelector(".v2854-name-logo-row");
-  const basicBody=left?.querySelector(".v2853-basic-card > .v2853-card-body");
-
-  function placeMobilePreview(view){
-    if(!previewCard || !right || !basicBody || !nameLogoRow) return;
-    const inline=window.matchMedia("(max-width: 720px)").matches && view==="shop";
-    if(inline){
-      nameLogoRow.insertAdjacentElement("afterend",previewCard);
-      previewCard.classList.add("v32-mobile-preview-inline");
-    }else{
-      right.appendChild(previewCard);
-      previewCard.classList.remove("v32-mobile-preview-inline");
-    }
+  if(previewCard && right && previewCard.parentElement!==right) right.appendChild(previewCard);
+  previewCard?.classList.remove("v32-mobile-preview-inline");
+  if(nameLogoRow && !document.getElementById("openLogoFolderBtn")){
+    const link=document.createElement("button");
+    link.type="button";
+    link.id="openLogoFolderBtn";
+    link.className="v32-logo-folder-link";
+    link.innerHTML='<span aria-hidden="true">▣</span><span>Logoordner öffnen<small>Vereinslogos und allgemeine Logos hochladen</small></span><span aria-hidden="true">›</span>';
+    nameLogoRow.insertAdjacentElement("afterend",link);
+    link.addEventListener("click",()=>{
+      nav.querySelector('[data-v32="print"]')?.click();
+      document.querySelector(".v32-logo-library")?.scrollIntoView({behavior:"smooth",block:"start"});
+    });
   }
 
   left?.querySelector(".v2853-basic-card")?.classList.add("v32-view-shop");
   left?.querySelector(".v2853-appearance-card")?.classList.add("v32-view-design");
   // Die Spalte selbst bleibt sichtbar; die einzelnen Karten steuern ihre Ansichten.
-  right?.querySelector(".v2853-article-card")?.classList.add("v32-shared-preview");
+  previewCard?.classList.add("v32-shared-preview");
   bottom?.classList.add("v32-view-print");
   workspace.querySelectorAll(".v2853-print-card,.v284-card[data-card='production'],.v284-card[data-card='fixed'],.v284-card[data-card='functions']").forEach(el=>{
     el.classList.add("v32-view-print");
   });
 
   const hints={
-    shop:"Stammdaten, Funktionen und Preise. Die Textil-Vorschau bleibt rechts.",
+    shop:"Stammdaten, Funktionen und Preise. Logos im Logoordner verwalten.",
     design:"Logo, Texte, Shirtfarben und Druckfarben für diesen Shop.",
     print:"Vereinslogos und allgemeine Logos hochladen, freigeben und positionieren."
   };
 
   function setView(name){
     workspace.dataset.v32View=name;
-    placeMobilePreview(name);
     nav.querySelectorAll("button").forEach(btn=>btn.classList.toggle("active",btn.dataset.v32===name));
     hint.textContent=hints[name]||"";
   }
-  window.matchMedia("(max-width: 720px)").addEventListener?.("change",()=>placeMobilePreview(workspace.dataset.v32View));
   nav.addEventListener("click",e=>{
     const btn=e.target.closest("button[data-v32]");
     if(btn) setView(btn.dataset.v32);
