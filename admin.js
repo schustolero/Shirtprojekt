@@ -2817,20 +2817,27 @@ saveShopBtn.addEventListener("click",async()=>{
   const right=workspace.querySelector(".v2853-right");
   const bottom=workspace.querySelector(".v2853-bottom");
   const previewCard=right?.querySelector(".v2853-article-card");
-  const nameLogoRow=left?.querySelector(".v2854-name-logo-row");
   if(previewCard && right && previewCard.parentElement!==right) right.appendChild(previewCard);
   previewCard?.classList.remove("v32-mobile-preview-inline");
-  if(nameLogoRow && !document.getElementById("openLogoFolderBtn")){
-    const link=document.createElement("button");
-    link.type="button";
-    link.id="openLogoFolderBtn";
-    link.className="v32-logo-folder-link";
-    link.innerHTML='<span aria-hidden="true">▣</span><span>Logoordner &amp; Druck öffnen<small>Vereinslogos hochladen und platzieren</small></span><span aria-hidden="true">›</span>';
-    nameLogoRow.insertAdjacentElement("afterend",link);
-    link.addEventListener("click",()=>{
-      nav.querySelector('[data-v32="print"]')?.click();
-      document.querySelector('.v32-logo-library .logo-library-group[data-logo-category="club"]')?.scrollIntoView({behavior:"smooth",block:"start"});
-    });
+  document.getElementById("openLogoFolderBtn")?.remove();
+
+  const emailInput=document.getElementById("shopEmail");
+  const emailLabel=emailInput?.closest("label");
+  if(emailLabel?.parentElement && !emailLabel.closest(".v32-order-email")){
+    const emailRow=document.createElement("details");
+    emailRow.className="v32-order-email";
+    const summary=document.createElement("summary");
+    const title=document.createElement("strong");title.textContent="Bestell-E-Mail";
+    const value=document.createElement("span");value.className="v32-order-email-value";
+    const refresh=()=>{value.textContent=emailInput.value.trim()||"Keine Adresse eingetragen";};
+    emailInput.setAttribute("aria-label","Bestell-E-Mail-Adresse");
+    summary.append(title,value);
+    emailLabel.replaceWith(emailRow);
+    emailRow.append(summary,emailLabel);
+    emailInput.addEventListener("input",refresh);
+    document.addEventListener("shopconfigloaded",()=>{emailRow.open=false;refresh();});
+    document.getElementById("newShopBtn")?.addEventListener("click",()=>queueMicrotask(()=>{emailRow.open=false;refresh();}));
+    refresh();
   }
 
   left?.querySelector(".v2853-basic-card")?.classList.add("v32-view-shop");

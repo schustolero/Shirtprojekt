@@ -7089,28 +7089,6 @@ html body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-right{
 html body.v32-admin .v2853-workspace[data-v32-view="shop"] .v2853-left{
   grid-column:1/-1!important;
 }
-html body.v32-admin #shopForm .v32-logo-folder-link{
-  display:flex!important;align-items:center!important;gap:10px!important;
-  width:100%!important;min-height:49px!important;margin:0 0 9px!important;
-  padding:8px 11px!important;border:1px solid #dfd4b0!important;
-  border-radius:11px!important;background:#fffcf2!important;color:#2a2d32!important;
-  text-align:left!important;font:700 12px/1.25 system-ui,sans-serif!important;cursor:pointer!important;
-}
-html body.v32-admin #shopForm .v32-logo-folder-link>span:first-child{
-  flex:0 0 30px!important;display:grid!important;place-items:center!important;
-  width:30px!important;height:30px!important;border-radius:8px!important;
-  background:#f2df94!important;color:#6f5416!important;font-size:18px!important;
-}
-html body.v32-admin #shopForm .v32-logo-folder-link>span:nth-child(2){flex:1;min-width:0}
-html body.v32-admin #shopForm .v32-logo-folder-link small{
-  display:block!important;margin-top:2px!important;font-size:10px!important;font-weight:500!important;color:#6a717b!important;
-}
-html body.v32-admin #shopForm .v32-logo-folder-link>span:last-child{
-  font-size:23px!important;font-weight:400!important;color:#8a7436!important;
-}
-html body.v32-admin #shopForm .v32-logo-folder-link:focus-visible{
-  outline:2px solid #9f7920!important;outline-offset:2px!important;
-}
 html body.v32-admin #shopForm .v32-logo-library{scroll-margin-top:120px!important}
 
 /* v30.3.157: Die alte Admin-Regel versteckte die ganze Logo-/Druckkarte. */
@@ -7302,4 +7280,44 @@ html body.v32-admin #shopForm .v2853-print-card .logo-row-details[hidden]{
   html body.v32-admin #shopForm .v2853-print-card .logo-row-header .motif-name{
     font-size:16px!important;
   }
+}
+
+/* v30.3.160: Bestelladresse platzsparend in den Stammdaten bearbeiten. */
+html body.v32-admin #shopForm .v2853-basic-grid > .v32-order-email{
+  box-sizing:border-box!important;grid-column:1/-1!important;
+  min-width:0!important;margin:0!important;
+  border:1px solid #e2e7ee!important;border-radius:8px!important;
+  background:#fff!important;
+}
+html body.v32-admin #shopForm .v32-order-email > summary{
+  box-sizing:border-box!important;display:flex!important;align-items:center!important;
+  gap:10px!important;min-width:0!important;min-height:34px!important;
+  padding:5px 10px!important;cursor:pointer!important;list-style:none!important;
+}
+html body.v32-admin #shopForm .v32-order-email > summary::-webkit-details-marker{display:none!important}
+html body.v32-admin #shopForm .v32-order-email > summary::after{
+  content:"⌄";margin-left:auto;color:#667085;font-size:15px;
+}
+html body.v32-admin #shopForm .v32-order-email[open] > summary::after{content:"⌃"}
+html body.v32-admin #shopForm .v32-order-email > summary strong{
+  flex:none!important;font-size:11px!important;color:#495566!important;
+}
+html body.v32-admin #shopForm .v32-order-email .v32-order-email-value{
+  display:block!important;flex:1!important;min-width:0!important;
+  overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;
+  text-align:right!important;font-size:11px!important;font-weight:500!important;color:#667085!important;
+}
+html body.v32-admin #shopForm .v32-order-email > label{
+  display:block!important;min-width:0!important;margin:0!important;
+  padding:0 9px 9px!important;
+}
+html body.v32-admin #shopForm .v32-order-email:not([open]) > label{display:none!important}
+html body.v32-admin #shopForm .v32-order-email > label > span{display:none!important}
+html body.v32-admin #shopForm .v32-order-email #shopEmail{
+  box-sizing:border-box!important;display:block!important;width:100%!important;
+  min-width:0!important;height:36px!important;min-height:36px!important;
+  margin:0!important;font-size:16px!important;
+}
+html body.v32-admin #shopForm .v32-order-email > summary:focus-visible{
+  outline:2px solid #805e12!important;outline-offset:2px!important;
 }
