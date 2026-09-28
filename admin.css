@@ -7499,3 +7499,45 @@ html body.v32-admin #shopForm .v32-display-compact .display-grid{gap:6px!importa
     grid-column:3!important;grid-row:2!important;
   }
 }
+
+/* v30.3.169: Vollständige Beträge samt Euro-Zeichen im mobilen Sortiment. */
+@media(max-width:760px){
+  html body.v32-admin #shopForm .v3036-product-row{
+    min-width:0!important;
+    column-gap:4px!important;
+  }
+  html body.v32-admin #shopForm .v3036-price-field{
+    min-width:0!important;
+    overflow:hidden!important;
+  }
+  html body.v32-admin #shopForm #productPriceEditor .v3036-price-field input[type="number"]{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    padding:0 17px 0 4px!important;
+    font-size:12px!important;
+    font-weight:750!important;
+    letter-spacing:-.025em!important;
+    font-variant-numeric:tabular-nums!important;
+    appearance:textfield!important;
+    -moz-appearance:textfield!important;
+  }
+  html body.v32-admin #shopForm #productPriceEditor .v3036-price-field input[type="number"]::-webkit-inner-spin-button,
+  html body.v32-admin #shopForm #productPriceEditor .v3036-price-field input[type="number"]::-webkit-outer-spin-button{
+    -webkit-appearance:none!important;
+    margin:0!important;
+  }
+  html body.v32-admin #shopForm .v3036-price-field > span{
+    right:5px!important;
+    font-size:10px!important;
+  }
+}
+@media(min-width:410px) and (max-width:760px){
+  html body.v32-admin #shopForm .v3036-product-row{
+    grid-template-columns:minmax(70px,.95fr) repeat(3,minmax(0,1fr)) 32px!important;
+  }
+  html body.v32-admin #shopForm .v3036-product-title strong{
+    font-size:11px!important;
+  }
+}
