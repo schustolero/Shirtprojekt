@@ -5771,3 +5771,33 @@ html body .club-logo-section .club-logo-grid>.motif-btn{
 html body .club-logo-section .club-logo-grid>.motif-btn-off{flex-basis:100px!important;min-width:100px!important}
 html body .club-logo-section .club-logo-grid .motif-preview{height:42px!important;min-height:42px!important}
 html body .club-logo-section .club-logo-grid .motif-preview img{max-height:39px!important;max-width:100%!important}
+
+/* v30.3.156: untere Textilkante im mobilen Vorschaufeld freihalten. */
+@media(max-width:900px){
+  html body .designer-area{
+    grid-template-rows:auto max-content!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  html body .workspace,
+  html body .workspace.has-color-rail{
+    box-sizing:border-box!important;
+    grid-template-rows:max-content!important;
+    height:auto!important;
+    min-height:0!important;
+    padding-bottom:40px!important;
+    overflow:visible!important;
+  }
+  html body .workspace .mockup-stage,
+  html body .workspace.has-color-rail .mockup-stage{
+    align-self:start!important;
+    aspect-ratio:43/50!important;
+    height:auto!important;
+    overflow:visible!important;
+  }
+  html body .workspace .mockup-stage #shirtMockup{
+    object-fit:contain!important;
+    object-position:center center!important;
+  }
+}

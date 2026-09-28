@@ -1697,6 +1697,7 @@ function renderMotifsEditor(){
   const groups={club:document.createElement("section"),general:document.createElement("section")};
   Object.entries(groups).forEach(([key,section])=>{
     section.className="logo-library-group";
+    section.dataset.logoCategory=key;
     const heading=document.createElement("h4");
     heading.textContent=key==="club"?"Vereinslogos":"Allgemeine Logos";
     const count=document.createElement("span");
@@ -2799,11 +2800,11 @@ saveShopBtn.addEventListener("click",async()=>{
     link.type="button";
     link.id="openLogoFolderBtn";
     link.className="v32-logo-folder-link";
-    link.innerHTML='<span aria-hidden="true">▣</span><span>Logoordner öffnen<small>Vereinslogos und allgemeine Logos hochladen</small></span><span aria-hidden="true">›</span>';
+    link.innerHTML='<span aria-hidden="true">▣</span><span>Logoordner &amp; Druck öffnen<small>Vereinslogos hochladen und platzieren</small></span><span aria-hidden="true">›</span>';
     nameLogoRow.insertAdjacentElement("afterend",link);
     link.addEventListener("click",()=>{
       nav.querySelector('[data-v32="print"]')?.click();
-      document.querySelector(".v32-logo-library")?.scrollIntoView({behavior:"smooth",block:"start"});
+      document.querySelector('.v32-logo-library .logo-library-group[data-logo-category="club"]')?.scrollIntoView({behavior:"smooth",block:"start"});
     });
   }
 
