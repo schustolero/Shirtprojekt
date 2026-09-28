@@ -7258,3 +7258,48 @@ html body.v32-admin #shopForm .v2853-print-card .fixed-chest-logo-setting strong
 html body.v32-admin #shopForm .v2853-print-card .fixed-chest-logo-setting small{
   font-size:10px!important;
 }
+
+/* v30.3.159: zuerst die Textilvorschau, darunter platzsparende Logozeilen. */
+html body.v32-admin #shopForm .v2853-workspace[data-v32-view="print"] .v2853-right > .v2853-article-card{
+  order:0!important;
+}
+html body.v32-admin #shopForm .v2853-workspace[data-v32-view="print"] .v2853-right > .v2853-print-card{
+  order:1!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-library-group .motif-edit-row{
+  grid-template-columns:32px minmax(0,1fr)!important;
+  align-items:center!important;gap:7px!important;padding:5px 7px!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-library-group .motif-edit-row img{
+  width:32px!important;height:32px!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-row-header{
+  display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;
+  align-items:center!important;gap:6px!important;min-width:0!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-row-header .motif-name{
+  height:32px!important;min-height:32px!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-row-expand{
+  box-sizing:border-box!important;display:inline-flex!important;
+  align-items:center!important;justify-content:center!important;
+  width:auto!important;min-width:75px!important;height:32px!important;min-height:32px!important;
+  padding:4px 9px!important;margin:0!important;border:1px solid #dce2ea!important;
+  border-radius:7px!important;background:#fff!important;color:#263545!important;
+  font-size:11px!important;font-weight:700!important;cursor:pointer!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-row-expand:focus-visible{
+  outline:2px solid #805e12!important;outline-offset:2px!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-row-details{
+  display:grid!important;gap:6px!important;min-width:0!important;
+  padding:7px 0 2px!important;border-top:1px solid #e8edf2!important;
+}
+html body.v32-admin #shopForm .v2853-print-card .logo-row-details[hidden]{
+  display:none!important;
+}
+@media(max-width:720px){
+  html body.v32-admin #shopForm .v2853-print-card .logo-row-header .motif-name{
+    font-size:16px!important;
+  }
+}

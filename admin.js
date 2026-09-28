@@ -1582,6 +1582,7 @@ function configurePositionProducts(cfg){
 }
 function selectShop(id){
   activeLogoPlacementId=null;
+  expandedLogoIds.clear();
   const cfg=deepClone(shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
   if(id==="_master") workingMotifs.forEach(motif=>{
     if(motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")){
@@ -1692,6 +1693,7 @@ logoUpload.addEventListener("change",async()=>{
 });
 removeLogoBtn.addEventListener("click",()=>{ const id=selectedShopId||shopFields.id.value; workingLogo=seedShops[id]?.logoFile||"shop-logo.png"; updateLogoPreview(); setShopState("Logo zurückgesetzt – noch speichern."); });
 
+const expandedLogoIds=new Set();
 function renderMotifsEditor(){
   motifsEditor.replaceChildren();
   const groups={club:document.createElement("section"),general:document.createElement("section")};
@@ -1721,7 +1723,23 @@ function renderMotifsEditor(){
     });
     const uploadLabel=document.createElement("label");uploadLabel.className="logo-replace-file";uploadLabel.textContent=motif.file?"Bild ändern":"Bild hochladen";
     const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.setAttribute("aria-label",`Bild für ${motif.name||"Logo"} auswählen`); upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Logo wird vorbereitet …");const data=await compressImage(file,520,36000);if(JSON.stringify(workingMotifs).length-(motif.file||"").length+data.length>780000) throw new Error("Der Logoordner ist voll. Bitte ein vorhandenes Bild ersetzen oder kleinere Bilder verwenden.");workingMotifs[index].file=data;img.src=data;uploadLabel.firstChild.textContent="Bild ändern";if(activeLogoPlacementId===motif.id) refreshPositionEditor();setShopState("Logo geändert – oben Speichern klicken.","ok")}catch(err){alert(err.message||"Logo konnte nicht verarbeitet werden.")}upload.value=""});
-    uploadLabel.appendChild(upload);fields.appendChild(name);
+    uploadLabel.appendChild(upload);
+    const header=document.createElement("div");header.className="logo-row-header";
+    const expand=document.createElement("button");expand.type="button";expand.className="logo-row-expand";
+    const details=document.createElement("div");details.className="logo-row-details";
+    details.id=`logo-details-${index}`;
+    const setExpanded=open=>{
+      details.hidden=!open;
+      expand.setAttribute("aria-expanded",String(open));
+      expand.textContent=open?"Schließen":"Optionen";
+      expand.setAttribute("aria-label",`${open?"Einstellungen schließen für":"Einstellungen öffnen für"} ${name.value}`);
+      if(open) expandedLogoIds.add(motif.id);else expandedLogoIds.delete(motif.id);
+    };
+    expand.setAttribute("aria-controls",details.id);
+    expand.addEventListener("click",()=>setExpanded(details.hidden));
+    name.addEventListener("input",()=>expand.setAttribute("aria-label",`${details.hidden?"Einstellungen öffnen für":"Einstellungen schließen für"} ${name.value}`));
+    header.append(name,expand);fields.appendChild(header);
+    setExpanded(expandedLogoIds.has(motif.id));
     const choices=document.createElement("div"); choices.className="logo-library-options";
     const category=document.createElement("select"); category.setAttribute("aria-label",`Kategorie für ${motif.name||"Logo"}`); category.innerHTML='<option value="club">Vereinslogo</option><option value="general">Allgemeines Logo</option>'; category.value=/vereinslogo|vereinswappen/i.test(motif.name||"")?"club":motif.category==="general"?"general":"club";
     category.addEventListener("change",()=>{workingMotifs[index].category=category.value;renderMotifsEditor();setShopState("Logo-Gruppe geändert – oben Speichern klicken.")});
@@ -1758,11 +1776,11 @@ function renderMotifsEditor(){
     });
     const categoryField=document.createElement("label");categoryField.className="logo-option-field";categoryField.append(document.createTextNode("Ordner"),category);
     const sideField=document.createElement("label");sideField.className="logo-option-field";sideField.append(document.createTextNode("Seite"),side);
-    choices.append(categoryField,sideField,visible);fields.appendChild(choices);
+    choices.append(categoryField,sideField,visible);details.appendChild(choices);
     if(motif.preserveColors) img.title="Originalfarben bleiben erhalten";
-    const del=document.createElement("button"); del.type="button"; del.className="danger-btn"; del.textContent="Entfernen"; del.addEventListener("click",()=>{if(activeLogoPlacementId===motif.id) activeLogoPlacementId=null;workingMotifs.splice(index,1);renderMotifsEditor();setShopState("Motiv entfernt – noch speichern.")});
+    const del=document.createElement("button"); del.type="button"; del.className="danger-btn"; del.textContent="Entfernen"; del.addEventListener("click",()=>{if(activeLogoPlacementId===motif.id) activeLogoPlacementId=null;expandedLogoIds.delete(motif.id);workingMotifs.splice(index,1);renderMotifsEditor();setShopState("Motiv entfernt – noch speichern.")});
     const actions=document.createElement("div");actions.className="logo-row-actions";actions.append(uploadLabel,place,del);
-    fields.appendChild(actions);
+    details.appendChild(actions);fields.appendChild(details);
     row.append(img,fields); groups[category.value].appendChild(row);
   });
   Object.values(groups).forEach(group=>{if(group.children.length===1){const p=document.createElement("p");p.className="section-note";p.textContent="Noch keine Logos.";group.appendChild(p)}});
@@ -1773,6 +1791,7 @@ function addLibraryLogo(category){
   if(workingMotifs.length>=20){alert("Maximal 20 Logos je Shop. Bitte zunächst ein Logo entfernen.");return;}
   const id=`logo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
   workingMotifs.push({id,name:category==="club"?"Vereinslogo":"Allgemeines Logo",file:"",category,locked:false,preserveColors:true,customerSelectable:true,placement:{side:"front",xPct:68,yPct:19,widthPct:22}});
+  expandedLogoIds.add(id);
   renderMotifsEditor();
   setShopState("Logo angelegt – Bild auswählen und oben Speichern klicken.");
 }
@@ -1829,6 +1848,7 @@ addTusPatchBtn?.addEventListener("click",()=>{
 
 newShopBtn.addEventListener("click",()=>{
   activeLogoPlacementId=null;
+  expandedLogoIds.clear();
   // Jeder neue Shop ist ein Klon des Master-Shops: Sortiment, EK/VK, Druckpositionen, Features.
   const template = deepClone(shopConfigs.get("_master") || seedShops["_master"] || shopConfigs.get("_simple") || seedShops["_simple"] || {});
   delete template.isMasterTemplate;
