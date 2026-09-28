@@ -5756,3 +5756,18 @@ html body .workspace .mockup-stage #shirtMockup{
     column-gap:7px!important;
   }
 }
+
+/* v30.3.152: vom Admin vorbereitete Logos statt Kunden-Upload. */
+html body .club-logo-section[hidden]{display:none!important}
+html body .club-logo-section .club-logo-grid{
+  display:flex!important;gap:8px!important;overflow-x:auto!important;
+  padding:3px 4px 8px!important;scroll-snap-type:x proximity;
+}
+html body .club-logo-section .club-logo-grid>.motif-btn{
+  flex:0 0 118px!important;min-width:118px!important;height:78px!important;
+  display:flex!important;flex-direction:column!important;align-items:center!important;
+  justify-content:center!important;scroll-snap-align:start;
+}
+html body .club-logo-section .club-logo-grid>.motif-btn-off{flex-basis:100px!important;min-width:100px!important}
+html body .club-logo-section .club-logo-grid .motif-preview{height:42px!important;min-height:42px!important}
+html body .club-logo-section .club-logo-grid .motif-preview img{max-height:39px!important;max-width:100%!important}

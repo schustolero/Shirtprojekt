@@ -10,7 +10,7 @@
   window.SHOP_SLUG = slug;
 
   const templateDemos = {
-    _master: { customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment", brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment", shopType:"simple", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}] },
+    _master: { customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment", brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment", shopType:"simple", motifs:[{id:"motiv1",name:"Vereinslogo",category:"club",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}] },
     _simple: { customerName:"Vorlage Simple", pageTitle:"Vorlage Simple – T-Shirt Shop", brandTitle:"Vorlage Simple", brandSubtitle:"Einfach auswählen und bestellen", shopType:"simple", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] },
     _motifs: { customerName:"Vorlage Motive", pageTitle:"Vorlage Motive – T-Shirt Shop", brandTitle:"Vorlage Motive", brandSubtitle:"Mehrere Motive zur Auswahl", shopType:"motifs", fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"}, motifs:[{id:"motiv1",name:"NOVA Wappen",file:"demo-motiv-1.png?v=30.1.87"},{id:"motiv2",name:"NOVA Dynamik",file:"demo-motiv-2.png?v=30.1.87"}] },
     _designer: { customerName:"Vorlage Designer", pageTitle:"Vorlage Designer – T-Shirt Shop", brandTitle:"Vorlage Designer", brandSubtitle:"Dein Textil frei gestalten", shopType:"designer", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] }
@@ -24,6 +24,15 @@
     config=mergeMasterProductData(config);
     const template = templateDemos[slug];
     if (!template) return config;
+    // Der Master darf gespeicherte Logos und Sichtbarkeit nicht mit dem
+    // Demo-Motiv überschreiben: Admin-Uploads sind hier maßgeblich.
+    if(slug==="_master") return {
+      ...template,...config,
+      motifs:(Array.isArray(config.motifs)?config.motifs:template.motifs).map(motif=>
+        motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")
+          ? {...motif,name:"Vereinslogo",category:"club"} : motif),
+      features:{...(config.features||{}),allowCustomerUpload:false}
+    };
     const features = { ...(config.features || {}), allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true };
     const brandSubtitle = typeof config.brandSubtitle === "string" ? config.brandSubtitle : template.brandSubtitle;
     return { ...config, ...template, brandSubtitle, features, customerId:slug, logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90, active:true };

@@ -116,9 +116,9 @@ window.CENTRAL_CONFIG = {
       features:{
         layout:"simple", motifMode:"single",
         allowCustomerUpload:false, allowText:false, allowInitials:true,
-        allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true,
+        allowMoveMotif:false, allowResizeMotif:false, allowRotateMotif:false, fixedFrontChestLogo:true,
         allowBackDesign:true, allowMotifColor:true,
-        showShirtColorPicker:true, showMotifPicker:false, showMotifColorPicker:true,
+        showShirtColorPicker:true, showMotifPicker:false, showClubLogos:true, showMotifColorPicker:true,
         showPrices:false, showNexaroBranding:false, showResetButton:false,
         autoSelectSingleMotif:false, maxUploadMB:8, previewMode:"single"
       },
@@ -135,7 +135,7 @@ window.CENTRAL_CONFIG = {
         front:{enabled:false,motifId:"motiv1",position:"left-chest",size:"small",topPct:18,sidePct:32,scalePct:100},
         back:{enabled:false,motifId:"motiv1",position:"center",size:"small",topPct:32,shiftXPct:0,scalePct:100}
       },
-      motifs:[{id:"motiv1",name:"NOVA Athletic",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
+      motifs:[{id:"motiv1",name:"Vereinslogo",category:"club",customerSelectable:true,placement:{side:"front",xPct:68,yPct:19,widthPct:22},file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}]
     },
     "_simple": {
       customerId:"_simple",customerName:"Vorlage Simple",pageTitle:"Vorlage Simple – T-Shirt Shop",brandTitle:"Vorlage Simple",brandSubtitle:"Einfach auswählen und bestellen",designerHeading:"Shirt auswählen",designerIntro:"Ein festes Motiv – einfach Farbe, Größe und Menge auswählen.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"SIM",shopType:"simple",active:true,

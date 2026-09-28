@@ -870,6 +870,7 @@
                     <label class="check-row shop-switch"><span>Rückseite</span><input id="allowBack" type="checkbox"></label>
                     <label class="check-row shop-switch"><span>Farben</span><input id="showShirtColors" type="checkbox"></label>
                     <label class="check-row shop-switch"><span>Logo</span><input id="showMotifs" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Vereinslogos</span><input id="showClubLogos" type="checkbox"></label>
                     <label class="check-row shop-switch"><span>Druck</span><input id="showMotifColors" type="checkbox"></label>
                     <label class="check-row shop-switch"><span>Preise</span><input id="showPrices" type="checkbox" checked></label>
                     <label class="check-row shop-switch" hidden><span>Nexaro</span><input id="showNexaroBranding" type="checkbox"></label>
@@ -1113,7 +1114,7 @@
     </section>
   </main>
 
-  <script src="/central-config.js?v=30.3.144"></script>
+  <script src="/central-config.js?v=30.3.152"></script>
   <script src="/__/firebase/8.10.1/firebase-app.js"></script>
   <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
   <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
@@ -1121,7 +1122,7 @@
   
 
   <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
-  <script src="/admin.js?v=30.3.151"></script>
+  <script src="/admin.js?v=30.3.152"></script>
 
 <script id="v2849-fallback">
 (function(){
@@ -1148,7 +1149,7 @@
     var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
     if(basic && !basic.contains(grund)) basic.appendChild(grund);
   }
-  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.151'; b.hidden=false; b.removeAttribute('hidden');}
+  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.152'; b.hidden=false; b.removeAttribute('hidden');}
   document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
   new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
 })();

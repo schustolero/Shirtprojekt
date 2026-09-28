@@ -73,7 +73,7 @@ function syncMobileAfterShirtControls() {
   }
 
   const sidebar=document.querySelector(".sidebar");
-  const motifSection=sidebar?.querySelector(".motif-section");
+  const motifSection=sidebar?.querySelector(".club-logo-section")||sidebar?.querySelector(".motif-section");
   if (productSection && sidebar && productSection.parentElement!==sidebar) {
     sidebar.insertBefore(productSection,motifSection||sidebar.querySelector(".view-section")||null);
   }
@@ -255,7 +255,8 @@ function getAllowedMotifColorNames(){
 
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
 
-  if (FEATURES.allowCustomerUpload) {
+  // Vereinslogos werden im Admin vorbereitet; im Master lädt der Kunde nichts hoch.
+  if (FEATURES.allowCustomerUpload && !MASTER_FIXED_CHEST_LOGO) {
     const uploadSection = document.createElement("section");
     uploadSection.className = "tool-section customer-upload-section";
     uploadSection.innerHTML = `
@@ -348,6 +349,25 @@ function getAllowedMotifColorNames(){
       btn.append(preview, label);
       motifGrid.appendChild(btn);
     });
+  }
+
+  if(MASTER_FIXED_CHEST_LOGO && motifGrid && motifSection){
+    const clubMotifs=(cfg.motifs||[]).filter(m=>m?.file && m.customerSelectable!==false &&
+      (m.category!=="general" || /vereinslogo|vereinswappen/i.test(m.name||"")));
+    const clubSection=document.createElement("section");
+    clubSection.className="tool-section club-logo-section";
+    clubSection.innerHTML='<h3>Vereinslogo</h3><p class="hint">Vom Verein vorbereitet und fest auf dem Textil platziert.</p><div class="motif-grid club-logo-grid"></div>';
+    const clubGrid=clubSection.querySelector(".club-logo-grid");
+    const none=motifGrid.querySelector('.motif-btn[data-motif="none"]');
+    if(none) clubGrid.appendChild(none);
+    for(const motif of clubMotifs){
+      const button=Array.from(motifGrid.querySelectorAll(".motif-btn")).find(item=>item.dataset.motif===motif.id);
+      if(button) clubGrid.appendChild(button);
+    }
+    motifSection.insertAdjacentElement("beforebegin",clubSection);
+    clubSection.hidden=!clubMotifs.length || FEATURES.showClubLogos===false;
+    motifSection.hidden=!motifGrid.querySelector('.motif-btn[data-src]') || FEATURES.showMotifPicker===false;
+    motifSection.querySelector("h3").textContent="Allgemeine Logos";
   }
 
   (function dockColorRailNextToShirt(){
@@ -497,7 +517,8 @@ function getProductMotifMode(productId=currentProductId){
 
 function getMotifButtonByKind(kind){
   const buttons=Array.from(document.querySelectorAll(".motif-btn"));
-  const usable=buttons.filter(button=>button.dataset.motif && button.dataset.motif!=="none" && button.dataset.src);
+  const usable=buttons.filter(button=>button.dataset.motif && button.dataset.motif!=="none" && button.dataset.src &&
+    (!MASTER_FIXED_CHEST_LOGO || !button.closest("section")?.hidden));
   if(kind === "patch") return usable.find(button => button.dataset.motif === "tus-3d-patch") || null;
   return usable.find(button => button.dataset.motif === (selectedLogoByProduct[currentProductId]?.front || selectedLogoByProduct[currentProductId]) && button.dataset.motif !== "tus-3d-patch")
     || usable.find(button => button.dataset.motif !== "tus-3d-patch") || usable[0] || null;
@@ -789,7 +810,12 @@ function getConfiguredMotif(view) {
   const selections=selectedLogoByProduct[currentProductId];
   const selectedId=typeof selections==="string" ? (view==="front"?selections:null) : selections?.[view];
   if ((!cfg || !cfg.enabled) && !selectedId) return null;
-  const available=(SHOP.motifs||[]).filter(m=>m.file && m.customerSelectable!==false);
+  const available=(SHOP.motifs||[]).filter(m=>{
+    if(!m.file || m.customerSelectable===false) return false;
+    if(!MASTER_FIXED_CHEST_LOGO) return true;
+    const club=m.category!=="general" || /vereinslogo|vereinswappen/i.test(m.name||"");
+    return club ? FEATURES.showClubLogos!==false : FEATURES.showMotifPicker!==false;
+  });
   const motif = available.find(m => m.id === selectedId)
     || available.find(m => m.id === cfg?.motifId)
     || available[0];
@@ -2223,7 +2249,7 @@ function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
   ensureInitialsField();
-  const seq=["productSection",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
+  const seq=["productSection",".club-logo-section",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);
