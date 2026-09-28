@@ -1332,6 +1332,33 @@ motifColorButtons.forEach(button => button.addEventListener("click", () => {
 
 const customerLogoFiles = new Map();
 const customerLogoUpload = document.getElementById("customerLogoUpload");
+function trimTransparentUpload(image){
+  const source=image.getElement?.();
+  const width=source?.naturalWidth||source?.width||0;
+  const height=source?.naturalHeight||source?.height||0;
+  if(!width||!height)return;
+  try{
+    const sample=document.createElement("canvas");
+    const ratio=Math.min(1,640/Math.max(width,height));
+    sample.width=Math.max(1,Math.round(width*ratio));
+    sample.height=Math.max(1,Math.round(height*ratio));
+    const context=sample.getContext("2d",{willReadFrequently:true});
+    context.drawImage(source,0,0,sample.width,sample.height);
+    const pixels=context.getImageData(0,0,sample.width,sample.height).data;
+    let minX=sample.width,minY=sample.height,maxX=-1,maxY=-1;
+    for(let y=0;y<sample.height;y++)for(let x=0;x<sample.width;x++){
+      if(pixels[(y*sample.width+x)*4+3]<16)continue;
+      minX=Math.min(minX,x);minY=Math.min(minY,y);
+      maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
+    }
+    if(maxX<0 || (minX===0&&minY===0&&maxX===sample.width-1&&maxY===sample.height-1))return;
+    const cropX=Math.floor(minX*width/sample.width);
+    const cropY=Math.floor(minY*height/sample.height);
+    const cropW=Math.min(width-cropX,Math.ceil((maxX-minX+1)*width/sample.width));
+    const cropH=Math.min(height-cropY,Math.ceil((maxY-minY+1)*height/sample.height));
+    if(cropW>0&&cropH>0)image.set({cropX,cropY,width:cropW,height:cropH});
+  }catch(error){console.warn("Transparenter Bildrand konnte nicht ermittelt werden",error);}
+}
 function restoreUploadedEditing(image){
   image.set({selectable:true,evented:true,hasControls:true,hasBorders:true,
     lockMovementX:false,lockMovementY:false,lockScalingX:false,lockScalingY:false,lockRotation:true,
@@ -1372,7 +1399,7 @@ uploadSection?.querySelector("#customerUploadSize")?.addEventListener("input",ev
 uploadSection?.querySelector(".customer-upload-center")?.addEventListener("click",()=>{
   const image=currentUploadedMotif();
   if(!image)return;
-  image.set({left:PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31});
+  image.set({left:PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31});
   image.setCoords();canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();
 });
 if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(event) {
@@ -1395,9 +1422,10 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
     fabric.Image.fromURL(reader.result, function(image) {
       if (!image?.width || !image.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); event.target.value=""; return; }
       if (FEATURES.motifMode !== "mixed") canvas.clear();
+      trimTransparentUpload(image);
       const scale = Math.min(PRINT_BASE_WIDTH*.5/image.width,PRINT_BASE_HEIGHT*.32/image.height);
       image.set({
-        left: PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
+        left: PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
         originX: "center", originY: "center",scaleX:scale,scaleY:scale,
         motifId: "customer-upload",motifSrc: reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
       });

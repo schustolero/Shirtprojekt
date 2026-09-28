@@ -5694,6 +5694,43 @@ html body .workspace .color-rail .shirt-color[hidden]{display:none!important}
   }
 }
 
+/* v30.3.167: Preis und Textilname erhalten sichtbar getrennte Zeilen. */
+html body[data-show-prices="true"] #productSwitch .product-btn{
+  height:64px!important;min-height:64px!important;max-height:none!important;
+  gap:5px!important;padding:7px 6px!important;
+}
+html body[data-show-prices="true"] #productSwitch .product-btn-name{
+  line-height:1.25!important;
+}
+html body[data-show-prices="true"] #productSwitch .product-btn-price{
+  display:block!important;width:auto!important;max-width:100%!important;
+  min-width:0!important;height:auto!important;min-height:0!important;
+  margin:0!important;padding:0!important;border:0!important;
+  background:transparent!important;box-shadow:none!important;
+  font-size:11px!important;line-height:1.25!important;
+  font-variant-numeric:tabular-nums!important;white-space:nowrap!important;
+}
+@media(max-width:900px){
+  html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch{
+    grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:6px!important;
+  }
+  html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch .product-btn{
+    height:60px!important;min-height:60px!important;padding:5px 3px!important;
+    flex-direction:column!important;gap:4px!important;
+  }
+  html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch .product-btn-price{
+    font-size:10px!important;line-height:1.2!important;
+  }
+}
+@media(max-width:410px){
+  html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  }
+  html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch .product-btn-price{
+    font-size:11px!important;
+  }
+}
+
 /* v30.3.166: Eigene Motive bleiben frei bearbeitbar, auch auf Touch-Geräten. */
 html body .customer-upload-section{box-sizing:border-box;min-width:0}
 html body .customer-upload-section .customer-upload-tools[hidden]{display:none!important}
