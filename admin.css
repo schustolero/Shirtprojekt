@@ -7112,3 +7112,17 @@ html body.v32-admin #shopForm .v32-logo-folder-link:focus-visible{
   outline:2px solid #9f7920!important;outline-offset:2px!important;
 }
 html body.v32-admin #shopForm .v32-logo-library{scroll-margin-top:120px!important}
+
+/* v30.3.157: Die alte Admin-Regel versteckte die ganze Logo-/Druckkarte. */
+html body.v32-admin #shopForm .v2853-workspace[data-v32-view="print"] .v2853-right > .v2853-print-card{
+  display:block!important;
+  order:0!important;
+  width:100%!important;
+  min-width:0!important;
+}
+html body.v32-admin #shopForm .v2853-workspace[data-v32-view="print"] .v2853-right > .v2853-article-card{
+  order:1!important;
+}
+html body.v32-admin #shopForm .v2853-workspace[data-v32-view="print"] .v32-logo-library{
+  display:block!important;
+}
