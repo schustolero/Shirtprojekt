@@ -1359,6 +1359,20 @@ function trimTransparentUpload(image){
     if(cropW>0&&cropH>0)image.set({cropX,cropY,width:cropW,height:cropH});
   }catch(error){console.warn("Transparenter Bildrand konnte nicht ermittelt werden",error);}
 }
+function createCustomerUploadPreview(image){
+  const source=image.getElement?.();
+  const width=Math.max(1,Math.round(image.width||0));
+  const height=Math.max(1,Math.round(image.height||0));
+  if(!source||!width||!height)throw new Error("Ungültige Bildabmessungen");
+  // Zusätzlich zur Fabric-Skalierung die Bilddaten selbst begrenzen: So kann
+  // ein Handyfoto nie in Originalauflösung die ganze Textilvorschau überdecken.
+  const ratio=Math.min(1,160/width,160/height);
+  const preview=document.createElement("canvas");
+  preview.width=Math.max(1,Math.round(width*ratio));
+  preview.height=Math.max(1,Math.round(height*ratio));
+  preview.getContext("2d").drawImage(source,image.cropX||0,image.cropY||0,width,height,0,0,preview.width,preview.height);
+  return preview.toDataURL("image/png");
+}
 function restoreUploadedEditing(image){
   image.set({selectable:true,evented:true,hasControls:true,hasBorders:true,
     lockMovementX:false,lockMovementY:false,lockScalingX:false,lockScalingY:false,lockRotation:true,
@@ -1419,30 +1433,38 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
       FEATURES.previewMode="single";
       applyPreviewMode();
     }
-    fabric.Image.fromURL(reader.result, function(image) {
-      if (!image?.width || !image.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); event.target.value=""; return; }
-      if (FEATURES.motifMode !== "mixed") canvas.clear();
-      trimTransparentUpload(image);
-      // Ein hochformatiges Foto startet als kompaktes Brustmotiv. Die Größe
-      // bleibt anschließend über den Regler und die Canvas-Griffe veränderbar.
-      const scale = Math.min(PRINT_BASE_WIDTH*.34/image.width,PRINT_BASE_HEIGHT*.14/image.height);
-      image.set({
-        left: PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
-        originX: "center", originY: "center",scaleX:scale,scaleY:scale,
-        motifId: "customer-upload",motifSrc: reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
-      });
-      restoreUploadedEditing(image);
-      canvas.add(image);
-      canvas.setActiveObject(image);
-      canvas.requestRenderAll();
-      saveCurrentView();
-      logoEnabled = true;
-      if(selectedLogoByProduct[currentProductId]) delete selectedLogoByProduct[currentProductId][currentView];
-      motifButtons.forEach(btn => btn.classList.remove("active"));
-      customerLogoFiles.set(file.name,file);
-      syncCustomerUploadControls();
-      if(FEATURES.previewMode==="dual") void renderDualPreview();
-      event.target.value="";
+    fabric.Image.fromURL(reader.result, function(original) {
+      if (!original?.width || !original.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); event.target.value=""; return; }
+      try {
+        trimTransparentUpload(original);
+        const previewUrl=createCustomerUploadPreview(original);
+        fabric.Image.fromURL(previewUrl, function(image) {
+          if (!image?.width || !image.height) { alert("Die Bildvorschau konnte nicht geöffnet werden."); event.target.value=""; return; }
+          if (FEATURES.motifMode !== "mixed") canvas.clear();
+          const scale=Math.min(1,PRINT_BASE_WIDTH*.43/image.width,PRINT_BASE_HEIGHT*.45/image.height);
+          image.set({
+            left:PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
+            originX:"center",originY:"center",scaleX:scale,scaleY:scale,
+            motifId:"customer-upload",motifSrc:reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
+          });
+          restoreUploadedEditing(image);
+          canvas.add(image);
+          canvas.setActiveObject(image);
+          canvas.requestRenderAll();
+          saveCurrentView();
+          logoEnabled=true;
+          if(selectedLogoByProduct[currentProductId]) delete selectedLogoByProduct[currentProductId][currentView];
+          motifButtons.forEach(btn=>btn.classList.remove("active"));
+          customerLogoFiles.set(file.name,file);
+          syncCustomerUploadControls();
+          if(FEATURES.previewMode==="dual") void renderDualPreview();
+          event.target.value="";
+        });
+      } catch(error) {
+        console.error("Bildvorschau:",error);
+        alert("Die Bildvorschau konnte nicht erstellt werden. Bitte eine andere Bilddatei auswählen.");
+        event.target.value="";
+      }
     });
   };
   reader.onerror = () => { alert("Die Bilddatei konnte nicht gelesen werden."); event.target.value=""; };
