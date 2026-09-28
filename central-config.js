@@ -115,7 +115,7 @@ window.CENTRAL_CONFIG = {
       products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:true})),
       features:{
         layout:"simple", motifMode:"single",
-        allowCustomerUpload:false, allowText:false, allowInitials:true,
+        allowCustomerUpload:true, allowText:false, allowInitials:true,
         allowMoveMotif:false, allowResizeMotif:false, allowRotateMotif:false, fixedFrontChestLogo:true,
         allowBackDesign:true, allowMotifColor:true,
         showShirtColorPicker:true, showMotifPicker:false, showClubLogos:true, showMotifColorPicker:true,

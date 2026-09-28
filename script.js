@@ -255,14 +255,15 @@ function getAllowedMotifColorNames(){
 
   const insertAfter = (reference, node) => reference && reference.parentNode && reference.parentNode.insertBefore(node, reference.nextSibling);
 
-  // Vereinslogos werden im Admin vorbereitet; im Master lädt der Kunde nichts hoch.
-  if (FEATURES.allowCustomerUpload && !MASTER_FIXED_CHEST_LOGO) {
+  // Eigene Bilddateien ergänzen die vorbereiteten Vereinslogos, wenn der Shop den Upload erlaubt.
+  if (FEATURES.allowCustomerUpload) {
     const uploadSection = document.createElement("section");
     uploadSection.className = "tool-section customer-upload-section";
     uploadSection.innerHTML = `
-      <h3>Eigenes Logo</h3>
-      <label class="upload-btn">Logo hochladen<input id="customerLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml"></label>
-      <p class="hint">PNG, JPG, WEBP oder SVG · max. ${Number(FEATURES.maxUploadMB) || 8} MB</p>`;
+      <h3>Eigene Datei</h3>
+      <label class="upload-btn">Bild hochladen<input id="customerLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" aria-label="Eigenes Motiv hochladen"></label>
+      <p class="hint">PNG, JPG, WEBP oder SVG · max. ${Number(FEATURES.maxUploadMB) || 8} MB</p>
+      <p class="upload-file-name" aria-live="polite" hidden></p>`;
     insertAfter(motifSection || document.querySelector(".color-section"), uploadSection);
   }
 
@@ -1316,6 +1317,7 @@ motifColorButtons.forEach(button => button.addEventListener("click", () => {
   recolorActiveMotif(button.dataset.color, button.dataset.name);
 }));
 
+const customerLogoFiles = new Map();
 const customerLogoUpload = document.getElementById("customerLogoUpload");
 if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(event) {
   const file = event.target.files && event.target.files[0];
@@ -1326,11 +1328,12 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
     event.target.value = "";
     return;
   }
-  if (!/^image\//.test(file.type)) { alert("Bitte eine Bilddatei auswählen."); return; }
+  if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) { alert("Bitte PNG, JPG, WEBP oder SVG auswählen."); event.target.value = ""; return; }
   const reader = new FileReader();
   reader.onload = () => {
     if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
     fabric.Image.fromURL(reader.result, function(image) {
+      if (!image) { alert("Die Bilddatei konnte nicht geöffnet werden."); return; }
       if (FEATURES.motifMode !== "mixed") canvas.clear();
       const maxWidth = canvas.width * 0.72;
       const maxHeight = canvas.height * 0.36;
@@ -1351,10 +1354,16 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
       if (image.selectable) canvas.setActiveObject(image); else canvas.discardActiveObject();
       canvas.requestRenderAll();
       saveCurrentView();
+      logoEnabled = true;
       motifButtons.forEach(btn => btn.classList.remove("active"));
-      event.target.dataset.selectedName = file.name;
+      const fileName=event.target.closest(".customer-upload-section")?.querySelector(".upload-file-name");
+      if(fileName){fileName.textContent=file.name;fileName.hidden=false;}
+      customerLogoFiles.set(file.name,file);
+      if(FEATURES.previewMode==="dual") void renderDualPreview();
+      event.target.value="";
     });
   };
+  reader.onerror = () => { alert("Die Bilddatei konnte nicht gelesen werden."); event.target.value=""; };
   reader.readAsDataURL(file);
 });
 
@@ -1652,6 +1661,8 @@ function createOrderNumber() {
 }
 
 function getSelectedMotifName() {
+  const uploaded = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
+  if (uploaded) return `Eigenes Logo (${uploaded.motifName || "Upload"})`;
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
     const names=["front","back"].flatMap(side=>{
@@ -1662,8 +1673,6 @@ function getSelectedMotifName() {
   }
   const active = document.querySelector(".motif-btn.active");
   if (active) return active.textContent.replace(/\s+/g, " ").trim();
-  const uploaded = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
-  if (uploaded) return `Eigenes Logo (${uploaded.motifName || "Upload"})`;
   const text = canvas.getObjects().find(obj => obj && obj.motifKind === "text");
   if (text) return `Eigener Text: ${text.text || text.motifName || "Text"}`;
   return "Noch kein Motiv gewählt";
@@ -1686,6 +1695,7 @@ function getCurrentShirtSelection() {
   shirtQuantity.value = quantity;
   const activeMotif = document.querySelector(".motif-btn.active");
   const hasCustomDesign = canvas.getObjects().some(obj => obj && (obj.motifKind === "upload" || obj.motifKind === "text"));
+  const uploadedMotif = canvas.getObjects().find(obj => obj && obj.motifKind === "upload");
 
   if (!size) {
     orderMessage.textContent = "Bitte zuerst eine Größe auswählen.";
@@ -1720,6 +1730,7 @@ function getCurrentShirtSelection() {
     printCost: Number(product.printCost) || 0,
     shirtColor: currentColorName.textContent || "White",
     motif: getSelectedMotifName(),
+    uploadFileName: uploadedMotif?.motifName || "",
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
     initials: initialsValue(),
     initialsColor: initialsValue() ? (getInitialsColor()==="white"?"Weiß":"Schwarz") : "",
@@ -1935,6 +1946,13 @@ if (orderForm) {
         return;
       }
 
+      const attachments=[...new Set(orderItems.map(item=>item.uploadFileName).filter(Boolean))]
+        .map(fileName=>customerLogoFiles.get(fileName)).filter(Boolean);
+      if(attachments.reduce((sum,file)=>sum+file.size,0)>10*1024*1024){
+        if(sendOrderMessage) sendOrderMessage.textContent="Eigene Bilddateien dürfen zusammen höchstens 10 MB groß sein. Bitte kleinere Dateien verwenden.";
+        return;
+      }
+
       const name = nameEl.value.trim();
       const customerClass = classEl.value.trim();
       const email = emailEl.value.trim();
@@ -1992,6 +2010,7 @@ if (orderForm) {
           totalCost: (Number(item.quantity) || 1) * ((Number(item.purchasePrice) || 0) + (Number(item.printCost) || 0)),
           shirtColor: item.shirtColor || "",
           motif: item.motif || "",
+          uploadFileName: item.uploadFileName || "",
           motifColor: item.motifColor || "",
           initials: item.initials || "",
           initialsColor: item.initialsColor || "",
@@ -2018,7 +2037,8 @@ if (orderForm) {
         new Promise((_, reject) => setTimeout(() => reject(new Error("Speichern dauert zu lange")), 8000))
       ]);
 
-      // E-Mail-Benachrichtigung zusätzlich, aber nicht blockierend.
+      // Originaldateien per Bestell-E-Mail mitsenden; vor der Weiterleitung auf den Upload warten.
+      let attachmentDelivered=true;
       try {
         const targetEmail = String(SHOP.orderEmail || "shirtzentrale@gmail.com").trim();
         const mailData = new FormData(orderForm);
@@ -2029,13 +2049,26 @@ if (orderForm) {
         mailData.set("Adresse", address);
         mailData.set("Bestellart", deliveryType);
         mailData.set("Zahlung", paymentMethod);
-        fetch(`https://formsubmit.co/${targetEmail}`, {
+        attachments.forEach((file,index)=>mailData.append(index===0?"attachment":`attachment${index+1}`,file,file.name));
+        const mailController=attachments.length ? new AbortController() : null;
+        const mailRequest=fetch(`https://formsubmit.co/${targetEmail}`, {
           method: "POST",
           body: mailData,
           mode: "no-cors",
-          keepalive: true
-        }).catch(() => {});
-      } catch (_) {}
+          keepalive: attachments.length===0,
+          ...(mailController?{signal:mailController.signal}:{})
+        });
+        if(attachments.length){
+          const timeout=setTimeout(()=>mailController.abort(),30000);
+          try{await mailRequest;}finally{clearTimeout(timeout);}
+        }
+        else mailRequest.catch(() => {});
+      } catch (_) { if(attachments.length) attachmentDelivered=false; }
+
+      if(!attachmentDelivered){
+        if(sendOrderMessage) sendOrderMessage.textContent=`Bestellung ${orderNumber} gespeichert, aber die Bilddatei konnte nicht versendet werden. Bitte die Datei mit der Bestellnummer per E-Mail nachreichen.`;
+        return;
+      }
 
       if (sendOrderMessage) {
         sendOrderMessage.classList.add("success");
@@ -2254,7 +2287,7 @@ function orderCustomerSidebar(){
   const sidebar=document.querySelector(".sidebar");
   if(!sidebar) return;
   ensureInitialsField();
-  const seq=["productSection",".club-logo-section",".motif-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
+  const seq=["productSection",".club-logo-section",".motif-section",".customer-upload-section",".motif-color-section",".view-section",".order-section",".sidebar-bottom"];
   seq.forEach(sel=>{
     const node=sel.startsWith("#")||sel.startsWith(".")?sidebar.querySelector(sel):document.getElementById(sel);
     if(node && (node.parentElement===sidebar || sidebar.contains(node))) sidebar.appendChild(node);

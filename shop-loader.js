@@ -31,7 +31,7 @@
       motifs:(Array.isArray(config.motifs)?config.motifs:template.motifs).map(motif=>
         motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")
           ? {...motif,name:"Vereinslogo",category:"club"} : motif),
-      features:{...(config.features||{}),allowCustomerUpload:false}
+      features:{...(config.features||{}),allowCustomerUpload:Number(config.customerUploadVersion||0)<1?true:config.features?.allowCustomerUpload===true}
     };
     const features = { ...(config.features || {}), allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true };
     const brandSubtitle = typeof config.brandSubtitle === "string" ? config.brandSubtitle : template.brandSubtitle;

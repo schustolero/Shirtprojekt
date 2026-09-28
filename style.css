@@ -5772,6 +5772,16 @@ html body .club-logo-section .club-logo-grid>.motif-btn-off{flex-basis:100px!imp
 html body .club-logo-section .club-logo-grid .motif-preview{height:42px!important;min-height:42px!important}
 html body .club-logo-section .club-logo-grid .motif-preview img{max-height:39px!important;max-width:100%!important}
 
+/* Kundenmotiv: schlankes Upload-Feld unter der vorbereiteten Logoauswahl. */
+html body .customer-upload-section .upload-btn{
+  box-sizing:border-box;min-height:38px;padding:8px 12px;
+}
+html body .customer-upload-section .upload-file-name{
+  max-width:100%;margin:5px 0 0;overflow-wrap:anywhere;
+  font-size:11px;color:#56616e;
+}
+html body .customer-upload-section .upload-file-name[hidden]{display:none!important}
+
 /* v30.3.156: untere Textilkante im mobilen Vorschaufeld freihalten. */
 @media(max-width:900px){
   html body .designer-area{
