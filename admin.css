@@ -7325,7 +7325,7 @@ html body.v32-admin #shopForm .v32-order-email > summary:focus-visible{
 /* v30.3.161: Shop-Typ platzsparend neben der Akzentfarbe. */
 html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
   box-sizing:border-box!important;display:grid!important;
-  grid-template-columns:42px minmax(0,1fr) minmax(78px,95px) 32px!important;
+  grid-template-columns:42px minmax(0,1fr) minmax(78px,105px)!important;
   gap:6px!important;min-width:0!important;
 }
 html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type{
@@ -7342,7 +7342,7 @@ html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{
 }
 @media(max-width:720px){
   html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
-    grid-template-columns:40px minmax(0,1fr) minmax(90px,96px) 30px!important;
+    grid-template-columns:40px minmax(0,1fr) minmax(90px,105px)!important;
   }
   html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{
     font-size:16px!important;

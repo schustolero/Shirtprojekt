@@ -864,8 +864,9 @@ function applyDualMotifLayout(img, view, cfg, motif) {
   // Dieselben X/Y/Größe-Werte wie in der Einzelansicht werden in die
   // reale Druckzone der jeweiligen Shirt-Hälfte übertragen.
   const zone = { left: 0.28, top: 0.222, width: 0.44, height: 0.496 };
-  const left = (zone.left + zone.width * (clampPrintValue(layout.xPct,-20,120,50) / 100)) * 100;
-  const top = (zone.top + zone.height * (clampPrintValue(layout.yPct,-20,120,30) / 100)) * 100;
+  const chestFront = MASTER_FIXED_CHEST_LOGO && view === "front";
+  const left = (zone.left + zone.width * ((clampPrintValue(layout.xPct,-20,120,50) + (chestFront ? 7 : 0)) / 100)) * 100;
+  const top = (zone.top + zone.height * ((clampPrintValue(layout.yPct,-20,120,30) - (chestFront ? 3.5 : 0)) / 100)) * 100;
   const width = zone.width * (clampPrintValue(layout.widthPct,5,110,22) / 100) * 100;
 
   img.style.left = `${left}%`;
@@ -1159,10 +1160,10 @@ function getFixedPrintLayout(motifId) {
 
 function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
-  // v30.3.150: kleine Korrektur der Herzseiten-Position, in derselben
+  // Kleine Korrektur der Herzseiten-Position, in derselben
   // 260 x 340-Druckfläche wie die Admin-Vorschau.
-  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? 0.05 : 0;
-  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? -0.02 : 0;
+  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? 0.07 : 0;
+  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? -0.035 : 0;
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
   const scale = MASTER_FIXED_CHEST_LOGO
