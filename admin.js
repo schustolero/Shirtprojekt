@@ -2486,7 +2486,12 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   if(display){
     display.classList.add('v2853-display');
-    basic.body.appendChild(display);
+    const previewDetails=document.createElement('details');
+    previewDetails.className='v32-display-compact';
+    const previewSummary=document.createElement('summary');
+    previewSummary.textContent='Shop-Vorschau & Texte';
+    previewDetails.append(previewSummary,display);
+    basic.body.appendChild(previewDetails);
   }
   if(products){
     products.classList.add('v2853-products');

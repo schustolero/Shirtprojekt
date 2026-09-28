@@ -7452,3 +7452,50 @@ html body.v32-admin #shopForm .v3040-variants{
     grid-column:3!important;grid-row:2!important;justify-self:center!important;
   }
 }
+
+/* v30.3.164: Ausgeblendete Logo-Höhe darf keinen Platz im Raster belegen. */
+html body.v32-admin #shopForm .v2854-basic-logo > .shop-logo-height[hidden]{display:none!important}
+html body.v32-admin #shopForm .v2854-basic-logo > .shop-logo-mini-preview{
+  grid-column:1!important;grid-row:1!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .shop-logo-inline-controls{
+  grid-column:2!important;grid-row:1!important;width:100%!important;min-width:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-type{
+  grid-column:3!important;grid-row:1!important;min-width:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+  grid-column:4!important;grid-row:1!important;justify-self:center!important;
+}
+html body.v32-admin #shopForm .v32-display-compact{
+  box-sizing:border-box!important;display:block!important;margin:8px 0 0!important;
+  border:1px solid #e1e5ea!important;border-radius:9px!important;background:#fff!important;
+}
+html body.v32-admin #shopForm .v32-display-compact > summary{
+  box-sizing:border-box!important;display:list-item!important;padding:8px 11px!important;
+  cursor:pointer;font-size:12px!important;line-height:1.35!important;font-weight:700!important;
+  color:#485463!important;list-style-position:inside;
+}
+html body.v32-admin #shopForm .v32-display-compact > summary:focus-visible{
+  outline:2px solid #9f7a16;outline-offset:2px;
+}
+html body.v32-admin #shopForm .v32-display-compact:not([open]) > .v2853-display{
+  display:none!important;
+}
+html body.v32-admin #shopForm .v32-display-compact[open] > .v2853-display{
+  padding:5px 10px 10px!important;border-top:1px solid #edf0f3!important;
+}
+html body.v32-admin #shopForm .v32-display-compact .display-grid{gap:6px!important}
+@media(max-width:760px){
+  html body.v32-admin #shopForm .v2854-basic-logo > .shop-logo-mini-preview{
+    grid-row:1!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+    grid-column:4!important;grid-row:1!important;
+  }
+}
+@media(max-width:340px){
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+    grid-column:3!important;grid-row:2!important;
+  }
+}
