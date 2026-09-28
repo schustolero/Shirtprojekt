@@ -5801,3 +5801,22 @@ html body .club-logo-section .club-logo-grid .motif-preview img{max-height:39px!
     object-position:center center!important;
   }
 }
+
+/* v30.3.161: lange Textilien dürfen die frühere feste Mobilhöhe überschreiten. */
+@media(max-width:900px){
+  html body .workspace,
+  html body .workspace.has-color-rail{
+    flex:0 0 auto!important;
+    max-height:none!important;
+    min-height:0!important;
+    height:auto!important;
+    grid-template-rows:max-content!important;
+    padding-bottom:18px!important;
+    overflow:visible!important;
+  }
+  html body .workspace .mockup-stage,
+  html body .workspace.has-color-rail .mockup-stage{
+    max-height:none!important;
+    align-self:start!important;
+  }
+}

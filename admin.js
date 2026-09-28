@@ -2469,6 +2469,12 @@ saveShopBtn.addEventListener("click",async()=>{
     if(name) nameLogoRow.appendChild(name);
     if(logo){
       logo.classList.add('v2854-basic-logo');
+      const typeLabel=mainGrid.querySelector('label:has(#shopType)');
+      const accentLabel=logo.querySelector('.shop-logo-accent');
+      if(typeLabel && accentLabel){
+        typeLabel.classList.add('v32-shop-type');
+        logo.insertBefore(typeLabel,accentLabel);
+      }
       nameLogoRow.appendChild(logo);
     }
     if(nameLogoRow.childElementCount) basic.body.appendChild(nameLogoRow);

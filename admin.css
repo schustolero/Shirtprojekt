@@ -7321,3 +7321,30 @@ html body.v32-admin #shopForm .v32-order-email #shopEmail{
 html body.v32-admin #shopForm .v32-order-email > summary:focus-visible{
   outline:2px solid #805e12!important;outline-offset:2px!important;
 }
+
+/* v30.3.161: Shop-Typ platzsparend neben der Akzentfarbe. */
+html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+  box-sizing:border-box!important;display:grid!important;
+  grid-template-columns:42px minmax(0,1fr) minmax(78px,95px) 32px!important;
+  gap:6px!important;min-width:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type{
+  box-sizing:border-box!important;display:grid!important;gap:2px!important;
+  min-width:0!important;width:100%!important;margin:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type > span{
+  font-size:10px!important;line-height:1.1!important;color:#667085!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{
+  box-sizing:border-box!important;width:100%!important;min-width:0!important;
+  height:32px!important;min-height:32px!important;padding:2px 4px!important;
+  font-size:12px!important;border-radius:7px!important;
+}
+@media(max-width:720px){
+  html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+    grid-template-columns:40px minmax(0,1fr) minmax(90px,96px) 30px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{
+    font-size:16px!important;
+  }
+}
