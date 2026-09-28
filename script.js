@@ -1423,7 +1423,9 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
       if (!image?.width || !image.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); event.target.value=""; return; }
       if (FEATURES.motifMode !== "mixed") canvas.clear();
       trimTransparentUpload(image);
-      const scale = Math.min(PRINT_BASE_WIDTH*.5/image.width,PRINT_BASE_HEIGHT*.32/image.height);
+      // Ein hochformatiges Foto startet als kompaktes Brustmotiv. Die Größe
+      // bleibt anschließend über den Regler und die Canvas-Griffe veränderbar.
+      const scale = Math.min(PRINT_BASE_WIDTH*.34/image.width,PRINT_BASE_HEIGHT*.14/image.height);
       image.set({
         left: PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
         originX: "center", originY: "center",scaleX:scale,scaleY:scale,

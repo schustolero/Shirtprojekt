@@ -5694,7 +5694,7 @@ html body .workspace .color-rail .shirt-color[hidden]{display:none!important}
   }
 }
 
-/* v30.3.167: Preis und Textilname erhalten sichtbar getrennte Zeilen. */
+/* v30.3.168: Preis und Textilname erhalten sichtbar getrennte Zeilen. */
 html body[data-show-prices="true"] #productSwitch .product-btn{
   height:64px!important;min-height:64px!important;max-height:none!important;
   gap:5px!important;padding:7px 6px!important;
@@ -5712,22 +5712,19 @@ html body[data-show-prices="true"] #productSwitch .product-btn-price{
 }
 @media(max-width:900px){
   html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch{
-    grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:6px!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important;
   }
   html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch .product-btn{
-    height:60px!important;min-height:60px!important;padding:5px 3px!important;
+    height:62px!important;min-height:62px!important;padding:6px 5px!important;
     flex-direction:column!important;gap:4px!important;
   }
   html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch .product-btn-price{
-    font-size:10px!important;line-height:1.2!important;
+    font-size:12px!important;line-height:1.2!important;
   }
 }
 @media(max-width:410px){
-  html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch{
-    grid-template-columns:repeat(3,minmax(0,1fr))!important;
-  }
   html body[data-show-prices="true"] .mobile-after-shirt-controls #productSwitch .product-btn-price{
-    font-size:11px!important;
+    font-size:12px!important;
   }
 }
 
