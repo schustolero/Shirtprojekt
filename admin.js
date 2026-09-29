@@ -22,6 +22,43 @@ const customerChips = document.getElementById("customerChips"); // legacy, may b
 const buyerFilter = document.getElementById("buyerFilter");
 let loadedOrders = [];
 
+// Sichert die beiden vom Shirtprojekt genutzten Firestore-Sammlungen ohne Tarifwechsel.
+const exportFirestoreBtn = document.getElementById("exportFirestoreBtn");
+const exportFirestoreStatus = document.getElementById("exportFirestoreStatus");
+function backupField(value){
+  if(value instanceof firebase.firestore.Timestamp) return {__firestoreType:"timestamp",seconds:value.seconds,nanoseconds:value.nanoseconds};
+  if(value instanceof firebase.firestore.GeoPoint) return {__firestoreType:"geopoint",latitude:value.latitude,longitude:value.longitude};
+  if(value instanceof firebase.firestore.DocumentReference) return {__firestoreType:"reference",path:value.path};
+  if(value instanceof firebase.firestore.Blob) return {__firestoreType:"bytes",base64:value.toBase64()};
+  if(Array.isArray(value)) return value.map(backupField);
+  if(value && typeof value==="object") return Object.fromEntries(Object.entries(value).map(([key,item])=>[key,backupField(item)]));
+  return value;
+}
+if(exportFirestoreBtn) exportFirestoreBtn.addEventListener("click",async()=>{
+  if((auth.currentUser?.email||"").toLowerCase()!==ADMIN_EMAIL) return;
+  exportFirestoreBtn.disabled=true;
+  exportFirestoreStatus.textContent="Shops und Bestellungen werden gelesen …";
+  try{
+    const [shops,orders]=await Promise.all([db.collection("shops").get(),db.collection("orders").get()]);
+    const payload={format:"shirtprojekt-firestore-json-v1",projectId:firebase.app().options.projectId,
+      exportedAt:new Date().toISOString(),collections:{
+        shops:shops.docs.map(doc=>({id:doc.id,data:backupField(doc.data())})),
+        orders:orders.docs.map(doc=>({id:doc.id,data:backupField(doc.data())}))
+      }};
+    const blob=new Blob([JSON.stringify(payload,null,2)],{type:"application/json;charset=utf-8"});
+    const link=document.createElement("a");
+    const url=URL.createObjectURL(blob);
+    link.href=url;
+    link.download=`shirtprojekt-firestore-${payload.exportedAt.replace(/[:.]/g,"-")}.json`;
+    document.body.appendChild(link);link.click();link.remove();
+    setTimeout(()=>URL.revokeObjectURL(url),60000);
+    exportFirestoreStatus.textContent=`Backup erstellt: ${shops.size} Shops, ${orders.size} Bestellungen.`;
+  }catch(err){
+    console.error("Firestore-Backup fehlgeschlagen",err);
+    exportFirestoreStatus.textContent="Backup fehlgeschlagen. Admin-Zugang und Firestore-Berechtigung prüfen.";
+  }finally{exportFirestoreBtn.disabled=false}
+});
+
 const STATUSES = ["Neu", "In Bearbeitung", "Fertig", "Abgeholt"];
 
 function euro(value){return new Intl.NumberFormat("de-DE",{style:"currency",currency:"EUR"}).format(Number(value)||0)}

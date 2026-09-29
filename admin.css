@@ -7541,3 +7541,10 @@ html body.v32-admin #shopForm .v32-display-compact .display-grid{gap:6px!importa
     font-size:11px!important;
   }
 }
+/* Die Datensicherung bleibt platzsparend, bis sie gebraucht wird. */
+.admin-backup-panel{margin:0 0 10px;padding:0 12px!important}
+.admin-backup-panel summary{cursor:pointer;padding:10px 0;font-size:12px;font-weight:750;color:#47515d}
+.admin-backup-content{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 0 11px;color:#53606c;font-size:12px}
+.admin-backup-content .ghost-btn{padding:7px 11px;font-size:12px;white-space:nowrap}
+#exportFirestoreStatus{color:#244b44;font-weight:650}
+@media(max-width:620px){.admin-backup-content{align-items:flex-start;flex-direction:column;gap:7px}}
