@@ -266,7 +266,7 @@ function getAllowedMotifColorNames(){
       <p class="upload-file-name" aria-live="polite" hidden></p>
       <div class="customer-upload-tools" hidden>
         <div class="customer-upload-size-head"><label for="customerUploadSize">Größe</label><output for="customerUploadSize">100 %</output></div>
-        <div class="customer-upload-size-row"><input id="customerUploadSize" type="range" min="25" max="200" value="100" aria-label="Größe des eigenen Motivs"><button class="customer-upload-center" type="button">Mittig platzieren</button></div>
+        <div class="customer-upload-size-row"><input id="customerUploadSize" type="range" min="25" max="100" value="100" aria-label="Größe des eigenen Motivs"><button class="customer-upload-center" type="button">Mittig platzieren</button></div>
         <p class="hint">Motiv auf dem Textil antippen und verschieben.</p>
       </div>`;
     insertAfter(motifSection || document.querySelector(".color-section"), uploadSection);
@@ -1384,6 +1384,15 @@ function restoreUploadedEditing(image){
 function currentUploadedMotif(){
   return canvas.getObjects().find(object=>object?.motifKind==="upload") || null;
 }
+// Der volle Reglerwert entspricht dem auf dem Textil verfügbaren Druckbereich.
+function customerUploadMaxScale(image){
+  return Math.min(PRINT_BASE_WIDTH*.8/image.width,PRINT_BASE_HEIGHT*.94/image.height);
+}
+function clampCustomerUploadSize(image){
+  if(image?.motifKind!=="upload" || !image.width || !image.height) return;
+  const maximum=customerUploadMaxScale(image);
+  if(image.scaleX>maximum || image.scaleY>maximum) image.scale(maximum);
+}
 function syncCustomerUploadControls(){
   const section=document.querySelector(".customer-upload-section");
   if(!section) return;
@@ -1441,7 +1450,7 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
         fabric.Image.fromURL(previewUrl, function(image) {
           if (!image?.width || !image.height) { alert("Die Bildvorschau konnte nicht geöffnet werden."); event.target.value=""; return; }
           if (FEATURES.motifMode !== "mixed") canvas.clear();
-          const scale=Math.min(1,PRINT_BASE_WIDTH*.43/image.width,PRINT_BASE_HEIGHT*.45/image.height);
+          const scale=customerUploadMaxScale(image);
           image.set({
             left:PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
             originX:"center",originY:"center",scaleX:scale,scaleY:scale,
@@ -1656,9 +1665,13 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   canvas.requestRenderAll();
 });
 
+canvas.on("object:scaling",function(event){
+  if(event.target?.motifKind==="upload") clampCustomerUploadSize(event.target);
+});
 canvas.on("object:modified", function(event) {
   const object = event.target;
   if (!object) return;
+  clampCustomerUploadSize(object);
   object.setCoords();
   const bounds = object.getBoundingRect(true, true);
   let left = object.left, top = object.top;
