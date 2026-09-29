@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bevan&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Dosis:wght@700&family=Lobster&family=Lora:wght@700&family=Nunito:wght@800&family=Oswald:wght@700&family=Pacifico&family=Permanent+Marker&family=Roboto+Slab:wght@900&family=Rubik+Wet+Paint&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=30.3.191">
+  <link rel="stylesheet" href="/style.css?v=30.3.192">
   <script>
     (function(){
       try{
@@ -349,11 +349,11 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
         <div class="cart-head">
           <div>
             <strong>Deine Auswahl</strong>
-            <span id="cartCount">0 Textilien</span>
           </div>
           <b id="cartTotal">0,00 €</b>
         </div>
         <div id="cartItems" class="cart-items"></div>
+        <div class="cart-foot-count"><span>Gesamtzahl</span><strong id="cartCount">0 Textilien</strong></div>
         <button type="button" id="orderBtn" class="primary-btn checkout-btn">
           <span>Weiter zur Bestellung</span>
           <strong id="checkoutTotal">0,00 €</strong>
@@ -541,7 +541,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.191";
+      app.src="/script.js?v=30.3.192";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
