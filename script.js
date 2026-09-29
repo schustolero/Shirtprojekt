@@ -534,7 +534,10 @@ function configureCustomerControls(object){
   object.setControlsVisibility?.({tl:true,tr:true,bl:true,br:true,mt:true,mb:true,ml:true,mr:true,mtr:false});
   sizeCustomerControls(object);
 }
-canvas.on("object:added",event=>configureCustomerControls(event.target));
+canvas.on("object:added",event=>{
+  configureCustomerControls(event.target);
+  if(event.target?.motifKind==="text")keepCustomerTextOnShirt(event.target);
+});
 canvas.on("selection:created",event=>{if(["text","upload"].includes(event.selected?.[0]?.motifKind))sizeCustomerControls(event.selected[0])});
 canvas.on("selection:updated",event=>{if(["text","upload"].includes(event.selected?.[0]?.motifKind))sizeCustomerControls(event.selected[0])});
 window.addEventListener("resize",()=>{
@@ -1462,7 +1465,7 @@ function currentUploadedMotif(){
 }
 // Der volle Reglerwert entspricht dem auf dem Textil verfügbaren Druckbereich.
 function customerUploadMaxScale(image){
-  return Math.min(PRINT_BASE_WIDTH/image.width,PRINT_BASE_HEIGHT/image.height);
+  return Math.min(300/image.width,PRINT_BASE_HEIGHT/image.height);
 }
 function clampCustomerUploadSize(image){
   if(image?.motifKind!=="upload" || !image.width || !image.height) return;
@@ -1483,16 +1486,29 @@ function keepCustomerUploadOnShirt(image){
   const angle=(Number(image.angle)||0)*Math.PI/180;
   const rotatedWidth=(Math.abs(image.width*Math.cos(angle))+Math.abs(image.height*Math.sin(angle)))*image.scaleX;
   const rotatedHeight=(Math.abs(image.width*Math.sin(angle))+Math.abs(image.height*Math.cos(angle)))*image.scaleY;
-  const fit=Math.min(1,PRINT_BASE_WIDTH/rotatedWidth,PRINT_BASE_HEIGHT/rotatedHeight);
+  const fit=Math.min(1,300/rotatedWidth,PRINT_BASE_HEIGHT/rotatedHeight);
   if(Number.isFinite(fit)&&fit<1) image.scale(image.scaleX*fit);
   image.setCoords();
   const bounds=image.getBoundingRect(true,true);
-  const minX=PRINT_SIDE_MARGIN, maxX=PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH;
+  const minX=10, maxX=310;
   const minY=PRINT_HEADROOM, maxY=PRINT_HEADROOM+PRINT_BASE_HEIGHT;
   const dx=bounds.left<minX ? minX-bounds.left : bounds.left+bounds.width>maxX ? maxX-bounds.left-bounds.width : 0;
   const dy=bounds.top<minY ? minY-bounds.top : bounds.top+bounds.height>maxY ? maxY-bounds.top-bounds.height : 0;
   if(dx||dy) image.set({left:image.left+dx,top:image.top+dy});
   image.setCoords();
+}
+function keepCustomerTextOnShirt(text){
+  if(text?.motifKind!=="text")return;
+  text.setCoords();
+  let bounds=text.getBoundingRect(true,true);
+  const minX=PRINT_SIDE_MARGIN,maxX=PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH;
+  const minY=PRINT_HEADROOM+20,maxY=PRINT_HEADROOM+PRINT_BASE_HEIGHT;
+  const fit=Math.min(1,(maxX-minX)/Math.max(1,bounds.width),(maxY-minY)/Math.max(1,bounds.height));
+  if(fit<1){text.scale(text.scaleX*fit);text.setCoords();bounds=text.getBoundingRect(true,true)}
+  const dx=bounds.left<minX?minX-bounds.left:bounds.left+bounds.width>maxX?maxX-bounds.left-bounds.width:0;
+  const dy=bounds.top<minY?minY-bounds.top:bounds.top+bounds.height>maxY?maxY-bounds.top-bounds.height:0;
+  if(dx||dy)text.set({left:text.left+dx,top:text.top+dy});
+  text.setCoords();
 }
 function resizeCustomerUpload(percent){
   const image=currentUploadedMotif();
@@ -1723,6 +1739,7 @@ function applyTextStyle() {
     fontFamily: customTextFont?.value || "Arial"
   });
   text.initDimensions?.();
+  keepCustomerTextOnShirt(text);
   text.setCoords();
   canvas.requestRenderAll();
   saveCurrentView();
@@ -1746,6 +1763,7 @@ function addCustomerText(value,point=null){
     editable: true, selectable: true, motifKind: "text", motifName: value
   });
   canvas.add(text);
+  keepCustomerTextOnShirt(text);
   canvas.setActiveObject(text);
   canvas.requestRenderAll();
   saveCurrentView();
@@ -1820,12 +1838,28 @@ function toggleDesignMenu(tool){
       remove.classList.add("danger");designMenu.appendChild(remove);
     }
   }else if(tool==="text"){
+    const active=getActiveTextObject();
     const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=80;
-    input.placeholder="Dein Text";input.value=customTextInput?.value||"";
+    input.placeholder="Dein Text";input.value=active?.text||customTextInput?.value||"";
     input.addEventListener("input",()=>{if(customTextInput)customTextInput.value=input.value});
-    const add=()=>{if(input.value.trim()){addCustomerText(input.value);closeDesignMenu()}};
+    const add=()=>{if(input.value.trim()){
+      if(active){active.set({text:input.value.trim()});active.initDimensions?.();applyTextStyle();keepCustomerTextOnShirt(active);canvas.requestRenderAll();saveCurrentView()}
+      else addCustomerText(input.value);
+      closeDesignMenu();
+    }};
     input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();add()}});
-    designMenu.append(input,menuOption("Text hinzufügen",add));
+    designMenu.appendChild(input);
+    const fontLabel=document.createElement("label");fontLabel.className="editor-menu-field";fontLabel.textContent="Schriftart";
+    const font=document.createElement("select");font.className="editor-menu-input";font.setAttribute("aria-label","Schriftart");
+    customTextFont?.querySelectorAll("option").forEach(option=>font.appendChild(option.cloneNode(true)));
+    font.value=active?.fontFamily||customTextFont?.value||"Arial";
+    font.addEventListener("change",()=>{if(customTextFont){customTextFont.value=font.value;customTextFont.dispatchEvent(new Event("change",{bubbles:true}))}});
+    fontLabel.appendChild(font);designMenu.appendChild(fontLabel);
+    const colorLabel=document.createElement("label");colorLabel.className="editor-menu-field";colorLabel.textContent="Textfarbe";
+    const color=document.createElement("input");color.type="color";color.value=customTextColor?.value||"#111111";color.setAttribute("aria-label","Textfarbe");
+    color.addEventListener("input",()=>{if(customTextColor){customTextColor.value=color.value;customTextColor.dispatchEvent(new Event("input",{bubbles:true}))}});
+    colorLabel.appendChild(color);designMenu.appendChild(colorLabel);
+    designMenu.appendChild(menuOption(active?"Text übernehmen":"Text hinzufügen",add));
   }else if(tool==="printColor"){
     const colors=document.createElement("div");colors.className="editor-print-colors";
     document.querySelectorAll(".motif-color-section .motif-color:not([hidden])").forEach(source=>{
@@ -1977,10 +2011,17 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
 
 canvas.on("object:scaling",function(event){
   if(event.target?.motifKind==="upload") keepCustomerUploadOnShirt(event.target);
+  if(event.target?.motifKind==="text") keepCustomerTextOnShirt(event.target);
 });
 canvas.on("object:moving",function(event){
   if(event.target?.motifKind==="upload") keepCustomerUploadOnShirt(event.target);
+  if(event.target?.motifKind==="text") keepCustomerTextOnShirt(event.target);
 });
+canvas.on("object:rotating",event=>{
+  if(event.target?.motifKind==="text")keepCustomerTextOnShirt(event.target);
+  if(event.target?.motifKind==="upload")keepCustomerUploadOnShirt(event.target);
+});
+canvas.on("text:changed",event=>{keepCustomerTextOnShirt(event.target);saveCurrentView()});
 // Zwei Finger skalieren die eigene Datei gleichmäßig, ohne das Textil zu verschieben.
 if(canvas.upperCanvasEl){
   let uploadPinch=null;
@@ -2015,6 +2056,9 @@ if(canvas.upperCanvasEl){
 canvas.on("object:modified", function(event) {
   const object = event.target;
   if (!object) return;
+  if(object.motifKind==="text"){
+    keepCustomerTextOnShirt(object);canvas.requestRenderAll();saveCurrentView();return;
+  }
   if(object.motifKind==="upload"){
     keepCustomerUploadOnShirt(object);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();return;
   }

@@ -6068,3 +6068,6 @@ html body .editor-tool-menu .editor-print-colors .editor-menu-option{
 html body .editor-tool-menu .editor-print-colors .editor-menu-option.active{
   box-shadow:0 0 0 2px #bc9225;
 }
+html body .app #productSection,
+html body .app .customer-upload-section,
+html body .app .text-section{display:none!important}
