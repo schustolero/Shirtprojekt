@@ -6101,7 +6101,7 @@ html body .text-dialog-entry button{min-height:44px;border:1px solid #cda825;bor
 html body .text-font-heading{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin-bottom:10px}
 html body .text-font-heading strong{font-size:16px}
 html body .text-font-heading small{font-size:12px;color:#747c85}
-html body .text-font-gallery{display:grid;grid-auto-flow:row;grid-template-rows:repeat(2,minmax(0,1fr));grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:2px 2px 8px;scrollbar-color:#c6a334 #eef0f2}
+html body .text-font-gallery{display:grid;grid-auto-flow:row;grid-template-rows:repeat(4,minmax(0,1fr));grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;padding:2px 2px 8px;scrollbar-color:#c6a334 #eef0f2}
 html body .text-font-card{box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:0;height:100px;padding:9px 5px;border:1px solid #e0e3e7;border-radius:11px;background:#fff;color:#22262b;cursor:pointer}
 html body .text-font-card:hover,html body .text-font-card.selected{border-color:#cba428;background:#fffaf0;box-shadow:inset 0 0 0 1px #cba428}
 html body .text-font-name{font-size:11px;line-height:1.15;color:#68717c;text-align:center;min-height:24px;display:grid;place-items:center}
@@ -6112,7 +6112,7 @@ html body .text-font-preview{display:block;width:100%;font-size:clamp(13px,1.3vw
   html body .text-dialog-entry{grid-template-columns:minmax(0,1fr) auto}
   html body .text-dialog-entry button{padding:0 9px;font-size:12px}
   html body .text-font-heading{align-items:flex-start;flex-direction:column;gap:2px}
-  html body .text-font-gallery{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:132px;grid-template-rows:repeat(2,96px);gap:7px}
+  html body .text-font-gallery{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:132px;grid-template-rows:repeat(4,96px);gap:7px}
   html body .text-font-card{height:96px}
   html body .text-font-preview{font-size:17px}
 }
