@@ -1608,6 +1608,7 @@ function handleCustomerUploadFile(file,dropPoint=null){
           if(selectedLogoByProduct[currentProductId]) delete selectedLogoByProduct[currentProductId][currentView];
           motifButtons.forEach(btn=>btn.classList.remove("active"));
           customerLogoFiles.set(file.name,file);
+          closePhotoDialog();
           syncCustomerUploadControls();
           if(FEATURES.previewMode==="dual") void renderDualPreview();
           if(customerLogoUpload) customerLogoUpload.value="";
@@ -1816,28 +1817,11 @@ function menuOption(label,action,active=false){
   button.classList.toggle("active",active);button.addEventListener("click",action);
   return button;
 }
-function toggleDesignMenu(tool){
-  if(openDesignTool===tool){closeDesignMenu();return;}
-  openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
-  designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
-  const title=document.createElement("strong");title.className="editor-menu-title";
-  title.textContent=({product:"Textil wählen",logo:"Vereinslogo wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen",printColor:"Druckfarbe wählen"})[tool]||"Auswahl";
-  designMenu.appendChild(title);
-  if(tool==="product"){
-    productSwitch?.querySelectorAll(".product-btn").forEach(source=>{
-      const name=source.querySelector(".product-btn-name")?.textContent||source.textContent;
-      const price=FEATURES.showPrices===false?"":` · ${source.dataset.price||""}`;
-      designMenu.appendChild(menuOption(name+price,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
-    });
-  }else if(tool==="logo"){
-    const section=document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])");
-    section?.querySelectorAll(".motif-btn").forEach(source=>{
-      const label=source.querySelector(".motif-label,.motif-name")?.textContent?.trim()||source.textContent.trim()||"Logo";
-      designMenu.appendChild(menuOption(label,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
-    });
-    if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Vereinslogos vorhanden.";designMenu.appendChild(hint)}
-  }else if(tool==="photo"){
-    designMenu.appendChild(menuOption("Bild hochladen / ersetzen",()=>{closeDesignMenu();customerLogoUpload?.click()}));
+function populatePhotoEditTools(host){
+  host.replaceChildren();
+  const designMenu=host;
+
+
     const upload=currentUploadedMotif();
     if(upload){
       const label=document.createElement("label");label.className="editor-menu-field";label.textContent="Bildgröße";
@@ -1858,11 +1842,83 @@ function toggleDesignMenu(tool){
       );designMenu.appendChild(actions);
       designMenu.appendChild(menuOption("Mittig platzieren",()=>{
         const image=currentUploadedMotif();if(image){centerCustomerUpload(image);keepCustomerUploadOnShirt(image);canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls()}
-        closeDesignMenu();
+        closePhotoDialog();
       }));
-      const remove=menuOption("Bild entfernen",()=>{removeCustomerUpload();closeDesignMenu()});
+      const remove=menuOption("Bild entfernen",()=>{removeCustomerUpload();closePhotoDialog()});
       remove.classList.add("danger");designMenu.appendChild(remove);
     }
+
+}
+const photoDialog=document.getElementById("photoDialog");
+let photoPreviewUrls=[];
+function closePhotoDialog(){
+  if(photoDialog?.open)photoDialog.close();
+}
+function renderPhotoLibrary(){
+  const host=document.getElementById("photoImageLibrary");if(!host)return;
+  photoPreviewUrls.forEach(url=>URL.revokeObjectURL(url));photoPreviewUrls=[];host.replaceChildren();
+  if(!customerLogoFiles.size){
+    const empty=document.createElement("p");empty.className="photo-library-empty";
+    empty.textContent="Noch keine Bilder vorhanden. Lade zuerst ein Bild hoch.";host.appendChild(empty);return;
+  }
+  customerLogoFiles.forEach(file=>{
+    const button=document.createElement("button");button.type="button";button.className="photo-library-image";
+    const image=document.createElement("img");const url=URL.createObjectURL(file);photoPreviewUrls.push(url);
+    image.src=url;image.alt=file.name;
+    const label=document.createElement("span");label.textContent=file.name;
+    button.append(image,label);button.addEventListener("click",()=>handleCustomerUploadFile(file));host.appendChild(button);
+  });
+}
+function setPhotoTab(library){
+  document.getElementById("photoUploadTab")?.setAttribute("aria-selected",String(!library));
+  document.getElementById("photoLibraryTab")?.setAttribute("aria-selected",String(library));
+  document.getElementById("photoUploadPanel").hidden=library;
+  document.getElementById("photoLibraryPanel").hidden=!library;
+  if(library)renderPhotoLibrary();
+}
+function openPhotoDialog(){
+  if(!FEATURES.allowCustomerUpload||!photoDialog)return;
+  document.getElementById("photoMaxUpload").textContent=String(Number(FEATURES.maxUploadMB)||8);
+  setPhotoTab(false);
+  const details=document.getElementById("photoEditDetails");details.hidden=!currentUploadedMotif();details.open=false;
+  populatePhotoEditTools(document.getElementById("photoEditTools"));
+  if(!photoDialog.open)photoDialog.showModal();
+}
+document.getElementById("photoUploadTab")?.addEventListener("click",()=>setPhotoTab(false));
+document.getElementById("photoLibraryTab")?.addEventListener("click",()=>setPhotoTab(true));
+photoDialog?.querySelector(".photo-dialog-close")?.addEventListener("click",closePhotoDialog);
+photoDialog?.addEventListener("close",()=>{photoPreviewUrls.forEach(url=>URL.revokeObjectURL(url));photoPreviewUrls=[]});
+photoDialog?.addEventListener("click",event=>{if(event.target===photoDialog)closePhotoDialog()});
+document.getElementById("photoUploadButton")?.addEventListener("click",()=>{pendingUploadPoint=null;customerLogoUpload?.click()});
+const photoDrop=document.getElementById("photoUploadDrop");
+photoDrop?.addEventListener("click",event=>{if(!event.target.closest("button")){pendingUploadPoint=null;customerLogoUpload?.click()}});
+photoDrop?.addEventListener("dragover",event=>{event.preventDefault();photoDrop.classList.add("is-dragover")});
+photoDrop?.addEventListener("dragleave",()=>photoDrop.classList.remove("is-dragover"));
+photoDrop?.addEventListener("drop",event=>{
+  event.preventDefault();event.stopPropagation();photoDrop.classList.remove("is-dragover");
+  handleCustomerUploadFile(event.dataTransfer?.files?.[0]);
+});
+function toggleDesignMenu(tool){
+  if(tool==="photo"){closeDesignMenu();openPhotoDialog();return;}
+  if(openDesignTool===tool){closeDesignMenu();return;}
+  openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
+  designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
+  const title=document.createElement("strong");title.className="editor-menu-title";
+  title.textContent=({product:"Textil wählen",logo:"Vereinslogo wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen",printColor:"Druckfarbe wählen"})[tool]||"Auswahl";
+  designMenu.appendChild(title);
+  if(tool==="product"){
+    productSwitch?.querySelectorAll(".product-btn").forEach(source=>{
+      const name=source.querySelector(".product-btn-name")?.textContent||source.textContent;
+      const price=FEATURES.showPrices===false?"":` · ${source.dataset.price||""}`;
+      designMenu.appendChild(menuOption(name+price,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
+    });
+  }else if(tool==="logo"){
+    const section=document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])");
+    section?.querySelectorAll(".motif-btn").forEach(source=>{
+      const label=source.querySelector(".motif-label,.motif-name")?.textContent?.trim()||source.textContent.trim()||"Logo";
+      designMenu.appendChild(menuOption(label,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
+    });
+    if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Vereinslogos vorhanden.";designMenu.appendChild(hint)}
   }else if(tool==="text"){
     const active=getActiveTextObject();
     const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=80;

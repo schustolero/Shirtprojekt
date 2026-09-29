@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.183">
+  <link rel="stylesheet" href="/style.css?v=30.3.184">
   <script>
     (function(){
       try{
@@ -497,6 +497,23 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
 </div>
 
 <script src="/central-config.js?v=30.3.165"></script>
+<dialog id="photoDialog" class="photo-dialog" aria-labelledby="photoDialogTitle">
+  <header class="photo-dialog-header"><h2 id="photoDialogTitle">Ein Bild hinzufügen</h2><button type="button" class="photo-dialog-close" aria-label="Schließen">×</button></header>
+  <div class="photo-dialog-tabs" role="tablist" aria-label="Bildquelle">
+    <button type="button" id="photoUploadTab" role="tab" aria-controls="photoUploadPanel" aria-selected="true">HOCHLADEN</button>
+    <button type="button" id="photoLibraryTab" role="tab" aria-controls="photoLibraryPanel" aria-selected="false">MEINE BILDER</button>
+  </div>
+  <section id="photoUploadPanel" role="tabpanel" aria-labelledby="photoUploadTab">
+    <div id="photoUploadDrop" class="photo-upload-drop">
+      <p>Lade deine Datei hoch oder ziehe sie hierher</p>
+      <button type="button" id="photoUploadButton" class="photo-upload-button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 22V4m-7 7 7-7 7 7M5 21v6h22v-6"/></svg> HOCHLADEN</button>
+      <small>PNG, JPG, WEBP oder SVG · max. <span id="photoMaxUpload">8</span> MB</small>
+    </div>
+    <div class="photo-requirements"><h3>Anforderungen an das Bild:</h3><ul><li>Dateiformat PNG, JPG, WEBP oder SVG</li><li>Verwende eine scharfe Datei in möglichst hoher Auflösung.</li><li>Für freigestellte Logos: PNG oder SVG mit transparentem Hintergrund.</li></ul><p>Mit dem Hochladen bestätigst du, dass du die Rechte zur Nutzung und zum Druck der Grafik hast.</p></div>
+  </section>
+  <section id="photoLibraryPanel" role="tabpanel" aria-labelledby="photoLibraryTab" hidden><p class="photo-library-hint">Deine in dieser Sitzung hochgeladenen Bilder.</p><div id="photoImageLibrary" class="photo-image-library"></div></section>
+  <details id="photoEditDetails" class="photo-edit-details" hidden><summary>Bild bearbeiten</summary><div id="photoEditTools" class="editor-tool-menu photo-edit-tools"></div></details>
+</dialog>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
@@ -511,7 +528,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.183";
+      app.src="/script.js?v=30.3.184";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
