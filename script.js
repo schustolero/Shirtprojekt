@@ -447,7 +447,9 @@ try{
     height: PRINT_CANVAS_HEIGHT,
     backgroundColor: "transparent",
     selection: true,
-    preserveObjectStacking: true
+    preserveObjectStacking: true,
+    uniformScaling: true,
+    uniScaleKey: null
   });
 }catch(err){
   console.error("Canvas start failed", err);
@@ -820,6 +822,7 @@ async function renderShirt() {
   updateInitialsOnCanvas();
   if (FEATURES.previewMode === "dual") renderDualPreview();
 }
+
 
 function getConfiguredMotif(view) {
   if(!logoEnabled) return null;
@@ -1378,9 +1381,9 @@ function createCustomerUploadPreview(image){
 function restoreUploadedEditing(image){
   image.set({selectable:true,evented:true,hasControls:true,hasBorders:true,
     lockMovementX:false,lockMovementY:false,lockScalingX:false,lockScalingY:false,lockRotation:true,
-    cornerSize:18,touchCornerSize:32,transparentCorners:false,cornerStyle:"circle",cornerColor:"#ffffff",
+    cornerSize:20,touchCornerSize:44,transparentCorners:false,cornerStyle:"circle",cornerColor:"#ffffff",
     cornerStrokeColor:"#ad8423",borderColor:"#ad8423",hoverCursor:"move",moveCursor:"move"});
-  image.setControlsVisibility?.({mtr:false});
+  image.setControlsVisibility?.({mt:false,mb:false,ml:false,mr:false,mtr:false,tl:true,tr:true,bl:true,br:true});
   image.setCoords();
 }
 function currentUploadedMotif(){
@@ -1392,8 +1395,12 @@ function customerUploadMaxScale(image){
 }
 function clampCustomerUploadSize(image){
   if(image?.motifKind!=="upload" || !image.width || !image.height) return;
+  // Auch bei Touch-Gesten und alten gespeicherten Werten bleibt das Seitenverhältnis erhalten.
+  if(Math.abs(image.scaleX-image.scaleY)>0.0001) image.scale(Math.max(image.scaleX,image.scaleY));
   const maximum=customerUploadMaxScale(image);
   if(image.scaleX>maximum || image.scaleY>maximum) image.scale(maximum);
+  const minimum=maximum*.25;
+  if(image.scaleX<minimum || image.scaleY<minimum) image.scale(minimum);
 }
 function centerCustomerUpload(image){
   image.setPositionByOrigin(new fabric.Point(CUSTOMER_UPLOAD_CENTER_X,CUSTOMER_UPLOAD_CENTER_Y),"center","center");
@@ -1465,16 +1472,16 @@ uploadSection?.querySelector(".customer-upload-center")?.addEventListener("click
   centerCustomerUpload(image);keepCustomerUploadOnShirt(image);
   canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
 });
-if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(event) {
-  const file = event.target.files && event.target.files[0];
+let pendingUploadPoint=null;
+function handleCustomerUploadFile(file,dropPoint=null){
   if (!file) return;
   const maxBytes = (Number(FEATURES.maxUploadMB) || 8) * 1024 * 1024;
   if (file.size > maxBytes) {
     alert(`Die Datei ist zu groß. Maximal ${Number(FEATURES.maxUploadMB) || 8} MB.`);
-    event.target.value = "";
+    if(customerLogoUpload) customerLogoUpload.value="";
     return;
   }
-  if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) { alert("Bitte PNG, JPG, WEBP oder SVG auswählen."); event.target.value = ""; return; }
+  if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) { alert("Bitte PNG, JPG, WEBP oder SVG auswählen."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
   const reader = new FileReader();
   reader.onload = () => {
     if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
@@ -1483,12 +1490,12 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
       applyPreviewMode();
     }
     fabric.Image.fromURL(reader.result, function(original) {
-      if (!original?.width || !original.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); event.target.value=""; return; }
+      if (!original?.width || !original.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
       try {
         trimTransparentUpload(original);
         const previewUrl=createCustomerUploadPreview(original);
         fabric.Image.fromURL(previewUrl, function(image) {
-          if (!image?.width || !image.height) { alert("Die Bildvorschau konnte nicht geöffnet werden."); event.target.value=""; return; }
+          if (!image?.width || !image.height) { alert("Die Bildvorschau konnte nicht geöffnet werden."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
           if (FEATURES.motifMode !== "mixed") canvas.clear();
           const scale=customerUploadMaxScale(image);
           image.set({
@@ -1496,7 +1503,10 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
             originX:"center",originY:"center",scaleX:scale,scaleY:scale,
             motifId:"customer-upload",motifSrc:reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
           });
-          centerCustomerUpload(image);
+          if(dropPoint){
+            image.setPositionByOrigin(new fabric.Point(dropPoint.x,dropPoint.y),"center","center");
+            keepCustomerUploadOnShirt(image);
+          }else centerCustomerUpload(image);
           restoreUploadedEditing(image);
           canvas.add(image);
           canvas.setActiveObject(image);
@@ -1508,17 +1518,22 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
           customerLogoFiles.set(file.name,file);
           syncCustomerUploadControls();
           if(FEATURES.previewMode==="dual") void renderDualPreview();
-          event.target.value="";
+          if(customerLogoUpload) customerLogoUpload.value="";
         });
       } catch(error) {
         console.error("Bildvorschau:",error);
         alert("Die Bildvorschau konnte nicht erstellt werden. Bitte eine andere Bilddatei auswählen.");
-        event.target.value="";
+        if(customerLogoUpload) customerLogoUpload.value="";
       }
     });
   };
-  reader.onerror = () => { alert("Die Bilddatei konnte nicht gelesen werden."); event.target.value=""; };
+  reader.onerror = () => { alert("Die Bilddatei konnte nicht gelesen werden."); if(customerLogoUpload) customerLogoUpload.value=""; };
   reader.readAsDataURL(file);
+}
+customerLogoUpload?.addEventListener("change",event=>{
+  const point=pendingUploadPoint;
+  pendingUploadPoint=null;
+  handleCustomerUploadFile(event.target.files?.[0],point);
 });
 
 const customTextInput = document.getElementById("customTextInput");
@@ -1671,11 +1686,11 @@ textColorSwatches.forEach(button => button.addEventListener("click", () => {
 }));
 canvas.on("selection:created", event => updateTextStyleControls(event.selected?.[0]));
 canvas.on("selection:updated", event => updateTextStyleControls(event.selected?.[0]));
-if (addTextBtn && customTextInput) addTextBtn.addEventListener("click", function() {
-  const value = customTextInput.value.trim();
+function addCustomerText(value,point=null){
+  value=String(value||"").trim();
   if (!value) return;
   const text = new fabric.Textbox(value, {
-    left: canvas.width / 2, top: canvas.height * 0.56, originX: "center", originY: "center",
+    left: point?.x ?? canvas.width / 2, top: point?.y ?? canvas.height * 0.56, originX: "center", originY: "center",
     width: canvas.width * 0.7, textAlign: "center", fontSize: 28, fontWeight: 700,
     fill: customTextColor?.value || "#111111", fontFamily: customTextFont?.value || "Arial",
     editable: true, selectable: true, motifKind: "text", motifName: value
@@ -1684,7 +1699,109 @@ if (addTextBtn && customTextInput) addTextBtn.addEventListener("click", function
   canvas.setActiveObject(text);
   canvas.requestRenderAll();
   saveCurrentView();
-  customTextInput.value = "";
+  if(customTextInput) customTextInput.value="";
+}
+if (addTextBtn && customTextInput) addTextBtn.addEventListener("click",()=>addCustomerText(customTextInput.value));
+
+const designRail=document.querySelector(".editor-dnd-rail");
+const printDropZone=document.getElementById("printZone");
+const designTools=designRail?.querySelectorAll("[data-design-tool]")||[];
+designTools.forEach(button=>{
+  const tool=button.dataset.designTool;
+  button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
+    || (tool==="logo" && FEATURES.showClubLogos===false) || (tool==="initials"&&!FEATURES.allowInitials)
+    || (tool==="product"&&PRODUCTS.length<=1);
+});
+function printPointAt(clientX,clientY){
+  const rect=printDropZone.getBoundingClientRect();
+  return {
+    x:Math.max(PRINT_SIDE_MARGIN,Math.min(PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH,(clientX-rect.left)/rect.width*PRINT_CANVAS_WIDTH)),
+    y:Math.max(PRINT_HEADROOM,Math.min(PRINT_HEADROOM+PRINT_BASE_HEIGHT,(clientY-rect.top)/rect.height*PRINT_CANVAS_HEIGHT))
+  };
+}
+function useDesignTool(tool,point=null){
+  if(tool==="photo" && FEATURES.allowCustomerUpload){
+    pendingUploadPoint=point;
+    customerLogoUpload?.click();
+  }else if(tool==="text" && FEATURES.allowText){
+    if(point) addCustomerText(customTextInput?.value || "Dein Text",point);
+    else{document.querySelector(".text-section")?.scrollIntoView({behavior:"smooth",block:"start"});customTextInput?.focus();}
+  }else if(tool==="product"){
+    document.getElementById("productSection")?.scrollIntoView({behavior:"smooth",block:"start"});
+  }else if(tool==="initials"){
+    document.getElementById("initialsPop")?.scrollIntoView({behavior:"smooth",block:"start"});
+    document.getElementById("initialsInput")?.focus();
+  }else if(tool==="logo"){
+    if(point){
+      const section=document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])");
+      const chosen=section?.querySelector(".motif-btn.active[data-src]")||section?.querySelector(".motif-btn[data-src]");
+      chosen?.click(); // Vereinslogos übernehmen ihre im Admin gespeicherte Position.
+    }else document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])")?.scrollIntoView({behavior:"smooth",block:"start"});
+  }
+}
+designTools.forEach(button=>{
+  button.addEventListener("click",()=>{
+    if(button.dataset.dragged==="true"){button.dataset.dragged="false";return;}
+    useDesignTool(button.dataset.designTool);
+  });
+  button.addEventListener("dragstart",event=>{
+    if(button.hidden){event.preventDefault();return;}
+    event.dataTransfer.effectAllowed="copy";
+    event.dataTransfer.setData("application/x-shirtprojekt-tool",button.dataset.designTool);
+  });
+});
+printDropZone?.addEventListener("dragover",event=>{
+  const types=Array.from(event.dataTransfer?.types||[]);
+  if(types.includes("Files") || types.includes("application/x-shirtprojekt-tool")){
+    event.preventDefault();event.dataTransfer.dropEffect="copy";
+  }
+});
+printDropZone?.addEventListener("drop",event=>{
+  event.preventDefault();
+  const point=printPointAt(event.clientX,event.clientY);
+  const file=Array.from(event.dataTransfer?.files||[]).find(item=>item.type.startsWith("image/"));
+  if(file && FEATURES.allowCustomerUpload) handleCustomerUploadFile(file,point);
+  else useDesignTool(event.dataTransfer?.getData("application/x-shirtprojekt-tool"),point);
+});
+// HTML-Drag-and-drop startet auf iPhones nicht. Touch benutzt denselben Ablagepunkt.
+designTools.forEach(button=>{
+  let gesture=null;
+  button.addEventListener("pointerdown",event=>{
+    if(event.pointerType!=="touch"||button.hidden)return;
+    gesture={id:event.pointerId,x:event.clientX,y:event.clientY,moved:false};
+    button.setPointerCapture?.(event.pointerId);
+  });
+  button.addEventListener("pointermove",event=>{
+    if(!gesture||event.pointerId!==gesture.id)return;
+    if(Math.hypot(event.clientX-gesture.x,event.clientY-gesture.y)>10) gesture.moved=true;
+    if(gesture.moved){
+      if(!gesture.ghost){
+        gesture.ghost=document.createElement("div");
+        gesture.ghost.className="editor-drag-ghost";
+        gesture.ghost.textContent=button.querySelector("strong")?.textContent||"Motiv";
+        document.body.appendChild(gesture.ghost);
+      }
+      gesture.ghost.style.left=`${event.clientX+14}px`;
+      gesture.ghost.style.top=`${event.clientY+14}px`;
+      button.classList.add("is-dragging");
+      const r=printDropZone?.getBoundingClientRect();
+      printDropZone?.classList.toggle("drag-target",!!r&&event.clientX>=r.left&&event.clientX<=r.right&&event.clientY>=r.top&&event.clientY<=r.bottom);
+    }
+  });
+  const finish=event=>{
+    if(!gesture||event.pointerId!==gesture.id)return;
+    if(gesture.moved){
+      button.dataset.dragged="true";
+      setTimeout(()=>{button.dataset.dragged="false"},350);
+      const r=printDropZone?.getBoundingClientRect();
+      if(r&&event.clientX>=r.left&&event.clientX<=r.right&&event.clientY>=r.top&&event.clientY<=r.bottom)
+        useDesignTool(button.dataset.designTool,printPointAt(event.clientX,event.clientY));
+    }
+    gesture.ghost?.remove();
+    button.classList.remove("is-dragging");printDropZone?.classList.remove("drag-target");gesture=null;
+  };
+  button.addEventListener("pointerup",finish);
+  button.addEventListener("pointercancel",finish);
 });
 
 if (resetBtn) resetBtn.addEventListener("click", function() {
@@ -1712,6 +1829,37 @@ canvas.on("object:scaling",function(event){
 canvas.on("object:moving",function(event){
   if(event.target?.motifKind==="upload") keepCustomerUploadOnShirt(event.target);
 });
+// Zwei Finger skalieren die eigene Datei gleichmäßig, ohne das Textil zu verschieben.
+if(canvas.upperCanvasEl){
+  let uploadPinch=null;
+  const distance=touches=>Math.hypot(touches[0].clientX-touches[1].clientX,touches[0].clientY-touches[1].clientY);
+  canvas.upperCanvasEl.addEventListener("touchstart",event=>{
+    if(event.touches.length!==2)return;
+    const image=currentUploadedMotif();
+    if(!image)return;
+    uploadPinch={image,distance:distance(event.touches),scale:image.scaleX};
+    event.preventDefault();event.stopImmediatePropagation();
+  },{passive:false,capture:true});
+  canvas.upperCanvasEl.addEventListener("touchmove",event=>{
+    if(!uploadPinch)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    if(event.touches.length!==2)return;
+    uploadPinch.image.scale(uploadPinch.scale*distance(event.touches)/Math.max(1,uploadPinch.distance));
+    keepCustomerUploadOnShirt(uploadPinch.image);
+    canvas.setActiveObject(uploadPinch.image);
+    canvas.requestRenderAll();
+  },{passive:false,capture:true});
+  const finishPinch=event=>{
+    if(!uploadPinch)return;
+    event.preventDefault();event.stopImmediatePropagation();
+    if(event.touches.length>=2)return;
+    keepCustomerUploadOnShirt(uploadPinch.image);
+    uploadPinch=null;
+    canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
+  };
+  canvas.upperCanvasEl.addEventListener("touchend",finishPinch,{passive:false,capture:true});
+  canvas.upperCanvasEl.addEventListener("touchcancel",finishPinch,{passive:false,capture:true});
+}
 canvas.on("object:modified", function(event) {
   const object = event.target;
   if (!object) return;

@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.172">
+  <link rel="stylesheet" href="/style.css?v=30.3.174">
   <script>
     (function(){
       try{
@@ -133,6 +133,7 @@
       </div>
       <button type="button" class="theme-toggle" id="themeToggle" aria-label="Darstellung umschalten">Dunkel</button>
     </div>
+
 
     <section class="tool-section color-section">
       <h3>Textilfarbe</h3>
@@ -351,6 +352,7 @@
 
     <div class="workspace">
 
+
       <div class="mockup-stage">
 
         <img
@@ -366,6 +368,13 @@
         </div>
         <aside class="price-patch" id="pricePatch" hidden></aside>
       </div>
+      <aside class="editor-dnd-rail" aria-label="Gestaltungswerkzeuge">
+        <button type="button" data-design-tool="product"><span aria-hidden="true">▣</span><strong>Textil</strong><small>Modell wählen</small></button>
+        <button type="button" data-design-tool="logo" draggable="true"><span aria-hidden="true">◇</span><strong>Vereinslogo</strong><small>Auf das Shirt ziehen</small></button>
+        <button type="button" data-design-tool="photo" draggable="true"><span aria-hidden="true">▧</span><strong>Foto</strong><small>Auf das Shirt ziehen</small></button>
+        <button type="button" data-design-tool="text" draggable="true"><span aria-hidden="true">T</span><strong>Text</strong><small>Auf das Shirt ziehen</small></button>
+        <button type="button" data-design-tool="initials"><span aria-hidden="true">AB</span><strong>Initialen</strong><small>Eingeben</small></button>
+      </aside>
     </div>
 
     <div class="dual-workspace" id="dualWorkspace" hidden>
@@ -473,7 +482,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.172";
+      app.src="/script.js?v=30.3.174";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
