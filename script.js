@@ -462,8 +462,8 @@ const currentMotifColorName = document.getElementById("currentMotifColorName");
 const designerStatus = document.getElementById("designerStatus");
 const printZone = document.getElementById("printZone");
 const workspace = document.querySelector(".workspace");
-// Auswahlrahmen für Kundentext: vier direkt bedienbare Eckgriffe.
-function renderTextControl(icon,small=false){
+// Auswahlrahmen für eigene Bilder und Texte: vier direkt bedienbare Eckgriffe.
+function renderCustomerControl(icon,small=false){
   return function(ctx,left,top,_style,object){
     const size=small?object.cornerSize*.32:object.cornerSize;
     ctx.save();ctx.translate(left,top);
@@ -495,46 +495,50 @@ function renderTextControl(icon,small=false){
     ctx.restore();
   };
 }
-function sizeTextControls(object){
+function sizeCustomerControls(object){
   const width=canvas.upperCanvasEl?.getBoundingClientRect().width||canvas.width;
   const ratio=Math.max(.2,width/canvas.width);
   object.cornerSize=28/ratio;object.touchCornerSize=44/ratio;
   Object.values(object.controls).forEach(control=>{
-    const size=control.isTextMidpoint?object.cornerSize*.32:object.cornerSize;
+    const size=control.isCustomerMidpoint?object.cornerSize*.32:object.cornerSize;
     control.sizeX=control.sizeY=size;
     control.touchSizeX=control.touchSizeY=object.touchCornerSize;
   });
   object.setCoords();
 }
-function configureTextControls(object){
-  if(object?.motifKind!=="text"||!fabric.Control)return;
+function configureCustomerControls(object){
+  if(!["text","upload"].includes(object?.motifKind)||!fabric.Control)return;
   const actions=fabric.controlsUtils;
   object.set({hasControls:true,hasBorders:true,borderColor:"#249ca9",borderDashArray:[9,6],
     borderScaleFactor:1.1,padding:6,transparentCorners:false,lockScalingFlip:true,
     lockRotation:false,lockScalingX:false,lockScalingY:false,lockMovementX:false,lockMovementY:false});
   const control=(x,y,icon,handler,action,cursor)=>new fabric.Control({x,y,
-    actionHandler:handler,actionName:action,cursorStyle:cursor,render:renderTextControl(icon)});
+    actionHandler:handler,actionName:action,cursorStyle:cursor,render:renderCustomerControl(icon)});
   object.controls={
     tl:control(-.5,-.5,"move",actions.dragHandler,"drag","move"),
     tr:control(.5,-.5,"rotate",actions.rotationWithSnapping,"rotate","crosshair"),
-    bl:new fabric.Control({x:-.5,y:.5,cursorStyle:"pointer",render:renderTextControl("delete"),
+    bl:new fabric.Control({x:-.5,y:.5,cursorStyle:"pointer",render:renderCustomerControl("delete"),
       mouseUpHandler:(_event,transform)=>{
         const target=transform.target;target.canvas?.remove(target);
-        canvas.discardActiveObject();canvas.requestRenderAll();saveCurrentView();return true;
+        canvas.discardActiveObject();canvas.requestRenderAll();saveCurrentView();
+        syncCustomerUploadControls();
+        if(FEATURES.previewMode==="dual") void renderDualPreview();
+        return true;
       }}),
     br:control(.5,.5,"scale",actions.scalingEqually,"scale","nwse-resize")
   };
   for(const [key,x,y] of [["mt",0,-.5],["mb",0,.5],["ml",-.5,0],["mr",.5,0]]){
-    object.controls[key]=new fabric.Control({x,y,isTextMidpoint:true,actionName:"scale",
-      actionHandler:actions.scalingEqually,cursorStyle:"nwse-resize",render:renderTextControl("scale",true)});
+    object.controls[key]=new fabric.Control({x,y,isCustomerMidpoint:true,actionName:"scale",
+      actionHandler:actions.scalingEqually,cursorStyle:"nwse-resize",render:renderCustomerControl("scale",true)});
   }
-  sizeTextControls(object);
+  object.setControlsVisibility?.({tl:true,tr:true,bl:true,br:true,mt:true,mb:true,ml:true,mr:true,mtr:false});
+  sizeCustomerControls(object);
 }
-canvas.on("object:added",event=>configureTextControls(event.target));
-canvas.on("selection:created",event=>{if(event.selected?.[0]?.motifKind==="text")sizeTextControls(event.selected[0])});
-canvas.on("selection:updated",event=>{if(event.selected?.[0]?.motifKind==="text")sizeTextControls(event.selected[0])});
+canvas.on("object:added",event=>configureCustomerControls(event.target));
+canvas.on("selection:created",event=>{if(["text","upload"].includes(event.selected?.[0]?.motifKind))sizeCustomerControls(event.selected[0])});
+canvas.on("selection:updated",event=>{if(["text","upload"].includes(event.selected?.[0]?.motifKind))sizeCustomerControls(event.selected[0])});
 window.addEventListener("resize",()=>{
-  canvas.getObjects().filter(object=>object.motifKind==="text").forEach(sizeTextControls);
+  canvas.getObjects().filter(object=>["text","upload"].includes(object.motifKind)).forEach(sizeCustomerControls);
   canvas.requestRenderAll();
 },{passive:true});
 const dualWorkspace = document.getElementById("dualWorkspace");
@@ -1450,11 +1454,8 @@ function createCustomerUploadPreview(image){
 }
 function restoreUploadedEditing(image){
   image.set({selectable:true,evented:true,hasControls:true,hasBorders:true,
-    lockMovementX:false,lockMovementY:false,lockScalingX:false,lockScalingY:false,lockRotation:true,
-    cornerSize:20,touchCornerSize:44,transparentCorners:false,cornerStyle:"circle",cornerColor:"#ffffff",
-    cornerStrokeColor:"#ad8423",borderColor:"#ad8423",hoverCursor:"move",moveCursor:"move"});
-  image.setControlsVisibility?.({mt:false,mb:false,ml:false,mr:false,mtr:false,tl:true,tr:true,bl:true,br:true});
-  image.setCoords();
+    hoverCursor:"move",moveCursor:"move"});
+  configureCustomerControls(image);
 }
 function currentUploadedMotif(){
   return canvas.getObjects().find(object=>object?.motifKind==="upload") || null;
