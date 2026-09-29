@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.182">
+  <link rel="stylesheet" href="/style.css?v=30.3.183">
   <script>
     (function(){
       try{
@@ -119,6 +119,34 @@
 }
 </style>
 
+<style id="preview-rail-layout">
+html body .workspace #previewLeftRail{grid-column:1!important;grid-row:1!important;display:flex!important;align-items:flex-start!important;gap:8px!important;width:112px!important;align-self:start!important;}
+html body #previewLeftRail .textile-icon-rail{display:grid!important;grid-template-columns:52px!important;grid-auto-rows:58px!important;gap:7px!important;width:52px!important;flex:0 0 52px!important;}
+html body #previewLeftRail .textile-icon-button{box-sizing:border-box!important;display:grid!important;grid-template-rows:32px 12px!important;align-content:center!important;justify-items:center!important;gap:3px!important;width:52px!important;min-width:52px!important;max-width:52px!important;height:58px!important;min-height:58px!important;max-height:58px!important;padding:4px!important;margin:0!important;border:1px solid #dbe1e8!important;border-radius:10px!important;background:#fff!important;color:#485563!important;cursor:pointer!important;touch-action:manipulation!important;}
+html body #previewLeftRail .textile-icon-button svg{display:block!important;width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important;fill:#eef1f4!important;stroke:currentColor!important;stroke-width:1.5!important;stroke-linejoin:round!important;}
+html body #previewLeftRail .textile-icon-button span{display:block!important;font:700 9px/12px system-ui,sans-serif!important;white-space:nowrap!important;}
+html body #previewLeftRail .textile-icon-button.active{border-color:#bf9824!important;background:#fff8e4!important;color:#806316!important;box-shadow:0 0 0 1px #bf9824!important;}
+html body #previewLeftRail .color-section{flex:0 0 52px!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-self:flex-start!important;max-height:none!important;height:auto!important;padding:0!important;margin:0!important;}
+html body #previewLeftRail .color-section[hidden]{display:none!important;}
+html body #previewLeftRail .shirt-colors{display:flex!important;flex-direction:column!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-items:center!important;gap:5px!important;padding:3px 4px!important;max-height:min(68vh,650px)!important;overflow-x:hidden!important;overflow-y:auto!important;mask-image:none!important;-webkit-mask-image:none!important;scrollbar-gutter:auto!important;}
+html body #previewLeftRail .shirt-color{box-sizing:border-box!important;display:block!important;flex:0 0 36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;aspect-ratio:1!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;transform:none!important;border-radius:0!important;cursor:pointer!important;}
+html body #previewLeftRail .shirt-color::before,html body #previewLeftRail .shirt-color::after,html body #previewLeftRail .shirt-colors::after{display:none!important;content:none!important;}
+html body #previewLeftRail .shirt-color>*{display:none!important;}
+html body #previewLeftRail .shirt-color>.rail-color-svg{display:block!important;width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important;min-height:36px!important;max-height:36px!important;}
+html body #previewLeftRail .selection-ring{visibility:hidden!important;}
+html body #previewLeftRail .shirt-color.active .selection-ring{visibility:visible!important;}
+html body #previewLeftRail .shirt-color[hidden]{display:none!important;}
+@media(min-width:901px){html body .workspace,html body .workspace.has-color-rail{grid-template-columns:112px minmax(0,1fr) 154px!important;}}
+@media(max-width:900px){
+html body .workspace,html body .workspace.has-color-rail{grid-template-rows:auto auto auto!important;}
+html body .workspace #previewLeftRail{display:contents!important;}
+html body #previewLeftRail .textile-icon-rail{grid-column:1/-1!important;grid-row:1!important;grid-template-columns:repeat(5,52px)!important;grid-auto-rows:58px!important;width:100%!important;justify-content:center!important;gap:5px!important;margin-bottom:10px!important;}
+html body #previewLeftRail .color-section{grid-column:1!important;grid-row:2!important;width:48px!important;min-width:48px!important;max-width:48px!important;}
+html body #previewLeftRail .shirt-colors{width:48px!important;min-width:48px!important;max-width:48px!important;max-height:46vh!important;}
+html body .workspace .mockup-stage,html body .workspace.has-color-rail .mockup-stage{grid-row:2!important;}
+html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .editor-dnd-rail{grid-row:3!important;}
+}
+</style>
 </head>
 <body class="shop-loading">
 
@@ -483,7 +511,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.182";
+      app.src="/script.js?v=30.3.183";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }

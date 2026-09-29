@@ -588,6 +588,7 @@ function ensureProductColorButtons(products){
     button.setAttribute("aria-label",button.dataset.name);
     button.title=button.dataset.name;
     button.style.setProperty("--swatch",button.dataset.color);
+    button.querySelector(".color-disc")?.setAttribute("fill",button.dataset.color);
     button.innerHTML=`<span class="color-swatch"></span><span class="color-label"></span>`;
     button.querySelector(".color-label").textContent=button.dataset.name;
     host.appendChild(button);
@@ -745,9 +746,9 @@ function renderProductSelector() {
 function renderTextileIconRail(){
   const host=document.querySelector(".textile-icon-rail");if(!host)return;
   host.replaceChildren();
-  const basic='<path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-2c-1 4-9 4-10 0Z"/>';
-  const long='<path d="m10 7-6 4-2 18 6 1 4-14v15h16V16l4 14 6-1-2-18-6-4-5-2c-1 4-9 4-10 0Z"/>';
-  const hoodie=long+'<path d="M14 7c0-9 12-9 12 0l-6 5Z"/><path d="M15 24h10v5H15Z"/>';
+  const basic='<path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-4c-1 5-9 5-10 0Z"/>';
+  const long='<path d="m10 7-6 4 1 18 5 1 2-14v15h16V16l2 14 5-1 1-18-6-4-5-4c-1 5-9 5-10 0Z"/>';
+  const hoodie=long+'<path d="M14 7c0-5 12-5 12 0l-6 5Z"/><path d="M15 24h10v5H15Z"/>';
   const polo=basic+'<path d="m14 5 6 6 6-6M20 11v8"/>';
   const sport=basic+'<path d="m10 9 5 7M30 9l-5 7"/>';
   PRODUCTS.forEach(product=>{
@@ -2735,7 +2736,7 @@ window.dockShirtColorRail=function(){
   if(!workspace||!section) return;
   let leftRail=workspace.querySelector(".preview-left-rail");
   if(!leftRail){
-    leftRail=document.createElement("aside");leftRail.className="preview-left-rail";leftRail.setAttribute("aria-label","Textilien und Textilfarben");
+    leftRail=document.createElement("aside");leftRail.id="previewLeftRail";leftRail.className="preview-left-rail";leftRail.setAttribute("aria-label","Textilien und Textilfarben");
     const icons=document.createElement("nav");icons.className="textile-icon-rail";icons.setAttribute("aria-label","Textil wählen");
     leftRail.appendChild(icons);workspace.insertBefore(leftRail,workspace.firstChild);
   }
@@ -2756,7 +2757,14 @@ window.dockShirtColorRail=function(){
   existing.forEach(button=>{
     const hex=button.dataset.color||button.style.getPropertyValue("--swatch")||"#888";
     button.style.setProperty("--swatch",hex);
-    button.style.background=hex;
+    let icon=button.querySelector(".rail-color-svg");
+    if(!icon){
+      icon=document.createElementNS("http://www.w3.org/2000/svg","svg");icon.classList.add("rail-color-svg");
+      icon.setAttribute("viewBox","0 0 36 36");icon.setAttribute("width","36");icon.setAttribute("height","36");icon.setAttribute("aria-hidden","true");
+      icon.innerHTML='<circle class="selection-ring" cx="18" cy="18" r="16" fill="none" stroke="#bf9824" stroke-width="2"/><circle class="color-disc" cx="18" cy="18" r="12" stroke="#9aa4ad" stroke-width=".8"/>';
+      button.appendChild(icon);
+    }
+    icon.querySelector(".color-disc").setAttribute("fill",hex);
   });
 };
 
