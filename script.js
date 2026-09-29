@@ -263,12 +263,7 @@ function getAllowedMotifColorNames(){
       <h3>Eigene Datei</h3>
       <label class="upload-btn">Bild hochladen<input id="customerLogoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml" aria-label="Eigenes Motiv hochladen"></label>
       <p class="hint">PNG, JPG, WEBP oder SVG · max. ${Number(FEATURES.maxUploadMB) || 8} MB</p>
-      <p class="upload-file-name" aria-live="polite" hidden></p>
-      <div class="customer-upload-tools" hidden>
-        <div class="customer-upload-size-head"><label for="customerUploadSize">Größe</label><output for="customerUploadSize">100 %</output></div>
-        <div class="customer-upload-size-row"><input id="customerUploadSize" type="range" min="25" max="100" value="100" aria-label="Größe des eigenen Motivs"><button class="customer-upload-center" type="button">Mittig platzieren</button></div>
-        <p class="hint">Motiv auf dem Textil antippen und verschieben.</p>
-      </div>`;
+      <p class="upload-file-name" aria-live="polite" hidden></p>`;
     insertAfter(motifSection || document.querySelector(".color-section"), uploadSection);
   }
 
@@ -1409,6 +1404,11 @@ function centerCustomerUpload(image){
 function keepCustomerUploadOnShirt(image){
   if(image?.motifKind!=="upload") return;
   clampCustomerUploadSize(image);
+  const angle=(Number(image.angle)||0)*Math.PI/180;
+  const rotatedWidth=(Math.abs(image.width*Math.cos(angle))+Math.abs(image.height*Math.sin(angle)))*image.scaleX;
+  const rotatedHeight=(Math.abs(image.width*Math.sin(angle))+Math.abs(image.height*Math.cos(angle)))*image.scaleY;
+  const fit=Math.min(1,PRINT_BASE_WIDTH*.8/rotatedWidth,PRINT_BASE_HEIGHT*.94/rotatedHeight);
+  if(Number.isFinite(fit)&&fit<1) image.scale(image.scaleX*fit);
   image.setCoords();
   const bounds=image.getBoundingRect(true,true);
   const minX=PRINT_SIDE_MARGIN, maxX=PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH;
@@ -1418,11 +1418,6 @@ function keepCustomerUploadOnShirt(image){
   if(dx||dy) image.set({left:image.left+dx,top:image.top+dy});
   image.setCoords();
 }
-const uploadQuickControls=document.createElement("div");
-uploadQuickControls.className="customer-upload-quick-controls";
-uploadQuickControls.hidden=true;
-uploadQuickControls.innerHTML='<button type="button" data-step="-10" aria-label="Bild verkleinern">−</button><span>Bildgröße</span><button type="button" data-step="10" aria-label="Bild vergrößern">+</button><button type="button" data-center aria-label="Bild mittig platzieren">Mittig</button>';
-document.querySelector(".mockup-stage")?.appendChild(uploadQuickControls);
 function resizeCustomerUpload(percent){
   const image=currentUploadedMotif();
   if(!image) return;
@@ -1431,47 +1426,26 @@ function resizeCustomerUpload(percent){
   keepCustomerUploadOnShirt(image);
   canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
 }
-uploadQuickControls.addEventListener("click",event=>{
-  const button=event.target.closest("button");
-  if(!button)return;
-  const image=currentUploadedMotif();
-  if(!image)return;
-  if(button.hasAttribute("data-center")){
-    centerCustomerUpload(image);keepCustomerUploadOnShirt(image);
-    canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
-  }else{
-    const current=100*image.scaleX/(image.uploadBaseScale||customerUploadMaxScale(image));
-    resizeCustomerUpload(current+Number(button.dataset.step));
-  }
-});
+function rotateCustomerUpload(degrees){
+  const image=currentUploadedMotif();if(!image)return;
+  image.rotate(((degrees+180)%360+360)%360-180);
+  keepCustomerUploadOnShirt(image);
+  canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
+}
+function removeCustomerUpload(){
+  const image=currentUploadedMotif();if(!image)return;
+  canvas.remove(image);canvas.discardActiveObject();canvas.requestRenderAll();
+  saveCurrentView();syncCustomerUploadControls();
+  if(FEATURES.previewMode==="dual") void renderDualPreview();
+}
 function syncCustomerUploadControls(){
   const section=document.querySelector(".customer-upload-section");
   if(!section) return;
   const image=currentUploadedMotif();
-  const tools=section.querySelector(".customer-upload-tools");
   const filename=section.querySelector(".upload-file-name");
-  if(tools) tools.hidden=!image;
   if(filename){filename.hidden=!image;filename.textContent=image?.motifName||"";}
-  uploadQuickControls.hidden=!image;
-  const slider=section.querySelector("#customerUploadSize");
-  if(slider && image){
-    const value=Math.round(100*image.scaleX/(image.uploadBaseScale||image.scaleX||1));
-    slider.value=String(Math.max(Number(slider.min),Math.min(Number(slider.max),value)));
-    const output=section.querySelector("output[for=customerUploadSize]");
-    if(output) output.textContent=`${slider.value} %`;
-  }
   document.body.classList.toggle("has-editable-upload",!!image);
 }
-const uploadSection=customerLogoUpload?.closest(".customer-upload-section");
-uploadSection?.querySelector("#customerUploadSize")?.addEventListener("input",event=>{
-  resizeCustomerUpload(Number(event.target.value));
-});
-uploadSection?.querySelector(".customer-upload-center")?.addEventListener("click",()=>{
-  const image=currentUploadedMotif();
-  if(!image)return;
-  centerCustomerUpload(image);keepCustomerUploadOnShirt(image);
-  canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
-});
 let pendingUploadPoint=null;
 function handleCustomerUploadFile(file,dropPoint=null){
   if (!file) return;
@@ -1743,18 +1717,31 @@ function toggleDesignMenu(tool){
     });
     if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Vereinslogos vorhanden.";designMenu.appendChild(hint)}
   }else if(tool==="photo"){
-    designMenu.appendChild(menuOption("Bild hochladen",()=>{closeDesignMenu();customerLogoUpload?.click()}));
+    designMenu.appendChild(menuOption("Bild hochladen / ersetzen",()=>{closeDesignMenu();customerLogoUpload?.click()}));
     const upload=currentUploadedMotif();
     if(upload){
       const label=document.createElement("label");label.className="editor-menu-field";label.textContent="Bildgröße";
       const slider=document.createElement("input");slider.type="range";slider.min="25";slider.max="100";
-      slider.value=String(document.getElementById("customerUploadSize")?.value||50);
-      slider.addEventListener("input",()=>resizeCustomerUpload(Number(slider.value)));
-      label.appendChild(slider);designMenu.appendChild(label);
+      slider.value=String(Math.max(25,Math.min(100,Math.round(100*upload.scaleX/(upload.uploadBaseScale||customerUploadMaxScale(upload))))));
+      const sizeValue=document.createElement("output");sizeValue.textContent=`${slider.value} %`;
+      slider.addEventListener("input",()=>{resizeCustomerUpload(Number(slider.value));sizeValue.textContent=`${slider.value} %`});
+      label.append(slider,sizeValue);designMenu.appendChild(label);
+      const rotateLabel=document.createElement("label");rotateLabel.className="editor-menu-field";rotateLabel.textContent="Drehung";
+      const rotation=document.createElement("input");rotation.type="range";rotation.min="-180";rotation.max="180";rotation.value=String(Math.round(upload.angle||0));
+      const angleValue=document.createElement("output");angleValue.textContent=`${rotation.value}°`;
+      rotation.addEventListener("input",()=>{rotateCustomerUpload(Number(rotation.value));angleValue.textContent=`${rotation.value}°`});
+      rotateLabel.append(rotation,angleValue);designMenu.appendChild(rotateLabel);
+      const actions=document.createElement("div");actions.className="editor-menu-colors";
+      actions.append(
+        menuOption("↶ −15°",()=>{rotateCustomerUpload((currentUploadedMotif()?.angle||0)-15);rotation.value=String(Math.round(currentUploadedMotif()?.angle||0));angleValue.textContent=`${rotation.value}°`}),
+        menuOption("↷ +15°",()=>{rotateCustomerUpload((currentUploadedMotif()?.angle||0)+15);rotation.value=String(Math.round(currentUploadedMotif()?.angle||0));angleValue.textContent=`${rotation.value}°`})
+      );designMenu.appendChild(actions);
       designMenu.appendChild(menuOption("Mittig platzieren",()=>{
         const image=currentUploadedMotif();if(image){centerCustomerUpload(image);keepCustomerUploadOnShirt(image);canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls()}
         closeDesignMenu();
       }));
+      const remove=menuOption("Bild entfernen",()=>{removeCustomerUpload();closeDesignMenu()});
+      remove.classList.add("danger");designMenu.appendChild(remove);
     }
   }else if(tool==="text"){
     const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=80;

@@ -6022,3 +6022,35 @@ html body .editor-tool-menu p{margin:2px 0;font-size:12px;color:#687381}
     top:calc(100% + 6px);right:0;left:0;width:100%;max-height:45vh;
   }
 }
+
+/* v30.3.176: mehr Platz für das Textil; Shirt und Druckbereich skalieren zusammen. */
+@media(min-width:901px){
+  html body .workspace,
+  html body .workspace.has-color-rail{
+    align-items:start!important;
+    align-content:start!important;
+    min-height:calc(100vh - 120px)!important;
+    overflow:visible!important;
+  }
+  html body .workspace .mockup-stage,
+  html body .workspace.has-color-rail .mockup-stage{
+    width:min(760px,76vh,100%)!important;
+    max-width:100%!important;
+    align-self:start!important;
+    margin:0 auto!important;
+  }
+  html body .workspace .editor-dnd-rail{margin-top:0!important}
+}
+@media(max-width:900px){
+  html body .workspace .mockup-stage,
+  html body .workspace.has-color-rail .mockup-stage{
+    width:100%!important;
+    max-width:100%!important;
+  }
+}
+html body .editor-tool-menu .editor-menu-field output{
+  justify-self:end;color:#765a16;font-size:12px;font-variant-numeric:tabular-nums;
+}
+html body .editor-tool-menu .editor-menu-option.danger{
+  color:#a52b29;border-color:#edc9c7;background:#fff9f8;
+}
