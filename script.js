@@ -1410,7 +1410,19 @@ async function recolorActiveMotif(color, label) {
   currentMotifColorLabel = label;
   currentMotifColorName.textContent = label;
   updateActiveMotifColorButton(color, label);
+  if (customTextColor) customTextColor.value = color;
+  const selectedText = getActiveTextObject();
+  const texts = selectedText ? [selectedText] : canvas.getObjects().filter(obj => obj.motifKind === "text");
+  texts.forEach(text => {
+    text.set({ fill: color, motifColor: color, motifColorLabel: label });
+    updateTextStyleControls(text);
+  });
+  if (texts.length) {
+    canvas.requestRenderAll();
+    saveCurrentView();
+  }
   if (FEATURES.previewMode === "dual") await renderDualPreview();
+  if (selectedText) return;
 
   // Die Farbe gilt für das Motiv auf der gerade angezeigten Druckseite.
   const object = canvas.getObjects().find(obj => obj && obj.motifSrc && obj.type === "image" && obj.motifKind !== "upload");
@@ -1440,47 +1452,6 @@ motifColorButtons.forEach(button => button.addEventListener("click", () => {
 
 const customerLogoFiles = new Map();
 const customerLogoUpload = document.getElementById("customerLogoUpload");
-function trimTransparentUpload(image){
-  const source=image.getElement?.();
-  const width=source?.naturalWidth||source?.width||0;
-  const height=source?.naturalHeight||source?.height||0;
-  if(!width||!height)return;
-  try{
-    const sample=document.createElement("canvas");
-    const ratio=Math.min(1,640/Math.max(width,height));
-    sample.width=Math.max(1,Math.round(width*ratio));
-    sample.height=Math.max(1,Math.round(height*ratio));
-    const context=sample.getContext("2d",{willReadFrequently:true});
-    context.drawImage(source,0,0,sample.width,sample.height);
-    const pixels=context.getImageData(0,0,sample.width,sample.height).data;
-    let minX=sample.width,minY=sample.height,maxX=-1,maxY=-1;
-    for(let y=0;y<sample.height;y++)for(let x=0;x<sample.width;x++){
-      if(pixels[(y*sample.width+x)*4+3]<16)continue;
-      minX=Math.min(minX,x);minY=Math.min(minY,y);
-      maxX=Math.max(maxX,x);maxY=Math.max(maxY,y);
-    }
-    if(maxX<0 || (minX===0&&minY===0&&maxX===sample.width-1&&maxY===sample.height-1))return;
-    const cropX=Math.floor(minX*width/sample.width);
-    const cropY=Math.floor(minY*height/sample.height);
-    const cropW=Math.min(width-cropX,Math.ceil((maxX-minX+1)*width/sample.width));
-    const cropH=Math.min(height-cropY,Math.ceil((maxY-minY+1)*height/sample.height));
-    if(cropW>0&&cropH>0)image.set({cropX,cropY,width:cropW,height:cropH});
-  }catch(error){console.warn("Transparenter Bildrand konnte nicht ermittelt werden",error);}
-}
-function createCustomerUploadPreview(image){
-  const source=image.getElement?.();
-  const width=Math.max(1,Math.round(image.width||0));
-  const height=Math.max(1,Math.round(image.height||0));
-  if(!source||!width||!height)throw new Error("Ungültige Bildabmessungen");
-  // Zusätzlich zur Fabric-Skalierung die Bilddaten selbst begrenzen: So kann
-  // ein Handyfoto nie in Originalauflösung die ganze Textilvorschau überdecken.
-  const ratio=Math.min(1,160/width,160/height);
-  const preview=document.createElement("canvas");
-  preview.width=Math.max(1,Math.round(width*ratio));
-  preview.height=Math.max(1,Math.round(height*ratio));
-  preview.getContext("2d").drawImage(source,image.cropX||0,image.cropY||0,width,height,0,0,preview.width,preview.height);
-  return preview.toDataURL("image/png");
-}
 function restoreUploadedEditing(image){
   image.set({selectable:true,evented:true,hasControls:true,hasBorders:true,
     hoverCursor:"move",moveCursor:"move"});
@@ -1584,16 +1555,15 @@ function handleCustomerUploadFile(file,dropPoint=null){
     fabric.Image.fromURL(reader.result, function(original) {
       if (!original?.width || !original.height) { alert("Die Bilddatei konnte nicht geöffnet werden."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
       try {
-        trimTransparentUpload(original);
-        const previewUrl=createCustomerUploadPreview(original);
-        fabric.Image.fromURL(previewUrl, function(image) {
-          if (!image?.width || !image.height) { alert("Die Bildvorschau konnte nicht geöffnet werden."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
+        // Originalquelle behalten; nur die Darstellung auf dem Textil skalieren.
+        const image = original;
           if (FEATURES.motifMode !== "mixed") canvas.clear();
           const scale=Math.min(PRINT_BASE_WIDTH*.8/image.width,PRINT_BASE_HEIGHT*.94/image.height);
           image.set({
             left:CUSTOMER_UPLOAD_CENTER_X,top:CUSTOMER_UPLOAD_CENTER_Y,
             originX:"center",originY:"center",scaleX:scale,scaleY:scale,
-            motifId:"customer-upload",motifSrc:reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
+            motifId:"customer-upload",motifSrc:reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale,
+            objectCaching:false
           });
           if(dropPoint){
             image.setPositionByOrigin(new fabric.Point(dropPoint.x,dropPoint.y),"center","center");
@@ -1612,7 +1582,6 @@ function handleCustomerUploadFile(file,dropPoint=null){
           syncCustomerUploadControls();
           if(FEATURES.previewMode==="dual") void renderDualPreview();
           if(customerLogoUpload) customerLogoUpload.value="";
-        });
       } catch(error) {
         console.error("Bildvorschau:",error);
         alert("Die Bildvorschau konnte nicht erstellt werden. Bitte eine andere Bilddatei auswählen.");
@@ -1975,7 +1944,7 @@ designTools.forEach(button=>{
   const tool=button.dataset.designTool;
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
     || (tool==="logo" && FEATURES.showClubLogos===false) || (tool==="initials"&&!FEATURES.allowInitials)
-    || (tool==="printColor"&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
+    || (tool==="printColor"&&!FEATURES.allowText&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
     || tool==="product";
 });
 function printPointAt(clientX,clientY){
