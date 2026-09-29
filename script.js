@@ -740,6 +740,30 @@ function renderProductSelector() {
     productSwitch.appendChild(btn);
   });
   updateProductPriceLabel();
+  renderTextileIconRail();
+}
+function renderTextileIconRail(){
+  const host=document.querySelector(".textile-icon-rail");if(!host)return;
+  host.replaceChildren();
+  const basic='<path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-2c-1 4-9 4-10 0Z"/>';
+  const long='<path d="m10 7-6 4-2 18 6 1 4-14v15h16V16l4 14 6-1-2-18-6-4-5-2c-1 4-9 4-10 0Z"/>';
+  const hoodie=long+'<path d="M14 7c0-9 12-9 12 0l-6 5Z"/><path d="M15 24h10v5H15Z"/>';
+  const polo=basic+'<path d="m14 5 6 6 6-6M20 11v8"/>';
+  const sport=basic+'<path d="m10 9 5 7M30 9l-5 7"/>';
+  PRODUCTS.forEach(product=>{
+    const source=Array.from(productSwitch?.querySelectorAll(".product-btn")||[]).find(button=>button.dataset.product===product.id);
+    const name=source?.querySelector(".product-btn-name")?.textContent||product.name||product.id;
+    const id=product.id;
+    const shape=id==="hoodie"?hoodie:id==="polo"?polo:["sport","jc001"].includes(id)?sport:["sweatshirt","sweat","bcwu01w"].includes(id)?long:basic;
+    const button=document.createElement("button");button.type="button";button.className="textile-icon-button";
+    button.dataset.product=id;button.title=name;button.setAttribute("aria-label",name);
+    button.classList.toggle("active",id===currentProductId);button.setAttribute("aria-pressed",String(id===currentProductId));
+    const icon=document.createElementNS("http://www.w3.org/2000/svg","svg");icon.setAttribute("viewBox","0 0 40 36");icon.setAttribute("aria-hidden","true");icon.innerHTML=shape;
+    const label=document.createElement("span");label.textContent=name;
+    button.append(icon,label);
+    button.addEventListener("click",()=>{source?.click();renderTextileIconRail()});
+    host.appendChild(button);
+  });
 }
 let productSelectionRequest=0;
 // Ein gemeinsamer Handler bleibt auch nach einem Neuaufbau der Schaltflächen aktiv.
@@ -757,6 +781,7 @@ productSwitch?.addEventListener("click", async event => {
     item.classList.toggle("active",active);
     item.setAttribute("aria-pressed",String(active));
   });
+  renderTextileIconRail();
   updateProductPriceLabel();
   updateInitialsOnCanvas();
   try {
@@ -1894,7 +1919,7 @@ designTools.forEach(button=>{
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
     || (tool==="logo" && FEATURES.showClubLogos===false) || (tool==="initials"&&!FEATURES.allowInitials)
     || (tool==="printColor"&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
-    || (tool==="product"&&PRODUCTS.length<=1);
+    || tool==="product";
 });
 function printPointAt(clientX,clientY){
   const rect=printDropZone.getBoundingClientRect();
@@ -2708,17 +2733,23 @@ window.dockShirtColorRail=function(){
   const workspace=document.querySelector(".workspace");
   const section=document.querySelector(".color-section");
   if(!workspace||!section) return;
+  let leftRail=workspace.querySelector(".preview-left-rail");
+  if(!leftRail){
+    leftRail=document.createElement("aside");leftRail.className="preview-left-rail";leftRail.setAttribute("aria-label","Textilien und Textilfarben");
+    const icons=document.createElement("nav");icons.className="textile-icon-rail";icons.setAttribute("aria-label","Textil wählen");
+    leftRail.appendChild(icons);workspace.insertBefore(leftRail,workspace.firstChild);
+  }
+  if(section.parentElement!==leftRail)leftRail.appendChild(section);
+  renderTextileIconRail();
+  workspace.classList.add("has-color-rail");
   if(FEATURES.showShirtColorPicker===false){
     section.hidden=true;
-    section.classList.remove("color-rail");
-    workspace.classList.remove("has-color-rail");
     return;
   }
   section.hidden=false;
   section.removeAttribute("hidden");
   section.classList.add("color-rail");
   workspace.classList.add("has-color-rail");
-  if(section.parentElement!==workspace) workspace.insertBefore(section, workspace.firstChild);
   const host=section.querySelector(".shirt-colors");
   if(!host) return;
   const existing=host.querySelectorAll(".shirt-color");

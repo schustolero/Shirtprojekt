@@ -6071,3 +6071,57 @@ html body .editor-tool-menu .editor-print-colors .editor-menu-option.active{
 html body .app #productSection,
 html body .app .customer-upload-section,
 html body .app .text-section{display:none!important}
+/* v30.3.182: Textil-Icons links, geometrisch runde Farbfelder. */
+html body .workspace .preview-left-rail{
+  grid-column:1!important;grid-row:1!important;display:flex;align-items:flex-start;
+  gap:8px;width:104px;align-self:start;
+}
+html body .workspace .textile-icon-rail{display:flex;flex-direction:column;gap:6px;width:48px;flex:0 0 48px}
+html body .workspace .textile-icon-button{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
+  width:48px;min-height:54px;padding:4px 2px;border:1px solid #dbe1e8;border-radius:10px;
+  background:#fff;color:#485563;cursor:pointer;touch-action:manipulation;
+}
+html body .workspace .textile-icon-button svg{width:30px;height:28px;fill:#eef1f4;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round}
+html body .workspace .textile-icon-button span{font-size:9px;font-weight:700;line-height:1.2}
+html body .workspace .textile-icon-button.active{border-color:#bf9824;background:#fff8e4;color:#806316;box-shadow:0 0 0 1px #bf9824}
+html body .workspace .preview-left-rail .color-section{
+  flex:0 0 48px!important;width:48px!important;min-width:48px!important;max-width:48px!important;
+  align-self:flex-start!important;max-height:none!important;height:auto!important;padding:0!important;
+}
+html body .workspace .preview-left-rail .color-section[hidden]{display:none!important}
+html body .workspace .preview-left-rail .shirt-colors{
+  width:48px!important;min-width:48px!important;max-width:48px!important;
+  align-items:center!important;gap:7px!important;padding:5px 4px!important;
+  max-height:min(68vh,650px)!important;overflow-x:hidden!important;overflow-y:auto!important;
+  mask-image:none!important;-webkit-mask-image:none!important;scrollbar-gutter:auto!important;
+}
+html body .workspace .preview-left-rail .shirt-color{
+  display:block!important;box-sizing:border-box!important;flex:0 0 30px!important;
+  width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;
+  max-width:30px!important;max-height:30px!important;aspect-ratio:1!important;
+  padding:0!important;margin:0!important;border:1px solid rgba(25,36,50,.3)!important;
+  border-radius:50%!important;background:var(--swatch,#888)!important;
+  box-shadow:0 0 0 2px #fff!important;
+}
+html body .workspace .preview-left-rail .shirt-color::before,
+html body .workspace .preview-left-rail .shirt-color::after,
+html body .workspace .preview-left-rail .shirt-colors::after{display:none!important;content:none!important}
+html body .workspace .preview-left-rail .shirt-color.active{box-shadow:0 0 0 2px #fff,0 0 0 4px #bf9824!important}
+html body .workspace .preview-left-rail .shirt-color[hidden]{display:none!important}
+html body .workspace .preview-left-rail .shirt-color>*{display:none!important}
+@media(min-width:901px){
+  html body .workspace,html body .workspace.has-color-rail{grid-template-columns:104px minmax(0,1fr) 154px!important}
+}
+@media(max-width:900px){
+  html body .workspace,html body .workspace.has-color-rail{grid-template-rows:auto auto auto!important}
+  html body .workspace .preview-left-rail{display:contents}
+  html body .workspace .textile-icon-rail{
+    grid-column:1/-1!important;grid-row:1!important;flex-direction:row;
+    width:100%;justify-content:center;gap:7px;margin-bottom:10px;
+  }
+  html body .workspace .preview-left-rail .color-section{grid-column:1!important;grid-row:2!important}
+  html body .workspace .mockup-stage,html body .workspace.has-color-rail .mockup-stage{grid-row:2!important}
+  html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .editor-dnd-rail{grid-row:3!important}
+  html body .workspace .preview-left-rail .shirt-colors{max-height:46vh!important}
+}
