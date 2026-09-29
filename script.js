@@ -1861,7 +1861,7 @@ const textFontChoices=[
   {name:"Rubik Wet Paint",group:"display",family:"Rubik Wet Paint"},
   {name:"Lora",group:"serif",family:"Lora"}
 ];
-let textFontGroup="all",textMode="classic",textFontList=false,textPlacementPoint=null,textEditingObject=null;
+let textPlacementPoint=null,textEditingObject=null;
 function closeTextDialog(){if(textDialog?.open)textDialog.close()}
 function selectTextFont(choice){
   if(customTextFont){
@@ -1884,11 +1884,8 @@ function selectTextFont(choice){
 }
 function renderTextFontGallery(){
   const gallery=document.getElementById("fontGallery");if(!gallery)return;
-  gallery.replaceChildren();gallery.classList.toggle("is-list",textFontList);
-  gallery.setAttribute("aria-labelledby",textMode==="classic"?"classicTextTab":"graphicTextTab");
-  const list=textFontChoices.filter(choice=>(textFontGroup==="all"||choice.group===textFontGroup)
-    &&(textMode==="classic"||["display","script"].includes(choice.group)));
-  list.forEach(choice=>{
+  gallery.replaceChildren();
+  textFontChoices.forEach(choice=>{
     const card=document.createElement("button");card.type="button";card.className="text-font-card";
     card.classList.toggle("selected",customTextFont?.value===choice.family);
     card.setAttribute("aria-pressed",String(customTextFont?.value===choice.family));
@@ -1908,10 +1905,6 @@ function openTextDialog(point=null){
       customTextFont.add(new Option(textEditingObject.fontFamily,textEditingObject.fontFamily));
     customTextFont.value=textEditingObject.fontFamily;
   }
-  textMode="classic";textFontGroup="all";
-  document.getElementById("classicTextTab").setAttribute("aria-selected","true");
-  document.getElementById("graphicTextTab").setAttribute("aria-selected","false");
-  document.querySelectorAll("#fontFilters button").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.group==="all")));
   document.getElementById("textDialogAdd").textContent=textEditingObject?"Text übernehmen":"Text hinzufügen";
   renderTextFontGallery();if(!textDialog.open)textDialog.showModal();
   textDialogInput.focus();
@@ -1929,30 +1922,6 @@ document.getElementById("textDialogAdd")?.addEventListener("click",()=>{
   }else addCustomerText(value,textPlacementPoint);
   textEditingObject=getActiveTextObject();
   if(customTextInput)customTextInput.value="";closeTextDialog();
-});
-const fontFilters=document.getElementById("fontFilters");
-[["all","Alle","▦"],["serif","Serif","S"],["sans","Klar","S"],["script","Handschrift","𝒲"],["display","Markant","T"]].forEach(([group,label,icon])=>{
-  const button=document.createElement("button");button.type="button";button.dataset.group=group;
-  button.title=label;button.setAttribute("aria-label",label);button.setAttribute("aria-pressed",String(group==="all"));button.textContent=icon;
-  button.addEventListener("click",()=>{
-    textFontGroup=group;fontFilters.querySelectorAll("button").forEach(item=>item.setAttribute("aria-pressed",String(item===button)));
-    renderTextFontGallery();
-  });fontFilters.appendChild(button);
-});
-[["classicTextTab","classic"],["graphicTextTab","graphic"]].forEach(([id,mode])=>{
-  document.getElementById(id)?.addEventListener("click",()=>{
-    textMode=mode;document.getElementById("classicTextTab").setAttribute("aria-selected",String(mode==="classic"));
-    document.getElementById("graphicTextTab").setAttribute("aria-selected",String(mode==="graphic"));
-    if(mode==="graphic"&&!(["all","display","script"].includes(textFontGroup))){
-      textFontGroup="all";
-      fontFilters.querySelectorAll("button").forEach(item=>item.setAttribute("aria-pressed",String(item.dataset.group==="all")));
-    }
-    renderTextFontGallery();
-  });
-});
-document.getElementById("fontViewToggle")?.addEventListener("click",event=>{
-  textFontList=!textFontList;event.currentTarget.setAttribute("aria-label",textFontList?"Kachelansicht":"Listenansicht");
-  renderTextFontGallery();
 });
 function toggleDesignMenu(tool){
   if(tool==="photo"){closeDesignMenu();openPhotoDialog();return;}
@@ -2822,6 +2791,7 @@ initializeFixedPrints()
 window.dockShirtColorRail=function(){
   const workspace=document.querySelector(".workspace");
   const section=document.querySelector(".color-section");
+  const view=document.querySelector(".view-section");
   if(!workspace||!section) return;
   let leftRail=workspace.querySelector(".preview-left-rail");
   if(!leftRail){
@@ -2830,6 +2800,7 @@ window.dockShirtColorRail=function(){
     leftRail.appendChild(icons);workspace.insertBefore(leftRail,workspace.firstChild);
   }
   if(section.parentElement!==leftRail)leftRail.appendChild(section);
+  if(view&&view.parentElement!==leftRail)leftRail.appendChild(view);
   renderTextileIconRail();
   workspace.classList.add("has-color-rail");
   if(FEATURES.showShirtColorPicker===false){
