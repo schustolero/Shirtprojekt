@@ -2892,6 +2892,14 @@ saveShopBtn.addEventListener("click",async()=>{
     refresh();
   }
 
+  // Stammdaten in einer Zeile; Sicherung direkt darunter statt über dem Shop.
+  const basicBody=left?.querySelector(".v2853-basic-card .v2853-card-body");
+  const nameLogoRow=basicBody?.querySelector(".v2854-name-logo-row");
+  const emailRow=document.getElementById("shopEmail")?.closest(".v32-order-email");
+  if(nameLogoRow && emailRow) nameLogoRow.appendChild(emailRow);
+  const backupPanel=document.querySelector("#dashboard > .admin-backup-panel");
+  if(basicBody && nameLogoRow && backupPanel) nameLogoRow.after(backupPanel);
+
   left?.querySelector(".v2853-basic-card")?.classList.add("v32-view-shop");
   left?.querySelector(".v2853-appearance-card")?.classList.add("v32-view-design");
   // Die Spalte selbst bleibt sichtbar; die einzelnen Karten steuern ihre Ansichten.

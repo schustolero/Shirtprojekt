@@ -7548,3 +7548,38 @@ html body.v32-admin #shopForm .v32-display-compact .display-grid{gap:6px!importa
 .admin-backup-content .ghost-btn{padding:7px 11px;font-size:12px;white-space:nowrap}
 #exportFirestoreStatus{color:#244b44;font-weight:650}
 @media(max-width:620px){.admin-backup-content{align-items:flex-start;flex-direction:column;gap:7px}}
+
+/* Stammdaten: Name, Shop-Logo und Bestelladresse nebeneinander. */
+html body.v32-admin #shopForm .v2854-name-logo-row{
+  box-sizing:border-box!important;display:grid!important;
+  grid-template-columns:minmax(170px,1fr) minmax(420px,2.2fr) minmax(190px,1fr)!important;
+  align-items:end!important;gap:10px!important;width:100%!important;
+  min-width:0!important;margin:0 0 5px!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .v2853-name,
+html body.v32-admin #shopForm .v2854-name-logo-row > .v2854-basic-logo,
+html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email{
+  box-sizing:border-box!important;grid-column:auto!important;grid-row:auto!important;
+  min-width:0!important;width:100%!important;margin:0!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email > summary{
+  min-height:38px!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email{
+  border:1px solid #e2e7ee!important;border-radius:8px!important;background:#fff!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row .v32-order-email-value{
+  text-align:left!important;
+}
+html body.v32-admin #shopForm .admin-backup-panel{
+  box-sizing:border-box!important;margin:0 0 8px!important;
+  padding:0 10px!important;box-shadow:none!important;
+}
+html body.v32-admin #shopForm .admin-backup-panel summary{
+  padding:8px 0!important;font-size:11px!important;
+}
+@media(max-width:1150px){
+  html body.v32-admin #shopForm .v2854-name-logo-row{
+    grid-template-columns:minmax(0,1fr)!important;gap:7px!important;
+  }
+}
