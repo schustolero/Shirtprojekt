@@ -7583,3 +7583,16 @@ html body.v32-admin #shopForm .admin-backup-panel summary{
     grid-template-columns:minmax(0,1fr)!important;gap:7px!important;
   }
 }
+
+/* Shop-Logo steht unmittelbar rechts neben dem Auswahlknopf. */
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls{
+  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+  justify-content:flex-start!important;gap:7px!important;min-width:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls .shop-logo-file{
+  order:1!important;flex:0 0 auto!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls > strong{
+  order:2!important;grid-column:auto!important;margin:0!important;
+  white-space:nowrap!important;font-size:11px!important;
+}
