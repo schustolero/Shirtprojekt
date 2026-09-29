@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bevan&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Dosis:wght@700&family=Lobster&family=Lora:wght@700&family=Nunito:wght@800&family=Oswald:wght@700&family=Pacifico&family=Permanent+Marker&family=Roboto+Slab:wght@900&family=Rubik+Wet+Paint&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=30.3.190">
+  <link rel="stylesheet" href="/style.css?v=30.3.191">
   <script>
     (function(){
       try{
@@ -124,12 +124,12 @@
 
 <style id="preview-rail-layout">
 html body .workspace #previewLeftRail{grid-column:1!important;grid-row:1!important;display:grid!important;grid-template-columns:52px 52px!important;align-items:start!important;gap:8px!important;width:112px!important;align-self:start!important;}
-html body #previewLeftRail .textile-icon-rail{display:grid!important;grid-template-columns:52px!important;grid-auto-rows:58px!important;gap:7px!important;width:52px!important;flex:0 0 52px!important;}
+html body #previewLeftRail .textile-icon-rail{display:grid!important;grid-column:1!important;grid-row:1!important;grid-template-columns:52px!important;grid-auto-rows:58px!important;gap:7px!important;width:52px!important;flex:0 0 52px!important;}
 html body #previewLeftRail .textile-icon-button{box-sizing:border-box!important;display:grid!important;grid-template-rows:32px 12px!important;align-content:center!important;justify-items:center!important;gap:3px!important;width:52px!important;min-width:52px!important;max-width:52px!important;height:58px!important;min-height:58px!important;max-height:58px!important;padding:4px!important;margin:0!important;border:1px solid #dbe1e8!important;border-radius:10px!important;background:#fff!important;color:#485563!important;cursor:pointer!important;touch-action:manipulation!important;}
 html body #previewLeftRail .textile-icon-button svg{display:block!important;width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important;fill:#eef1f4!important;stroke:currentColor!important;stroke-width:1.5!important;stroke-linejoin:round!important;}
 html body #previewLeftRail .textile-icon-button span{display:block!important;font:700 9px/12px system-ui,sans-serif!important;white-space:nowrap!important;}
 html body #previewLeftRail .textile-icon-button.active{border-color:#bf9824!important;background:#fff8e4!important;color:#806316!important;box-shadow:0 0 0 1px #bf9824!important;}
-html body #previewLeftRail .color-section{flex:0 0 52px!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-self:flex-start!important;max-height:none!important;height:auto!important;padding:0!important;margin:0!important;}
+html body #previewLeftRail .color-section{grid-column:2!important;grid-row:1!important;flex:0 0 52px!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-self:flex-start!important;max-height:none!important;height:auto!important;padding:0!important;margin:0!important;}
 html body #previewLeftRail .color-section[hidden]{display:none!important;}
 html body #previewLeftRail .shirt-colors{display:flex!important;flex-direction:column!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-items:center!important;gap:5px!important;padding:3px 4px!important;max-height:min(68vh,650px)!important;overflow-x:hidden!important;overflow-y:auto!important;mask-image:none!important;-webkit-mask-image:none!important;scrollbar-gutter:auto!important;}
 html body #previewLeftRail .shirt-color{box-sizing:border-box!important;display:block!important;flex:0 0 36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;aspect-ratio:1!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;transform:none!important;border-radius:0!important;cursor:pointer!important;}
@@ -541,7 +541,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.190";
+      app.src="/script.js?v=30.3.191";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
