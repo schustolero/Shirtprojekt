@@ -437,6 +437,8 @@ const PRINT_HEADROOM = 135;
 const PRINT_CANVAS_WIDTH = 320;
 const PRINT_CANVAS_HEIGHT = 500;
 const PRINT_SIDE_MARGIN = 30;
+const CUSTOMER_UPLOAD_CENTER_X = PRINT_CANVAS_WIDTH / 2;
+const CUSTOMER_UPLOAD_CENTER_Y = PRINT_HEADROOM + PRINT_BASE_HEIGHT / 2;
 
 let canvas;
 try{
@@ -1393,6 +1395,48 @@ function clampCustomerUploadSize(image){
   const maximum=customerUploadMaxScale(image);
   if(image.scaleX>maximum || image.scaleY>maximum) image.scale(maximum);
 }
+function centerCustomerUpload(image){
+  image.setPositionByOrigin(new fabric.Point(CUSTOMER_UPLOAD_CENTER_X,CUSTOMER_UPLOAD_CENTER_Y),"center","center");
+  image.setCoords();
+}
+function keepCustomerUploadOnShirt(image){
+  if(image?.motifKind!=="upload") return;
+  clampCustomerUploadSize(image);
+  image.setCoords();
+  const bounds=image.getBoundingRect(true,true);
+  const minX=PRINT_SIDE_MARGIN, maxX=PRINT_SIDE_MARGIN+PRINT_BASE_WIDTH;
+  const minY=PRINT_HEADROOM, maxY=PRINT_HEADROOM+PRINT_BASE_HEIGHT;
+  const dx=bounds.left<minX ? minX-bounds.left : bounds.left+bounds.width>maxX ? maxX-bounds.left-bounds.width : 0;
+  const dy=bounds.top<minY ? minY-bounds.top : bounds.top+bounds.height>maxY ? maxY-bounds.top-bounds.height : 0;
+  if(dx||dy) image.set({left:image.left+dx,top:image.top+dy});
+  image.setCoords();
+}
+const uploadQuickControls=document.createElement("div");
+uploadQuickControls.className="customer-upload-quick-controls";
+uploadQuickControls.hidden=true;
+uploadQuickControls.innerHTML='<button type="button" data-step="-10" aria-label="Bild verkleinern">−</button><span>Bildgröße</span><button type="button" data-step="10" aria-label="Bild vergrößern">+</button><button type="button" data-center aria-label="Bild mittig platzieren">Mittig</button>';
+document.querySelector(".mockup-stage")?.appendChild(uploadQuickControls);
+function resizeCustomerUpload(percent){
+  const image=currentUploadedMotif();
+  if(!image) return;
+  const base=image.uploadBaseScale||customerUploadMaxScale(image);
+  image.scale(base*Math.max(25,Math.min(100,percent))/100);
+  keepCustomerUploadOnShirt(image);
+  canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
+}
+uploadQuickControls.addEventListener("click",event=>{
+  const button=event.target.closest("button");
+  if(!button)return;
+  const image=currentUploadedMotif();
+  if(!image)return;
+  if(button.hasAttribute("data-center")){
+    centerCustomerUpload(image);keepCustomerUploadOnShirt(image);
+    canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
+  }else{
+    const current=100*image.scaleX/(image.uploadBaseScale||customerUploadMaxScale(image));
+    resizeCustomerUpload(current+Number(button.dataset.step));
+  }
+});
 function syncCustomerUploadControls(){
   const section=document.querySelector(".customer-upload-section");
   if(!section) return;
@@ -1401,6 +1445,7 @@ function syncCustomerUploadControls(){
   const filename=section.querySelector(".upload-file-name");
   if(tools) tools.hidden=!image;
   if(filename){filename.hidden=!image;filename.textContent=image?.motifName||"";}
+  uploadQuickControls.hidden=!image;
   const slider=section.querySelector("#customerUploadSize");
   if(slider && image){
     const value=Math.round(100*image.scaleX/(image.uploadBaseScale||image.scaleX||1));
@@ -1412,18 +1457,13 @@ function syncCustomerUploadControls(){
 }
 const uploadSection=customerLogoUpload?.closest(".customer-upload-section");
 uploadSection?.querySelector("#customerUploadSize")?.addEventListener("input",event=>{
-  const image=currentUploadedMotif();
-  if(!image)return;
-  const base=image.uploadBaseScale||image.scaleX||1;
-  image.scale(base*Number(event.target.value)/100);
-  image.setCoords();canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();
-  syncCustomerUploadControls();
+  resizeCustomerUpload(Number(event.target.value));
 });
 uploadSection?.querySelector(".customer-upload-center")?.addEventListener("click",()=>{
   const image=currentUploadedMotif();
   if(!image)return;
-  image.set({left:PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31});
-  image.setCoords();canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();
+  centerCustomerUpload(image);keepCustomerUploadOnShirt(image);
+  canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
 });
 if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(event) {
   const file = event.target.files && event.target.files[0];
@@ -1452,10 +1492,11 @@ if (customerLogoUpload) customerLogoUpload.addEventListener("change", function(e
           if (FEATURES.motifMode !== "mixed") canvas.clear();
           const scale=customerUploadMaxScale(image);
           image.set({
-            left:PRINT_CANVAS_WIDTH/2,top:PRINT_HEADROOM+PRINT_BASE_HEIGHT*.31,
+            left:CUSTOMER_UPLOAD_CENTER_X,top:CUSTOMER_UPLOAD_CENTER_Y,
             originX:"center",originY:"center",scaleX:scale,scaleY:scale,
             motifId:"customer-upload",motifSrc:reader.result,motifName:file.name,motifKind:"upload",uploadBaseScale:scale
           });
+          centerCustomerUpload(image);
           restoreUploadedEditing(image);
           canvas.add(image);
           canvas.setActiveObject(image);
@@ -1666,12 +1707,17 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
 });
 
 canvas.on("object:scaling",function(event){
-  if(event.target?.motifKind==="upload") clampCustomerUploadSize(event.target);
+  if(event.target?.motifKind==="upload") keepCustomerUploadOnShirt(event.target);
+});
+canvas.on("object:moving",function(event){
+  if(event.target?.motifKind==="upload") keepCustomerUploadOnShirt(event.target);
 });
 canvas.on("object:modified", function(event) {
   const object = event.target;
   if (!object) return;
-  clampCustomerUploadSize(object);
+  if(object.motifKind==="upload"){
+    keepCustomerUploadOnShirt(object);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();return;
+  }
   object.setCoords();
   const bounds = object.getBoundingRect(true, true);
   let left = object.left, top = object.top;

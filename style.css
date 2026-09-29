@@ -5853,6 +5853,26 @@ html body .customer-upload-section .upload-file-name{
 }
 html body .customer-upload-section .upload-file-name[hidden]{display:none!important}
 
+/* Eigene Uploads: Größenänderung direkt an der Vorschau, auch ohne präzises Ziehen am Griff. */
+html body .mockup-stage .customer-upload-quick-controls{
+  position:absolute;z-index:85;right:6px;bottom:7px;
+  display:flex;align-items:center;gap:4px;padding:4px;
+  border:1px solid #d8dde4;border-radius:12px;
+  background:rgba(255,255,255,.96);box-shadow:0 2px 12px rgba(0,0,0,.12);
+  font:600 11px/1.2 system-ui,sans-serif;color:#252b34;
+}
+html body .mockup-stage .customer-upload-quick-controls[hidden]{display:none!important}
+html body .mockup-stage .customer-upload-quick-controls button{
+  min-width:36px;min-height:36px;padding:3px 7px;
+  border:1px solid #d8dde4;border-radius:8px;background:white;
+  color:#171b21;font:700 16px/1 system-ui,sans-serif;
+  touch-action:manipulation;cursor:pointer;
+}
+html body .mockup-stage .customer-upload-quick-controls button[data-center]{font-size:11px}
+@media(max-width:900px){
+  html body .mockup-stage .customer-upload-quick-controls{right:0;bottom:2px}
+}
+
 /* v30.3.156: untere Textilkante im mobilen Vorschaufeld freihalten. */
 @media(max-width:900px){
   html body .designer-area{
