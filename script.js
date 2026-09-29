@@ -1706,6 +1706,82 @@ if (addTextBtn && customTextInput) addTextBtn.addEventListener("click",()=>addCu
 const designRail=document.querySelector(".editor-dnd-rail");
 const printDropZone=document.getElementById("printZone");
 const designTools=designRail?.querySelectorAll("[data-design-tool]")||[];
+const designMenu=document.createElement("div");
+designMenu.id="editorToolMenu";
+designMenu.className="editor-tool-menu";
+designMenu.hidden=true;
+designRail?.appendChild(designMenu);
+let openDesignTool=null;
+function closeDesignMenu(){
+  openDesignTool=null;designMenu.hidden=true;designMenu.replaceChildren();
+  designTools.forEach(button=>button.setAttribute("aria-expanded","false"));
+}
+function menuOption(label,action,active=false){
+  const button=document.createElement("button");button.type="button";
+  button.className="editor-menu-option";button.textContent=label;
+  button.classList.toggle("active",active);button.addEventListener("click",action);
+  return button;
+}
+function toggleDesignMenu(tool){
+  if(openDesignTool===tool){closeDesignMenu();return;}
+  openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
+  designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
+  const title=document.createElement("strong");title.className="editor-menu-title";
+  title.textContent=({product:"Textil wählen",logo:"Vereinslogo wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen"})[tool]||"Auswahl";
+  designMenu.appendChild(title);
+  if(tool==="product"){
+    productSwitch?.querySelectorAll(".product-btn").forEach(source=>{
+      const name=source.querySelector(".product-btn-name")?.textContent||source.textContent;
+      const price=FEATURES.showPrices===false?"":` · ${source.dataset.price||""}`;
+      designMenu.appendChild(menuOption(name+price,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
+    });
+  }else if(tool==="logo"){
+    const section=document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])");
+    section?.querySelectorAll(".motif-btn").forEach(source=>{
+      const label=source.querySelector(".motif-label,.motif-name")?.textContent?.trim()||source.textContent.trim()||"Logo";
+      designMenu.appendChild(menuOption(label,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
+    });
+    if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Vereinslogos vorhanden.";designMenu.appendChild(hint)}
+  }else if(tool==="photo"){
+    designMenu.appendChild(menuOption("Bild hochladen",()=>{closeDesignMenu();customerLogoUpload?.click()}));
+    const upload=currentUploadedMotif();
+    if(upload){
+      const label=document.createElement("label");label.className="editor-menu-field";label.textContent="Bildgröße";
+      const slider=document.createElement("input");slider.type="range";slider.min="25";slider.max="100";
+      slider.value=String(document.getElementById("customerUploadSize")?.value||50);
+      slider.addEventListener("input",()=>resizeCustomerUpload(Number(slider.value)));
+      label.appendChild(slider);designMenu.appendChild(label);
+      designMenu.appendChild(menuOption("Mittig platzieren",()=>{
+        const image=currentUploadedMotif();if(image){centerCustomerUpload(image);keepCustomerUploadOnShirt(image);canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls()}
+        closeDesignMenu();
+      }));
+    }
+  }else if(tool==="text"){
+    const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=80;
+    input.placeholder="Dein Text";input.value=customTextInput?.value||"";
+    input.addEventListener("input",()=>{if(customTextInput)customTextInput.value=input.value});
+    const add=()=>{if(input.value.trim()){addCustomerText(input.value);closeDesignMenu()}};
+    input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();add()}});
+    designMenu.append(input,menuOption("Text hinzufügen",add));
+  }else if(tool==="initials"){
+    const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=3;
+    input.placeholder="ABC";input.setAttribute("aria-label","Initialen eingeben");
+    input.value=document.getElementById("initialsInput")?.value||"";
+    input.addEventListener("input",()=>{
+      input.value=input.value.toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+      const source=document.getElementById("initialsInput");
+      if(source){source.value=input.value;source.dispatchEvent(new Event("input",{bubbles:true}))}
+    });
+    designMenu.appendChild(input);
+    const colors=document.createElement("div");colors.className="editor-menu-colors";
+    ["white","black"].forEach(color=>colors.appendChild(menuOption(color==="white"?"○ Weiß":"● Schwarz",()=>{
+      document.querySelector(`#initialsPop [data-initials-color="${color}"]`)?.click();closeDesignMenu();
+    },getInitialsColor()===color)));
+    designMenu.appendChild(colors);
+  }
+}
+document.addEventListener("click",event=>{if(openDesignTool&&!designRail?.contains(event.target))closeDesignMenu()});
+document.addEventListener("keydown",event=>{if(event.key==="Escape"&&openDesignTool)closeDesignMenu()});
 designTools.forEach(button=>{
   const tool=button.dataset.designTool;
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
@@ -1740,9 +1816,11 @@ function useDesignTool(tool,point=null){
   }
 }
 designTools.forEach(button=>{
+  button.setAttribute("aria-controls","editorToolMenu");
+  button.setAttribute("aria-expanded","false");
   button.addEventListener("click",()=>{
     if(button.dataset.dragged==="true"){button.dataset.dragged="false";return;}
-    useDesignTool(button.dataset.designTool);
+    toggleDesignMenu(button.dataset.designTool);
   });
   button.addEventListener("dragstart",event=>{
     if(button.hidden){event.preventDefault();return;}
