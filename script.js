@@ -462,6 +462,81 @@ const currentMotifColorName = document.getElementById("currentMotifColorName");
 const designerStatus = document.getElementById("designerStatus");
 const printZone = document.getElementById("printZone");
 const workspace = document.querySelector(".workspace");
+// Auswahlrahmen für Kundentext: vier direkt bedienbare Eckgriffe.
+function renderTextControl(icon,small=false){
+  return function(ctx,left,top,_style,object){
+    const size=small?object.cornerSize*.32:object.cornerSize;
+    ctx.save();ctx.translate(left,top);
+    ctx.beginPath();ctx.arc(0,0,size/2,0,Math.PI*2);
+    ctx.fillStyle="#ffffff";ctx.fill();ctx.strokeStyle="#249ca9";
+    ctx.lineWidth=Math.max(.7,size*.025);ctx.stroke();
+    if(!small){
+      ctx.scale(size/28,size/28);ctx.strokeStyle="#33454a";ctx.fillStyle="#33454a";
+      ctx.lineWidth=1.5;ctx.lineCap="round";ctx.lineJoin="round";
+      ctx.beginPath();
+      if(icon==="move"){
+        ctx.moveTo(-7,0);ctx.lineTo(7,0);ctx.moveTo(0,-7);ctx.lineTo(0,7);
+        for(const [x,y,dx,dy] of [[-7,0,1,0],[7,0,-1,0],[0,-7,0,1],[0,7,0,-1]]){
+          ctx.moveTo(x+dx*3+dy*2,y+dy*3+dx*2);ctx.lineTo(x,y);ctx.lineTo(x+dx*3-dy*2,y+dy*3-dx*2);
+        }
+      }else if(icon==="rotate"){
+        ctx.arc(0,0,5.5,.45,Math.PI*1.85);
+        ctx.moveTo(5,-6);ctx.lineTo(5.5,-1);ctx.lineTo(.5,-2);
+      }else if(icon==="delete"){
+        ctx.moveTo(-5,-4);ctx.lineTo(-4,6);ctx.lineTo(4,6);ctx.lineTo(5,-4);
+        ctx.moveTo(-6,-4);ctx.lineTo(6,-4);ctx.moveTo(-2,-4);ctx.lineTo(-2,-7);ctx.lineTo(2,-7);ctx.lineTo(2,-4);
+        ctx.moveTo(-1.5,-1);ctx.lineTo(-1.5,3.5);ctx.moveTo(1.5,-1);ctx.lineTo(1.5,3.5);
+      }else{
+        ctx.moveTo(-6,6);ctx.lineTo(6,-6);ctx.moveTo(-6,1);ctx.lineTo(-6,6);ctx.lineTo(-1,6);
+        ctx.moveTo(1,-6);ctx.lineTo(6,-6);ctx.lineTo(6,-1);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  };
+}
+function sizeTextControls(object){
+  const width=canvas.upperCanvasEl?.getBoundingClientRect().width||canvas.width;
+  const ratio=Math.max(.2,width/canvas.width);
+  object.cornerSize=28/ratio;object.touchCornerSize=44/ratio;
+  Object.values(object.controls).forEach(control=>{
+    const size=control.isTextMidpoint?object.cornerSize*.32:object.cornerSize;
+    control.sizeX=control.sizeY=size;
+    control.touchSizeX=control.touchSizeY=object.touchCornerSize;
+  });
+  object.setCoords();
+}
+function configureTextControls(object){
+  if(object?.motifKind!=="text"||!fabric.Control)return;
+  const actions=fabric.controlsUtils;
+  object.set({hasControls:true,hasBorders:true,borderColor:"#249ca9",borderDashArray:[9,6],
+    borderScaleFactor:1.1,padding:6,transparentCorners:false,lockScalingFlip:true,
+    lockRotation:false,lockScalingX:false,lockScalingY:false,lockMovementX:false,lockMovementY:false});
+  const control=(x,y,icon,handler,action,cursor)=>new fabric.Control({x,y,
+    actionHandler:handler,actionName:action,cursorStyle:cursor,render:renderTextControl(icon)});
+  object.controls={
+    tl:control(-.5,-.5,"move",actions.dragHandler,"drag","move"),
+    tr:control(.5,-.5,"rotate",actions.rotationWithSnapping,"rotate","crosshair"),
+    bl:new fabric.Control({x:-.5,y:.5,cursorStyle:"pointer",render:renderTextControl("delete"),
+      mouseUpHandler:(_event,transform)=>{
+        const target=transform.target;target.canvas?.remove(target);
+        canvas.discardActiveObject();canvas.requestRenderAll();saveCurrentView();return true;
+      }}),
+    br:control(.5,.5,"scale",actions.scalingEqually,"scale","nwse-resize")
+  };
+  for(const [key,x,y] of [["mt",0,-.5],["mb",0,.5],["ml",-.5,0],["mr",.5,0]]){
+    object.controls[key]=new fabric.Control({x,y,isTextMidpoint:true,actionName:"scale",
+      actionHandler:actions.scalingEqually,cursorStyle:"nwse-resize",render:renderTextControl("scale",true)});
+  }
+  sizeTextControls(object);
+}
+canvas.on("object:added",event=>configureTextControls(event.target));
+canvas.on("selection:created",event=>{if(event.selected?.[0]?.motifKind==="text")sizeTextControls(event.selected[0])});
+canvas.on("selection:updated",event=>{if(event.selected?.[0]?.motifKind==="text")sizeTextControls(event.selected[0])});
+window.addEventListener("resize",()=>{
+  canvas.getObjects().filter(object=>object.motifKind==="text").forEach(sizeTextControls);
+  canvas.requestRenderAll();
+},{passive:true});
 const dualWorkspace = document.getElementById("dualWorkspace");
 const viewSection = document.querySelector(".view-section");
 const productSection = document.getElementById("productSection");
