@@ -273,23 +273,7 @@ function getAllowedMotifColorNames(){
     textSection.innerHTML = `
       <h3>Eigener Text</h3>
       <div class="feature-row"><input id="customTextInput" class="feature-input" type="text" maxlength="40" placeholder="Text eingeben"><button id="addTextBtn" type="button" class="secondary-btn compact-btn">Hinzufügen</button></div>
-      <div class="text-style-grid">
-        <label class="text-style-field"><span>Schriftart</span><select id="customTextFont" class="feature-select">
-          <option value="Arial">Arial</option>
-          <option value="Impact">Impact Sport</option>
-          <option value="Trebuchet MS">Trebuchet</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Courier New">Courier</option>
-        </select></label>
-        <label class="text-style-field text-color-field"><span>Textfarbe</span><input id="customTextColor" type="color" value="#111111" aria-label="Textfarbe wählen"></label>
-      </div>
-      <div class="text-color-swatches" aria-label="Schnelle Textfarben">
-        <button type="button" class="text-color-swatch active" data-color="#111111" aria-label="Schwarz" title="Schwarz" style="--text-swatch:#111111"></button>
-        <button type="button" class="text-color-swatch" data-color="#ffffff" aria-label="Weiß" title="Weiß" style="--text-swatch:#ffffff"></button>
-        <button type="button" class="text-color-swatch" data-color="#ffe600" aria-label="Gelb" title="Gelb" style="--text-swatch:#ffe600"></button>
-        <button type="button" class="text-color-swatch" data-color="#e10600" aria-label="Rot" title="Rot" style="--text-swatch:#e10600"></button>
-        <button type="button" class="text-color-swatch" data-color="#147fae" aria-label="Azure Blue" title="Azure Blue" style="--text-swatch:#147fae"></button>
-      </div>`;
+      <select id="customTextFont" hidden aria-label="Schriftart"><option value="Arial">Arial</option></select>`;
     const anchor = document.querySelector(".customer-upload-section") || motifSection || document.querySelector(".color-section");
     insertAfter(anchor && anchor.parentNode === sidebar ? anchor : motifSection, textSection);
   }
@@ -1410,7 +1394,6 @@ async function recolorActiveMotif(color, label) {
   currentMotifColorLabel = label;
   currentMotifColorName.textContent = label;
   updateActiveMotifColorButton(color, label);
-  if (customTextColor) customTextColor.value = color;
   const selectedText = getActiveTextObject();
   const texts = selectedText ? [selectedText] : canvas.getObjects().filter(obj => obj.motifKind === "text");
   texts.forEach(text => {
@@ -1601,8 +1584,6 @@ customerLogoUpload?.addEventListener("change",event=>{
 const customTextInput = document.getElementById("customTextInput");
 const addTextBtn = document.getElementById("addTextBtn");
 const customTextFont = document.getElementById("customTextFont");
-const customTextColor = document.getElementById("customTextColor");
-const textColorSwatches = [...document.querySelectorAll(".text-color-swatch")];
 const initialsInput = document.getElementById("initialsInput");
 
 function initialsValue() {
@@ -1723,15 +1704,11 @@ function getActiveTextObject() {
 function updateTextStyleControls(textObject) {
   if (!textObject) return;
   if (customTextFont && textObject.fontFamily) customTextFont.value = textObject.fontFamily;
-  if (customTextColor && /^#[0-9a-f]{6}$/i.test(String(textObject.fill || ""))) customTextColor.value = textObject.fill;
-  textColorSwatches.forEach(button => button.classList.toggle("active", button.dataset.color.toLowerCase() === String(customTextColor?.value || "").toLowerCase()));
 }
 function applyTextStyle() {
   const text = getActiveTextObject();
-  textColorSwatches.forEach(button => button.classList.toggle("active", button.dataset.color.toLowerCase() === String(customTextColor?.value || "").toLowerCase()));
   if (!text) return;
   text.set({
-    fill: customTextColor?.value || "#111111",
     fontFamily: customTextFont?.value || "Arial"
   });
   text.initDimensions?.();
@@ -1741,12 +1718,6 @@ function applyTextStyle() {
   saveCurrentView();
 }
 customTextFont?.addEventListener("change", applyTextStyle);
-customTextColor?.addEventListener("input", applyTextStyle);
-customTextColor?.addEventListener("change", applyTextStyle);
-textColorSwatches.forEach(button => button.addEventListener("click", () => {
-  if (customTextColor) customTextColor.value = button.dataset.color;
-  applyTextStyle();
-}));
 canvas.on("selection:created", event => updateTextStyleControls(event.selected?.[0]));
 canvas.on("selection:updated", event => updateTextStyleControls(event.selected?.[0]));
 function addCustomerText(value,point=null){
@@ -1755,7 +1726,7 @@ function addCustomerText(value,point=null){
   const text = new fabric.Textbox(value, {
     left: point?.x ?? canvas.width / 2, top: point?.y ?? canvas.height * 0.56, originX: "center", originY: "center",
     width: canvas.width * 0.7, textAlign: "center", fontSize: 28, fontWeight: 700,
-    fill: customTextColor?.value || "#111111", fontFamily: customTextFont?.value || "Arial",
+    fill: currentMotifColor || "#111111", fontFamily: customTextFont?.value || "Arial",
     editable: true, selectable: true, motifKind: "text", motifName: value
   });
   canvas.add(text);
@@ -1763,6 +1734,11 @@ function addCustomerText(value,point=null){
   canvas.setActiveObject(text);
   canvas.requestRenderAll();
   saveCurrentView();
+  document.fonts?.load(`700 28px "${text.fontFamily}"`).then(()=>{
+    if(!canvas.getObjects().includes(text))return;
+    text.initDimensions?.();keepCustomerTextOnShirt(text);text.setCoords();
+    canvas.requestRenderAll();saveCurrentView();
+  }).catch(()=>{});
   if(customTextInput) customTextInput.value="";
 }
 if (addTextBtn && customTextInput) addTextBtn.addEventListener("click",()=>addCustomerText(customTextInput.value));
@@ -1867,8 +1843,120 @@ photoDrop?.addEventListener("drop",event=>{
   event.preventDefault();event.stopPropagation();photoDrop.classList.remove("is-dragover");
   handleCustomerUploadFile(event.dataTransfer?.files?.[0]);
 });
+const textDialog=document.getElementById("textDialog");
+const textDialogInput=document.getElementById("textDialogInput");
+const textFontChoices=[
+  {name:"Roboto Slab",group:"serif",family:"Roboto Slab"},
+  {name:"Dosis",group:"sans",family:"Dosis"},
+  {name:"Ubuntu",group:"sans",family:"Ubuntu"},
+  {name:"Permanent Marker",group:"display",family:"Permanent Marker"},
+  {name:"Caveat",group:"script",family:"Caveat"},
+  {name:"Bevan",group:"serif",family:"Bevan"},
+  {name:"Lobster",group:"script",family:"Lobster"},
+  {name:"Dancing Script",group:"script",family:"Dancing Script"},
+  {name:"Alfa Slab One",group:"serif",family:"Alfa Slab One"},
+  {name:"Nunito",group:"sans",family:"Nunito"},
+  {name:"Pacifico",group:"script",family:"Pacifico"},
+  {name:"Oswald",group:"display",family:"Oswald"},
+  {name:"Rubik Wet Paint",group:"display",family:"Rubik Wet Paint"},
+  {name:"Lora",group:"serif",family:"Lora"}
+];
+let textFontGroup="all",textMode="classic",textFontList=false,textPlacementPoint=null,textEditingObject=null;
+function closeTextDialog(){if(textDialog?.open)textDialog.close()}
+function selectTextFont(choice){
+  if(customTextFont){
+    let option=[...customTextFont.options].find(item=>item.value===choice.family);
+    if(!option){option=new Option(choice.name,choice.family);customTextFont.add(option)}
+    customTextFont.value=choice.family;
+  }
+  if(textEditingObject){
+    textEditingObject.set({fontFamily:choice.family});textEditingObject.initDimensions?.();
+    keepCustomerTextOnShirt(textEditingObject);textEditingObject.setCoords();
+    canvas.requestRenderAll();saveCurrentView();
+  }
+  document.fonts?.load(`700 28px "${choice.family}"`).then(()=>{
+    if(textEditingObject?.fontFamily===choice.family){
+      textEditingObject.initDimensions?.();keepCustomerTextOnShirt(textEditingObject);
+      canvas.requestRenderAll();saveCurrentView();
+    }
+  }).catch(()=>{});
+  renderTextFontGallery();
+}
+function renderTextFontGallery(){
+  const gallery=document.getElementById("fontGallery");if(!gallery)return;
+  gallery.replaceChildren();gallery.classList.toggle("is-list",textFontList);
+  gallery.setAttribute("aria-labelledby",textMode==="classic"?"classicTextTab":"graphicTextTab");
+  const list=textFontChoices.filter(choice=>(textFontGroup==="all"||choice.group===textFontGroup)
+    &&(textMode==="classic"||["display","script"].includes(choice.group)));
+  list.forEach(choice=>{
+    const card=document.createElement("button");card.type="button";card.className="text-font-card";
+    card.classList.toggle("selected",customTextFont?.value===choice.family);
+    card.setAttribute("aria-pressed",String(customTextFont?.value===choice.family));
+    const name=document.createElement("span");name.className="text-font-name";name.textContent=choice.name;
+    const preview=document.createElement("span");preview.className="text-font-preview";
+    preview.style.fontFamily=`"${choice.family}", Arial, sans-serif`;
+    preview.textContent=(textDialogInput?.value||"Dein Text").trim()||"Dein Text";
+    card.append(name,preview);card.addEventListener("click",()=>selectTextFont(choice));gallery.appendChild(card);
+  });
+}
+function openTextDialog(point=null){
+  if(!FEATURES.allowText||!textDialog)return;
+  textEditingObject=getActiveTextObject();textPlacementPoint=point;
+  textDialogInput.value=textEditingObject?.text||customTextInput?.value||"";
+  if(textEditingObject?.fontFamily&&customTextFont){
+    if(![...customTextFont.options].some(item=>item.value===textEditingObject.fontFamily))
+      customTextFont.add(new Option(textEditingObject.fontFamily,textEditingObject.fontFamily));
+    customTextFont.value=textEditingObject.fontFamily;
+  }
+  textMode="classic";textFontGroup="all";
+  document.getElementById("classicTextTab").setAttribute("aria-selected","true");
+  document.getElementById("graphicTextTab").setAttribute("aria-selected","false");
+  document.querySelectorAll("#fontFilters button").forEach(button=>button.setAttribute("aria-pressed",String(button.dataset.group==="all")));
+  document.getElementById("textDialogAdd").textContent=textEditingObject?"Text übernehmen":"Text hinzufügen";
+  renderTextFontGallery();if(!textDialog.open)textDialog.showModal();
+  textDialogInput.focus();
+}
+document.getElementById("textDialogClose")?.addEventListener("click",closeTextDialog);
+textDialog?.addEventListener("click",event=>{if(event.target===textDialog)closeTextDialog()});
+textDialogInput?.addEventListener("input",renderTextFontGallery);
+textDialogInput?.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();document.getElementById("textDialogAdd").click()}});
+document.getElementById("textDialogAdd")?.addEventListener("click",()=>{
+  const value=textDialogInput.value.trim();if(!value){textDialogInput.focus();return}
+  if(textEditingObject){
+    textEditingObject.set({text:value,fontFamily:customTextFont?.value||"Arial"});
+    textEditingObject.initDimensions?.();keepCustomerTextOnShirt(textEditingObject);
+    canvas.setActiveObject(textEditingObject);canvas.requestRenderAll();saveCurrentView();
+  }else addCustomerText(value,textPlacementPoint);
+  textEditingObject=getActiveTextObject();
+  if(customTextInput)customTextInput.value="";closeTextDialog();
+});
+const fontFilters=document.getElementById("fontFilters");
+[["all","Alle","▦"],["serif","Serif","S"],["sans","Klar","S"],["script","Handschrift","𝒲"],["display","Markant","T"]].forEach(([group,label,icon])=>{
+  const button=document.createElement("button");button.type="button";button.dataset.group=group;
+  button.title=label;button.setAttribute("aria-label",label);button.setAttribute("aria-pressed",String(group==="all"));button.textContent=icon;
+  button.addEventListener("click",()=>{
+    textFontGroup=group;fontFilters.querySelectorAll("button").forEach(item=>item.setAttribute("aria-pressed",String(item===button)));
+    renderTextFontGallery();
+  });fontFilters.appendChild(button);
+});
+[["classicTextTab","classic"],["graphicTextTab","graphic"]].forEach(([id,mode])=>{
+  document.getElementById(id)?.addEventListener("click",()=>{
+    textMode=mode;document.getElementById("classicTextTab").setAttribute("aria-selected",String(mode==="classic"));
+    document.getElementById("graphicTextTab").setAttribute("aria-selected",String(mode==="graphic"));
+    if(mode==="graphic"&&!(["all","display","script"].includes(textFontGroup))){
+      textFontGroup="all";
+      fontFilters.querySelectorAll("button").forEach(item=>item.setAttribute("aria-pressed",String(item.dataset.group==="all")));
+    }
+    renderTextFontGallery();
+  });
+});
+document.getElementById("fontViewToggle")?.addEventListener("click",event=>{
+  textFontList=!textFontList;event.currentTarget.setAttribute("aria-label",textFontList?"Kachelansicht":"Listenansicht");
+  renderTextFontGallery();
+});
 function toggleDesignMenu(tool){
   if(tool==="photo"){closeDesignMenu();openPhotoDialog();return;}
+  if(tool==="text"){closeDesignMenu();openTextDialog();return;}
   if(openDesignTool===tool){closeDesignMenu();return;}
   openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
   designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
@@ -1888,29 +1976,6 @@ function toggleDesignMenu(tool){
       designMenu.appendChild(menuOption(label,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
     });
     if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Vereinslogos vorhanden.";designMenu.appendChild(hint)}
-  }else if(tool==="text"){
-    const active=getActiveTextObject();
-    const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=80;
-    input.placeholder="Dein Text";input.value=active?.text||customTextInput?.value||"";
-    input.addEventListener("input",()=>{if(customTextInput)customTextInput.value=input.value});
-    const add=()=>{if(input.value.trim()){
-      if(active){active.set({text:input.value.trim()});active.initDimensions?.();applyTextStyle();keepCustomerTextOnShirt(active);canvas.requestRenderAll();saveCurrentView()}
-      else addCustomerText(input.value);
-      closeDesignMenu();
-    }};
-    input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();add()}});
-    designMenu.appendChild(input);
-    const fontLabel=document.createElement("label");fontLabel.className="editor-menu-field";fontLabel.textContent="Schriftart";
-    const font=document.createElement("select");font.className="editor-menu-input";font.setAttribute("aria-label","Schriftart");
-    customTextFont?.querySelectorAll("option").forEach(option=>font.appendChild(option.cloneNode(true)));
-    font.value=active?.fontFamily||customTextFont?.value||"Arial";
-    font.addEventListener("change",()=>{if(customTextFont){customTextFont.value=font.value;customTextFont.dispatchEvent(new Event("change",{bubbles:true}))}});
-    fontLabel.appendChild(font);designMenu.appendChild(fontLabel);
-    const colorLabel=document.createElement("label");colorLabel.className="editor-menu-field";colorLabel.textContent="Textfarbe";
-    const color=document.createElement("input");color.type="color";color.value=customTextColor?.value||"#111111";color.setAttribute("aria-label","Textfarbe");
-    color.addEventListener("input",()=>{if(customTextColor){customTextColor.value=color.value;customTextColor.dispatchEvent(new Event("input",{bubbles:true}))}});
-    colorLabel.appendChild(color);designMenu.appendChild(colorLabel);
-    designMenu.appendChild(menuOption(active?"Text übernehmen":"Text hinzufügen",add));
   }else if(tool==="printColor"){
     const colors=document.createElement("div");colors.className="editor-print-colors";
     document.querySelectorAll(".motif-color-section .motif-color:not([hidden])").forEach(source=>{
@@ -1959,8 +2024,7 @@ function useDesignTool(tool,point=null){
     pendingUploadPoint=point;
     customerLogoUpload?.click();
   }else if(tool==="text" && FEATURES.allowText){
-    if(point) addCustomerText(customTextInput?.value || "Dein Text",point);
-    else{document.querySelector(".text-section")?.scrollIntoView({behavior:"smooth",block:"start"});customTextInput?.focus();}
+    openTextDialog(point);
   }else if(tool==="product"){
     document.getElementById("productSection")?.scrollIntoView({behavior:"smooth",block:"start"});
   }else if(tool==="initials"){
