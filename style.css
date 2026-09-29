@@ -6054,3 +6054,17 @@ html body .editor-tool-menu .editor-menu-field output{
 html body .editor-tool-menu .editor-menu-option.danger{
   color:#a52b29;border-color:#edc9c7;background:#fff9f8;
 }
+/* Auswahl ausschließlich über die rechte Werkzeugleiste. */
+html body .app #initialsPop,
+html body .app .club-logo-section,
+html body .app .motif-color-section{display:none!important}
+html body .editor-tool-menu .editor-print-colors{
+  display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:3px;
+}
+html body .editor-tool-menu .editor-print-colors .editor-menu-option{
+  min-height:32px;height:32px;width:100%;padding:0;border:2px solid #fff;
+  border-radius:7px;box-shadow:0 0 0 1px #cbd2d9;
+}
+html body .editor-tool-menu .editor-print-colors .editor-menu-option.active{
+  box-shadow:0 0 0 2px #bc9225;
+}

@@ -1462,7 +1462,7 @@ function currentUploadedMotif(){
 }
 // Der volle Reglerwert entspricht dem auf dem Textil verfügbaren Druckbereich.
 function customerUploadMaxScale(image){
-  return Math.min(PRINT_BASE_WIDTH*.8/image.width,PRINT_BASE_HEIGHT*.94/image.height);
+  return Math.min(PRINT_BASE_WIDTH/image.width,PRINT_BASE_HEIGHT/image.height);
 }
 function clampCustomerUploadSize(image){
   if(image?.motifKind!=="upload" || !image.width || !image.height) return;
@@ -1483,7 +1483,7 @@ function keepCustomerUploadOnShirt(image){
   const angle=(Number(image.angle)||0)*Math.PI/180;
   const rotatedWidth=(Math.abs(image.width*Math.cos(angle))+Math.abs(image.height*Math.sin(angle)))*image.scaleX;
   const rotatedHeight=(Math.abs(image.width*Math.sin(angle))+Math.abs(image.height*Math.cos(angle)))*image.scaleY;
-  const fit=Math.min(1,PRINT_BASE_WIDTH*.8/rotatedWidth,PRINT_BASE_HEIGHT*.94/rotatedHeight);
+  const fit=Math.min(1,PRINT_BASE_WIDTH/rotatedWidth,PRINT_BASE_HEIGHT/rotatedHeight);
   if(Number.isFinite(fit)&&fit<1) image.scale(image.scaleX*fit);
   image.setCoords();
   const bounds=image.getBoundingRect(true,true);
@@ -1497,7 +1497,7 @@ function keepCustomerUploadOnShirt(image){
 function resizeCustomerUpload(percent){
   const image=currentUploadedMotif();
   if(!image) return;
-  const base=image.uploadBaseScale||customerUploadMaxScale(image);
+  const base=customerUploadMaxScale(image);
   image.scale(base*Math.max(25,Math.min(100,percent))/100);
   keepCustomerUploadOnShirt(image);
   canvas.setActiveObject(image);canvas.requestRenderAll();saveCurrentView();syncCustomerUploadControls();
@@ -1547,7 +1547,7 @@ function handleCustomerUploadFile(file,dropPoint=null){
         fabric.Image.fromURL(previewUrl, function(image) {
           if (!image?.width || !image.height) { alert("Die Bildvorschau konnte nicht geöffnet werden."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
           if (FEATURES.motifMode !== "mixed") canvas.clear();
-          const scale=customerUploadMaxScale(image);
+          const scale=Math.min(PRINT_BASE_WIDTH*.8/image.width,PRINT_BASE_HEIGHT*.94/image.height);
           image.set({
             left:CUSTOMER_UPLOAD_CENTER_X,top:CUSTOMER_UPLOAD_CENTER_Y,
             originX:"center",originY:"center",scaleX:scale,scaleY:scale,
@@ -1777,7 +1777,7 @@ function toggleDesignMenu(tool){
   openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
   designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
   const title=document.createElement("strong");title.className="editor-menu-title";
-  title.textContent=({product:"Textil wählen",logo:"Vereinslogo wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen"})[tool]||"Auswahl";
+  title.textContent=({product:"Textil wählen",logo:"Vereinslogo wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen",printColor:"Druckfarbe wählen"})[tool]||"Auswahl";
   designMenu.appendChild(title);
   if(tool==="product"){
     productSwitch?.querySelectorAll(".product-btn").forEach(source=>{
@@ -1798,7 +1798,7 @@ function toggleDesignMenu(tool){
     if(upload){
       const label=document.createElement("label");label.className="editor-menu-field";label.textContent="Bildgröße";
       const slider=document.createElement("input");slider.type="range";slider.min="25";slider.max="100";
-      slider.value=String(Math.max(25,Math.min(100,Math.round(100*upload.scaleX/(upload.uploadBaseScale||customerUploadMaxScale(upload))))));
+      slider.value=String(Math.max(25,Math.min(100,Math.round(100*upload.scaleX/customerUploadMaxScale(upload)))));
       const sizeValue=document.createElement("output");sizeValue.textContent=`${slider.value} %`;
       slider.addEventListener("input",()=>{resizeCustomerUpload(Number(slider.value));sizeValue.textContent=`${slider.value} %`});
       label.append(slider,sizeValue);designMenu.appendChild(label);
@@ -1826,6 +1826,16 @@ function toggleDesignMenu(tool){
     const add=()=>{if(input.value.trim()){addCustomerText(input.value);closeDesignMenu()}};
     input.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();add()}});
     designMenu.append(input,menuOption("Text hinzufügen",add));
+  }else if(tool==="printColor"){
+    const colors=document.createElement("div");colors.className="editor-print-colors";
+    document.querySelectorAll(".motif-color-section .motif-color:not([hidden])").forEach(source=>{
+      const button=menuOption("",()=>{source.click();closeDesignMenu()},source.classList.contains("active"));
+      button.style.backgroundColor=source.dataset.color;
+      button.title=source.dataset.name;button.setAttribute("aria-label",source.dataset.name||"Druckfarbe");
+      button.setAttribute("aria-pressed",String(source.classList.contains("active")));
+      colors.appendChild(button);
+    });
+    designMenu.appendChild(colors);
   }else if(tool==="initials"){
     const input=document.createElement("input");input.className="editor-menu-input";input.type="text";input.maxLength=3;
     input.placeholder="ABC";input.setAttribute("aria-label","Initialen eingeben");
@@ -1849,6 +1859,7 @@ designTools.forEach(button=>{
   const tool=button.dataset.designTool;
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
     || (tool==="logo" && FEATURES.showClubLogos===false) || (tool==="initials"&&!FEATURES.allowInitials)
+    || (tool==="printColor"&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
     || (tool==="product"&&PRODUCTS.length<=1);
 });
 function printPointAt(clientX,clientY){

@@ -28,7 +28,7 @@
     body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
     .color-section[hidden],.motif-color-section[hidden]{display:none!important}
   </style>
-  <link rel="stylesheet" href="/style.css?v=30.3.178">
+  <link rel="stylesheet" href="/style.css?v=30.3.180">
   <script>
     (function(){
       try{
@@ -374,6 +374,7 @@
         <button type="button" data-design-tool="photo" draggable="true"><span aria-hidden="true">▧</span><strong>Foto</strong><small>Auf das Shirt ziehen</small></button>
         <button type="button" data-design-tool="text" draggable="true"><span aria-hidden="true">T</span><strong>Text</strong><small>Auf das Shirt ziehen</small></button>
         <button type="button" data-design-tool="initials"><span aria-hidden="true">AB</span><strong>Initialen</strong><small>Eingeben</small></button>
+        <button type="button" data-design-tool="printColor"><span aria-hidden="true">◉</span><strong>Druckfarbe</strong><small>Farbe wählen</small></button>
       </aside>
     </div>
 
@@ -482,7 +483,7 @@
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.178";
+      app.src="/script.js?v=30.3.180";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }
