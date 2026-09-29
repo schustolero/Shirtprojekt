@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bevan&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Dosis:wght@700&family=Lobster&family=Lora:wght@700&family=Nunito:wght@800&family=Oswald:wght@700&family=Pacifico&family=Permanent+Marker&family=Roboto+Slab:wght@900&family=Rubik+Wet+Paint&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=30.3.189">
+  <link rel="stylesheet" href="/style.css?v=30.3.190">
   <script>
     (function(){
       try{
@@ -139,24 +139,22 @@ html body #previewLeftRail .shirt-color>.rail-color-svg{display:block!important;
 html body #previewLeftRail .selection-ring{visibility:hidden!important;}
 html body #previewLeftRail .shirt-color.active .selection-ring{visibility:visible!important;}
 html body #previewLeftRail .shirt-color[hidden]{display:none!important;}
-html body #previewLeftRail .view-section{box-sizing:border-box!important;display:block!important;grid-column:1/-1!important;grid-row:2!important;width:112px!important;min-width:0!important;padding:0!important;margin:2px 0 0!important;border:0!important;background:transparent!important;}
-html body #previewLeftRail .view-section[hidden]{display:none!important;}
-html body #previewLeftRail .view-section h3{display:none!important;}
-html body #previewLeftRail .view-switch{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2px!important;width:112px!important;padding:2px!important;margin:0!important;border:1px solid #dfe3e8!important;border-radius:10px!important;background:#f3f4f6!important;}
-html body #previewLeftRail .view-btn{box-sizing:border-box!important;min-height:34px!important;height:34px!important;width:auto!important;padding:0 2px!important;border:0!important;border-radius:8px!important;background:transparent!important;color:#525d69!important;font-size:10px!important;font-weight:700!important;cursor:pointer!important;}
-html body #previewLeftRail .view-btn.active{background:#fff!important;color:#161a20!important;box-shadow:0 1px 3px #16202b20!important;}
+html body .workspace>.view-section{box-sizing:border-box!important;display:block!important;grid-column:2!important;grid-row:2!important;justify-self:center!important;align-self:start!important;width:min(240px,100%)!important;min-width:0!important;padding:0!important;margin:8px 0 0!important;border:0!important;background:transparent!important;}
+html body .workspace>.view-section[hidden]{display:none!important;}
+html body .workspace>.view-section h3{display:none!important;}
+html body .workspace>.view-section .view-switch{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2px!important;width:100%!important;padding:2px!important;margin:0!important;border:1px solid #dfe3e8!important;border-radius:10px!important;background:#f3f4f6!important;}
+html body .workspace>.view-section .view-btn{box-sizing:border-box!important;min-height:38px!important;height:38px!important;width:auto!important;padding:0 6px!important;border:0!important;border-radius:8px!important;background:transparent!important;color:#525d69!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;}
+html body .workspace>.view-section .view-btn.active{background:#fff!important;color:#161a20!important;box-shadow:0 1px 3px #16202b20!important;}
 @media(min-width:901px){html body .workspace,html body .workspace.has-color-rail{grid-template-columns:112px minmax(0,1fr) 154px!important;}}
 @media(max-width:900px){
 html body .workspace,html body .workspace.has-color-rail{grid-template-rows:auto auto auto auto!important;}
 html body .workspace #previewLeftRail{display:contents!important;}
 html body #previewLeftRail .textile-icon-rail{grid-column:1/-1!important;grid-row:1!important;grid-template-columns:repeat(5,52px)!important;grid-auto-rows:58px!important;width:100%!important;justify-content:center!important;gap:5px!important;margin-bottom:10px!important;}
-html body #previewLeftRail .view-section{grid-column:1/-1!important;grid-row:4!important;width:min(240px,100%)!important;justify-self:center!important;margin:10px 0 0!important;}
-html body #previewLeftRail .view-switch{width:100%!important;}
-html body #previewLeftRail .view-btn{min-height:38px!important;height:38px!important;font-size:12px!important;}
+html body .workspace>.view-section{grid-column:1/-1!important;grid-row:3!important;width:min(240px,100%)!important;margin:8px 0 0!important;}
 html body #previewLeftRail .color-section{grid-column:1!important;grid-row:2!important;width:48px!important;min-width:48px!important;max-width:48px!important;}
 html body #previewLeftRail .shirt-colors{width:48px!important;min-width:48px!important;max-width:48px!important;max-height:46vh!important;}
 html body .workspace .mockup-stage,html body .workspace.has-color-rail .mockup-stage{grid-row:2!important;}
-html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .editor-dnd-rail{grid-row:3!important;}
+html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .editor-dnd-rail{grid-row:4!important;}
 }
 </style>
 </head>
@@ -543,7 +541,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.189";
+      app.src="/script.js?v=30.3.190";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }

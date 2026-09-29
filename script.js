@@ -2776,7 +2776,9 @@ window.dockShirtColorRail=function(){
     leftRail.appendChild(icons);workspace.insertBefore(leftRail,workspace.firstChild);
   }
   if(section.parentElement!==leftRail)leftRail.appendChild(section);
-  if(view&&view.parentElement!==leftRail)leftRail.appendChild(view);
+  if(view&&view.parentElement!==workspace){
+    workspace.insertBefore(view,workspace.querySelector(".editor-dnd-rail"));
+  }
   renderTextileIconRail();
   workspace.classList.add("has-color-rail");
   if(FEATURES.showShirtColorPicker===false){
