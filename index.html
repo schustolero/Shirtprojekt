@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bevan&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Dosis:wght@700&family=Lobster&family=Lora:wght@700&family=Nunito:wght@800&family=Oswald:wght@700&family=Pacifico&family=Permanent+Marker&family=Roboto+Slab:wght@900&family=Rubik+Wet+Paint&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=30.3.188">
+  <link rel="stylesheet" href="/style.css?v=30.3.189">
   <script>
     (function(){
       try{
@@ -303,10 +303,6 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
         <div class="initials-field-wrap">
           <input id="initialsInput" class="feature-input" type="text" maxlength="3" minlength="0" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" pattern="[A-Za-zÄÖÜäöü0-9]{0,3}" aria-label="Initialen" aria-describedby="initialsHint initialsError">
         </div>
-        <div class="initials-color-choice" role="group" aria-label="Farbe der Initialen">
-          <button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button>
-          <button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button>
-        </div>
         <p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p>
       </div>
       <p class="field-error" id="initialsError" hidden></p>
@@ -547,7 +543,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.188";
+      app.src="/script.js?v=30.3.189";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }

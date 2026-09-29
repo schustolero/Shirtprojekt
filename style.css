@@ -6116,3 +6116,12 @@ html body .text-font-preview{display:block;width:100%;font-size:clamp(13px,1.3vw
   html body .text-font-card{height:96px}
   html body .text-font-preview{font-size:17px}
 }
+
+/* Initialen teilen sich die Druckfarbe; nur das Eingabefeld bleibt. */
+html body .initials-controls,
+html body .mobile-after-shirt-controls .initials-controls{
+  grid-template-columns:minmax(0,1fr)!important;
+}
+html body .initials-controls .initials-field-wrap{
+  max-width:280px!important;
+}

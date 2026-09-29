@@ -545,7 +545,6 @@ let currentShirtColorId = "white";
 let currentPattern = "";
 let currentMotifColor = "#000000";
 let currentMotifColorLabel = "Black";
-let selectedInitialsColor = null;
 
 const viewStates = { front: null, back: null };
 const baseImages = { front: null, back: null };
@@ -1068,7 +1067,7 @@ function updateDualInitials(){
     mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
     mark.style.top=`${Number(saved.y??defaults.y)}%`;
     mark.style.fontSize=`${dualCompositeStage.clientWidth/2*Math.max(2,Math.min(12,Number(saved.sizePct??5)))/100}px`;
-    mark.style.setProperty("color",getInitialsColor()==="white"?"#ffffff":"#000000","important");
+    mark.style.setProperty("color",getInitialsColor(),"important");
   }
 }
 
@@ -1168,7 +1167,6 @@ function changeShirtColor(color, name, colorId, pattern, redraw = true) {
     void recolorActiveMotif(pairedMotifColor.color, pairedMotifColor.name || "Druckfarbe");
   }
   updateInitialsOnCanvas();
-  syncInitialsColorButtons();
 }
 
 document.addEventListener("click", (event) => {
@@ -1394,6 +1392,7 @@ async function recolorActiveMotif(color, label) {
   currentMotifColorLabel = label;
   currentMotifColorName.textContent = label;
   updateActiveMotifColorButton(color, label);
+  updateInitialsOnCanvas();
   const selectedText = getActiveTextObject();
   const texts = selectedText ? [selectedText] : canvas.getObjects().filter(obj => obj.motifKind === "text");
   texts.forEach(text => {
@@ -1598,26 +1597,8 @@ function initialsValue() {
 }
 
 function getInitialsColor(){
-  if(selectedInitialsColor) return selectedInitialsColor;
-  const hex=String(currentShirtColor||"#ffffff").replace("#","");
-  const rgb=/^[0-9a-f]{6}$/i.test(hex)?[0,2,4].map(i=>parseInt(hex.slice(i,i+2),16)):[255,255,255];
-  return rgb[0]*.299+rgb[1]*.587+rgb[2]*.114<145?"white":"black";
+  return /^#[0-9a-f]{6}$/i.test(String(currentMotifColor||""))?currentMotifColor:"#000000";
 }
-function syncInitialsColorButtons(){
-  const color=getInitialsColor();
-  document.querySelectorAll("[data-initials-color]").forEach(button=>{
-    const active=button.dataset.initialsColor===color;
-    button.classList.toggle("active",active);
-    button.setAttribute("aria-pressed",String(active));
-  });
-}
-document.addEventListener("click",event=>{
-  const button=event.target instanceof Element ? event.target.closest("button[data-initials-color]") : null;
-  if(!button) return;
-  selectedInitialsColor=button.dataset.initialsColor;
-  syncInitialsColorButtons();
-  updateInitialsOnCanvas();
-},true);
 
 function initialsShirtBox(){
   const stage=document.querySelector(".mockup-stage");
@@ -1636,7 +1617,7 @@ function applyInitialsOnShirt(overlay, xPct, yPct){
 function updateInitialsOnCanvas() {
   const value = initialsValue();
   const cfg = SHOP.initialsConfig || {};
-  const color = getInitialsColor()==="white"?"#ffffff":"#000000";
+  const color = getInitialsColor();
   const stage = document.querySelector(".mockup-stage");
   if (!stage) return;
   stage.querySelectorAll(".shirt-initials-overlay").forEach((extra, index) => {
@@ -1965,11 +1946,6 @@ function toggleDesignMenu(tool){
       if(source){source.value=input.value;source.dispatchEvent(new Event("input",{bubbles:true}))}
     });
     designMenu.appendChild(input);
-    const colors=document.createElement("div");colors.className="editor-menu-colors";
-    ["white","black"].forEach(color=>colors.appendChild(menuOption(color==="white"?"○ Weiß":"● Schwarz",()=>{
-      document.querySelector(`#initialsPop [data-initials-color="${color}"]`)?.click();closeDesignMenu();
-    },getInitialsColor()===color)));
-    designMenu.appendChild(colors);
   }
 }
 document.addEventListener("click",event=>{if(openDesignTool&&!designRail?.contains(event.target))closeDesignMenu()});
@@ -1978,7 +1954,7 @@ designTools.forEach(button=>{
   const tool=button.dataset.designTool;
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
     || (tool==="logo" && FEATURES.showClubLogos===false) || (tool==="initials"&&!FEATURES.allowInitials)
-    || (tool==="printColor"&&!FEATURES.allowText&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
+    || (tool==="printColor"&&!FEATURES.allowText&&!FEATURES.allowInitials&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
     || tool==="product";
 });
 function printPointAt(clientX,clientY){
@@ -2342,7 +2318,7 @@ function getCurrentShirtSelection() {
     uploadFileNames: uploads.map(({image})=>image.motifName).filter(Boolean),
     motifColor: currentMotifColorName.textContent || currentMotifColorLabel,
     initials: initialsValue(),
-    initialsColor: initialsValue() ? (getInitialsColor()==="white"?"Weiß":"Schwarz") : "",
+    initialsColor: initialsValue() ? (currentMotifColorLabel || getInitialsColor()) : "",
     printLayout: fixedPrintParts.join(" · "),
     size,
     quantity
@@ -2381,7 +2357,7 @@ function renderCart() {
     // Kundenseitig kompakt halten: Motiv-, Druckfarben- und Positionsdetails
     // werden weiterhin im Bestellobjekt gespeichert, aber nicht unter jedem
     // Shirt als langer Text angezeigt.
-    meta.textContent = `${item.shirtColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || "Schwarz"})` : ""}`;
+    meta.textContent = `${item.shirtColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || item.motifColor || "Druckfarbe"})` : ""}`;
     info.append(top, meta);
 
     const remove = document.createElement("button");
@@ -2430,7 +2406,7 @@ function addCurrentShirtToOrder() {
 
 function orderItemsAsText() {
   return orderItems.map((item, i) =>
-    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.initials ? ` | Initialen: ${item.initials} (${item.initialsColor || "Schwarz"})` : ""}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
+    `${i + 1}. ${item.quantity}x | Artikel: ${item.productName || "T-Shirt"} | Größe ${item.size} | Farbe: ${item.shirtColor} | Motiv: ${item.motif} | Motivfarbe: ${item.motifColor}${item.initials ? ` | Initialen: ${item.initials} (${item.initialsColor || item.motifColor || "Druckfarbe"})` : ""}${item.printLayout ? ` | Druck: ${item.printLayout}` : ""} | Preis: ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`
   ).join("\n");
 }
 
@@ -2451,7 +2427,7 @@ function openOrderSummary() {
     const visiblePrice = FEATURES.showPrices === false ? "" : ` · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`;
     orderSummary.appendChild(summaryRow(
       `Position ${i + 1}`,
-      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || "Schwarz"})` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}${visiblePrice}`
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || item.motifColor || "Druckfarbe"})` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}${visiblePrice}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
@@ -2872,7 +2848,7 @@ function ensureInitialsField(){
     box=document.createElement("section");
     box.className="tool-section initials-section";
     box.id="initialsPop";
-    box.innerHTML='<h3>Initialen</h3><div class="initials-controls"><div class="initials-field-wrap"><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen" aria-describedby="initialsHint"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p></div><div class="initials-color-choice" role="group" aria-label="Farbe der Initialen"><button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button><button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button></div></div><p class="field-error" id="initialsError" hidden></p>';
+    box.innerHTML='<h3>Initialen</h3><div class="initials-controls"><div class="initials-field-wrap"><input id="initialsInput" class="feature-input" type="text" maxlength="3" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" aria-label="Initialen" aria-describedby="initialsHint"><p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p></div></div><p class="field-error" id="initialsError" hidden></p>';
     sidebar.appendChild(box);
   }
   if(box){
@@ -2891,14 +2867,7 @@ function ensureInitialsField(){
       wrap.before(controls);
       controls.appendChild(wrap);
     }
-    if(!box.querySelector(".initials-color-choice")){
-      const colors=document.createElement("div");
-      colors.className="initials-color-choice";
-      colors.setAttribute("role","group");
-      colors.setAttribute("aria-label","Farbe der Initialen");
-      colors.innerHTML='<button type="button" class="initials-color-btn" data-initials-color="white" aria-label="Initialen weiß" title="Weiß"><span class="initials-color-dot"></span>Weiß</button><button type="button" class="initials-color-btn" data-initials-color="black" aria-label="Initialen schwarz" title="Schwarz"><span class="initials-color-dot"></span>Schwarz</button>';
-      box.querySelector(".initials-controls")?.appendChild(colors);
-    }
+    box.querySelector(".initials-color-choice")?.remove();
     const controls=box.querySelector(".initials-controls");
     if(controls && hint && hint.parentElement!==controls) controls.appendChild(hint);
     box.hidden=!FEATURES.allowInitials;
