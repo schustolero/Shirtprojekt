@@ -7549,50 +7549,126 @@ html body.v32-admin #shopForm .v32-display-compact .display-grid{gap:6px!importa
 #exportFirestoreStatus{color:#244b44;font-weight:650}
 @media(max-width:620px){.admin-backup-content{align-items:flex-start;flex-direction:column;gap:7px}}
 
-/* Stammdaten: Name, Shop-Logo und Bestelladresse nebeneinander. */
+/* v30.3.197: Einheitliche Stammdatenreihe mit kompakter Datensicherung. */
 html body.v32-admin #shopForm .v2854-name-logo-row{
   box-sizing:border-box!important;display:grid!important;
-  grid-template-columns:minmax(170px,1fr) minmax(420px,2.2fr) minmax(190px,1fr)!important;
-  align-items:end!important;gap:10px!important;width:100%!important;
-  min-width:0!important;margin:0 0 5px!important;
+  grid-template-columns:minmax(140px,1fr) minmax(360px,2fr) minmax(210px,1.2fr) 128px!important;
+  align-items:start!important;gap:10px!important;width:100%!important;
+  min-width:0!important;margin:0 0 8px!important;
 }
-html body.v32-admin #shopForm .v2854-name-logo-row > .v2853-name,
-html body.v32-admin #shopForm .v2854-name-logo-row > .v2854-basic-logo,
-html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email{
+html body.v32-admin #shopForm .v2854-name-logo-row > *{
   box-sizing:border-box!important;grid-column:auto!important;grid-row:auto!important;
-  min-width:0!important;width:100%!important;margin:0!important;
+  min-width:0!important;width:100%!important;max-width:none!important;margin:0!important;
 }
-html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email > summary{
-  min-height:38px!important;
+html body.v32-admin #shopForm .v2854-name-logo-row > .v2853-name{
+  display:grid!important;gap:4px!important;align-self:start!important;
 }
-html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email{
-  border:1px solid #e2e7ee!important;border-radius:8px!important;background:#fff!important;
+html body.v32-admin #shopForm .v2854-name-logo-row > .v2853-name > span{
+  margin:0!important;font-size:11px!important;line-height:14px!important;
 }
+html body.v32-admin #shopForm .v2854-name-logo-row > .v2853-name input{
+  box-sizing:border-box!important;height:38px!important;min-height:38px!important;
+  width:100%!important;font-size:13px!important;padding:6px 9px!important;border-radius:8px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+  display:grid!important;grid-template-columns:38px minmax(140px,1fr) 88px 64px!important;
+  align-items:end!important;gap:6px!important;padding:0!important;min-height:56px!important;
+  border:0!important;background:transparent!important;box-shadow:none!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-mini-preview{
+  box-sizing:border-box!important;width:38px!important;min-width:38px!important;
+  height:38px!important;min-height:38px!important;grid-column:1!important;grid-row:1!important;
+  align-self:end!important;border-radius:8px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls{
+  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
+  justify-content:flex-start!important;gap:6px!important;min-width:0!important;
+  height:38px!important;grid-column:2!important;grid-row:1!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls .shop-logo-file{
+  box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;
+  order:1!important;flex:0 0 auto!important;width:auto!important;min-width:0!important;
+  height:38px!important;min-height:38px!important;max-height:38px!important;
+  padding:0 8px!important;margin:0!important;font-size:11px!important;border-radius:8px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-file span{
+  display:inline!important;font-size:11px!important;line-height:1!important;margin:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls > strong{
+  order:2!important;margin:0!important;white-space:nowrap!important;font-size:11px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-type{
+  grid-column:3!important;grid-row:1!important;gap:4px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type > span,
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active > span{
+  font-size:11px!important;line-height:14px!important;margin:0!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{
+  height:38px!important;min-height:38px!important;font-size:13px!important;
+}
+html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{
+  grid-column:4!important;grid-row:1!important;width:64px!important;max-width:64px!important;
+  height:56px!important;min-height:56px!important;padding:0 0 9px!important;gap:13px!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email,
+html body.v32-admin #shopForm .v2854-name-logo-row > .admin-backup-panel{
+  position:relative!important;margin:18px 0 0!important;padding:0!important;
+  border:1px solid #dbe1e8!important;border-radius:8px!important;background:#fff!important;box-shadow:none!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email > summary,
+html body.v32-admin #shopForm .v2854-name-logo-row > .admin-backup-panel > summary{
+  box-sizing:border-box!important;display:flex!important;align-items:center!important;
+  height:38px!important;min-height:38px!important;padding:0 8px!important;
+  font-size:11px!important;line-height:1.2!important;cursor:pointer!important;list-style:none!important;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .admin-backup-panel > summary::-webkit-details-marker{display:none!important}
+html body.v32-admin #shopForm .v2854-name-logo-row > .admin-backup-panel > summary::after{
+  content:"⌄";margin-left:auto;color:#667085;
+}
+html body.v32-admin #shopForm .v2854-name-logo-row > .admin-backup-panel[open] > summary::after{content:"⌃"}
 html body.v32-admin #shopForm .v2854-name-logo-row .v32-order-email-value{
-  text-align:left!important;
+  text-align:left!important;font-size:11px!important;
 }
-html body.v32-admin #shopForm .admin-backup-panel{
-  box-sizing:border-box!important;margin:0 0 8px!important;
-  padding:0 10px!important;box-shadow:none!important;
+html body.v32-admin #shopForm .v2854-name-logo-row .admin-backup-content{
+  flex-direction:column!important;align-items:stretch!important;gap:8px!important;
+  padding:8px!important;font-size:11px!important;border-top:1px solid #edf0f3!important;
 }
-html body.v32-admin #shopForm .admin-backup-panel summary{
-  padding:8px 0!important;font-size:11px!important;
+html body.v32-admin #shopForm .v2854-name-logo-row .admin-backup-content .ghost-btn{
+  width:100%!important;white-space:normal!important;font-size:11px!important;padding:7px!important;
 }
 @media(max-width:1150px){
   html body.v32-admin #shopForm .v2854-name-logo-row{
-    grid-template-columns:minmax(0,1fr)!important;gap:7px!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
   }
+  html body.v32-admin #shopForm .v2854-name-logo-row > .v2854-basic-logo{grid-column:1/-1!important;order:2!important}
+  html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email{order:3!important;margin-top:0!important}
+  html body.v32-admin #shopForm .v2854-name-logo-row > .admin-backup-panel{order:1!important}
 }
-
-/* Shop-Logo steht unmittelbar rechts neben dem Auswahlknopf. */
-html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls{
-  display:flex!important;flex-wrap:nowrap!important;align-items:center!important;
-  justify-content:flex-start!important;gap:7px!important;min-width:0!important;
+@media(max-width:480px){
+  html body.v32-admin #shopForm .v2854-name-logo-row{gap:7px!important}
+  html body.v32-admin #shopForm .v2854-name-logo-row > .v32-order-email{grid-column:1/-1!important}
+  html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+    grid-template-columns:30px minmax(112px,1fr) 76px 53px!important;gap:4px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-mini-preview{
+    width:30px!important;min-width:30px!important;height:38px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls{gap:4px!important}
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls .shop-logo-file{padding:0 5px!important}
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-file span,
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls > strong{font-size:10px!important}
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{width:53px!important;max-width:53px!important}
+  html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type > span,
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active > span{font-size:10px!important}
+  html body.v32-admin #shopForm .v2854-name-logo-row > .v2853-name input,
+  html body.v32-admin #shopForm .v2854-basic-logo .v32-shop-type select{font-size:16px!important}
 }
-html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls .shop-logo-file{
-  order:1!important;flex:0 0 auto!important;
-}
-html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls > strong{
-  order:2!important;grid-column:auto!important;margin:0!important;
-  white-space:nowrap!important;font-size:11px!important;
+@media(max-width:360px){
+  html body.v32-admin #shopForm .v2854-basic-logo.shop-logo-inline{
+    grid-template-columns:30px minmax(0,1fr) 66px!important;row-gap:6px!important;
+  }
+  html body.v32-admin #shopForm .v2854-basic-logo .shop-logo-inline-controls{grid-column:2/4!important}
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-type{grid-column:2!important;grid-row:2!important}
+  html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{grid-column:3!important;grid-row:2!important}
 }
