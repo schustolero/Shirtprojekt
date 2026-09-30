@@ -48,7 +48,7 @@ const MASTER_PRODUCT_CATALOG = [
 window.CENTRAL_CONFIG = {
   adminEmail: "shirtzentrale@gmail.com",
   adminTitle: "Shirtprojekt – Zentrale",
-  defaultShop: "_simple",
+  defaultShop: "_master",
   orderEmail: "shirtzentrale@gmail.com",
   productCatalog: MASTER_PRODUCT_CATALOG,
   seedShops: {

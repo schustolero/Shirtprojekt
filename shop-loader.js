@@ -6,7 +6,7 @@
   const parts = window.location.pathname.split("/").filter(Boolean);
   const ignored = new Set(["admin.html", "danke.html", "index.html"]);
   const fromPath = parts.length && !ignored.has(parts[0]) ? parts[0] : "";
-  const slug = fromQuery || fromPath || central.defaultShop || "_simple";
+  const slug = fromQuery || fromPath || central.defaultShop || "_master";
   window.SHOP_SLUG = slug;
 
   const templateDemos = {
