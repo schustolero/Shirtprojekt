@@ -175,5 +175,25 @@ window.normalizeHansaShopConfig = function(config){
     if(legacy) next.initialsByProduct={...(config.initialsByProduct||{}),hoodie:{...(config.initialsByProduct?.hoodie||{}),front:{...(old||{}),x:30,y:86,sizePct:old?.sizePct??5}}};
     next.hansaInitialsLayoutVersion=1;
   }
+  if(Number(config.hansaInitialsLayoutVersion||0)<2){
+    const positions={tshirt:{x:30,y:84},polo:{x:30,y:86},jc001:{x:30,y:84},bcwu01w:{x:30,y:86}};
+    const initials={...(next.initialsByProduct||config.initialsByProduct||{})};
+    Object.entries(positions).forEach(([id,position])=>{
+      const old=initials[id]?.front;
+      if(!old || Number(old.x)<=24){
+        initials[id]={...(initials[id]||{}),front:{...(old||{}),...position,sizePct:old?.sizePct??5}};
+      }
+    });
+    next.initialsByProduct=initials;
+    next.hansaInitialsLayoutVersion=2;
+  }
+  if(Number(config.hansaLogoAlignmentVersion||0)<1){
+    next.motifs=(next.motifs||config.motifs||[]).map(motif=>{
+      if(!(motif.id==="college" || motif.id==="script" || /^(college|allstar)$/i.test(String(motif.name||"").trim()))) return motif;
+      return {...motif,placement:{side:"front",yPct:31,widthPct:72,...(motif.placement||{}),xPct:50}};
+    });
+    next.features={...(next.features||config.features||{}),fixedFrontChestLogo:false};
+    next.hansaLogoAlignmentVersion=1;
+  }
   return next;
 };
