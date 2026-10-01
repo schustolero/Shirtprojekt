@@ -1117,7 +1117,7 @@ function applyPreviewMode() {
     dualWorkspace.style.display = dual ? "grid" : "none";
   }
   syncMobileAfterShirtControls();
-  if (viewSection) viewSection.hidden = dual;
+  if (viewSection) viewSection.hidden = dual || !FEATURES.allowBackDesign;
   if (designerStatus) designerStatus.textContent = dual ? "Vorder- & Rückseite" : (currentView === "back" ? "Rückseite" : "Vorderseite");
   if (dual) {
     requestAnimationFrame(() => renderDualPreview());

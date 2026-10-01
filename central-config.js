@@ -82,6 +82,22 @@ const MASTER_PRODUCT_CATALOG = [
   {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")},
   {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")}
 ];
+// Nur kaufmännische Werte vererben; die Artikelauswahl und Farbvarianten des Shops bleiben erhalten.
+window.inheritMasterPrices = function(shop, master){
+  if(!shop || !Array.isArray(shop.products) || !Array.isArray(master?.products)) return shop;
+  const prices=new Map(master.products.map(product=>[product.id,product]));
+  const products=shop.products.map(product=>{
+    const source=prices.get(product.id);
+    if(!source) return product;
+    const updated={...product};
+    for(const key of ["price","purchasePrice","purchasePriceBySize","printCost"]){
+      if(Object.prototype.hasOwnProperty.call(source,key)) updated[key]=source[key];
+    }
+    return updated;
+  });
+  return {...shop,products};
+};
+
 window.CENTRAL_CONFIG = {
   adminEmail: "shirtzentrale@gmail.com",
   adminTitle: "Shirtprojekt – Zentrale",

@@ -180,7 +180,19 @@
             merged.tusOrderPageVersion=2;
           }
 
-          const finalConfig = normalizeTemplateDemo(merged);
+          // Hansa folgt den aktuellen Master-Preisen, auch wenn die Vorlage
+          // zuvor ohne den optionalen Vererben-Schalter gespeichert wurde.
+          // Eigene Artikelauswahl, Textilfarben und Motive bleiben erhalten.
+          let finalConfig = normalizeTemplateDemo(merged);
+          if (slug === "hansa" || data.followMasterTemplate === true) {
+            try {
+              const masterSnap = await firebase.firestore().collection("shops").doc("_master").get();
+              if (masterSnap.exists) finalConfig=window.inheritMasterPrices(finalConfig,masterSnap.data());
+            } catch (error) {
+              console.warn("Master-Preise konnten nicht geladen werden.",error);
+            }
+          }
+          if (slug === "hansa") finalConfig.features={...(finalConfig.features||{}),previewMode:"single"};
           if (slug === "_master") {
             finalConfig.fixedPrint = finalConfig.fixedPrint || {};
             finalConfig.fixedPrint.back = { ...(finalConfig.fixedPrint.back || {}), enabled: false };
