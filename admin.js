@@ -298,6 +298,7 @@ function printOrderSlip(order){
         <div class="meta">
           <div class="field"><span>Bestellart</span><strong>${htmlEscape(order.deliveryType||"Abholung")}</strong></div>
           <div class="field"><span>Zahlung</span><strong>${htmlEscape(order.paymentMethod||"Bar bei Abholung")}</strong></div>
+          ${order.paymentMethod==="PayPal"&&order.paypalRecipient?`<div class="field"><span>PayPal an</span><strong>${htmlEscape(order.paypalRecipient)}</strong></div>`:""}
           <div class="field"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"-")}</strong></div>
           <div class="field"><span>Datum</span><strong>${htmlEscape(dateOnlyText(order.createdAt))}</strong></div>
         </div>
@@ -376,7 +377,7 @@ function printProductionSlip(order){
   addSpec("hoodie","Hoodie","front","Vorne");
   addSpec("hoodie","Hoodie","back","Hinten");
 
-  const finalLabel=/versand/i.test(order.deliveryType||order.orderType||"")?"Versand":"Abholung";
+  const finalLabel=/versand/i.test(order.deliveryType||order.orderType||"")?"Versand":(order.deliveryType||"Abholung");
   const hasDtf=activePrintMethods.some(method=>/dtf/i.test(method));
   const hasFlex=activePrintMethods.some(method=>/flex|transfer/i.test(method));
   const productionMethodLabel=hasDtf&&hasFlex?"Transfer + DTF":hasDtf?"DTF":"Transfer";
@@ -528,7 +529,7 @@ function renderOrder(id,order){
     {value:"Bestellt",label:"Bestellt"},
     {value:"Transfer",label:"Transfer"},
     {value:"Abgeschlossen",label:"Abgeschlossen"},
-    {value:finalStage,label:finalStage==="Versandt"?"Versand":"Abholung"}
+    {value:finalStage,label:finalStage==="Versandt"?"Versand":deliveryLabel(order)}
   ];
   const currentIndex=Math.max(0,stageValues.findIndex(s=>s.value===currentStage));
   stageValues.forEach((stage,index)=>{
@@ -842,6 +843,7 @@ function hansaSweatshirtProduct(){
 const shopFields = {
   id: document.getElementById("shopId"), type: document.getElementById("shopType"), name: document.getElementById("shopName"),
   price: document.getElementById("shopPrice"), prefix: document.getElementById("shopPrefix"), email: document.getElementById("shopEmail"), active: document.getElementById("shopActive"),
+  handoverLabel:document.getElementById("shopHandoverLabel"), paypalEnabled:document.getElementById("shopPaypalEnabled"), paypalEmail:document.getElementById("shopPaypalEmail"),
   logoHeight: document.getElementById("logoHeight"), previewMode: document.getElementById("previewMode"), subtitle: document.getElementById("brandSubtitle"), heading: document.getElementById("designerHeading"), intro: document.getElementById("designerIntro"),
   fixedShirtName: document.getElementById("fixedShirtName"), fixedShirtHex: document.getElementById("fixedShirtHex"), fixedMotifName: document.getElementById("fixedMotifName"), fixedMotifHex: document.getElementById("fixedMotifHex"),
   productTshirtEnabled: document.getElementById("productTshirtEnabled"), productPoloEnabled: document.getElementById("productPoloEnabled"), productHoodieEnabled: document.getElementById("productHoodieEnabled"),
@@ -1669,6 +1671,7 @@ function selectShop(id){
   if(chestSetting) chestSetting.checked=fixedChestLogoDefault(cfg);
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=id==="_master"?`${cfg.customerName||"Vorlage"} – zentrale Vorlage`:(cfg.customerName||id||"Neuer Shop");
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
+  shopFields.handoverLabel.value=cfg.handoverLabel??(id==="hansa"?"Lehrerzimmer":"");shopFields.paypalEnabled.checked=cfg.paypalEnabled===true;shopFields.paypalEmail.value=cfg.paypalEmail||"";
   shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=id==="hansa"?"single":cfg.features?.previewMode||"single"; shopFields.subtitle.value=cfg.brandSubtitle||""; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
   fillProductToggles(cfg); configurePositionProducts(cfg);
   shopFields.fixedShirtName.value=cfg.fixedShirtColor?.name||cfg.fixedShirtColor?.id||""; shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
@@ -1944,6 +1947,7 @@ newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal=template; workingMotifs=deepClone(template.motifs||[{id:"motiv1",name:"Motiv 1",file:""}]); workingProductMotifModes=deepClone(template.productMotifModes||{}); workingProductPrint=deepClone(template.productPrint||{}); workingLogo=template.logoFile||""; workingInitials=deepClone(template.initialsByProduct||{});
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent="Neuer Shop aus Master"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value=template.shopType||"simple"; shopFields.price.value=Number(template.shirtPrice??15); shopFields.prefix.value=""; shopFields.email.value=template.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true;
+  shopFields.handoverLabel.value=template.handoverLabel||"";shopFields.paypalEnabled.checked=template.paypalEnabled===true;shopFields.paypalEmail.value=template.paypalEmail||"";
   shopFields.logoHeight.value=Number(template.logoHeight||90); shopFields.previewMode.value=template.features?.previewMode||"single"; shopFields.subtitle.value=""; shopFields.heading.value=""; shopFields.intro.value="";
   fillProductToggles(template); configurePositionProducts(template);
   shopFields.fixedShirtName.value=template.fixedShirtColor?.name||template.fixedShirtColor?.id||""; shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedShirtColor?.color||"")?template.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=template.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedMotifColor?.color||"")?template.fixedMotifColor.color:"#f6c951";
@@ -1984,6 +1988,11 @@ function buildShopConfig(){
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowInitials:!!shopFields.allowInitials?.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,fixedFrontChestLogo:fixedChestLogoEnabled(),allowBackDesign:shopFields.allowBack.checked||workingMotifs.some(m=>m.file&&m.placement?.side==="back"),allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showClubLogos:shopFields.showClubLogos.checked,showMotifColorPicker:shopFields.showMotifColors.checked,showPrices:shopFields.showPrices.checked,showNexaroBranding:shopFields.showNexaroBranding.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:id==="hansa"?"single":shopFields.previewMode.value||"single"};
   const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:old.accentColor||"#c99a1b",logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file,category:/vereinslogo|vereinswappen/i.test(m.name||"")?"club":m.category==="general"?"general":"club",locked:!!m.locked,customerSelectable:m.customerSelectable!==false,preserveColors:!!m.preserveColors,placementsByProduct:m.placementsByProduct||{},placement:m.placement||{side:"front",xPct:68,yPct:19,widthPct:22}}))};
+  cfg.handoverLabel=shopFields.handoverLabel.value.trim();
+  if(/^(abholung|versand)$/i.test(cfg.handoverLabel)) throw new Error("Die zusätzliche Bestellart braucht einen eigenen Namen.");
+  cfg.paypalEnabled=shopFields.paypalEnabled.checked;
+  cfg.paypalEmail=shopFields.paypalEmail.value.trim();
+  if(cfg.paypalEnabled && (!cfg.paypalEmail || !shopFields.paypalEmail.checkValidity())) throw new Error("Bitte eine gültige PayPal-E-Mail eintragen oder PayPal ausschalten.");
   if(id==="master" || id==="_master") cfg.pricingUpdatedAt=Date.now();
   cfg.priceVisibilityVersion=1;
   if(id==="_master"){ cfg.isMasterTemplate=true; cfg.templateVersion=Math.max(1,Number(old.templateVersion)||1); cfg.customerUploadVersion=1; }

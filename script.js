@@ -2551,17 +2551,42 @@ if (orderBtn) orderBtn.addEventListener("click", openOrderSummary);
 
 const deliveryTypeSelect = document.getElementById("customerDeliveryType");
 const paymentMethodSelect = document.getElementById("customerPaymentMethod");
+const handoverOption=document.getElementById("customerHandoverOption");
+const handoverLabel=String(SHOP.handoverLabel||"").trim();
+if(handoverOption){
+  handoverOption.hidden=!handoverLabel;
+  handoverOption.disabled=!handoverLabel;
+  handoverOption.value=handoverLabel;
+  handoverOption.textContent=handoverLabel;
+}
+const paypalRecipient=SHOP.paypalEnabled===true && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(SHOP.paypalEmail||"").trim())
+  ? String(SHOP.paypalEmail).trim() : "";
+const paypalPaymentOption=Array.from(paymentMethodSelect?.options||[]).find(option=>option.value==="PayPal");
+if(paypalPaymentOption){paypalPaymentOption.hidden=!paypalRecipient;paypalPaymentOption.disabled=!paypalRecipient;}
+const paypalPaymentNote=document.getElementById("paypalPaymentNote");
+function syncPaypalPaymentNote(){
+  if(!paypalPaymentNote)return;
+  paypalPaymentNote.hidden=paymentMethodSelect?.value!=="PayPal" || !paypalRecipient;
+  paypalPaymentNote.textContent=paypalPaymentNote.hidden?"":`Nach der Bestellung den Betrag per PayPal an ${paypalRecipient} senden. Die Zahlung erfolgt nicht automatisch.`;
+}
 function syncPaymentWithDelivery(){
   if(!deliveryTypeSelect || !paymentMethodSelect) return;
   const cashOption = Array.from(paymentMethodSelect.options).find(option => option.value === "Bar bei Abholung");
+  const handoverCashOption=Array.from(paymentMethodSelect.options).find(option => option.value === "Bar bei Übergabe");
   const isShipping = deliveryTypeSelect.value === "Versand";
-  if(cashOption) cashOption.disabled = isShipping;
-  if(isShipping && paymentMethodSelect.value === "Bar bei Abholung") paymentMethodSelect.value = "Überweisung";
+  const isHandover=!!handoverLabel && deliveryTypeSelect.value===handoverLabel;
+  if(cashOption){cashOption.disabled=isShipping||isHandover;cashOption.hidden=isShipping||isHandover;}
+  if(handoverCashOption){handoverCashOption.disabled=!isHandover;handoverCashOption.hidden=!isHandover;}
+  if(paymentMethodSelect.value==="Bar bei Abholung" && isHandover)paymentMethodSelect.value="Bar bei Übergabe";
+  else if(paymentMethodSelect.value==="Bar bei Übergabe" && !isHandover)paymentMethodSelect.value=isShipping?"Überweisung":"Bar bei Abholung";
+  else if(isShipping && paymentMethodSelect.value==="Bar bei Abholung")paymentMethodSelect.value="Überweisung";
+  syncPaypalPaymentNote();
 }
 if(deliveryTypeSelect){
   deliveryTypeSelect.addEventListener("change", syncPaymentWithDelivery);
   syncPaymentWithDelivery();
 }
+paymentMethodSelect?.addEventListener("change",syncPaypalPaymentNote);
 document.querySelectorAll("[data-close-order]").forEach(el => el.addEventListener("click", closeOrderSummary));
 document.addEventListener("keydown", e => { if (e.key === "Escape" && !orderModal.hidden) closeOrderSummary(); });
 
@@ -2640,6 +2665,10 @@ if (orderForm) {
       const deliveryType = deliveryEl && String(deliveryEl.value || "").trim() ? deliveryEl.value : "Abholung";
       let paymentMethod = paymentEl && String(paymentEl.value || "").trim() ? paymentEl.value : "Bar bei Abholung";
       if (deliveryType === "Versand" && paymentMethod === "Bar bei Abholung") paymentMethod = "Überweisung";
+      if(paymentMethod==="PayPal" && !paypalRecipient){
+        if(sendOrderMessage)sendOrderMessage.textContent="PayPal ist für diesen Shop nicht eingerichtet. Bitte eine andere Zahlungsart wählen.";
+        return;
+      }
       const phone = phoneEl ? phoneEl.value.trim() : "";
 
       orderSubmitting = true;
@@ -2673,6 +2702,7 @@ if (orderForm) {
         address,
         deliveryType,
         paymentMethod,
+        paypalRecipient:paymentMethod==="PayPal"?paypalRecipient:"",
         showPrices: FEATURES.showPrices !== false,
         showNexaroBranding: FEATURES.showNexaroBranding !== false,
         totalQuantity,
@@ -2730,6 +2760,7 @@ if (orderForm) {
         mailData.set("Adresse", address);
         mailData.set("Bestellart", deliveryType);
         mailData.set("Zahlung", paymentMethod);
+        if(paymentMethod==="PayPal")mailData.set("PayPal-Empfänger",paypalRecipient);
         attachments.forEach((file,index)=>mailData.append(index===0?"attachment":`attachment${index+1}`,file,file.name));
         const mailController=attachments.length ? new AbortController() : null;
         const mailRequest=fetch(`https://formsubmit.co/${targetEmail}`, {

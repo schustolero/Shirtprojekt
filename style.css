@@ -6192,3 +6192,6 @@ html body #previewLeftRail .shirt-color-scroll-hint{
   cursor:pointer!important;
 }
 html body #previewLeftRail .shirt-color-scroll-hint[hidden]{display:none!important}
+
+.paypal-payment-note{box-sizing:border-box;grid-column:1/-1;margin:0;padding:9px 11px;border:1px solid #e4d69e;border-radius:9px;background:#fffaf0;color:#3b3524;font-size:12px;line-height:1.4}
+.paypal-payment-note[hidden]{display:none!important}

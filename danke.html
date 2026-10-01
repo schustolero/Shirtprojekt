@@ -103,6 +103,8 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
  .card,.table-wrap,.contact,.totalbox,.footer{break-inside:avoid;page-break-inside:avoid}
 }
 
+.paypal-confirmation-note{margin:7px 12px 11px;padding:9px 11px;border:1px solid #e4d69e;border-radius:9px;background:#fffaf0;color:#30343a;font-size:12px;line-height:1.45}
+.paypal-confirmation-note[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -140,6 +142,7 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
       <div class="order-detail"><span>Bestellnummer</span><strong id="orderNumber">–</strong></div>
       <div class="order-detail"><span>Datum</span><strong id="orderDate">–</strong></div>
     </div>
+    <p id="paypalConfirmationNote" class="paypal-confirmation-note" hidden></p>
   </div>
 </section>
 
@@ -184,11 +187,11 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 </section>
 </main>
 
-<script src="/central-config.js?v=30.3.215"></script>
+<script src="/central-config.js?v=30.3.216"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.3.215"></script>
+<script src="/shop-loader.js?v=30.3.216"></script>
 <script>
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
@@ -253,6 +256,11 @@ loadShopConfig(function(cfg){
 
     if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
     if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
+    const paypalNote=document.getElementById("paypalConfirmationNote");
+    if(data.paymentMethod==="PayPal" && data.paypalRecipient){
+      paypalNote.hidden=false;
+      paypalNote.textContent=`Bitte ${euro(data.totalPrice)} per PayPal an ${data.paypalRecipient} senden. Die Zahlung wurde nicht automatisch ausgeführt. Gib dabei die Bestellnummer ${data.orderNumber||""} an.`;
+    }
     document.getElementById("contactPhoneValue").textContent="+49 160 26 55 220";
 
     const totalQty=Number(data.totalQuantity)||0;

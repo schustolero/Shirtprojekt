@@ -178,6 +178,7 @@ window.CENTRAL_CONFIG = {
     },
     "hansa": {
       customerId:"hansa", customerName:"Hansa Berufskolleg", pageTitle:"Hansa Berufskolleg – T-Shirt Shop", brandTitle:"Hansa Berufskolleg", brandSubtitle:"Wir sind Hansa!", hansaSubtitleVersion:1,
+      handoverLabel:"Lehrerzimmer", paypalEnabled:false, paypalEmail:"",
       designerHeading:"Shirt gestalten", designerIntro:"Motiv auswählen, Farbe bestimmen und Shirt konfigurieren.", accentColor:"#1f3f76", logoFile:"shop-logo.jpg", logoHeight:90,
       shirtPrice:15,currency:"EUR",
       products:[

@@ -7670,3 +7670,13 @@ html body.v32-admin #shopForm .v2854-name-logo-row .admin-backup-content .ghost-
   html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-type{grid-column:2!important;grid-row:2!important}
   html body.v32-admin #shopForm .v2854-basic-logo > .v32-shop-active{grid-column:3!important;grid-row:2!important}
 }
+
+/* Zusätzliche Bestellart und PayPal pro Shop. */
+html body.v32-admin #shopForm .shop-checkout-settings{box-sizing:border-box;width:100%;min-width:0;margin:8px 0;border:1px solid #dde3e9;border-radius:10px;background:#fff}
+html body.v32-admin #shopForm .shop-checkout-settings>summary{cursor:pointer;padding:10px 12px;font-size:12px;font-weight:750;color:#34404b}
+html body.v32-admin #shopForm .shop-checkout-grid{display:grid;grid-template-columns:minmax(0,1.3fr) auto minmax(0,1.3fr);align-items:center;gap:10px;padding:0 12px 12px}
+html body.v32-admin #shopForm .shop-checkout-grid>label{min-width:0}
+html body.v32-admin #shopForm .shop-checkout-grid input[type="text"],
+html body.v32-admin #shopForm .shop-checkout-grid input[type="email"]{box-sizing:border-box;width:100%;min-width:0;min-height:38px;padding:7px 9px;border:1px solid #dbe0e5;border-radius:8px;font-size:13px}
+html body.v32-admin #shopForm .shop-checkout-grid small{display:block;margin-top:4px;color:#65717d;font-size:10px;line-height:1.3}
+@media(max-width:760px){html body.v32-admin #shopForm .shop-checkout-grid{grid-template-columns:1fr;gap:9px}}
