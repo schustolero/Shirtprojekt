@@ -6,6 +6,8 @@
   document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
+const MASTER_ZOODIE_BOTH_SIDES = SHOP.customerId === "_master" || SHOP.isMasterTemplate === true;
+const zoodieBackOnly = (productId) => productId === "jh050" && !MASTER_ZOODIE_BOTH_SIDES;
 const MASTER_FIXED_CHEST_LOGO = typeof SHOP.features?.fixedFrontChestLogo === "boolean"
   ? SHOP.features.fixedFrontChestLogo
   : SHOP.isMasterTemplate === true || SHOP.customerId === "_master" || SHOP.templateSource === "_master";
@@ -435,28 +437,8 @@ try{
   canvas = { getObjects(){return [];}, requestRenderAll(){}, add(){}, remove(){}, clear(){}, setWidth(){}, setHeight(){}, on(){}, off(){}, renderAll(){}, getActiveObject(){return null;}, discardActiveObject(){}, setActiveObject(){} };
 }
 
-// Canvas intern mit der tatsächlich angezeigten Pixelauflösung zeichnen.
-// Der logische Druck-Koordinatenraum bleibt unverändert bei 320 x 500.
-if(canvas.lowerCanvasEl && typeof canvas.setDimensions==="function"){
-  let previewPixelRatio=0;
-  const displayPixelRatio=()=>{
-    const box=canvas.lowerCanvasEl.getBoundingClientRect();
-    return Math.max(1,Number(window.devicePixelRatio)||1)*Math.max(1,box.width/PRINT_CANVAS_WIDTH,box.height/PRINT_CANVAS_HEIGHT);
-  };
-  canvas.getRetinaScaling=()=>displayPixelRatio();
-  const refreshPreviewResolution=()=>{
-    const ratio=displayPixelRatio();
-    if(Math.abs(ratio-previewPixelRatio)<0.01) return;
-    previewPixelRatio=ratio;
-    canvas.setDimensions({width:PRINT_CANVAS_WIDTH,height:PRINT_CANVAS_HEIGHT});
-    canvas.requestRenderAll();
-  };
-  if(typeof ResizeObserver!=="undefined"){
-    new ResizeObserver(refreshPreviewResolution).observe(canvas.lowerCanvasEl.parentElement);
-  }
-  window.addEventListener("resize",refreshPreviewResolution,{passive:true});
-  requestAnimationFrame(refreshPreviewResolution);
-}
+// Fabric verwaltet Retina-Skalierung und Trefferkoordinaten gemeinsam.
+// Ein eigener getRetinaScaling-Wert verschiebt die Auswahlgriffe gegenüber dem Motiv.
 
 const resetBtn = document.getElementById("resetBtn");
 const viewButtons = document.querySelectorAll(".view-btn");
@@ -469,6 +451,19 @@ const currentMotifColorName = document.getElementById("currentMotifColorName");
 const designerStatus = document.getElementById("designerStatus");
 const printZone = document.getElementById("printZone");
 const workspace = document.querySelector(".workspace");
+if(printZone && typeof ResizeObserver!=="undefined" && typeof canvas.calcOffset==="function"){
+  let pending=false;
+  new ResizeObserver(()=>{
+    if(pending)return;
+    pending=true;
+    requestAnimationFrame(()=>{
+      pending=false;
+      canvas.calcOffset();
+      canvas.getObjects().forEach(object=>object.setCoords());
+      canvas.requestRenderAll();
+    });
+  }).observe(printZone);
+}
 // Auswahlrahmen für eigene Bilder und Texte: vier direkt bedienbare Eckgriffe.
 function renderCustomerControl(icon,small=false){
   return function(ctx,left,top,_style,object){
@@ -609,7 +604,7 @@ const selectedLogoByProduct = {};
 let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function syncProductPrintSideControls(){
-  const backOnly=getCurrentProduct().printSide==="back";
+  const backOnly=zoodieBackOnly(currentProductId) || (getCurrentProduct().printSide==="back" && !MASTER_ZOODIE_BOTH_SIDES);
   const frontButton=document.querySelector('.view-btn[data-view="front"]');
   if(frontButton) frontButton.hidden=backOnly;
   if(backOnly && currentView!=="back") switchView("back");
@@ -984,16 +979,21 @@ async function renderShirt() {
 }
 
 
-function getMotifPlacement(motif, productId=currentProductId) {
+function getMotifPlacement(motif, productId=currentProductId, view=currentView) {
   if(productId==="jh050"){
     const saved=motif?.placementsByProduct?.jh050;
+    if(MASTER_ZOODIE_BOTH_SIDES){
+      if(saved?.[view]) return saved[view];
+      if(saved?.side===view) return saved;
+      return {side:view,...(SHOP.productPrint?.jh050?.[view]||(view==="front"?{xPct:68,yPct:24,widthPct:28}:{xPct:50,yPct:32,widthPct:55}))};
+    }
     return saved?.side==="back" ? saved : {side:"back",...(SHOP.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55})};
   }
   return motif?.placementsByProduct?.[productId] || motif?.placement;
 }
 
 function getConfiguredMotif(view) {
-  if(currentProductId==="jh050" && view==="front") return null;
+  if(zoodieBackOnly(currentProductId) && view==="front") return null;
   if(!logoEnabled) return null;
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   const selections=selectedLogoByProduct[currentProductId];
@@ -1007,7 +1007,7 @@ function getConfiguredMotif(view) {
   const motif = available.find(m => m.id === selectedId)
     || available.find(m => m.id === cfg?.motifId)
     || available[0];
-  if (!motif || (getMotifPlacement(motif)?.side && getMotifPlacement(motif).side!==view)) return null;
+  if (!motif || (getMotifPlacement(motif,currentProductId,view)?.side && getMotifPlacement(motif,currentProductId,view).side!==view)) return null;
   return { cfg:cfg||{enabled:true}, motif };
 }
 
@@ -1043,7 +1043,7 @@ function getUnifiedPrintLayout(view, cfg) {
 
 function applyDualMotifLayout(img, view, cfg, motif) {
   if (!img || !cfg) return;
-  const placement=getMotifPlacement(motif);
+  const placement=getMotifPlacement(motif,currentProductId,view);
   const layout = placement?.side===view ? placement : getUnifiedPrintLayout(view, cfg);
 
   // Dieselben X/Y/Größe-Werte wie in der Einzelansicht werden in die
@@ -1193,7 +1193,7 @@ function loadView(view) {
 
 function switchView(view) {
   if (view !== "front" && view !== "back") return;
-  if (currentProductId==="jh050" && view==="front") return;
+  if (zoodieBackOnly(currentProductId) && view==="front") return;
   if (view === currentView) {
     renderShirt();
     updateInitialsOnCanvas();
@@ -1427,7 +1427,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
-  const side=getMotifPlacement(motif)?.side==="back" ? "back" : "front";
+  const side=MASTER_ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back" ? "back" : "front";
   await addMotifToView(side, motifId, motifSrc, true);
   motifButtons.forEach(button=>button.classList.toggle("active",button.dataset.motif===motifId));
   if(FEATURES.previewMode==="dual") await renderDualPreview();
@@ -1466,7 +1466,7 @@ document.addEventListener("click",(event)=>{
   }
   if(button.dataset.src){
     const motif=(SHOP.motifs||[]).find(item=>item.id===button.dataset.motif);
-    const side=getMotifPlacement(motif)?.side==="back"?"back":"front";
+    const side=MASTER_ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back"?"back":"front";
     const selections=selectedLogoByProduct[currentProductId];
     selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[side]:button.dataset.motif};
     productMotifSelections[currentProductId]=button.dataset.motif==="tus-3d-patch"?"patch":"normal";
@@ -1617,7 +1617,7 @@ function handleCustomerUploadFile(file,dropPoint=null){
   if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) { alert("Bitte PNG, JPG, WEBP oder SVG auswählen."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
   const reader = new FileReader();
   reader.onload = () => {
-    if(currentProductId==="jh050" && currentView!=="back") switchView("back");
+    if(zoodieBackOnly(currentProductId) && currentView!=="back") switchView("back");
     if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
     if(FEATURES.previewMode==="dual"){
       FEATURES.previewMode="single";
@@ -1675,7 +1675,7 @@ const customTextFont = document.getElementById("customTextFont");
 const initialsInput = document.getElementById("initialsInput");
 
 function initialsValue() {
-  if(currentProductId==="jh050") return "";
+  if(zoodieBackOnly(currentProductId)) return "";
   const field = document.getElementById("initialsInput") || initialsInput;
   const maxLength = Math.min(3, Number(SHOP.initialsConfig?.maxLength) || 3);
   const value = String(field?.value || "")
@@ -1794,6 +1794,7 @@ canvas.on("selection:updated", event => updateTextStyleControls(event.selected?.
 function addCustomerText(value,point=null){
   value=String(value||"").trim();
   if (!value) return;
+  if(zoodieBackOnly(currentProductId) && currentView==="front") switchView("back");
   const text = new fabric.Textbox(value, {
     left: point?.x ?? canvas.width / 2, top: point?.y ?? canvas.height * 0.56, originX: "center", originY: "center",
     width: canvas.width * 0.7, textAlign: "center", fontSize: 28, fontWeight: 700,
@@ -1995,6 +1996,7 @@ document.getElementById("textDialogAdd")?.addEventListener("click",()=>{
   if(customTextInput)customTextInput.value="";closeTextDialog();
 });
 function toggleDesignMenu(tool){
+  if(zoodieBackOnly(currentProductId) && currentView==="front") return;
   if(tool==="photo"){closeDesignMenu();openPhotoDialog();return;}
   if(tool==="text"){closeDesignMenu();openTextDialog();return;}
   if(openDesignTool===tool){closeDesignMenu();return;}
@@ -2317,7 +2319,7 @@ function getSelectedMotifName() {
     `${uploads.length>1?(side==="front"?"Vorne: ":"Hinten: "):""}Eigenes Logo (${image.motifName||"Upload"})`).join(" · ");
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
-    const names=(currentProductId==="jh050"?["back"]:["front","back"]).flatMap(side=>{
+    const names=(zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections[side]);
       return motif ? [`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}`] : [];
     });
@@ -2331,7 +2333,7 @@ function getSelectedMotifName() {
 }
 
 function getCustomerUploads(){
-  return (currentProductId==="jh050"?["back"]:["front","back"]).flatMap(side=>{
+  return (zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
     const objects=side===currentView ? canvas.getObjects() : viewStates[side]?.objects||[];
     const image=objects.find(object=>object?.motifKind==="upload");
     return image?[{side,image}]:[];
@@ -2356,7 +2358,7 @@ function getCurrentShirtSelection() {
   shirtQuantity.value = quantity;
   const activeMotif = document.querySelector(".motif-btn.active");
   const uploads=getCustomerUploads();
-  const hasCustomDesign = uploads.length>0 || canvas.getObjects().some(obj => obj?.motifKind === "text");
+  const hasCustomDesign = uploads.length>0 || ["front","back"].some(side=>(side===currentView?canvas.getObjects():viewStates[side]?.objects||[]).some(obj=>obj?.motifKind==="text"));
 
   if (!size) {
     orderMessage.textContent = "Bitte zuerst eine Größe auswählen.";
@@ -2371,14 +2373,14 @@ function getCurrentShirtSelection() {
   const fixedPrintParts = [];
   if (MASTER_FIXED_CHEST_LOGO){
     const selections=selectedLogoByProduct[currentProductId];
-    for(const side of (product.id==="jh050"?["back"]:["front","back"])){
+    for(const side of (zoodieBackOnly(product.id)?["back"]:["front","back"])){
       if(uploads.some(upload=>upload.side===side))continue;
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections?.[side]);
       if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${getMotifPlacement(motif)?.xPct??(side==="front"?68:50)} % / ${getMotifPlacement(motif)?.yPct??(side==="front"?19:32)} %, Breite ${getMotifPlacement(motif)?.widthPct??(side==="front"?22:40)} %`);
     }
   }
   else {
-    if (product.id!=="jh050" && SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
+    if (!zoodieBackOnly(product.id) && SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
     if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
   }
   uploads.forEach(({side,image})=>{

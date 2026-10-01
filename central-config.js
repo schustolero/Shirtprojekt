@@ -219,7 +219,7 @@ window.CENTRAL_CONFIG = {
       customerExtraFieldLabel:"Team / Abteilung", customerExtraFieldName:"Team / Abteilung",
       orderPrefix:"MAS", shopType:"simple", active:true, isMasterTemplate:true, templateVersion:1,
       fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},
-      products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:product.enabled!==false})),
+      products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:product.enabled!==false,...(product.id==="jh050"?{printSide:"both"}:{})})),
       features:{
         layout:"simple", motifMode:"single",
         allowCustomerUpload:true, allowText:false, allowInitials:true,

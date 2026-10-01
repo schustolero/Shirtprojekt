@@ -1020,7 +1020,7 @@ function renderAdminColorRail(){
 }
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
-  const backOnly=positionProduct?.value==="jh050";
+  const backOnly=positionProduct?.value==="jh050" && selectedShopId!=="_master";
   if(positionSide){
     const frontOption=positionSide.querySelector('option[value="front"]');
     if(frontOption) frontOption.disabled=backOnly;
@@ -1031,7 +1031,10 @@ function refreshPositionEditor(){
   const side = positionSide?.value || "front";
   const editingLogo=workingMotifs.find(m=>m.id===activeLogoPlacementId);
   const motif=selectedPositionMotif();
-  const savedPlacement=motif?.placementsByProduct?.[product] || motif?.placement;
+  const productPlacement=motif?.placementsByProduct?.[product];
+  const savedPlacement=selectedShopId==="_master" && product==="jh050"
+    ? productPlacement?.[side] || (productPlacement?.side===side?productPlacement:null)
+    : productPlacement || motif?.placement;
   const placement=savedPlacement && (savedPlacement.side||"front")===side ? savedPlacement : null;
   const fields = getPositionFieldSet(product, side);
   const x = placement ? Number(placement.xPct) : Number(fields.x?.value || (side === "front" ? 68 : 50));
@@ -1125,11 +1128,13 @@ function writePositionValues(x, y, w){
   if(editing){
     const product=positionProduct?.value||"tshirt";
     const side=positionSide?.value||"front";
-    const placement={...(editing.placementsByProduct?.[product]||editing.placement||{side,xPct:side==="front"?68:50,yPct:side==="front"?19:32,widthPct:side==="front"?22:40}),side};
+    const existing=editing.placementsByProduct?.[product];
+    const preferred=selectedShopId==="_master" && product==="jh050" ? existing?.[side] || (existing?.side===side?existing:null) : existing || editing.placement;
+    const placement={...(preferred || {side,xPct:side==="front"?68:50,yPct:side==="front"?24:32,widthPct:side==="front"?28:55}),side};
     if(Number.isFinite(x)) placement.xPct=Math.round(x*2)/2;
     if(Number.isFinite(y)) placement.yPct=Math.round(y*2)/2;
     if(Number.isFinite(w)) placement.widthPct=Math.round(w*2)/2;
-    editing.placementsByProduct={...editing.placementsByProduct,[product]:placement};
+    editing.placementsByProduct={...editing.placementsByProduct,[product]:selectedShopId==="_master" && product==="jh050"?{...(existing?.front||existing?.back?existing:existing?.side?{[existing.side]:existing}:{}),[side]:placement}:placement};
     if(selectedShopId==="hansa" && ["hoodie","polo"].includes(product)){
       workingMotifs.forEach(motif=>{
         const motifSide=(motif.placementsByProduct?.[product]||motif.placement)?.side||"front";
@@ -1154,6 +1159,10 @@ function bindPositionEditor(){
     const editing=workingMotifs.find(m=>m.id===activeLogoPlacementId);
     if(editing){
       const product=positionProduct?.value||"tshirt";
+      if(selectedShopId==="_master" && product==="jh050"){
+        refreshPositionEditor();
+        return;
+      }
       const placement=editing.placementsByProduct?.[product]||editing.placement||{xPct:68,yPct:19,widthPct:22};
       editing.placementsByProduct={...editing.placementsByProduct,[product]:{...placement,side:positionSide.value}};
       renderMotifsEditor();
@@ -1857,7 +1866,7 @@ function renderMotifsEditor(){
       activeLogoPlacementId=workingMotifs[index].id;
       renderMotifsEditor();
       if(!workingMotifs[index].placement) workingMotifs[index].placement={side:side.value,xPct:side.value==="front"?68:50,yPct:side.value==="front"?19:32,widthPct:side.value==="front"?22:40};
-      if(positionSide) positionSide.value=(workingMotifs[index].placementsByProduct?.[positionProduct?.value||"tshirt"]||workingMotifs[index].placement).side;
+      if(positionSide) positionSide.value=(workingMotifs[index].placementsByProduct?.[positionProduct?.value||"tshirt"]||workingMotifs[index].placement).side||positionSide.value;
       document.querySelector('#v32ShopNav [data-v32="print"]')?.click();
       refreshPositionEditor();
       document.querySelector(".v2853-article-card")?.scrollIntoView({behavior:"smooth",block:"start"});
@@ -2014,7 +2023,7 @@ function buildShopConfig(){
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,-20,120,68),yPct:clamp(shopFields.poloFrontY.value,-20,120,22),widthPct:clamp(shopFields.poloFrontW.value,5,110,28)},back:{xPct:clamp(shopFields.poloBackX.value,-20,120,50),yPct:clamp(shopFields.poloBackY.value,-20,120,36),widthPct:clamp(shopFields.poloBackW.value,5,110,50)}},
     hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,-20,120,68),yPct:clamp(shopFields.hoodieFrontY.value,-20,120,22),widthPct:clamp(shopFields.hoodieFrontW.value,5,110,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,-20,120,50),yPct:clamp(shopFields.hoodieBackY.value,-20,120,34),widthPct:clamp(shopFields.hoodieBackW.value,5,110,78)}}
   };
-  if(cfg.productPrint.jh050){
+  if(cfg.productPrint.jh050 && id!=="_master"){
     cfg.productPrint.jh050={...cfg.productPrint.jh050,back:cfg.productPrint.jh050.back||{xPct:50,yPct:32,widthPct:55}};
     delete cfg.productPrint.jh050.front;
   }
@@ -2035,7 +2044,7 @@ function buildShopConfig(){
   if(id!=="hansa" && sourceProducts.some(product=>["jh050","s279"].includes(product.id) && product.enabled!==false && !(Number(product.price)>0))){
     throw new Error("Bitte für neue Artikel vor dem Aktivieren einen Verkaufspreis eintragen.");
   }
-  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false}));
+  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false,...(id==="_master"&&product.id==="jh050"?{printSide:"both"}:{})}));
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;
