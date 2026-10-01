@@ -6170,3 +6170,9 @@ html body .editor-dnd-rail [data-design-tool="printColor"][aria-expanded="true"]
   }
   html body .editor-dnd-rail [data-design-tool="printColor"]>.print-color-chevron{top:15px;right:5px}
 }
+
+/* v30.3.206 – Werkzeugleiste mit kurzen Beschriftungen ohne Zusatztexte. */
+html body .editor-dnd-rail [data-design-tool="photo"]>span,
+html body .editor-dnd-rail [data-design-tool="text"]>span,
+html body .editor-dnd-rail [data-design-tool="initials"]>span,
+html body .editor-dnd-rail [data-design-tool="printColor"]>span{grid-row:1}
