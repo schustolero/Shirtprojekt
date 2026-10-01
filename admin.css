@@ -5258,8 +5258,6 @@ body.v2853-reference .v284-sidebar.v32-sidebar{
   background:#fff!important;
 }
 .v2972-inline-functions label span{white-space:nowrap!important;overflow:visible!important}
-.v2972-inline-functions label[for="showNexaroBranding"],
-.v2972-inline-functions label:has(#showNexaroBranding){display:none!important}
 .template-sync-bar{
   display:flex!important;
   flex-direction:column!important;
