@@ -608,6 +608,12 @@ const productMotifSelections = {};
 const selectedLogoByProduct = {};
 let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
+function syncProductPrintSideControls(){
+  const backOnly=getCurrentProduct().printSide==="back";
+  const frontButton=document.querySelector('.view-btn[data-view="front"]');
+  if(frontButton) frontButton.hidden=backOnly;
+  if(backOnly && currentView!=="back") switchView("back");
+}
 function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
 
 function getProductMotifMode(productId=currentProductId){
@@ -784,6 +790,7 @@ productSwitch?.addEventListener("click", async event => {
   const request=++productSelectionRequest;
   saveCurrentView();
   currentProductId=product.id;
+  syncProductPrintSideControls();
   dualBaseImage=null;
   productSwitch.querySelectorAll("button[data-product]").forEach(item=>{
     const active=item.dataset.product===product.id;
@@ -858,6 +865,7 @@ function updateActiveMotifColorButton(color, label) {
 
 enhanceMotifColorCards();
 renderProductSelector();
+syncProductPrintSideControls();
 try { applyProductColorRules(getCurrentProduct()); }
 catch (err) { console.error("Produktfarben:", err); }
 
@@ -946,10 +954,15 @@ async function renderShirt() {
 
 
 function getMotifPlacement(motif, productId=currentProductId) {
+  if(productId==="jh050"){
+    const saved=motif?.placementsByProduct?.jh050;
+    return saved?.side==="back" ? saved : {side:"back",...(SHOP.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55})};
+  }
   return motif?.placementsByProduct?.[productId] || motif?.placement;
 }
 
 function getConfiguredMotif(view) {
+  if(currentProductId==="jh050" && view==="front") return null;
   if(!logoEnabled) return null;
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   const selections=selectedLogoByProduct[currentProductId];
@@ -1149,6 +1162,7 @@ function loadView(view) {
 
 function switchView(view) {
   if (view !== "front" && view !== "back") return;
+  if (currentProductId==="jh050" && view==="front") return;
   if (view === currentView) {
     renderShirt();
     updateInitialsOnCanvas();
@@ -1572,6 +1586,7 @@ function handleCustomerUploadFile(file,dropPoint=null){
   if (!/^image\/(png|jpeg|webp|svg\+xml)$/.test(file.type)) { alert("Bitte PNG, JPG, WEBP oder SVG auswählen."); if(customerLogoUpload) customerLogoUpload.value=""; return; }
   const reader = new FileReader();
   reader.onload = () => {
+    if(currentProductId==="jh050" && currentView!=="back") switchView("back");
     if (currentView !== "front" && !FEATURES.allowBackDesign) switchView("front");
     if(FEATURES.previewMode==="dual"){
       FEATURES.previewMode="single";
@@ -1629,6 +1644,7 @@ const customTextFont = document.getElementById("customTextFont");
 const initialsInput = document.getElementById("initialsInput");
 
 function initialsValue() {
+  if(currentProductId==="jh050") return "";
   const field = document.getElementById("initialsInput") || initialsInput;
   const maxLength = Math.min(3, Number(SHOP.initialsConfig?.maxLength) || 3);
   const value = String(field?.value || "")
@@ -2110,6 +2126,7 @@ if (resetBtn) resetBtn.addEventListener("click", function() {
   changeShirtColor("#ffffff", "White", "white", "");
   recolorActiveMotif("#000000", "Black");
   canvas.requestRenderAll();
+  syncProductPrintSideControls();
 });
 
 canvas.on("object:scaling",function(event){
@@ -2277,7 +2294,7 @@ function getSelectedMotifName() {
     `${uploads.length>1?(side==="front"?"Vorne: ":"Hinten: "):""}Eigenes Logo (${image.motifName||"Upload"})`).join(" · ");
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
-    const names=["front","back"].flatMap(side=>{
+    const names=(currentProductId==="jh050"?["back"]:["front","back"]).flatMap(side=>{
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections[side]);
       return motif ? [`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}`] : [];
     });
@@ -2291,7 +2308,7 @@ function getSelectedMotifName() {
 }
 
 function getCustomerUploads(){
-  return ["front","back"].flatMap(side=>{
+  return (currentProductId==="jh050"?["back"]:["front","back"]).flatMap(side=>{
     const objects=side===currentView ? canvas.getObjects() : viewStates[side]?.objects||[];
     const image=objects.find(object=>object?.motifKind==="upload");
     return image?[{side,image}]:[];
@@ -2310,6 +2327,7 @@ function summaryRow(label, value) {
 }
 
 function getCurrentShirtSelection() {
+  const product = getCurrentProduct();
   const size = shirtSize.value;
   const quantity = Math.max(1, Math.min(99, Number(shirtQuantity.value) || 1));
   shirtQuantity.value = quantity;
@@ -2330,14 +2348,14 @@ function getCurrentShirtSelection() {
   const fixedPrintParts = [];
   if (MASTER_FIXED_CHEST_LOGO){
     const selections=selectedLogoByProduct[currentProductId];
-    for(const side of ["front","back"]){
+    for(const side of (product.id==="jh050"?["back"]:["front","back"])){
       if(uploads.some(upload=>upload.side===side))continue;
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections?.[side]);
       if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${getMotifPlacement(motif)?.xPct??(side==="front"?68:50)} % / ${getMotifPlacement(motif)?.yPct??(side==="front"?19:32)} %, Breite ${getMotifPlacement(motif)?.widthPct??(side==="front"?22:40)} %`);
     }
   }
   else {
-    if (SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
+    if (product.id!=="jh050" && SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
     if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
   }
   uploads.forEach(({side,image})=>{
@@ -2346,7 +2364,6 @@ function getCurrentShirtSelection() {
     const width=Math.round(image.width*image.scaleX/PRINT_BASE_WIDTH*100);
     fixedPrintParts.push(`${side==="front"?"Vorne":"Hinten"}: eigenes Motiv, X ${x} %, Y ${y} %, Breite ${width} %`);
   });
-  const product = getCurrentProduct();
   return {
     id: Date.now() + Math.random(),
     productId: product.id,

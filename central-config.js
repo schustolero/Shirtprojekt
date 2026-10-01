@@ -80,7 +80,7 @@ const MASTER_PRODUCT_CATALOG = [
   {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F421"),...masterColorSettings("F421","white")},
   {id:"jc001",name:"Sport",articleNo:"JC001",price:12,purchasePrice:7.62,purchasePriceBySize:{S:7.62,M:7.62,L:7.62,XL:7.62,"2XL":7.62,"3XL":7.62,"4XL":9.55,"5XL":9.55},printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JC001"),...masterColorSettings("JC001","red")},
   {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")},
-  {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")}
+  {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,printSide:"back",frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")}
 ];
 // Nur kaufmännische Werte vererben; die Artikelauswahl und Farbvarianten des Shops bleiben erhalten.
 window.inheritMasterPrices = function(shop, master){
@@ -115,8 +115,10 @@ window.ensureHansaZoodie = function(shop){
   if(!base) return shop;
   const index=products.findIndex(product=>product.id==="jh050");
   if(index<0) products.push({...base,enabled:true});
-  else products[index]={...base,...products[index],enabled:true};
-  return {...shop,products};
+  else products[index]={...base,...products[index],enabled:true,printSide:"back"};
+  const productPrint={...(shop.productPrint||{}),jh050:{...(shop.productPrint?.jh050||{}),back:shop.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55}}};
+  delete productPrint.jh050.front;
+  return {...shop,products,productPrint};
 };
 
 window.CENTRAL_CONFIG = {

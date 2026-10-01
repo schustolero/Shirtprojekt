@@ -1018,6 +1018,12 @@ function renderAdminColorRail(){
 }
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
+  const backOnly=positionProduct?.value==="jh050";
+  if(positionSide){
+    const frontOption=positionSide.querySelector('option[value="front"]');
+    if(frontOption) frontOption.disabled=backOnly;
+    if(backOnly) positionSide.value="back";
+  }
   const request=++positionPreviewRequest;
   const product = positionProduct?.value || "tshirt";
   const side = positionSide?.value || "front";
@@ -1997,6 +2003,10 @@ function buildShopConfig(){
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,-20,120,68),yPct:clamp(shopFields.poloFrontY.value,-20,120,22),widthPct:clamp(shopFields.poloFrontW.value,5,110,28)},back:{xPct:clamp(shopFields.poloBackX.value,-20,120,50),yPct:clamp(shopFields.poloBackY.value,-20,120,36),widthPct:clamp(shopFields.poloBackW.value,5,110,50)}},
     hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,-20,120,68),yPct:clamp(shopFields.hoodieFrontY.value,-20,120,22),widthPct:clamp(shopFields.hoodieFrontW.value,5,110,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,-20,120,50),yPct:clamp(shopFields.hoodieBackY.value,-20,120,34),widthPct:clamp(shopFields.hoodieBackW.value,5,110,78)}}
   };
+  if(cfg.productPrint.jh050){
+    cfg.productPrint.jh050={...cfg.productPrint.jh050,back:cfg.productPrint.jh050.back||{xPct:50,yPct:32,widthPct:55}};
+    delete cfg.productPrint.jh050.front;
+  }
   const ix=Number(document.getElementById("initialsPosX")?.value);
   const iy=Number(document.getElementById("initialsPosY")?.value);
   const pid=positionProduct?.value||"tshirt";
