@@ -1122,6 +1122,12 @@ function writePositionValues(x, y, w){
     if(Number.isFinite(y)) placement.yPct=Math.round(y*2)/2;
     if(Number.isFinite(w)) placement.widthPct=Math.round(w*2)/2;
     editing.placementsByProduct={...editing.placementsByProduct,[product]:placement};
+    if(selectedShopId==="hansa" && ["hoodie","polo"].includes(product)){
+      workingMotifs.forEach(motif=>{
+        const motifSide=(motif.placementsByProduct?.[product]||motif.placement)?.side||"front";
+        if(motifSide===side) motif.placementsByProduct={...motif.placementsByProduct,[product]:{...placement}};
+      });
+    }
     refreshPositionEditor();
     setShopState("Logoposition für dieses Textil geändert – Position speichern klicken.");
     return;

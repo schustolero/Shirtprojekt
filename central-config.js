@@ -217,5 +217,22 @@ window.normalizeHansaShopConfig = function(config){
     });
     next.hansaLogoQualityVersion=2;
   }
+  // Bereits im Admin angepasste Artikelposition auf die übrigen Hansa-Logos übertragen.
+  if(Number(config.hansaSharedLogoPositionVersion||0)<1){
+    let motifs=next.motifs||config.motifs||[];
+    for(const product of ["hoodie","polo"]){
+      const source=motifs.find(m=>m.id==="college" && m.placementsByProduct?.[product])
+        || motifs.find(m=>m.placementsByProduct?.[product]);
+      const placement=source?.placementsByProduct?.[product];
+      if(!placement) continue;
+      motifs=motifs.map(m=>{
+        const side=(m.placementsByProduct?.[product]||m.placement)?.side||"front";
+        return side===(placement.side||"front")
+          ? {...m,placementsByProduct:{...m.placementsByProduct,[product]:{...placement}}} : m;
+      });
+    }
+    next.motifs=motifs;
+    next.hansaSharedLogoPositionVersion=1;
+  }
   return next;
 };
