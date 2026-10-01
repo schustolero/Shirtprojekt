@@ -178,7 +178,7 @@ window.CENTRAL_CONFIG = {
     },
     "hansa": {
       customerId:"hansa", customerName:"Hansa Berufskolleg", pageTitle:"Hansa Berufskolleg – T-Shirt Shop", brandTitle:"Hansa Berufskolleg", brandSubtitle:"Wir sind Hansa!", hansaSubtitleVersion:1,
-      handoverLabel:"Lehrerzimmer", paypalEnabled:false, paypalEmail:"",
+      handoverLabel:"Lehrerzimmer", paypalEnabled:true, paypalEmail:"",
       designerHeading:"Shirt gestalten", designerIntro:"Motiv auswählen, Farbe bestimmen und Shirt konfigurieren.", accentColor:"#1f3f76", logoFile:"shop-logo.jpg", logoHeight:90,
       shirtPrice:15,currency:"EUR",
       products:[
@@ -271,6 +271,8 @@ window.CENTRAL_CONFIG = {
 window.normalizeHansaShopConfig = function(config){
   if(config?.customerId!=="hansa") return config;
   const next={...config};
+  // Einmalig PayPal als manuelle Zahlungsart anbieten; danach gilt der Admin-Schalter.
+  if(Number(config.paypalSetupVersion||0)<1){next.paypalEnabled=true;next.paypalSetupVersion=1;}
   if(Number(config.hansaLogoCategoryVersion||0)<1){
     next.motifs=(config.motifs||[]).map(motif=>
     motif.id==="college" || motif.id==="script" || /^(college|allstar)$/i.test(String(motif.name||"").trim())

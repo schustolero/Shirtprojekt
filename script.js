@@ -2559,15 +2559,18 @@ if(handoverOption){
   handoverOption.value=handoverLabel;
   handoverOption.textContent=handoverLabel;
 }
-const paypalRecipient=SHOP.paypalEnabled===true && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(SHOP.paypalEmail||"").trim())
+const paypalAvailable=SHOP.paypalEnabled===true;
+const paypalRecipient=paypalAvailable && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(SHOP.paypalEmail||"").trim())
   ? String(SHOP.paypalEmail).trim() : "";
 const paypalPaymentOption=Array.from(paymentMethodSelect?.options||[]).find(option=>option.value==="PayPal");
-if(paypalPaymentOption){paypalPaymentOption.hidden=!paypalRecipient;paypalPaymentOption.disabled=!paypalRecipient;}
+if(paypalPaymentOption){paypalPaymentOption.hidden=!paypalAvailable;paypalPaymentOption.disabled=!paypalAvailable;}
 const paypalPaymentNote=document.getElementById("paypalPaymentNote");
 function syncPaypalPaymentNote(){
   if(!paypalPaymentNote)return;
-  paypalPaymentNote.hidden=paymentMethodSelect?.value!=="PayPal" || !paypalRecipient;
-  paypalPaymentNote.textContent=paypalPaymentNote.hidden?"":`Nach der Bestellung den Betrag per PayPal an ${paypalRecipient} senden. Die Zahlung erfolgt nicht automatisch.`;
+  paypalPaymentNote.hidden=paymentMethodSelect?.value!=="PayPal" || !paypalAvailable;
+  paypalPaymentNote.textContent=paypalPaymentNote.hidden?"":paypalRecipient
+    ?`Nach der Bestellung den Betrag per PayPal an ${paypalRecipient} senden. Die Zahlung erfolgt nicht automatisch.`
+    :"Du erhältst die PayPal-Zahlungsdaten nach der Bestellung. Es wird jetzt noch keine Zahlung ausgeführt.";
 }
 function syncPaymentWithDelivery(){
   if(!deliveryTypeSelect || !paymentMethodSelect) return;
@@ -2665,7 +2668,7 @@ if (orderForm) {
       const deliveryType = deliveryEl && String(deliveryEl.value || "").trim() ? deliveryEl.value : "Abholung";
       let paymentMethod = paymentEl && String(paymentEl.value || "").trim() ? paymentEl.value : "Bar bei Abholung";
       if (deliveryType === "Versand" && paymentMethod === "Bar bei Abholung") paymentMethod = "Überweisung";
-      if(paymentMethod==="PayPal" && !paypalRecipient){
+      if(paymentMethod==="PayPal" && !paypalAvailable){
         if(sendOrderMessage)sendOrderMessage.textContent="PayPal ist für diesen Shop nicht eingerichtet. Bitte eine andere Zahlungsart wählen.";
         return;
       }
@@ -2760,7 +2763,7 @@ if (orderForm) {
         mailData.set("Adresse", address);
         mailData.set("Bestellart", deliveryType);
         mailData.set("Zahlung", paymentMethod);
-        if(paymentMethod==="PayPal")mailData.set("PayPal-Empfänger",paypalRecipient);
+        if(paymentMethod==="PayPal")mailData.set("PayPal-Empfänger",paypalRecipient||"Zahlungsdaten nachreichen");
         attachments.forEach((file,index)=>mailData.append(index===0?"attachment":`attachment${index+1}`,file,file.name));
         const mailController=attachments.length ? new AbortController() : null;
         const mailRequest=fetch(`https://formsubmit.co/${targetEmail}`, {

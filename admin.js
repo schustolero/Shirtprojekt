@@ -298,7 +298,7 @@ function printOrderSlip(order){
         <div class="meta">
           <div class="field"><span>Bestellart</span><strong>${htmlEscape(order.deliveryType||"Abholung")}</strong></div>
           <div class="field"><span>Zahlung</span><strong>${htmlEscape(order.paymentMethod||"Bar bei Abholung")}</strong></div>
-          ${order.paymentMethod==="PayPal"&&order.paypalRecipient?`<div class="field"><span>PayPal an</span><strong>${htmlEscape(order.paypalRecipient)}</strong></div>`:""}
+          ${order.paymentMethod==="PayPal"?`<div class="field"><span>PayPal</span><strong>${order.paypalRecipient?htmlEscape(order.paypalRecipient):"Zahlungsdaten an Kunden senden"}</strong></div>`:""}
           <div class="field"><span>Bestellnummer</span><strong>${htmlEscape(order.orderNumber||"-")}</strong></div>
           <div class="field"><span>Datum</span><strong>${htmlEscape(dateOnlyText(order.createdAt))}</strong></div>
         </div>
@@ -1992,7 +1992,8 @@ function buildShopConfig(){
   if(/^(abholung|versand)$/i.test(cfg.handoverLabel)) throw new Error("Die zusätzliche Bestellart braucht einen eigenen Namen.");
   cfg.paypalEnabled=shopFields.paypalEnabled.checked;
   cfg.paypalEmail=shopFields.paypalEmail.value.trim();
-  if(cfg.paypalEnabled && (!cfg.paypalEmail || !shopFields.paypalEmail.checkValidity())) throw new Error("Bitte eine gültige PayPal-E-Mail eintragen oder PayPal ausschalten.");
+  if(cfg.paypalEmail && !shopFields.paypalEmail.checkValidity()) throw new Error("Bitte eine gültige PayPal-E-Mail eintragen.");
+  cfg.paypalSetupVersion=1;
   if(id==="master" || id==="_master") cfg.pricingUpdatedAt=Date.now();
   cfg.priceVisibilityVersion=1;
   if(id==="_master"){ cfg.isMasterTemplate=true; cfg.templateVersion=Math.max(1,Number(old.templateVersion)||1); cfg.customerUploadVersion=1; }
