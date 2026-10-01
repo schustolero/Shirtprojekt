@@ -686,7 +686,7 @@ function updateSizeOptionsForCurrentSelection() {
 }
 
 function applyProductColorRules(product, forceDefault = false) {
-  const article=product?.articleNo || ({tshirt:"F140",polo:"F502",hoodie:"F421",jc001:"JC001",sport:"JC001",bcwu01w:"BCWU01W",sweatshirt:"BCWU01W",jh050:"JH050"})[product?.id];
+  const article=product?.articleNo || ({tshirt:"F140",polo:"F502",hoodie:"F421",jc001:"JC001",sport:"JC001",bcwu01w:"BCWU01W",sweatshirt:"BCWU01W",jh050:"JH050",s279:"S279"})[product?.id];
   const catalog=typeof MASTER_COLOR_VARIANTS!=="undefined" && Array.isArray(MASTER_COLOR_VARIANTS[article]) ? MASTER_COLOR_VARIANTS[article] : [];
   const variants=Array.isArray(product?.colorVariants)&&product.colorVariants.length ? product.colorVariants : catalog;
   const variantMap=new Map(variants.map(variant=>[variant.id,variant]));
@@ -739,15 +739,16 @@ function renderProductSelector() {
     btn.dataset.product = product.id;
     const productName = document.createElement("span");
     productName.className = "product-btn-name";
-    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie"};
+    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie",s279:"Damen V-Shirt"};
     productName.textContent = shortNames[product.id] || product.name || product.id;
-    const priceText = product.id==="jh050" && !(Number(product.price)>0)
+    const pricePending=["jh050","s279"].includes(product.id) && !(Number(product.price)>0);
+    const priceText = pricePending
       ? "Preis folgt" : formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
     btn.dataset.price = priceText;
     const productPrice = document.createElement("small");
-    productPrice.className = "product-btn-price";
+    productPrice.className = pricePending ? "product-btn-status" : "product-btn-price";
     productPrice.textContent = priceText;
-    if (FEATURES.showPrices === false) productPrice.style.setProperty("display", "none", "important");
+    if (FEATURES.showPrices === false && !pricePending) productPrice.style.setProperty("display", "none", "important");
     btn.append(productName, productPrice);
     btn.classList.toggle("active", product.id === currentProductId);
     btn.setAttribute("aria-pressed", String(product.id === currentProductId));
@@ -763,13 +764,14 @@ function renderTextileIconRail(){
   const long='<path d="m10 7-6 4 1 18 5 1 2-14v15h16V16l2 14 5-1 1-18-6-4-5-4c-1 5-9 5-10 0Z"/>';
   const hoodie=long+'<path d="M14 7c0-5 12-5 12 0l-6 5Z"/><path d="M15 24h10v5H15Z"/>';
   const polo=basic+'<path d="m14 5 6 6 6-6M20 11v8"/>';
+  const vNeck=basic+'<path d="m15 4 5 8 5-8"/>';
   const sport=basic+'<path d="m10 9 5 7M30 9l-5 7"/>';
   PRODUCTS.forEach(product=>{
     const source=Array.from(productSwitch?.querySelectorAll(".product-btn")||[]).find(button=>button.dataset.product===product.id);
     const name=source?.querySelector(".product-btn-name")?.textContent||product.name||product.id;
     const id=product.id;
     const zipHoodie=hoodie+'<path d="M20 11v20M18 15h4M15 23h3m4 0h3"/>';
-    const shape=id==="jh050"?zipHoodie:id==="hoodie"?hoodie:id==="polo"?polo:["sport","jc001"].includes(id)?sport:["sweatshirt","sweat","bcwu01w"].includes(id)?long:basic;
+    const shape=id==="jh050"?zipHoodie:id==="s279"?vNeck:id==="hoodie"?hoodie:id==="polo"?polo:["sport","jc001"].includes(id)?sport:["sweatshirt","sweat","bcwu01w"].includes(id)?long:basic;
     const button=document.createElement("button");button.type="button";button.className="textile-icon-button";
     button.dataset.product=id;button.title=name;button.setAttribute("aria-label",name);
     button.classList.toggle("active",id===currentProductId);button.setAttribute("aria-pressed",String(id===currentProductId));
@@ -821,7 +823,7 @@ productSwitch?.addEventListener("click", async event => {
 function updateProductPriceLabel() {
   const product = getCurrentProduct();
   const unitPrice = getCurrentUnitPrice();
-  const pricePending=product.id==="jh050" && !(Number(product.price)>0);
+  const pricePending=["jh050","s279"].includes(product.id) && !(Number(product.price)>0);
   const qty = Math.max(1, Number(document.getElementById("shirtQuantity")?.value || 1));
   const liveAddLabel = document.getElementById("addToOrderLabel");
   const liveAddPrice = document.getElementById("addToOrderPrice");
@@ -2438,8 +2440,8 @@ function renderCart() {
 function addCurrentShirtToOrder() {
   orderMessage.textContent = "";
   orderMessage.classList.remove("success");
-  if(getCurrentProduct().id==="jh050" && !(Number(getCurrentProduct().price)>0)){
-    orderMessage.textContent="Für den Zoodie ist noch kein Verkaufspreis hinterlegt.";
+  if(["jh050","s279"].includes(getCurrentProduct().id) && !(Number(getCurrentProduct().price)>0)){
+    orderMessage.textContent=`Für ${getCurrentProduct().name} ist noch kein Verkaufspreis hinterlegt.`;
     return;
   }
   if(typeof validateInitialsField==="function" && !validateInitialsField()){

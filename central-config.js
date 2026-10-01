@@ -49,6 +49,25 @@ const MASTER_COLOR_VARIANTS = {
   ],
   BCWU01W:[
     {id:"asphalt",name:"Asphalt",color:"#433f42"},{id:"black",name:"Black Pure",color:"#070508"},{id:"candy-pink",name:"Candy Pink",color:"#e0bed5"},{id:"desert",name:"Desert",color:"#ceb596"},{id:"elephant-grey",name:"Elephant Grey",color:"#827679"},{id:"bottle-green",name:"Forest Green",color:"#002500"},{id:"grey-fog",name:"Grey Fog",color:"#d8d2c0"},{id:"hawaiian-blue",name:"Hawaiian Blue",color:"#0097c3"},{id:"heather-asphalt",name:"Heather Asphalt",color:"#3e4041",pattern:"heather"},{id:"heather-dark-green",name:"Heather Dark Green",color:"#415d56",pattern:"heather"},{id:"heather-grey",name:"Heather Grey",color:"#b1b3b4",pattern:"heather"},{id:"heather-mid-grey",name:"Heather Mid Grey",color:"#7f8080",pattern:"heather"},{id:"heather-navy",name:"Heather Navy",color:"#3f404e",pattern:"heather"},{id:"heather-purple",name:"Heather Purple",color:"#714d69",pattern:"heather"},{id:"heather-red",name:"Heather Red",color:"#e11a3b",pattern:"heather"},{id:"heather-royal-blue",name:"Heather Royal Blue",color:"#425a97",pattern:"heather"},{id:"kelly-green",name:"Kelly Green",color:"#009149"},{id:"lavender",name:"Lavender",color:"#d5cddf"},{id:"light-jade",name:"Light Jade",color:"#c9dbae"},{id:"melon-orange",name:"Melon Orange",color:"#f6aa70"},{id:"millennial-khaki",name:"Millennial Khaki",color:"#585b55"},{id:"navy",name:"Navy Blue",color:"#101145"},{id:"nude",name:"Nude",color:"#e1b09d"},{id:"pale-pink",name:"Pale Pink",color:"#feede1"},{id:"pale-yellow",name:"Pale Yellow",color:"#faf1d7"},{id:"pink-fizz",name:"Pink Fizz",color:"#ed6890"},{id:"pure-orange",name:"Pure Orange",color:"#eb5d0f"},{id:"pure-sky",name:"Pure Sky",color:"#dde7e9"},{id:"radiant-purple",name:"Radiant Purple",color:"#3b1d66"},{id:"red",name:"Red",color:"#db001b"},{id:"royal-blue",name:"Royal",color:"#13377d"},{id:"sage",name:"Sage",color:"#aac1b3"},{id:"solar-yellow",name:"Solar Yellow",color:"#ffe93c"},{id:"white",name:"White",color:"#ffffff"},{id:"wine",name:"Wine",color:"#6a2b40"}
+  ],
+  S279:[
+    {id:"bottle-green",name:"Bottle Green",color:"#233723"},
+    {id:"orange",name:"Orange",color:"#fa7332"},
+    {id:"deep-berry",name:"Deep Berry",color:"#462e46"},
+    {id:"sweet-pink",name:"Sweet Pink",color:"#ff4673"},
+    {id:"kiwi-green",name:"Kiwi Green",color:"#5cba3c"},
+    {id:"ocean-blue",name:"Ocean Blue",color:"#0091a5"},
+    {id:"yellow",name:"Yellow",color:"#fdf052"},
+    {id:"blue-midnight",name:"Blue Midnight",color:"#0e181b"},
+    {id:"sunflower-yellow",name:"Sunflower Yellow",color:"#ffbe2d"},
+    {id:"black-opal",name:"Black Opal",color:"#000000"},
+    {id:"bright-royal",name:"Bright Royal",color:"#3264b4"},
+    {id:"grey-heather",name:"Grey Heather",color:"#b4b5b7",pattern:"heather"},
+    {id:"navy-blue",name:"Navy Blue",color:"#283c50"},
+    {id:"scarlet-red",name:"Scarlet Red",color:"#f51e19"},
+    {id:"white",name:"White",color:"#ffffff"},
+    {id:"kelly-green",name:"Kelly Green",color:"#28a03c"},
+    {id:"slate-grey",name:"Slate Grey (Solid)",color:"#505555"}
   ]
 };
 function masterColorSettings(key,defaultId){
@@ -68,7 +87,8 @@ const MASTER_SIZES_BY_NAME={
   F421:Object.fromEntries(MASTER_COLOR_VARIANTS.F421.map(c=>[c.name,SZ("S",["Orange","Purple"].includes(c.name)?"4XL":["Burgundy","Classic Olive","Dark Heather Grey","Heather Red","Light Pink","Natural","Sky Blue"].includes(c.name)?"3XL":"2XL")])),
   JC001:Object.fromEntries(MASTER_COLOR_VARIANTS.JC001.map(c=>[c.name,SZ("XS",["Baby Pink","Hawaiian Blue"].includes(c.name)?"5XL":["Desert Sand","Digital Lavender","Dusty Pink","Earthy Green","French Navy","Gold","Melon Green","Mint","Oxford Navy","Sapphire Blue","Seafoam","Turquoise Blue","Vanilla"].includes(c.name)?"3XL":"2XL")])),
   BCWU01W:Object.fromEntries(MASTER_COLOR_VARIANTS.BCWU01W.map(c=>[c.name,SZ("XS","5XL")])),
-  JH050:Object.fromEntries(MASTER_COLOR_VARIANTS.JH050.map(c=>[c.name,SZ("S",["Deep Black","New French Navy","Heather Grey","Jet Black"].includes(c.name)?"5XL":"2XL")]))
+  JH050:Object.fromEntries(MASTER_COLOR_VARIANTS.JH050.map(c=>[c.name,SZ("S",["Deep Black","New French Navy","Heather Grey","Jet Black"].includes(c.name)?"5XL":"2XL")])),
+  S279:Object.fromEntries(MASTER_COLOR_VARIANTS.S279.map(c=>[c.name,SZ(["Bottle Green","Orange","Deep Berry","Sweet Pink","Kiwi Green","Ocean Blue","Yellow"].includes(c.name)?"S":"XS",["Bottle Green","Orange","Deep Berry","Sweet Pink","Kiwi Green","Ocean Blue","Yellow"].includes(c.name)?"XL":"2XL")]))
 };
 function masterSizesByColor(key){
   const byName=MASTER_SIZES_BY_NAME[key]||{};
@@ -80,7 +100,8 @@ const MASTER_PRODUCT_CATALOG = [
   {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F421"),...masterColorSettings("F421","white")},
   {id:"jc001",name:"Sport",articleNo:"JC001",price:12,purchasePrice:7.62,purchasePriceBySize:{S:7.62,M:7.62,L:7.62,XL:7.62,"2XL":7.62,"3XL":7.62,"4XL":9.55,"5XL":9.55},printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JC001"),...masterColorSettings("JC001","red")},
   {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")},
-  {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,printSide:"back",frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")}
+  {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,printSide:"back",frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")},
+  {id:"s279",name:"Damen V-Shirt",articleNo:"S279",manufacturerNo:"ST2700",brand:"Stedman",price:0,purchasePrice:null,printCost:1.50,enabled:false,frontTemplate:"/damen-v-shirt-front-template.png",backTemplate:"/damen-v-shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL"],sizesByColor:masterSizesByColor("S279"),...masterColorSettings("S279","white")}
 ];
 // Nur kaufmännische Werte vererben; die Artikelauswahl und Farbvarianten des Shops bleiben erhalten.
 window.inheritMasterPrices = function(shop, master){
@@ -108,16 +129,19 @@ window.chooseMasterPricingConfig = function(activeMaster, templateMaster){
   return templateTime>activeTime ? templateMaster : activeMaster;
 };
 
-window.ensureHansaZoodie = function(shop){
+window.ensureHansaNewProducts = function(shop){
   if(!shop || shop.customerId!=="hansa") return shop;
   const products=Array.isArray(shop.products)?shop.products.slice():[];
-  const base=MASTER_PRODUCT_CATALOG.find(product=>product.id==="jh050");
-  if(!base) return shop;
-  const index=products.findIndex(product=>product.id==="jh050");
-  if(index<0) products.push({...base,enabled:true});
-  else products[index]={...base,...products[index],enabled:true,printSide:"back"};
+  for(const id of ["jh050","s279"]){
+    const base=MASTER_PRODUCT_CATALOG.find(product=>product.id===id);
+    if(!base) continue;
+    const index=products.findIndex(product=>product.id===id);
+    if(index<0) products.push({...base,enabled:true});
+    else products[index]={...base,...products[index],enabled:true,...(id==="jh050"?{printSide:"back"}:{})};
+  }
   const productPrint={...(shop.productPrint||{}),jh050:{...(shop.productPrint?.jh050||{}),back:shop.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55}}};
   delete productPrint.jh050.front;
+  productPrint.s279={front:{xPct:50,yPct:27,widthPct:52},back:{xPct:50,yPct:30,widthPct:55},...(productPrint.s279||{})};
   return {...shop,products,productPrint};
 };
 
@@ -205,9 +229,10 @@ window.CENTRAL_CONFIG = {
         hoodie:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
         jc001:{front:{xPct:68,yPct:18,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
         bcwu01w:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
-        jh050:{front:{xPct:68,yPct:24,widthPct:28},back:{xPct:50,yPct:32,widthPct:55}}
+        jh050:{front:{xPct:68,yPct:24,widthPct:28},back:{xPct:50,yPct:32,widthPct:55}},
+        s279:{front:{xPct:50,yPct:27,widthPct:52},back:{xPct:50,yPct:30,widthPct:55}}
       },
-      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal",jh050:"normal"},
+      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal",jh050:"normal",s279:"normal"},
       fixedPrint:{
         front:{enabled:false,motifId:"motiv1",position:"left-chest",size:"small",topPct:18,sidePct:32,scalePct:100},
         back:{enabled:false,motifId:"motiv1",position:"center",size:"small",topPct:32,shiftXPct:0,scalePct:100}

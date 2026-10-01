@@ -6176,3 +6176,10 @@ html body .editor-dnd-rail [data-design-tool="photo"]>span,
 html body .editor-dnd-rail [data-design-tool="text"]>span,
 html body .editor-dnd-rail [data-design-tool="initials"]>span,
 html body .editor-dnd-rail [data-design-tool="printColor"]>span{grid-row:1}
+
+/* Nicht bestellbare neue Artikel im Textilwähler klar kennzeichnen. */
+html body #productSwitch .product-btn-status{
+  display:block!important;width:100%;margin-top:3px;
+  color:#5c6570;font-size:10px;font-weight:700;line-height:1.15;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}

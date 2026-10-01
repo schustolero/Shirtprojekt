@@ -1369,7 +1369,7 @@ async function loadShopConfigs(){
         merged.features={...(merged.features||{}),showPrices:false,showNexaroBranding:false};
         merged.tusOrderPageVersion=2;
       }
-      shopConfigs.set(doc.id,window.ensureHansaZoodie(window.normalizeHansaShopConfig?.({...merged,customerId:doc.id})||merged));
+      shopConfigs.set(doc.id,window.ensureHansaNewProducts(window.normalizeHansaShopConfig?.({...merged,customerId:doc.id})||merged));
     });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
   const templateDemos={
@@ -1658,7 +1658,7 @@ function configurePositionProducts(cfg){
 function selectShop(id){
   activeLogoPlacementId=null;
   expandedLogoIds.clear();
-  const cfg=deepClone(window.ensureHansaZoodie(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{})); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
+  const cfg=deepClone(window.ensureHansaNewProducts(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{})); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
   if(id==="_master") workingMotifs.forEach(motif=>{
     if(motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")){
       motif.name="Vereinslogo";motif.category="club";
@@ -2021,8 +2021,8 @@ function buildShopConfig(){
   cfg.productMotifModes={...workingProductMotifModes};
   cfg.productionFile=(productionFileUrl?.value||"").trim();
   const sourceProducts = workingProducts.length ? workingProducts : (Array.isArray(old.products) ? old.products : []);
-  if(id!=="hansa" && sourceProducts.some(product=>product.id==="jh050" && product.enabled!==false && !(Number(product.price)>0))){
-    throw new Error("Bitte für den JH050 Zoodie zuerst einen Verkaufspreis eintragen.");
+  if(id!=="hansa" && sourceProducts.some(product=>["jh050","s279"].includes(product.id) && product.enabled!==false && !(Number(product.price)>0))){
+    throw new Error("Bitte für neue Artikel vor dem Aktivieren einen Verkaufspreis eintragen.");
   }
   const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false}));
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");

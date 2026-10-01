@@ -182,7 +182,7 @@
 
           // Hansa folgt dem zuletzt gespeicherten aktiven Master Shop bzw. der Vorlage.
           // Eigene Artikelauswahl, Textilfarben und Motive bleiben erhalten.
-          let finalConfig = window.ensureHansaZoodie(normalizeTemplateDemo(merged));
+          let finalConfig = window.ensureHansaNewProducts(normalizeTemplateDemo(merged));
           if (slug === "hansa" || data.followMasterTemplate === true) {
             try {
               const [activeSnap,templateSnap] = await Promise.all([
