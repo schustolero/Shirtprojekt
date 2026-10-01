@@ -2278,7 +2278,7 @@ const formOrderNumber = document.getElementById("formOrderNumber");
 const formTotalPrice = document.getElementById("formTotalPrice");
 
 const SHIRT_PRICE = Number(SHOP.shirtPrice) || 15;
-const ORDER_PREFIX = SHOP.orderPrefix || String(SHOP.customerId || "SHOP").toUpperCase().replace(/[^A-Z0-9]+/g,"-").slice(0,12);
+const ORDER_PREFIX = String(SHOP.orderPrefix || SHOP.customerId || "SHOP").toUpperCase().replace(/[^A-Z0-9]/g,"").slice(0,4) || "SHOP";
 const CUSTOMER_ID = SHOP.customerId || window.SHOP_SLUG || "unknown";
 shirtQuantity?.addEventListener("input", updateProductPriceLabel);
 shirtQuantity?.addEventListener("change", updateProductPriceLabel);
@@ -2299,24 +2299,16 @@ function getFirestoreDb() {
 }
 
 function createOrderNumber() {
-  const now = new Date();
-  const yy = String(now.getFullYear()).slice(-2);
-  const mm = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(now.getDate()).padStart(2, "0");
-  const hh = String(now.getHours()).padStart(2, "0");
-  const mi = String(now.getMinutes()).padStart(2, "0");
-  const ss = String(now.getSeconds()).padStart(2, "0");
-
-  let randomPart;
+  let code;
   if (window.crypto && window.crypto.getRandomValues) {
-    const values = new Uint32Array(1);
+    const values = new Uint32Array(2);
     window.crypto.getRandomValues(values);
-    randomPart = String(values[0] % 10000).padStart(4, "0");
+    const random64=(BigInt(values[0])<<32n)|BigInt(values[1]);
+    code=(random64 % (36n ** 8n)).toString(36).toUpperCase().padStart(8,"0");
   } else {
-    randomPart = String(Math.floor(Math.random() * 10000)).padStart(4, "0");
+    code=Math.floor(Math.random()*36**8).toString(36).toUpperCase().padStart(8,"0");
   }
-
-  return `${ORDER_PREFIX}-${yy}${mm}${dd}-${hh}${mi}${ss}-${randomPart}`;
+  return `${ORDER_PREFIX}-${code}`;
 }
 
 function getSelectedMotifName() {
