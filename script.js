@@ -435,6 +435,29 @@ try{
   canvas = { getObjects(){return [];}, requestRenderAll(){}, add(){}, remove(){}, clear(){}, setWidth(){}, setHeight(){}, on(){}, off(){}, renderAll(){}, getActiveObject(){return null;}, discardActiveObject(){}, setActiveObject(){} };
 }
 
+// Canvas intern mit der tatsächlich angezeigten Pixelauflösung zeichnen.
+// Der logische Druck-Koordinatenraum bleibt unverändert bei 320 x 500.
+if(canvas.lowerCanvasEl && typeof canvas.setDimensions==="function"){
+  let previewPixelRatio=0;
+  const displayPixelRatio=()=>{
+    const box=canvas.lowerCanvasEl.getBoundingClientRect();
+    return Math.max(1,Number(window.devicePixelRatio)||1)*Math.max(1,box.width/PRINT_CANVAS_WIDTH,box.height/PRINT_CANVAS_HEIGHT);
+  };
+  canvas.getRetinaScaling=()=>displayPixelRatio();
+  const refreshPreviewResolution=()=>{
+    const ratio=displayPixelRatio();
+    if(Math.abs(ratio-previewPixelRatio)<0.01) return;
+    previewPixelRatio=ratio;
+    canvas.setDimensions({width:PRINT_CANVAS_WIDTH,height:PRINT_CANVAS_HEIGHT});
+    canvas.requestRenderAll();
+  };
+  if(typeof ResizeObserver!=="undefined"){
+    new ResizeObserver(refreshPreviewResolution).observe(canvas.lowerCanvasEl.parentElement);
+  }
+  window.addEventListener("resize",refreshPreviewResolution,{passive:true});
+  requestAnimationFrame(refreshPreviewResolution);
+}
+
 const resetBtn = document.getElementById("resetBtn");
 const viewButtons = document.querySelectorAll(".view-btn");
 let shirtColorButtons = document.querySelectorAll(".shirt-color");
@@ -1286,6 +1309,7 @@ function applyFixedMotifLayout(image, motifId) {
     originX: "center", originY: "center",
     angle: 0,
     scaleX: scale, scaleY: scale,
+    objectCaching:false,
     selectable: editable, evented: editable,
     hasControls: resizable || rotatable, hasBorders: editable,
     lockMovementX: !movable, lockMovementY: !movable,
@@ -1957,7 +1981,7 @@ designTools.forEach(button=>{
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
     || (tool==="logo" && FEATURES.showClubLogos===false && FEATURES.showMotifPicker===false) || (tool==="initials"&&!FEATURES.allowInitials)
     || (tool==="printColor"&&!FEATURES.allowText&&!FEATURES.allowInitials&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
-    || tool==="product";
+    || tool==="product" || tool==="logo";
 });
 function printPointAt(clientX,clientY){
   const rect=printDropZone.getBoundingClientRect();

@@ -203,5 +203,19 @@ window.normalizeHansaShopConfig = function(config){
     });
     next.hansaLogoQualityVersion=1;
   }
+  if(Number(config.hansaLogoAlignmentVersion||0)<2){
+    next.motifs=(next.motifs||config.motifs||[]).map(motif=>{
+      if(motif.id!=="college" && motif.id!=="script") return motif;
+      return {...motif,placement:{...(motif.placement||{}),side:"front",xPct:50,yPct:31,widthPct:72}};
+    });
+    next.hansaLogoAlignmentVersion=2;
+  }
+  if(Number(config.hansaLogoQualityVersion||0)<2){
+    next.motifs=(next.motifs||config.motifs||[]).map(motif=>{
+      const original={college:"motiv-1.png",script:"motiv-2.png"}[motif.id];
+      return original ? {...motif,file:`/shops/hansa/${original}?v=30.3.202`} : motif;
+    });
+    next.hansaLogoQualityVersion=2;
+  }
   return next;
 };
