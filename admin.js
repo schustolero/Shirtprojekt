@@ -1023,7 +1023,8 @@ function refreshPositionEditor(){
   const side = positionSide?.value || "front";
   const editingLogo=workingMotifs.find(m=>m.id===activeLogoPlacementId);
   const motif=selectedPositionMotif();
-  const placement=motif?.placement && (motif.placement.side||"front")===side ? motif.placement : null;
+  const savedPlacement=motif?.placementsByProduct?.[product] || motif?.placement;
+  const placement=savedPlacement && (savedPlacement.side||"front")===side ? savedPlacement : null;
   const fields = getPositionFieldSet(product, side);
   const x = placement ? Number(placement.xPct) : Number(fields.x?.value || (side === "front" ? 68 : 50));
   const y = placement ? Number(placement.yPct) : Number(fields.y?.value || (side === "front" ? 20 : 36));
@@ -1112,16 +1113,17 @@ function refreshPositionEditor(){
   placeAdminInitialsMark(initialsPos.x, initialsPos.y);
 }
 function writePositionValues(x, y, w){
-  const editing=workingMotifs.find(m=>m.id===activeLogoPlacementId);
+  const editing=selectedPositionMotif();
   if(editing){
+    const product=positionProduct?.value||"tshirt";
     const side=positionSide?.value||"front";
-    const placement=editing.placement||{side,xPct:side==="front"?68:50,yPct:side==="front"?19:32,widthPct:side==="front"?22:40};
+    const placement={...(editing.placementsByProduct?.[product]||editing.placement||{side,xPct:side==="front"?68:50,yPct:side==="front"?19:32,widthPct:side==="front"?22:40}),side};
     if(Number.isFinite(x)) placement.xPct=Math.round(x*2)/2;
     if(Number.isFinite(y)) placement.yPct=Math.round(y*2)/2;
     if(Number.isFinite(w)) placement.widthPct=Math.round(w*2)/2;
-    editing.placement=placement;
+    editing.placementsByProduct={...editing.placementsByProduct,[product]:placement};
     refreshPositionEditor();
-    setShopState("Logoposition geändert – oben Speichern klicken.");
+    setShopState("Logoposition für dieses Textil geändert – Position speichern klicken.");
     return;
   }
   const fields = getPositionFieldSet(positionProduct.value || "tshirt", positionSide.value || "front");
@@ -1137,8 +1139,9 @@ function bindPositionEditor(){
   positionSide?.addEventListener("change",()=>{
     const editing=workingMotifs.find(m=>m.id===activeLogoPlacementId);
     if(editing){
-      editing.placement=editing.placement||{side:"front",xPct:68,yPct:19,widthPct:22};
-      editing.placement.side=positionSide.value;
+      const product=positionProduct?.value||"tshirt";
+      const placement=editing.placementsByProduct?.[product]||editing.placement||{xPct:68,yPct:19,widthPct:22};
+      editing.placementsByProduct={...editing.placementsByProduct,[product]:{...placement,side:positionSide.value}};
       renderMotifsEditor();
       setShopState("Logoseite geändert – oben Speichern klicken.");
     }
@@ -1825,7 +1828,7 @@ function renderMotifsEditor(){
       activeLogoPlacementId=workingMotifs[index].id;
       renderMotifsEditor();
       if(!workingMotifs[index].placement) workingMotifs[index].placement={side:side.value,xPct:side.value==="front"?68:50,yPct:side.value==="front"?19:32,widthPct:side.value==="front"?22:40};
-      if(positionSide) positionSide.value=workingMotifs[index].placement.side;
+      if(positionSide) positionSide.value=(workingMotifs[index].placementsByProduct?.[positionProduct?.value||"tshirt"]||workingMotifs[index].placement).side;
       document.querySelector('#v32ShopNav [data-v32="print"]')?.click();
       refreshPositionEditor();
       document.querySelector(".v2853-article-card")?.scrollIntoView({behavior:"smooth",block:"start"});
@@ -1954,7 +1957,7 @@ function buildShopConfig(){
   const name=shopFields.name.value.trim(); if(!name) throw new Error("Bitte einen Shopnamen eingeben.");
   const type=shopFields.type.value; const old=deepClone(selectedShopOriginal||{});
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowInitials:!!shopFields.allowInitials?.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,fixedFrontChestLogo:fixedChestLogoEnabled(),allowBackDesign:shopFields.allowBack.checked||workingMotifs.some(m=>m.file&&m.placement?.side==="back"),allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showMotifs.checked,showClubLogos:shopFields.showClubLogos.checked,showMotifColorPicker:shopFields.showMotifColors.checked,showPrices:shopFields.showPrices.checked,showNexaroBranding:shopFields.showNexaroBranding.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:shopFields.previewMode.value||"single"};
-  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:old.accentColor||"#c99a1b",logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file,category:/vereinslogo|vereinswappen/i.test(m.name||"")?"club":m.category==="general"?"general":"club",locked:!!m.locked,customerSelectable:m.customerSelectable!==false,preserveColors:!!m.preserveColors,placement:m.placement||{side:"front",xPct:68,yPct:19,widthPct:22}}))};
+  const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:old.accentColor||"#c99a1b",logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file,category:/vereinslogo|vereinswappen/i.test(m.name||"")?"club":m.category==="general"?"general":"club",locked:!!m.locked,customerSelectable:m.customerSelectable!==false,preserveColors:!!m.preserveColors,placementsByProduct:m.placementsByProduct||{},placement:m.placement||{side:"front",xPct:68,yPct:19,widthPct:22}}))};
   cfg.priceVisibilityVersion=1;
   if(id==="_master"){ cfg.isMasterTemplate=true; cfg.templateVersion=Math.max(1,Number(old.templateVersion)||1); cfg.customerUploadVersion=1; }
   else {

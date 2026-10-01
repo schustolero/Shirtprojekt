@@ -310,7 +310,7 @@ function getAllowedMotifColorNames(){
     noneBtn.dataset.src="";
     noneBtn.setAttribute("aria-label","Kein Logo");
     noneBtn.innerHTML='<span class="motif-preview motif-preview-off" aria-hidden="true"></span><span>Kein Logo</span>';
-    motifGrid.appendChild(noneBtn);
+    if(cfg.customerId!=="hansa") motifGrid.appendChild(noneBtn);
   }
   if (motifGrid && Array.isArray(cfg.motifs)) {
     cfg.motifs.forEach((motif) => {
@@ -933,6 +933,10 @@ async function renderShirt() {
 }
 
 
+function getMotifPlacement(motif, productId=currentProductId) {
+  return motif?.placementsByProduct?.[productId] || motif?.placement;
+}
+
 function getConfiguredMotif(view) {
   if(!logoEnabled) return null;
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
@@ -947,7 +951,7 @@ function getConfiguredMotif(view) {
   const motif = available.find(m => m.id === selectedId)
     || available.find(m => m.id === cfg?.motifId)
     || available[0];
-  if (!motif || (motif.placement?.side && motif.placement.side!==view)) return null;
+  if (!motif || (getMotifPlacement(motif)?.side && getMotifPlacement(motif).side!==view)) return null;
   return { cfg:cfg||{enabled:true}, motif };
 }
 
@@ -983,7 +987,8 @@ function getUnifiedPrintLayout(view, cfg) {
 
 function applyDualMotifLayout(img, view, cfg, motif) {
   if (!img || !cfg) return;
-  const layout = motif?.placement?.side===view ? motif.placement : getUnifiedPrintLayout(view, cfg);
+  const placement=getMotifPlacement(motif);
+  const layout = placement?.side===view ? placement : getUnifiedPrintLayout(view, cfg);
 
   // Dieselben X/Y/Größe-Werte wie in der Einzelansicht werden in die
   // reale Druckzone der jeweiligen Shirt-Hälfte übertragen.
@@ -1254,7 +1259,7 @@ const FIXED_MOTIF_LAYOUTS = {
 
 function getFixedPrintLayout(motifId) {
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
-  const saved=motif?.placement;
+  const saved=getMotifPlacement(motif);
   const club=motif?.category==="club" || (motif?.category!=="general" && /vereinslogo|vereinswappen/i.test(motif?.name||""));
   if(saved && (!saved.side || saved.side===currentView)){
     return {
@@ -1365,7 +1370,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
-  const side=motif?.placement?.side==="back" ? "back" : "front";
+  const side=getMotifPlacement(motif)?.side==="back" ? "back" : "front";
   await addMotifToView(side, motifId, motifSrc, true);
   motifButtons.forEach(button=>button.classList.toggle("active",button.dataset.motif===motifId));
   if(FEATURES.previewMode==="dual") await renderDualPreview();
@@ -1404,7 +1409,7 @@ document.addEventListener("click",(event)=>{
   }
   if(button.dataset.src){
     const motif=(SHOP.motifs||[]).find(item=>item.id===button.dataset.motif);
-    const side=motif?.placement?.side==="back"?"back":"front";
+    const side=getMotifPlacement(motif)?.side==="back"?"back":"front";
     const selections=selectedLogoByProduct[currentProductId];
     selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[side]:button.dataset.motif};
     productMotifSelections[currentProductId]=button.dataset.motif==="tus-3d-patch"?"patch":"normal";
@@ -2316,7 +2321,7 @@ function getCurrentShirtSelection() {
     for(const side of ["front","back"]){
       if(uploads.some(upload=>upload.side===side))continue;
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections?.[side]);
-      if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${motif.placement?.xPct??(side==="front"?68:50)} % / ${motif.placement?.yPct??(side==="front"?19:32)} %, Breite ${motif.placement?.widthPct??(side==="front"?22:40)} %`);
+      if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${getMotifPlacement(motif)?.xPct??(side==="front"?68:50)} % / ${getMotifPlacement(motif)?.yPct??(side==="front"?19:32)} %, Breite ${getMotifPlacement(motif)?.widthPct??(side==="front"?22:40)} %`);
     }
   }
   else {
