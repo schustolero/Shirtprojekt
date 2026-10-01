@@ -837,6 +837,13 @@ function enhanceMotifColorCards() {
 }
 
 function updateActiveMotifColorButton(color, label) {
+  const tool=document.querySelector('[data-design-tool="printColor"]');
+  if(tool){
+    const indicator=tool.querySelector('.print-color-indicator');
+    if(indicator) indicator.style.backgroundColor=color||"#000000";
+    tool.setAttribute("aria-label",`Druckfarbe ändern. Aktuell: ${label||color||"Schwarz"}`);
+    tool.title=`Druckfarbe ändern · ${label||color||"Schwarz"}`;
+  }
   motifColorButtons.forEach(button => {
     const matchesColor = (button.dataset.color || "").toLowerCase() === String(color || "").toLowerCase();
     const matchesLabel = (button.dataset.name || "") === (label || "");

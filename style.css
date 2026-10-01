@@ -6138,3 +6138,35 @@ html body #orderBtn #checkoutTotal{
   border:1px solid #84b7ad!important;box-shadow:none!important;
   font-size:11px!important;font-weight:900!important;
 }
+
+/* v30.3.205 – Druckfarbe als sichtbare Farbauswahl, getrennt von Textilfarben. */
+html body .editor-dnd-rail [data-design-tool="printColor"]{
+  position:relative;cursor:pointer;touch-action:manipulation;padding-right:19px;
+}
+html body .editor-dnd-rail [data-design-tool="printColor"]:active{cursor:pointer}
+html body .editor-dnd-rail [data-design-tool="printColor"]>.print-color-indicator{
+  width:26px;height:26px;min-width:26px;min-height:26px;aspect-ratio:1;
+  border-radius:50%;background:#000;border:2px solid #fff;
+  box-shadow:0 0 0 1px #a7adb6;box-sizing:border-box;
+}
+html body .editor-dnd-rail [data-design-tool="printColor"] strong{
+  white-space:normal;overflow-wrap:normal;line-height:1.25;
+}
+html body .editor-dnd-rail [data-design-tool="printColor"] small{
+  line-height:1.35;
+}
+html body .editor-dnd-rail [data-design-tool="printColor"]>.print-color-chevron{
+  position:absolute;right:7px;top:21px;width:6px;height:6px;
+  border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;
+  transform:rotate(45deg);transition:transform .15s;
+}
+html body .editor-dnd-rail [data-design-tool="printColor"][aria-expanded="true"]>.print-color-chevron{
+  transform:rotate(225deg);
+}
+@media(max-width:900px){
+  html body .editor-dnd-rail [data-design-tool="printColor"]{padding:5px 9px 5px 3px}
+  html body .editor-dnd-rail [data-design-tool="printColor"]>.print-color-indicator{
+    width:23px;height:23px;min-width:23px;min-height:23px;
+  }
+  html body .editor-dnd-rail [data-design-tool="printColor"]>.print-color-chevron{top:15px;right:5px}
+}
