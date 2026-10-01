@@ -17,7 +17,7 @@
   };
   function mergeMasterProductData(config){
     const master=new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
-    const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product}));
+    const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product,...(product.id==="s279"?{name:"Girlie"}:{})}));
     return {...(config||{}),products};
   }
   function normalizeTemplateDemo(config){
@@ -48,7 +48,7 @@
     const script = document.createElement("script");
     script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.19`;
     script.onload = () => {
-      window.SHOP_CONFIG = normalizeTemplateDemo(window.SHOP_CONFIG || {});
+      window.SHOP_CONFIG = window.ensureHansaNewProducts(normalizeTemplateDemo(window.SHOP_CONFIG || {}));
       callback && callback(window.SHOP_CONFIG);
     };
     script.onerror = () => {
@@ -183,6 +183,7 @@
           // Hansa folgt dem zuletzt gespeicherten aktiven Master Shop bzw. der Vorlage.
           // Eigene Artikelauswahl, Textilfarben und Motive bleiben erhalten.
           let finalConfig = window.ensureHansaNewProducts(normalizeTemplateDemo(merged));
+          finalConfig.products=(finalConfig.products||[]).map(product=>product.id==="s279"?{...product,name:"Girlie"}:product);
           if (slug === "hansa" || data.followMasterTemplate === true) {
             try {
               const [activeSnap,templateSnap] = await Promise.all([

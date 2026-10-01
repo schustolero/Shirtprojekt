@@ -694,7 +694,8 @@ function applyProductColorRules(product, forceDefault = false) {
     ? product.allowedShirtColorIds
     : variants.map(variant=>variant.id);
   const catalogIds=new Set(catalog.map(variant=>variant.id));
-  const shopAllowed=getAllowedShirtColorIds();
+  // Die ältere globale F140-Farbliste darf das eigene Girlie-Sortiment nicht beschneiden.
+  const shopAllowed=product?.id==="s279"?null:getAllowedShirtColorIds();
   const labels = product?.shirtColorLabels || {};
   shirtColorButtons.forEach(button => {
     if (!button.dataset.baseName) button.dataset.baseName = button.dataset.name || "";
@@ -711,12 +712,14 @@ function applyProductColorRules(product, forceDefault = false) {
     button.dataset.color=product?.shirtColorHex?.[button.dataset.id] || variant?.color || button.dataset.baseColor;
     button.dataset.pattern=variant?.pattern || button.dataset.basePattern || "";
     button.style.setProperty("--swatch",button.dataset.color);
+    button.querySelector(".rail-color-svg .color-disc")?.setAttribute("fill",button.dataset.color);
     button.dataset.name = label;
     button.setAttribute("aria-label", label);
     button.title = label;
     const labelNode = button.querySelector(".color-label");
     if (labelNode) labelNode.textContent = label;
   });
+  updateShirtColorScrollHint();
 
   const currentButton = Array.from(shirtColorButtons).find(button => button.dataset.id === currentShirtColorId && !button.hidden);
   const defaultId = product?.defaultShirtColorId || F140_ALLOWED_META.defaultId || allowed[0] || currentShirtColorId || "";
@@ -726,6 +729,32 @@ function applyProductColorRules(product, forceDefault = false) {
     changeShirtColor(target.dataset.color, target.dataset.name, target.dataset.id, target.dataset.pattern || "", false);
   }
   updateSizeOptionsForCurrentSelection();
+}
+
+function updateShirtColorScrollHint(){
+  const palette=document.querySelector(".color-section .shirt-colors");
+  if(!palette) return;
+  let hint=palette.parentElement.querySelector(".shirt-color-scroll-hint");
+  if(!hint){
+    hint=document.createElement("button");hint.type="button";
+    hint.className="shirt-color-scroll-hint";
+    palette.insertAdjacentElement("afterend",hint);
+    hint.addEventListener("click",()=>{
+      const atEnd=palette.scrollTop+palette.clientHeight>=palette.scrollHeight-8;
+      palette.scrollTo({top:atEnd?0:Math.min(palette.scrollHeight,palette.scrollTop+palette.clientHeight*.75),behavior:"smooth"});
+    });
+    palette.addEventListener("scroll",()=>{
+      const atEnd=palette.scrollTop+palette.clientHeight>=palette.scrollHeight-8;
+      hint.textContent=atEnd?"↑":"↓";
+      hint.setAttribute("aria-label",atEnd?"Zum Anfang der Farben":"Weitere Farben anzeigen");
+    },{passive:true});
+  }
+  palette.scrollTop=0;
+  const count=Array.from(palette.querySelectorAll(".shirt-color")).filter(button=>!button.hidden).length;
+  hint.hidden=count<=7;
+  hint.textContent="↓";
+  hint.setAttribute("aria-label","Weitere Farben anzeigen");
+  hint.title=`${count} Farben – für weitere Farben scrollen`;
 }
 
 function renderProductSelector() {
@@ -739,7 +768,7 @@ function renderProductSelector() {
     btn.dataset.product = product.id;
     const productName = document.createElement("span");
     productName.className = "product-btn-name";
-    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie",s279:"Damen V-Shirt"};
+    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie",s279:"Girlie"};
     productName.textContent = shortNames[product.id] || product.name || product.id;
     const pricePending=["jh050","s279"].includes(product.id) && !(Number(product.price)>0);
     const priceText = pricePending

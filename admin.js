@@ -1235,6 +1235,7 @@ function mergeProductsWithMasterCatalog(products){
     const next=saved
       ?{...deepClone(base),...deepClone(saved),enabled:saved.enabled!==false}
       :{...deepClone(base),enabled:false};
+    if(base.id==="s279") next.name="Girlie";
     const masterAllowed=Array.isArray(base.allowedShirtColorIds)?base.allowedShirtColorIds.slice():[];
     const savedAllowed=Array.isArray(next.allowedShirtColorIds)?next.allowedShirtColorIds.filter(Boolean):[];
     if(masterAllowed.length > 5 && savedAllowed.length <= 1){
