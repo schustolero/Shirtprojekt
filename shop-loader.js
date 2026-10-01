@@ -180,14 +180,25 @@
             merged.tusOrderPageVersion=2;
           }
 
-          // Hansa folgt den aktuellen Master-Preisen, auch wenn die Vorlage
-          // zuvor ohne den optionalen Vererben-Schalter gespeichert wurde.
+          // Hansa folgt dem zuletzt gespeicherten aktiven Master Shop bzw. der Vorlage.
           // Eigene Artikelauswahl, Textilfarben und Motive bleiben erhalten.
-          let finalConfig = normalizeTemplateDemo(merged);
+          let finalConfig = window.ensureHansaZoodie(normalizeTemplateDemo(merged));
           if (slug === "hansa" || data.followMasterTemplate === true) {
             try {
-              const masterSnap = await firebase.firestore().collection("shops").doc("_master").get();
-              if (masterSnap.exists) finalConfig=window.inheritMasterPrices(finalConfig,masterSnap.data());
+              const [activeSnap,templateSnap] = await Promise.all([
+                firebase.firestore().collection("shops").doc("master").get(),
+                firebase.firestore().collection("shops").doc("_master").get()
+              ]);
+              const source=window.chooseMasterPricingConfig(
+                activeSnap.exists?activeSnap.data():null,
+                templateSnap.exists?templateSnap.data():null
+              );
+              if(source){
+                finalConfig=window.inheritMasterPrices(finalConfig,source);
+                if(slug==="hansa" && (source.features?.allowBackDesign===true || activeSnap.exists && activeSnap.data()?.features?.allowBackDesign===true || templateSnap.exists && templateSnap.data()?.features?.allowBackDesign===true)){
+                  finalConfig.features={...(finalConfig.features||{}),allowBackDesign:true};
+                }
+              }
             } catch (error) {
               console.warn("Master-Preise konnten nicht geladen werden.",error);
             }

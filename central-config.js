@@ -98,6 +98,27 @@ window.inheritMasterPrices = function(shop, master){
   return {...shop,products};
 };
 
+window.chooseMasterPricingConfig = function(activeMaster, templateMaster){
+  if(!activeMaster) return templateMaster || null;
+  if(!templateMaster) return activeMaster;
+  const activeTime=Number(activeMaster.pricingUpdatedAt)||0;
+  const templateTime=Number(templateMaster.pricingUpdatedAt)||0;
+  // Bestehende Daten haben noch keinen Zeitstempel: Der aktive Master Shop
+  // ist dann die bisher bearbeitete Preisliste.
+  return templateTime>activeTime ? templateMaster : activeMaster;
+};
+
+window.ensureHansaZoodie = function(shop){
+  if(!shop || shop.customerId!=="hansa") return shop;
+  const products=Array.isArray(shop.products)?shop.products.slice():[];
+  const base=MASTER_PRODUCT_CATALOG.find(product=>product.id==="jh050");
+  if(!base) return shop;
+  const index=products.findIndex(product=>product.id==="jh050");
+  if(index<0) products.push({...base,enabled:true});
+  else products[index]={...base,...products[index],enabled:true};
+  return {...shop,products};
+};
+
 window.CENTRAL_CONFIG = {
   adminEmail: "shirtzentrale@gmail.com",
   adminTitle: "Shirtprojekt – Zentrale",

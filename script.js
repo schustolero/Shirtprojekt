@@ -735,7 +735,8 @@ function renderProductSelector() {
     productName.className = "product-btn-name";
     const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie"};
     productName.textContent = shortNames[product.id] || product.name || product.id;
-    const priceText = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
+    const priceText = product.id==="jh050" && !(Number(product.price)>0)
+      ? "Preis folgt" : formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
     btn.dataset.price = priceText;
     const productPrice = document.createElement("small");
     productPrice.className = "product-btn-price";
@@ -813,18 +814,21 @@ productSwitch?.addEventListener("click", async event => {
 function updateProductPriceLabel() {
   const product = getCurrentProduct();
   const unitPrice = getCurrentUnitPrice();
+  const pricePending=product.id==="jh050" && !(Number(product.price)>0);
   const qty = Math.max(1, Number(document.getElementById("shirtQuantity")?.value || 1));
   const liveAddLabel = document.getElementById("addToOrderLabel");
   const liveAddPrice = document.getElementById("addToOrderPrice");
   if (currentProductPrice) {
-    currentProductPrice.textContent = `${formatEuro(unitPrice)} / Stück · ${product.name || "Textil"}`;
+    currentProductPrice.textContent = pricePending?`${product.name || "Textil"} · Preis folgt`:`${formatEuro(unitPrice)} / Stück · ${product.name || "Textil"}`;
   }
   if (liveAddLabel) {
-    liveAddLabel.textContent = `${product.name || "Textil"} hinzufügen`;
+    liveAddLabel.textContent = pricePending?"Preis folgt":`${product.name || "Textil"} hinzufügen`;
   }
   if (liveAddPrice) {
-    liveAddPrice.textContent = formatEuro(unitPrice * qty);
+    liveAddPrice.textContent = pricePending?"":formatEuro(unitPrice * qty);
   }
+  const addButton=document.getElementById("addToOrderBtn");
+  if(addButton) addButton.disabled=pricePending;
   const patch=document.getElementById("pricePatch");
   const patchValue=document.getElementById("pricePatchValue");
   if(patchValue) patchValue.textContent=formatEuro(unitPrice);
@@ -2417,6 +2421,10 @@ function renderCart() {
 function addCurrentShirtToOrder() {
   orderMessage.textContent = "";
   orderMessage.classList.remove("success");
+  if(getCurrentProduct().id==="jh050" && !(Number(getCurrentProduct().price)>0)){
+    orderMessage.textContent="Für den Zoodie ist noch kein Verkaufspreis hinterlegt.";
+    return;
+  }
   if(typeof validateInitialsField==="function" && !validateInitialsField()){
     document.getElementById("initialsInput")?.focus();
     return;
