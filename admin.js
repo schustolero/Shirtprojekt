@@ -1022,7 +1022,8 @@ function refreshPositionEditor(){
   const product = positionProduct?.value || "tshirt";
   const side = positionSide?.value || "front";
   const editingLogo=workingMotifs.find(m=>m.id===activeLogoPlacementId);
-  const placement=editingLogo?.placement;
+  const motif=selectedPositionMotif();
+  const placement=motif?.placement && (motif.placement.side||"front")===side ? motif.placement : null;
   const fields = getPositionFieldSet(product, side);
   const x = placement ? Number(placement.xPct) : Number(fields.x?.value || (side === "front" ? 68 : 50));
   const y = placement ? Number(placement.yPct) : Number(fields.y?.value || (side === "front" ? 20 : 36));
@@ -1041,7 +1042,6 @@ function refreshPositionEditor(){
     const value=Number(productCfg.price ?? shopFields.price?.value ?? 15);
     priceEl.textContent=value.toFixed(2).replace(".",",")+" €";
   }
-  const motif = selectedPositionMotif();
   if(motif?.file && (!editingLogo || (placement?.side||"front")===side)){
     positionMotif.onerror = () => {
       const fallback = `/shops/${encodeURIComponent(currentAssetSlug())}/motiv-1.png`;
@@ -1068,8 +1068,9 @@ function refreshPositionEditor(){
   const fitMotifPreview = () => {
     if(request!==positionPreviewRequest || !positionMotif.naturalWidth || !positionMotif.naturalHeight) return;
     const maxWidth=260*w/100;
-    const maxHeight=340*(editingLogo ? (side==="front" ? .24 : .60) : w/100);
-    const scale=Math.min(maxWidth/positionMotif.naturalWidth,maxHeight/positionMotif.naturalHeight);
+    const club=motif?.category==="club" || (motif?.category!=="general" && /vereinslogo|vereinswappen/i.test(motif?.name||""));
+    const maxHeight=340*(placement && club ? (side==="front" ? .24 : .60) : w/100);
+    const scale=Math.min(maxWidth/positionMotif.naturalWidth,maxHeight/positionMotif.naturalHeight,fixedChestLogoEnabled()?Infinity:1);
     positionMotif.style.width=`${positionMotif.naturalWidth*scale/320*100}%`;
   };
   positionMotif.style.width = `${260*w/320}%`;
@@ -1717,6 +1718,15 @@ function updateLogoPreview(){
   const slug=currentAssetSlug(); const src=safeAssetUrl(workingLogo,slug); logoPreview.src=src||""; logoPreview.style.display=src?"block":"none";
 }
 
+async function readOriginalLogo(file){
+  if(!file || !file.type.startsWith("image/")) throw new Error("Bitte eine Bilddatei auswählen.");
+  return new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>resolve(reader.result);
+    reader.onerror=()=>reject(new Error("Originaldatei konnte nicht gelesen werden."));
+    reader.readAsDataURL(file);
+  });
+}
 async function compressImage(file,maxSide=700,targetChars=230000){
   if(!file || !file.type.startsWith("image/")) throw new Error("Bitte eine Bilddatei auswählen.");
   const raw=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)});
@@ -1768,7 +1778,7 @@ function renderMotifsEditor(){
       }
     });
     const uploadLabel=document.createElement("label");uploadLabel.className="logo-replace-file";uploadLabel.textContent=motif.file?"Bild ändern":"Bild hochladen";
-    const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.setAttribute("aria-label",`Bild für ${motif.name||"Logo"} auswählen`); upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Logo wird vorbereitet …");const data=await compressImage(file,520,36000);if(JSON.stringify(workingMotifs).length-(motif.file||"").length+data.length>780000) throw new Error("Der Logoordner ist voll. Bitte ein vorhandenes Bild ersetzen oder kleinere Bilder verwenden.");workingMotifs[index].file=data;img.src=data;uploadLabel.firstChild.textContent="Bild ändern";if(activeLogoPlacementId===motif.id) refreshPositionEditor();setShopState("Logo geändert – oben Speichern klicken.","ok")}catch(err){alert(err.message||"Logo konnte nicht verarbeitet werden.")}upload.value=""});
+    const upload=document.createElement("input"); upload.type="file"; upload.accept="image/*"; upload.setAttribute("aria-label",`Bild für ${motif.name||"Logo"} auswählen`); upload.addEventListener("change",async()=>{const file=upload.files?.[0];if(!file)return;try{setShopState("Logo wird vorbereitet …");const data=await readOriginalLogo(file);if(JSON.stringify(workingMotifs).length-(motif.file||"").length+data.length>780000) throw new Error("Die Originaldatei überschreitet den freien Speicher dieses Logoordners. Es wurde nichts verkleinert. Bitte eine kleinere Originaldatei verwenden.");workingMotifs[index].file=data;img.src=data;uploadLabel.firstChild.textContent="Bild ändern";if(activeLogoPlacementId===motif.id) refreshPositionEditor();setShopState("Logo geändert – oben Speichern klicken.","ok")}catch(err){alert(err.message||"Logo konnte nicht verarbeitet werden.")}upload.value=""});
     uploadLabel.appendChild(upload);
     const header=document.createElement("div");header.className="logo-row-header";
     const expand=document.createElement("button");expand.type="button";expand.className="logo-row-expand";
@@ -1852,8 +1862,8 @@ async function importLibraryLogos(files,category){
     try{
       if(!file.type.startsWith("image/")) throw new Error(`${file.name}: Bitte eine Bilddatei wählen.`);
       setShopState(`Logo ${uploaded+1} von ${selected.length} wird vorbereitet …`);
-      const data=await compressImage(file,520,36000);
-      if(JSON.stringify(workingMotifs).length+data.length>780000) throw new Error("Der Logoordner ist voll. Bitte kleinere Bilder verwenden oder alte Logos entfernen.");
+      const data=await readOriginalLogo(file);
+      if(JSON.stringify(workingMotifs).length+data.length>780000) throw new Error("Die Originaldatei überschreitet den freien Speicher dieses Logoordners. Es wurde nichts verkleinert. Bitte eine kleinere Originaldatei verwenden.");
       const base=file.name.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").trim();
       const name=category==="club" && /^vereinslogo(?:\s*\d+)?$/i.test(base)?base:base|| (category==="club"?"Vereinslogo":"Logo");
       workingMotifs.push({id:`logo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,name,file:data,category,locked:false,preserveColors:true,customerSelectable:true,placement:{side:"front",xPct:68,yPct:19,widthPct:22}});

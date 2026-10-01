@@ -1230,13 +1230,15 @@ const FIXED_MOTIF_LAYOUTS = {
 };
 
 function getFixedPrintLayout(motifId) {
-  const saved=(SHOP.motifs||[]).find(m=>m.id===motifId)?.placement;
+  const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
+  const saved=motif?.placement;
+  const club=motif?.category==="club" || (motif?.category!=="general" && /vereinslogo|vereinswappen/i.test(motif?.name||""));
   if(saved && (!saved.side || saved.side===currentView)){
     return {
       left:clampPrintValue(saved.xPct,-20,120,68)/100,
       top:clampPrintValue(saved.yPct,-20,120,19)/100,
       maxWidth:clampPrintValue(saved.widthPct,5,110,22)/100,
-      maxHeight:currentView==="front"?0.24:0.60
+      maxHeight:club ? (currentView==="front"?0.24:0.60) : clampPrintValue(saved.widthPct,5,110,72)/100
     };
   }
   if (MASTER_FIXED_CHEST_LOGO) {

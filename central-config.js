@@ -195,5 +195,13 @@ window.normalizeHansaShopConfig = function(config){
     next.features={...(next.features||config.features||{}),fixedFrontChestLogo:false};
     next.hansaLogoAlignmentVersion=1;
   }
+  if(Number(config.hansaLogoQualityVersion||0)<1){
+    next.motifs=(next.motifs||config.motifs||[]).map(motif=>{
+      const original={college:"motiv-1.png",script:"motiv-2.png"}[motif.id];
+      return original && /^data:image\/webp[;,]/i.test(motif.file||"")
+        ? {...motif,file:`/shops/hansa/${original}?v=30.3.201`} : motif;
+    });
+    next.hansaLogoQualityVersion=1;
+  }
   return next;
 };
