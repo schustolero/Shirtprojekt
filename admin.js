@@ -1391,11 +1391,20 @@ async function loadShopConfigs(){
   }
 }
 
+// Alte Simple-Vorlagen bleiben gespeichert, erscheinen aber nicht mehr im Menü.
+function isVisibleAdminShop(id,cfg){
+  return id!=="_simple" && String(cfg?.customerName||"").trim().toLowerCase()!=="vorlage simple";
+}
+function adminShopDisplayName(id,cfg){
+  const name=String(cfg?.customerName||id);
+  return !id.startsWith("_") && !cfg?.isMasterTemplate && name.trim().toLowerCase()==="master shop"
+    ? "Demo-Shop" : name;
+}
 function renderShopList(){
   shopList.replaceChildren();
-  [...shopConfigs.entries()].sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de")).forEach(([id,cfg])=>{
+  [...shopConfigs.entries()].filter(([id,cfg])=>isVisibleAdminShop(id,cfg)).sort((a,b)=>adminShopDisplayName(...a).localeCompare(adminShopDisplayName(...b),"de")).forEach(([id,cfg])=>{
     const btn=document.createElement("button"); btn.type="button"; btn.dataset.shopId=id; btn.classList.toggle("active",id===selectedShopId);
-    const strong=document.createElement("strong"); strong.textContent=cfg.customerName||id;
+    const strong=document.createElement("strong"); strong.textContent=adminShopDisplayName(id,cfg);
     const span=document.createElement("span"); span.textContent=`${id} · ${cfg.shopType||"simple"}${cfg.active===false?" · deaktiviert":""}`;
     btn.append(strong,span); btn.addEventListener("click",()=>selectShop(id)); shopList.appendChild(btn);
   });
@@ -2159,6 +2168,7 @@ saveShopBtn.addEventListener("click",async()=>{
     const allEntries=[...shopConfigs.entries()];
     const canonicalTemplateIds=new Set(["_master","_simple","_motifs","_designer"].filter(id=>shopConfigs.has(id)));
     const entries=allEntries.filter(([id,cfg])=>{
+      if(!isVisibleAdminShop(id,cfg)) return false;
       if(canonicalTemplateIds.has(id)) return true;
       const n=String(cfg?.customerName||"").trim().toLowerCase();
       if(n==="vorlage simple" && canonicalTemplateIds.has("_simple")) return false;
@@ -2186,7 +2196,7 @@ saveShopBtn.addEventListener("click",async()=>{
       btn.classList.toggle("active",id===selectedShopId);
       const name=document.createElement("span");
       name.className="v2949-shop-item-name";
-      name.textContent=cfg.customerName||id;
+      name.textContent=adminShopDisplayName(id,cfg);
       const meta=document.createElement("small");
       const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
       const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ") || cfg.isMasterTemplate;
