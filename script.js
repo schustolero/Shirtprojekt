@@ -680,7 +680,7 @@ function updateSizeOptionsForCurrentSelection() {
 }
 
 function applyProductColorRules(product, forceDefault = false) {
-  const article=product?.articleNo || ({tshirt:"F140",polo:"F502",hoodie:"F421",jc001:"JC001",sport:"JC001",bcwu01w:"BCWU01W",sweatshirt:"BCWU01W"})[product?.id];
+  const article=product?.articleNo || ({tshirt:"F140",polo:"F502",hoodie:"F421",jc001:"JC001",sport:"JC001",bcwu01w:"BCWU01W",sweatshirt:"BCWU01W",jh050:"JH050"})[product?.id];
   const catalog=typeof MASTER_COLOR_VARIANTS!=="undefined" && Array.isArray(MASTER_COLOR_VARIANTS[article]) ? MASTER_COLOR_VARIANTS[article] : [];
   const variants=Array.isArray(product?.colorVariants)&&product.colorVariants.length ? product.colorVariants : catalog;
   const variantMap=new Map(variants.map(variant=>[variant.id,variant]));
@@ -733,7 +733,7 @@ function renderProductSelector() {
     btn.dataset.product = product.id;
     const productName = document.createElement("span");
     productName.className = "product-btn-name";
-    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat"};
+    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie"};
     productName.textContent = shortNames[product.id] || product.name || product.id;
     const priceText = formatEuro(Number(product.price ?? SHOP.shirtPrice) || 0);
     btn.dataset.price = priceText;
@@ -761,7 +761,8 @@ function renderTextileIconRail(){
     const source=Array.from(productSwitch?.querySelectorAll(".product-btn")||[]).find(button=>button.dataset.product===product.id);
     const name=source?.querySelector(".product-btn-name")?.textContent||product.name||product.id;
     const id=product.id;
-    const shape=id==="hoodie"?hoodie:id==="polo"?polo:["sport","jc001"].includes(id)?sport:["sweatshirt","sweat","bcwu01w"].includes(id)?long:basic;
+    const zipHoodie=hoodie+'<path d="M20 11v20M18 15h4M15 23h3m4 0h3"/>';
+    const shape=id==="jh050"?zipHoodie:id==="hoodie"?hoodie:id==="polo"?polo:["sport","jc001"].includes(id)?sport:["sweatshirt","sweat","bcwu01w"].includes(id)?long:basic;
     const button=document.createElement("button");button.type="button";button.className="textile-icon-button";
     button.dataset.product=id;button.title=name;button.setAttribute("aria-label",name);
     button.classList.toggle("active",id===currentProductId);button.setAttribute("aria-pressed",String(id===currentProductId));

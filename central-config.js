@@ -12,6 +12,41 @@ const MASTER_COLOR_VARIANTS = {
   JC001:[
     {id:"airforce-blue",name:"Airforce Blue",color:"#4f758b"},{id:"white",name:"Arctic White",color:"#ffffff"},{id:"ash",name:"Ash (Solid)",color:"#d9d9d6"},{id:"baby-pink",name:"Baby Pink",color:"#fabbcb"},{id:"bottle-green",name:"Bottle Green",color:"#154734"},{id:"burgundy",name:"Burgundy",color:"#6f263d"},{id:"charcoal",name:"Charcoal (Solid)",color:"#3f4444"},{id:"citrus",name:"Citrus",color:"#c2fa0f"},{id:"combat-green",name:"Combat Green",color:"#1a2711"},{id:"cornflower-blue",name:"Cornflower Blue",color:"#5e8fcb"},{id:"desert-sand",name:"Desert Sand",color:"#b0aa7e"},{id:"digital-lavender",name:"Digital Lavender",color:"#7870f5"},{id:"dusty-pink",name:"Dusty Pink",color:"#ce6ead"},{id:"earthy-green",name:"Earthy Green",color:"#476240"},{id:"electric-green",name:"Electric Green",color:"#44d62c"},{id:"electric-orange",name:"Electric Orange",color:"#ff8f6c"},{id:"electric-pink",name:"Electric Pink",color:"#ff3eb5"},{id:"electric-yellow",name:"Electric Yellow",color:"#e3e829"},{id:"red",name:"Fire Red",color:"#c8102e"},{id:"french-navy",name:"French Navy",color:"#041c2c"},{id:"gold",name:"Gold",color:"#ffa300"},{id:"hawaiian-blue",name:"Hawaiian Blue",color:"#5bc2e7"},{id:"heather-grey",name:"Heather Grey (Solid)",color:"#a7a8aa",pattern:"heather"},{id:"hot-chocolate",name:"Hot Chocolate",color:"#382e2c"},{id:"hot-pink",name:"Hot Pink",color:"#ce0f69"},{id:"hyper-pink",name:"Hyper Pink",color:"#ff12ff"},{id:"ink-blue",name:"Ink Blue",color:"#123955"},{id:"jade",name:"Jade",color:"#00685e"},{id:"black",name:"Jet Black",color:"#000710"},{id:"kelly-green",name:"Kelly Green",color:"#00832f"},{id:"lime-green",name:"Lime Green",color:"#78be20"},{id:"magenta-magic",name:"Magenta Magic",color:"#8c4799"},{id:"melon-green",name:"Melon Green",color:"#b7eda4"},{id:"mint",name:"Mint",color:"#bafade"},{id:"olive-green",name:"Olive Green",color:"#4a412a"},{id:"orange-crush",name:"Orange Crush",color:"#ff6a13"},{id:"orange-flame",name:"Orange Flame",color:"#ff2124"},{id:"oxford-navy",name:"Oxford Navy",color:"#13294b"},{id:"peach-sorbet",name:"Peach Sorbet",color:"#ff8791"},{id:"plum",name:"Plum",color:"#512a44"},{id:"purple",name:"Purple",color:"#512d6d"},{id:"red-hot-chilli",name:"Red Hot Chilli",color:"#8a1538"},{id:"reflex-blue",name:"Reflex Blue",color:"#0034cd"},{id:"royal-blue",name:"Royal Blue",color:"#003594"},{id:"sapphire-blue",name:"Sapphire Blue",color:"#009cde"},{id:"seafoam",name:"Seafoam",color:"#61bbaa"},{id:"sherbet-lemon",name:"Sherbet Lemon",color:"#fbdb65"},{id:"sky-blue",name:"Sky Blue",color:"#9bb8d3"},{id:"sour-green",name:"Sour Green",color:"#00ffa3"},{id:"sun-yellow",name:"Sun Yellow",color:"#ffd100"},{id:"turquoise-blue",name:"Turquoise Blue",color:"#0092bc"},{id:"vanilla",name:"Vanilla",color:"#f0e8d6"}
   ],
+  JH050:[
+    {id:"storm-grey",name:"Storm Grey (Solid)",color:"#3D3935"},
+    {id:"black-smoke",name:"Black Smoke",color:"#202631"},
+    {id:"mustard",name:"Mustard",color:"#C69214"},
+    {id:"hawaiian-blue",name:"Hawaiian Blue",color:"#00A9E0"},
+    {id:"hot-pink",name:"Hot Pink",color:"#CE0F69"},
+    {id:"oxford-navy",name:"Oxford Navy",color:"#202A44"},
+    {id:"steel-grey",name:"Steel Grey (Solid)",color:"#545859"},
+    {id:"digital-lavender",name:"Digital Lavender",color:"#B09FCA"},
+    {id:"dusty-green",name:"Dusty Green",color:"#8A9691"},
+    {id:"dusty-pink",name:"Dusty Pink",color:"#C68A92"},
+    {id:"desert-sand",name:"Desert Sand",color:"#DDCA8F"},
+    {id:"white",name:"Arctic White",color:"#FFFFFF"},
+    {id:"bottle-green",name:"Bottle Green",color:"#105017"},
+    {id:"charcoal-heather",name:"Charcoal (Heather)",color:"#364747",pattern:"heather"},
+    {id:"red",name:"Fire Red",color:"#BA0C2F"},
+    {id:"kelly-green",name:"Kelly Green",color:"#009A44"},
+    {id:"royal-blue",name:"Royal Blue",color:"#003594"},
+    {id:"sapphire-blue",name:"Sapphire Blue",color:"#005EB8"},
+    {id:"burgundy",name:"Burgundy",color:"#651C32"},
+    {id:"airforce-blue",name:"Airforce Blue",color:"#4F758B"},
+    {id:"baby-pink",name:"Baby Pink",color:"#FFB3FA"},
+    {id:"sky-blue",name:"Sky Blue",color:"#9BB8D3"},
+    {id:"solid-charcoal",name:"Solid Charcoal",color:"#3F4850"},
+    {id:"natural-stone",name:"Natural Stone",color:"#A4ADA6"},
+    {id:"forest-green",name:"Forest Green",color:"#13322B"},
+    {id:"orange-crush",name:"Orange Crush",color:"#FF7019"},
+    {id:"sun-yellow",name:"Sun Yellow",color:"#FFE800"},
+    {id:"purple",name:"Purple",color:"#470A68"},
+    {id:"ash-heather",name:"Ash (Heather)",color:"#DFE1DA",pattern:"heather"},
+    {id:"deep-black",name:"Deep Black",color:"#000000"},
+    {id:"new-french-navy",name:"New French Navy",color:"#091F2C"},
+    {id:"heather-grey",name:"Heather Grey",color:"#B1B3B4",pattern:"heather"},
+    {id:"jet-black",name:"Jet Black",color:"#000000"}
+  ],
   BCWU01W:[
     {id:"asphalt",name:"Asphalt",color:"#433f42"},{id:"black",name:"Black Pure",color:"#070508"},{id:"candy-pink",name:"Candy Pink",color:"#e0bed5"},{id:"desert",name:"Desert",color:"#ceb596"},{id:"elephant-grey",name:"Elephant Grey",color:"#827679"},{id:"bottle-green",name:"Forest Green",color:"#002500"},{id:"grey-fog",name:"Grey Fog",color:"#d8d2c0"},{id:"hawaiian-blue",name:"Hawaiian Blue",color:"#0097c3"},{id:"heather-asphalt",name:"Heather Asphalt",color:"#3e4041",pattern:"heather"},{id:"heather-dark-green",name:"Heather Dark Green",color:"#415d56",pattern:"heather"},{id:"heather-grey",name:"Heather Grey",color:"#b1b3b4",pattern:"heather"},{id:"heather-mid-grey",name:"Heather Mid Grey",color:"#7f8080",pattern:"heather"},{id:"heather-navy",name:"Heather Navy",color:"#3f404e",pattern:"heather"},{id:"heather-purple",name:"Heather Purple",color:"#714d69",pattern:"heather"},{id:"heather-red",name:"Heather Red",color:"#e11a3b",pattern:"heather"},{id:"heather-royal-blue",name:"Heather Royal Blue",color:"#425a97",pattern:"heather"},{id:"kelly-green",name:"Kelly Green",color:"#009149"},{id:"lavender",name:"Lavender",color:"#d5cddf"},{id:"light-jade",name:"Light Jade",color:"#c9dbae"},{id:"melon-orange",name:"Melon Orange",color:"#f6aa70"},{id:"millennial-khaki",name:"Millennial Khaki",color:"#585b55"},{id:"navy",name:"Navy Blue",color:"#101145"},{id:"nude",name:"Nude",color:"#e1b09d"},{id:"pale-pink",name:"Pale Pink",color:"#feede1"},{id:"pale-yellow",name:"Pale Yellow",color:"#faf1d7"},{id:"pink-fizz",name:"Pink Fizz",color:"#ed6890"},{id:"pure-orange",name:"Pure Orange",color:"#eb5d0f"},{id:"pure-sky",name:"Pure Sky",color:"#dde7e9"},{id:"radiant-purple",name:"Radiant Purple",color:"#3b1d66"},{id:"red",name:"Red",color:"#db001b"},{id:"royal-blue",name:"Royal",color:"#13377d"},{id:"sage",name:"Sage",color:"#aac1b3"},{id:"solar-yellow",name:"Solar Yellow",color:"#ffe93c"},{id:"white",name:"White",color:"#ffffff"},{id:"wine",name:"Wine",color:"#6a2b40"}
   ]
@@ -32,7 +67,8 @@ const MASTER_SIZES_BY_NAME={
   F502:Object.fromEntries(MASTER_COLOR_VARIANTS.F502.map(c=>[c.name,SZ("S",["Black","Bottle Green","Burgundy","Navy","Orange","Sunflower"].includes(c.name)?"5XL":"3XL")])),
   F421:Object.fromEntries(MASTER_COLOR_VARIANTS.F421.map(c=>[c.name,SZ("S",["Orange","Purple"].includes(c.name)?"4XL":["Burgundy","Classic Olive","Dark Heather Grey","Heather Red","Light Pink","Natural","Sky Blue"].includes(c.name)?"3XL":"2XL")])),
   JC001:Object.fromEntries(MASTER_COLOR_VARIANTS.JC001.map(c=>[c.name,SZ("XS",["Baby Pink","Hawaiian Blue"].includes(c.name)?"5XL":["Desert Sand","Digital Lavender","Dusty Pink","Earthy Green","French Navy","Gold","Melon Green","Mint","Oxford Navy","Sapphire Blue","Seafoam","Turquoise Blue","Vanilla"].includes(c.name)?"3XL":"2XL")])),
-  BCWU01W:Object.fromEntries(MASTER_COLOR_VARIANTS.BCWU01W.map(c=>[c.name,SZ("XS","5XL")]))
+  BCWU01W:Object.fromEntries(MASTER_COLOR_VARIANTS.BCWU01W.map(c=>[c.name,SZ("XS","5XL")])),
+  JH050:Object.fromEntries(MASTER_COLOR_VARIANTS.JH050.map(c=>[c.name,SZ("S",["Deep Black","New French Navy","Heather Grey","Jet Black"].includes(c.name)?"5XL":"2XL")]))
 };
 function masterSizesByColor(key){
   const byName=MASTER_SIZES_BY_NAME[key]||{};
@@ -43,7 +79,8 @@ const MASTER_PRODUCT_CATALOG = [
   {id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F502"),...masterColorSettings("F502","white")},
   {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F421"),...masterColorSettings("F421","white")},
   {id:"jc001",name:"Sport",articleNo:"JC001",price:12,purchasePrice:7.62,purchasePriceBySize:{S:7.62,M:7.62,L:7.62,XL:7.62,"2XL":7.62,"3XL":7.62,"4XL":9.55,"5XL":9.55},printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JC001"),...masterColorSettings("JC001","red")},
-  {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")}
+  {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")},
+  {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")}
 ];
 window.CENTRAL_CONFIG = {
   adminEmail: "shirtzentrale@gmail.com",
@@ -112,7 +149,7 @@ window.CENTRAL_CONFIG = {
       customerExtraFieldLabel:"Team / Abteilung", customerExtraFieldName:"Team / Abteilung",
       orderPrefix:"MAS", shopType:"simple", active:true, isMasterTemplate:true, templateVersion:1,
       fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},
-      products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:true})),
+      products:MASTER_PRODUCT_CATALOG.map(product=>({...product,enabled:product.enabled!==false})),
       features:{
         layout:"simple", motifMode:"single",
         allowCustomerUpload:true, allowText:false, allowInitials:true,
@@ -128,9 +165,10 @@ window.CENTRAL_CONFIG = {
         polo:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
         hoodie:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
         jc001:{front:{xPct:68,yPct:18,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
-        bcwu01w:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}}
+        bcwu01w:{front:{xPct:68,yPct:20,widthPct:22},back:{xPct:50,yPct:32,widthPct:22}},
+        jh050:{front:{xPct:68,yPct:24,widthPct:28},back:{xPct:50,yPct:32,widthPct:55}}
       },
-      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal"},
+      productMotifModes:{tshirt:"normal",polo:"normal",hoodie:"normal",jc001:"normal",bcwu01w:"normal",jh050:"normal"},
       fixedPrint:{
         front:{enabled:false,motifId:"motiv1",position:"left-chest",size:"small",topPct:18,sidePct:32,scalePct:100},
         back:{enabled:false,motifId:"motiv1",position:"center",size:"small",topPct:32,shiftXPct:0,scalePct:100}

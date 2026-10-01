@@ -1997,6 +1997,9 @@ function buildShopConfig(){
   cfg.productMotifModes={...workingProductMotifModes};
   cfg.productionFile=(productionFileUrl?.value||"").trim();
   const sourceProducts = workingProducts.length ? workingProducts : (Array.isArray(old.products) ? old.products : []);
+  if(sourceProducts.some(product=>product.id==="jh050" && product.enabled!==false && !(Number(product.price)>0))){
+    throw new Error("Bitte für den JH050 Zoodie zuerst einen Verkaufspreis eintragen.");
+  }
   const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false}));
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
@@ -2722,8 +2725,9 @@ saveShopBtn.addEventListener("click",async()=>{
   // v28.6.1: Artikelauswahl immer vollständig halten.
   if(product){
     const keep=product.value || 'tshirt';
-    product.innerHTML='<option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option>';
-    product.value=['tshirt','polo','hoodie'].includes(keep)?keep:'tshirt';
+    product.replaceChildren();
+    (workingProducts||[]).filter(item=>item?.id).forEach(item=>{const option=document.createElement('option');option.value=item.id;option.textContent=item.name||item.id;product.appendChild(option)});
+    product.value=(workingProducts||[]).some(item=>item.id===keep)?keep:(workingProducts||[])[0]?.id||'tshirt';
   }
 
   function renderMergedPrintTable(){
