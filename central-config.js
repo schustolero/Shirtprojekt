@@ -157,3 +157,23 @@ window.CENTRAL_CONFIG = {
     "_designer": {customerId:"_designer",customerName:"Vorlage Designer",pageTitle:"Vorlage Designer – T-Shirt Shop",brandTitle:"Vorlage Designer",brandSubtitle:"Dein Textil frei gestalten",designerHeading:"Shirt frei gestalten",designerIntro:"Eigenes Logo hochladen, Text ergänzen und frei gestalten.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Firma / Team",customerExtraFieldName:"Firma / Team",orderPrefix:"DES",shopType:"designer",active:true,products:[{id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},{id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},{id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}],features:{layout:"designer",motifMode:"mixed",allowCustomerUpload:true,allowText:true,allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:true,showMotifColorPicker:true,autoSelectSingleMotif:false,maxUploadMB:8,previewMode:"single"},motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}]}
   }
 };
+
+// Hansa: identische Logo-Zuordnung und Initialen-Standardposition in Admin und Shop.
+window.normalizeHansaShopConfig = function(config){
+  if(config?.customerId!=="hansa") return config;
+  const next={...config};
+  if(Number(config.hansaLogoCategoryVersion||0)<1){
+    next.motifs=(config.motifs||[]).map(motif=>
+    motif.id==="college" || motif.id==="script" || /^(college|allstar)$/i.test(String(motif.name||"").trim())
+      ? {...motif,category:"general"} : motif);
+    next.features={...(config.features||{}),showMotifPicker:config.features?.showMotifPicker!==false || config.features?.showClubLogos!==false};
+    next.hansaLogoCategoryVersion=1;
+  }
+  if(Number(config.hansaInitialsLayoutVersion||0)<1){
+    const old=config.initialsByProduct?.hoodie?.front;
+    const legacy=!old || ([23,24].includes(Number(old.x)) && Number(old.y)===91);
+    if(legacy) next.initialsByProduct={...(config.initialsByProduct||{}),hoodie:{...(config.initialsByProduct?.hoodie||{}),front:{...(old||{}),x:30,y:86,sizePct:old?.sizePct??5}}};
+    next.hansaInitialsLayoutVersion=1;
+  }
+  return next;
+};

@@ -240,7 +240,7 @@ function getAllowedMotifColorNames(){
       });
       palette.insertAdjacentElement("afterend",button);
     };
-    makePaletteCompact(shirtColorSection,".shirt-colors","Shirtfarben");
+    // Textilfarben bleiben vollständig sichtbar; kein zusätzlicher Aufklappknopf.
     makePaletteCompact(motifColorSection,".motif-colors","Druckfarben");
   }
 
@@ -355,9 +355,9 @@ function getAllowedMotifColorNames(){
       clubSection.appendChild(empty);
     }
     motifSection.insertAdjacentElement("beforebegin",clubSection);
-    clubSection.hidden=FEATURES.showClubLogos===false;
+    clubSection.hidden=FEATURES.showClubLogos===false || !clubMotifs.length;
     motifSection.hidden=!motifGrid.querySelector('.motif-btn[data-src]') || FEATURES.showMotifPicker===false;
-    motifSection.querySelector("h3").textContent="Allgemeine Logos";
+    motifSection.querySelector("h3").textContent="Logos";
   }
 
   (function dockColorRailNextToShirt(){
@@ -1911,7 +1911,7 @@ function toggleDesignMenu(tool){
   openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
   designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
   const title=document.createElement("strong");title.className="editor-menu-title";
-  title.textContent=({product:"Textil wählen",logo:"Vereinslogo wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen",printColor:"Druckfarbe wählen"})[tool]||"Auswahl";
+  title.textContent=({product:"Textil wählen",logo:"Logos wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen",printColor:"Druckfarbe wählen"})[tool]||"Auswahl";
   designMenu.appendChild(title);
   if(tool==="product"){
     productSwitch?.querySelectorAll(".product-btn").forEach(source=>{
@@ -1920,12 +1920,11 @@ function toggleDesignMenu(tool){
       designMenu.appendChild(menuOption(name+price,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
     });
   }else if(tool==="logo"){
-    const section=document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])");
-    section?.querySelectorAll(".motif-btn").forEach(source=>{
+    document.querySelectorAll(".club-logo-section:not([hidden]) .motif-btn,.motif-section:not([hidden]) .motif-btn").forEach(source=>{
       const label=source.querySelector(".motif-label,.motif-name")?.textContent?.trim()||source.textContent.trim()||"Logo";
       designMenu.appendChild(menuOption(label,()=>{source.click();closeDesignMenu()},source.classList.contains("active")));
     });
-    if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Vereinslogos vorhanden.";designMenu.appendChild(hint)}
+    if(designMenu.children.length===1){const hint=document.createElement("p");hint.textContent="Keine Logos vorhanden.";designMenu.appendChild(hint)}
   }else if(tool==="printColor"){
     const colors=document.createElement("div");colors.className="editor-print-colors";
     document.querySelectorAll(".motif-color-section .motif-color:not([hidden])").forEach(source=>{
@@ -1952,8 +1951,9 @@ document.addEventListener("click",event=>{if(openDesignTool&&!designRail?.contai
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&openDesignTool)closeDesignMenu()});
 designTools.forEach(button=>{
   const tool=button.dataset.designTool;
+  if(tool==="logo") button.querySelector("strong").textContent="Logos";
   button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
-    || (tool==="logo" && FEATURES.showClubLogos===false) || (tool==="initials"&&!FEATURES.allowInitials)
+    || (tool==="logo" && FEATURES.showClubLogos===false && FEATURES.showMotifPicker===false) || (tool==="initials"&&!FEATURES.allowInitials)
     || (tool==="printColor"&&!FEATURES.allowText&&!FEATURES.allowInitials&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
     || tool==="product";
 });

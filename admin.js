@@ -1353,7 +1353,7 @@ async function loadShopConfigs(){
         merged.features={...(merged.features||{}),showPrices:false,showNexaroBranding:false};
         merged.tusOrderPageVersion=2;
       }
-      shopConfigs.set(doc.id,merged);
+      shopConfigs.set(doc.id,window.normalizeHansaShopConfig?.({...merged,customerId:doc.id})||merged);
     });
   }catch(err){ console.error(err); setShopState("Shopdaten konnten nicht vollständig geladen werden.","error"); }
   const templateDemos={
@@ -1629,7 +1629,7 @@ function configurePositionProducts(cfg){
 function selectShop(id){
   activeLogoPlacementId=null;
   expandedLogoIds.clear();
-  const cfg=deepClone(shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
+  const cfg=deepClone(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{}); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
   if(id==="_master") workingMotifs.forEach(motif=>{
     if(motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")){
       motif.name="Vereinslogo";motif.category="club";
@@ -1747,7 +1747,7 @@ function renderMotifsEditor(){
     section.className="logo-library-group";
     section.dataset.logoCategory=key;
     const heading=document.createElement("h4");
-    heading.textContent=key==="club"?"Vereinslogos":"Allgemeine Logos";
+    heading.textContent=key==="club"?"Vereinslogos":"Logos";
     const count=document.createElement("span");
     count.className="logo-library-count";
     count.textContent=String(workingMotifs.filter(item=>(/vereinslogo|vereinswappen/i.test(item.name||"")?"club":item.category==="general"?"general":"club")===key).length);
@@ -1787,7 +1787,7 @@ function renderMotifsEditor(){
     header.append(name,expand);fields.appendChild(header);
     setExpanded(expandedLogoIds.has(motif.id));
     const choices=document.createElement("div"); choices.className="logo-library-options";
-    const category=document.createElement("select"); category.setAttribute("aria-label",`Kategorie für ${motif.name||"Logo"}`); category.innerHTML='<option value="club">Vereinslogo</option><option value="general">Allgemeines Logo</option>'; category.value=/vereinslogo|vereinswappen/i.test(motif.name||"")?"club":motif.category==="general"?"general":"club";
+    const category=document.createElement("select"); category.setAttribute("aria-label",`Kategorie für ${motif.name||"Logo"}`); category.innerHTML='<option value="club">Vereinslogo</option><option value="general">Logo</option>'; category.value=/vereinslogo|vereinswappen/i.test(motif.name||"")?"club":motif.category==="general"?"general":"club";
     category.addEventListener("change",()=>{workingMotifs[index].category=category.value;renderMotifsEditor();setShopState("Logo-Gruppe geändert – oben Speichern klicken.")});
     const visible=document.createElement("label");visible.className="logo-library-check";
     const visibleInput=document.createElement("input");visibleInput.type="checkbox";visibleInput.checked=motif.customerSelectable!==false;
@@ -1836,7 +1836,7 @@ function renderMotifsEditor(){
 function addLibraryLogo(category){
   if(workingMotifs.length>=20){alert("Maximal 20 Logos je Shop. Bitte zunächst ein Logo entfernen.");return;}
   const id=`logo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,6)}`;
-  workingMotifs.push({id,name:category==="club"?"Vereinslogo":"Allgemeines Logo",file:"",category,locked:false,preserveColors:true,customerSelectable:true,placement:{side:"front",xPct:68,yPct:19,widthPct:22}});
+  workingMotifs.push({id,name:category==="club"?"Vereinslogo":"Logo",file:"",category,locked:false,preserveColors:true,customerSelectable:true,placement:{side:"front",xPct:68,yPct:19,widthPct:22}});
   expandedLogoIds.add(id);
   renderMotifsEditor();
   setShopState("Logo angelegt – Bild auswählen und oben Speichern klicken.");
@@ -1855,7 +1855,7 @@ async function importLibraryLogos(files,category){
       const data=await compressImage(file,520,36000);
       if(JSON.stringify(workingMotifs).length+data.length>780000) throw new Error("Der Logoordner ist voll. Bitte kleinere Bilder verwenden oder alte Logos entfernen.");
       const base=file.name.replace(/\.[^.]+$/,"").replace(/[_-]+/g," ").trim();
-      const name=category==="club" && /^vereinslogo(?:\s*\d+)?$/i.test(base)?base:base|| (category==="club"?"Vereinslogo":"Allgemeines Logo");
+      const name=category==="club" && /^vereinslogo(?:\s*\d+)?$/i.test(base)?base:base|| (category==="club"?"Vereinslogo":"Logo");
       workingMotifs.push({id:`logo-${Date.now().toString(36)}-${Math.random().toString(36).slice(2,7)}`,name,file:data,category,locked:false,preserveColors:true,customerSelectable:true,placement:{side:"front",xPct:68,yPct:19,widthPct:22}});
       uploaded++;
     }catch(err){alert(err.message||`${file.name} konnte nicht hochgeladen werden.`)}
@@ -2653,7 +2653,7 @@ saveShopBtn.addEventListener("click",async()=>{
   });
   const logoLibrary=document.createElement('section');
   logoLibrary.className='v32-logo-library';
-  logoLibrary.innerHTML='<div class="v32-logo-library-head"><div><strong>Logoordner</strong><small>Vereinslogos und allgemeine Logos für diesen Shop.</small></div></div><div class="v32-logo-library-actions"><label class="v32-logo-upload-btn">+ Vereinslogos<input class="v32-logo-upload-input" type="file" accept="image/*" multiple data-category="club" aria-label="Vereinslogos hochladen"></label><label class="v32-logo-upload-btn v32-logo-upload-secondary">+ Allgemeine Logos<input class="v32-logo-upload-input" type="file" accept="image/*" multiple data-category="general" aria-label="Allgemeine Logos hochladen"></label></div>';
+  logoLibrary.innerHTML='<div class="v32-logo-library-head"><div><strong>Logoordner</strong><small>Vereinslogos und Logos für diesen Shop.</small></div></div><div class="v32-logo-library-actions"><label class="v32-logo-upload-btn">+ Vereinslogos<input class="v32-logo-upload-input" type="file" accept="image/*" multiple data-category="club" aria-label="Vereinslogos hochladen"></label><label class="v32-logo-upload-btn v32-logo-upload-secondary">+ Logos<input class="v32-logo-upload-input" type="file" accept="image/*" multiple data-category="general" aria-label="Logos hochladen"></label></div>';
   if(motifsEditor) logoLibrary.appendChild(motifsEditor);
   print.body.appendChild(logoLibrary);
   print.body.appendChild(motifIntro);

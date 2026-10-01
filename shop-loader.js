@@ -21,7 +21,7 @@
     return {...(config||{}),products};
   }
   function normalizeTemplateDemo(config){
-    config=mergeMasterProductData(config);
+    config=mergeMasterProductData(window.normalizeHansaShopConfig?.(config)||config);
     const template = templateDemos[slug];
     if (!template) return config;
     // Der Master darf gespeicherte Logos und Sichtbarkeit nicht mit dem
