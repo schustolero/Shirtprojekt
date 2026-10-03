@@ -270,12 +270,13 @@ window.CENTRAL_CONFIG = {
 // Alte Girlie-Standardposition nur in Master- und Demo-Shops einmalig verschieben.
 window.normalizeGirlieInitialsPosition = function(config){
   if(!config || !(config.customerId==="master" || String(config.customerId||"").startsWith("_"))) return config;
-  if(Number(config.girlieInitialsPositionVersion||0)>=1) return config;
-  const saved=config.initialsByProduct?.s279?.front;
-  if(!saved || (Number(saved.x)===30 && Number(saved.y)===84) || (Number(saved.x)===24 && Number(saved.y)===84)){
-    return {...config,girlieInitialsPositionVersion:1,initialsByProduct:{...(config.initialsByProduct||{}),s279:{...(config.initialsByProduct?.s279||{}),front:{...(saved||{}),x:35,y:87,sizePct:saved?.sizePct??5}}}};
+  if(Number(config.girlieInitialsPositionVersion||0)>=2) return config;
+  let saved=config.initialsByProduct?.s279?.front;
+  if(Number(config.girlieInitialsPositionVersion||0)<1 && (!saved || (Number(saved.x)===30 && Number(saved.y)===84) || (Number(saved.x)===24 && Number(saved.y)===84))){
+    saved={...(saved||{}),x:35,y:87,sizePct:saved?.sizePct??5};
   }
-  return {...config,girlieInitialsPositionVersion:1};
+  const front={...(saved||{}),x:Math.max(0,Number(saved?.x??35)-3),y:saved?.y??87,sizePct:saved?.sizePct??5};
+  return {...config,girlieInitialsPositionVersion:2,initialsByProduct:{...(config.initialsByProduct||{}),s279:{...(config.initialsByProduct?.s279||{}),front}}};
 };
 
 // Vereinslogo auf der Herzseite und Initialen oberhalb des Saums.
@@ -299,6 +300,15 @@ window.normalizeMasterGarmentPlacement = function(config){
       return {...motif,placementsByProduct:{...positions,hoodie,jh050:{front,back}}};
     });
     next={...next,motifs,clubLogoVerticalVersion:3};
+  }
+  if(logoVersion<4){
+    const motifs=(next.motifs||[]).map(motif=>{
+      const club=motif.category==="club" || (motif.category!=="general" && /vereinslogo|vereinswappen/i.test(motif.name||""));
+      const jacket=motif.placementsByProduct?.jh050;
+      if(!club || !jacket?.front) return motif;
+      return {...motif,placementsByProduct:{...motif.placementsByProduct,jh050:{...jacket,front:{...jacket.front,yPct:Math.min(100,Number(jacket.front.yPct)+3)}}}};
+    });
+    next={...next,motifs,clubLogoVerticalVersion:4};
   }
   if(Number(config.sweatjacketInitialsVersion||0)<1){
     const current=config.initialsByProduct?.jh050?.front;
