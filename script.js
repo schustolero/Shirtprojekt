@@ -2044,6 +2044,8 @@ function toggleDesignMenu(tool){
   if(zoodieBackOnly(currentProductId) && currentView==="front") return;
   if(tool==="photo"){closeDesignMenu();openPhotoDialog();return;}
   if(tool==="text"){closeDesignMenu();openTextDialog();return;}
+  if(tool==="logo"){closeDesignMenu();openTemplateDialog();return;}
+  if(tool==="initials"){closeDesignMenu();openInitialsDialog();return;}
   if(openDesignTool===tool){closeDesignMenu();return;}
   openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
   designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
@@ -2097,12 +2099,72 @@ function isDesignToolHidden(tool,features=FEATURES){
 }
 designTools.forEach(button=>{
   const tool=button.dataset.designTool;
-  if(tool==="logo") button.querySelector("strong").textContent="Logos";
+  if(tool==="logo") button.querySelector("strong").textContent="Vorlagen";
   button.hidden=isDesignToolHidden(tool);
 });
 const mobileActionDock=document.getElementById("mobileActionDock");
 const mobileActionTools=document.getElementById("mobileActionTools");
 const mobileAddTools=document.getElementById("mobileAddTools");
+const templateDialog=document.getElementById("templateDialog");
+const templateLogoGrid=document.getElementById("templateLogoGrid");
+function openTemplateDialog(){
+  if(!templateDialog||!templateLogoGrid)return;
+  templateLogoGrid.replaceChildren();
+  const isClub=motif=>motif.category==="club"||(motif.category!=="general"&&/vereinslogo|vereinswappen/i.test(motif.name||""));
+  const available=(SHOP.motifs||[]).filter(m=>m?.id&&m.file&&m.customerSelectable!==false &&
+    (isClub(m)?FEATURES.showClubLogos!==false:FEATURES.showMotifPicker!==false));
+  const none=document.querySelector('.motif-btn[data-motif="none"]');
+  if(none){
+    const emptyButton=document.createElement("button");emptyButton.type="button";emptyButton.className="template-logo-card";
+    emptyButton.innerHTML='<span class="template-logo-placeholder" aria-hidden="true">◇</span><strong>Kein Logo</strong>';
+    emptyButton.addEventListener("click",()=>{none.click();templateDialog.close()});
+    templateLogoGrid.appendChild(emptyButton);
+  }
+  const addCards=motifs=>motifs.forEach(motif=>{
+    const source=Array.from(document.querySelectorAll(".motif-btn[data-motif]")).find(button=>button.dataset.motif===motif.id);
+    if(!source)return;
+    const button=document.createElement("button");button.type="button";button.className="template-logo-card";
+    button.setAttribute("aria-label",motif.name||"Vereinslogo");
+    button.classList.toggle("selected",source.classList.contains("active"));
+    const img=document.createElement("img");img.src=source.dataset.src;img.alt="";img.loading="lazy";
+    const name=document.createElement("strong");name.textContent=motif.name||"Vereinslogo";
+    button.append(img,name);
+    button.addEventListener("click",()=>{source.click();templateDialog.close()});
+    templateLogoGrid.appendChild(button);
+  });
+  const club=available.filter(isClub);
+  const general=available.filter(m=>!isClub(m));
+  if(club.length){const heading=document.createElement("h3");heading.className="template-group-title";heading.textContent="Vereinslogos";templateLogoGrid.appendChild(heading);addCards(club)}
+  if(general.length){const heading=document.createElement("h3");heading.className="template-group-title";heading.textContent="Weitere Logos";templateLogoGrid.appendChild(heading);addCards(general)}
+  if(!available.length){
+    const hint=document.createElement("p");hint.className="template-logo-empty";
+    hint.textContent="Für diesen Shop sind noch keine Vereinslogos freigegeben.";
+    templateLogoGrid.appendChild(hint);
+  }
+  if(!templateDialog.open)templateDialog.showModal();
+}
+document.getElementById("templateDialogClose")?.addEventListener("click",()=>templateDialog.close());
+templateDialog?.addEventListener("click",event=>{if(event.target===templateDialog)templateDialog.close()});
+const initialsDialog=document.getElementById("initialsDialog");
+const initialsDialogInput=document.getElementById("initialsDialogInput");
+function syncInitialsDialogValue(value){
+  const field=document.getElementById("initialsInput");if(!field)return;
+  const clean=String(value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
+  if(initialsDialogInput)initialsDialogInput.value=clean;
+  field.value=clean;field.dispatchEvent(new Event("input",{bubbles:true}));
+}
+function openInitialsDialog(){
+  if(!initialsDialog||!initialsDialogInput)return;
+  initialsDialogInput.value=document.getElementById("initialsInput")?.value||"";
+  if(!initialsDialog.open)initialsDialog.showModal();
+  initialsDialogInput.focus();
+}
+initialsDialogInput?.addEventListener("input",()=>syncInitialsDialogValue(initialsDialogInput.value));
+initialsDialogInput?.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();initialsDialog.close()}});
+document.getElementById("initialsDialogClose")?.addEventListener("click",()=>initialsDialog.close());
+document.getElementById("initialsDialogDone")?.addEventListener("click",()=>initialsDialog.close());
+document.getElementById("initialsDialogRemove")?.addEventListener("click",()=>{syncInitialsDialogValue("");initialsDialog.close()});
+initialsDialog?.addEventListener("click",event=>{if(event.target===initialsDialog)initialsDialog.close()});
 if(mobileActionDock){
   mobileActionDock.hidden=!TOP_PRODUCT_PICKER;
   mobileActionTools?.querySelectorAll("[data-mobile-tool]").forEach(button=>{
@@ -2114,12 +2176,8 @@ if(mobileActionDock){
       if(tool==="uploads") openPhotoDialog();
       if(tool==="images"){openPhotoDialog();if(photoDialog?.open)setPhotoTab(true)}
       if(tool==="text") openTextDialog();
-      if(tool==="templates") document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])")?.scrollIntoView({behavior:"smooth",block:"center"});
-      if(tool==="initials"){
-        const field=document.getElementById("initialsInput");
-        field?.scrollIntoView({behavior:"smooth",block:"center"});
-        field?.focus({preventScroll:true});
-      }
+      if(tool==="templates") openTemplateDialog();
+      if(tool==="initials") openInitialsDialog();
     });
   });
   mobileAddTools?.addEventListener("click",event=>{
