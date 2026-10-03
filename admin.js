@@ -1675,9 +1675,9 @@ function configurePositionProducts(cfg){
 function selectShop(id){
   activeLogoPlacementId=null;
   expandedLogoIds.clear();
-  const cfg=deepClone(window.normalizeMasterClubLogoPosition(window.normalizeGirlieInitialsPosition(window.ensureHansaNewProducts(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{})))); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
+  const cfg=deepClone(window.normalizeMasterGarmentPlacement(window.normalizeGirlieInitialsPosition(window.ensureHansaNewProducts(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{})))); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
   if(id==="_master" && shopConfigs.has("master")){
-    const demo=window.normalizeGirlieInitialsPosition({...shopConfigs.get("master"),customerId:"master"});
+    const demo=window.normalizeMasterGarmentPlacement(window.normalizeGirlieInitialsPosition({...shopConfigs.get("master"),customerId:"master"}));
     cfg.initialsByProduct=deepClone(demo.initialsByProduct||{});
     cfg.initialsConfig=deepClone(demo.initialsConfig||cfg.initialsConfig||{});
     workingInitials=deepClone(cfg.initialsByProduct);

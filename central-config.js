@@ -278,31 +278,34 @@ window.normalizeGirlieInitialsPosition = function(config){
   return {...config,girlieInitialsPositionVersion:1};
 };
 
-// Vereinslogos im Master und Demo auf Hoodie und Sweatjacke etwas tiefer setzen.
-// Die Versionsmarke verhindert, dass ein späteres Nachladen die Position erneut verschiebt.
-window.normalizeMasterClubLogoPosition = function(config){
-  if(!config || !["master","_master"].includes(config.customerId) || Number(config.clubLogoVerticalVersion||0)>=2) return config;
-  const moved=placement=>({...placement,yPct:Math.min(100,(Number(placement?.yPct)||0)+4)});
-  const motifs=(config.motifs||[]).map(motif=>{
-    const club=motif.category==="club" || (motif.category!=="general" && /vereinslogo|vereinswappen/i.test(motif.name||""));
-    if(!club) return motif;
-    const positions=motif.placementsByProduct||{};
-    const firstPass=Number(config.clubLogoVerticalVersion||0)<1;
-    const hoodieBase=positions.hoodie||motif.placement||{side:"front",xPct:68,yPct:19,widthPct:22};
-    const hoodie=firstPass?moved(hoodieBase):{...hoodieBase};
-    const jacket=positions.jh050||{};
-    const frontBase=jacket.front || (jacket.side==="front"?jacket:null) || config.productPrint?.jh050?.front || {xPct:68,yPct:24,widthPct:28};
-    const backBase=jacket.back || (jacket.side==="back"?jacket:null) || config.productPrint?.jh050?.back || {xPct:50,yPct:32,widthPct:55};
-    const front=firstPass?moved({side:"front",...frontBase}):{side:"front",...frontBase};
-    const back=firstPass?moved({side:"back",...backBase}):{side:"back",...backBase};
-    // Die vorherige Verschiebung um vier Prozent war am Reißverschluss
-    // optisch kaum erkennbar. Standardpositionen landen jetzt auf der Brust.
-    if((hoodie.side||"front")==="front" && Number(hoodie.yPct)<=24) hoodie.yPct=27;
-    if(Number(front.yPct)<=34) front.yPct=48;
-    if(Number(back.yPct)<=36) back.yPct=42;
-    return {...motif,placementsByProduct:{...positions,hoodie,jh050:{front,back}}};
-  });
-  return {...config,motifs,clubLogoVerticalVersion:2};
+// Vereinslogo auf der Herzseite und Initialen oberhalb des Saums.
+// Bereits individuell gespeicherte Positionen bleiben erhalten.
+window.normalizeMasterGarmentPlacement = function(config){
+  if(!config || !["master","_master"].includes(config.customerId)) return config;
+  let next=config;
+  const logoVersion=Number(config.clubLogoVerticalVersion||0);
+  if(logoVersion<3){
+    const motifs=(config.motifs||[]).map(motif=>{
+      const club=motif.category==="club" || (motif.category!=="general" && /vereinslogo|vereinswappen/i.test(motif.name||""));
+      if(!club) return motif;
+      const positions=motif.placementsByProduct||{};
+      const hoodie={...(positions.hoodie||motif.placement||{side:"front",xPct:68,yPct:19,widthPct:22})};
+      const jacket=positions.jh050||{};
+      const front={side:"front",...(jacket.front||(jacket.side==="front"?jacket:null)||config.productPrint?.jh050?.front||{xPct:68,yPct:24,widthPct:28})};
+      const back={side:"back",...(jacket.back||(jacket.side==="back"?jacket:null)||config.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55})};
+      if((hoodie.side||"front")==="front" && Number(hoodie.yPct)<=24) hoodie.yPct=27;
+      if(Number(front.yPct)<=34 || (logoVersion===2 && Number(front.yPct)===48)) front.yPct=36;
+      if(Number(back.yPct)<=36) back.yPct=42;
+      return {...motif,placementsByProduct:{...positions,hoodie,jh050:{front,back}}};
+    });
+    next={...next,motifs,clubLogoVerticalVersion:3};
+  }
+  if(Number(config.sweatjacketInitialsVersion||0)<1){
+    const current=config.initialsByProduct?.jh050?.front;
+    const front={...(current||{}),x:current?.x??30,y:Number(current?.y??86)>=83?79:Number(current.y),sizePct:current?.sizePct??5};
+    next={...next,initialsByProduct:{...(config.initialsByProduct||{}),jh050:{...(config.initialsByProduct?.jh050||{}),front}},sweatjacketInitialsVersion:1};
+  }
+  return next;
 };
 
 // Hansa: identische Logo-Zuordnung und Initialen-Standardposition in Admin und Shop.

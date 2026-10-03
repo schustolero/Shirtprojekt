@@ -18,7 +18,7 @@
   function mergeMasterProductData(config){
     const master=new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
     const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product,...(product.id==="s279"?{name:"Girlie"}:{}),...(product.id==="jh050"?{name:"Sweatjacke",...(slug!=="hansa"?{printSide:"both"}:{})}:{})}));
-    return window.normalizeMasterClubLogoPosition(window.normalizeGirlieInitialsPosition({...config,customerId:config.customerId||slug,products}));
+    return window.normalizeMasterGarmentPlacement(window.normalizeGirlieInitialsPosition({...config,customerId:config.customerId||slug,products}));
   }
   function normalizeTemplateDemo(config){
     config=mergeMasterProductData(window.normalizeHansaShopConfig?.(config)||config);
@@ -190,7 +190,7 @@
             try{
               const demoSnap=await firebase.firestore().collection("shops").doc("master").get();
               if(demoSnap.exists){
-                const demo=window.normalizeGirlieInitialsPosition({...demoSnap.data(),customerId:"master"});
+                const demo=window.normalizeMasterGarmentPlacement(window.normalizeGirlieInitialsPosition({...demoSnap.data(),customerId:"master"}));
                 finalConfig={...finalConfig,initialsByProduct:demo.initialsByProduct||{},initialsConfig:demo.initialsConfig||finalConfig.initialsConfig};
               }
             }catch(error){console.warn("Demo-Initialen konnten nicht geladen werden.",error)}
