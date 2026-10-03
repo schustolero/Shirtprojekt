@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bestellung bestätigt</title>
+<style>
+*{box-sizing:border-box}
+:root{
+  --ink:#13202c;--muted:#697582;--line:#dde4e9;--soft:#f4f6f8;--soft2:#eef2f5;
+  --green:#1fb86a;--green-soft:#d9f7e7;--teal:#239b91;--navy:#152431;--navy2:#203744;
+}
+html,body{margin:0;background:linear-gradient(180deg,#f6f8fa 0%,#eef2f5 100%);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+.page{width:min(1080px,calc(100% - 28px));margin:16px auto}
+.sheet{background:linear-gradient(180deg,#ffffff 0%,#fcfdfe 100%);border:1px solid #e4eaee;border-radius:22px;padding:28px 32px 24px;box-shadow:0 20px 60px rgba(17,31,43,.07)}
+.top{display:flex;justify-content:flex-start;gap:24px;align-items:flex-start;margin-bottom:18px;padding-bottom:9px;border-bottom:1px solid #edf1f4}.brand{flex:1 1 auto;min-width:0}.brand-logo{min-width:0}.brand-note{max-width:100%;white-space:normal}
+.top[hidden]{display:none!important}
+.brand{display:flex;gap:16px;align-items:center;min-width:0}
+.brand-logo{width:300px;min-height:72px;display:flex;align-items:center;gap:0}.brand-logo-image{width:300px;max-width:100%}.brand-mark{display:block;max-width:100%;width:100%;max-height:92px;height:auto;object-fit:contain;object-position:left center}
+.brand-text{line-height:.92}
+.brand-text .main{font-size:36px;font-weight:900;letter-spacing:.11em}
+.brand-text .sub{display:block;font-size:14px;font-weight:850;letter-spacing:.46em;margin-top:6px}
+.brand-note{font-size:9.5px;font-weight:700;letter-spacing:.11em;margin-top:10px;white-space:nowrap;color:#74808a}
+.hero{display:grid;grid-template-columns:68px 1fr;gap:16px;align-items:center;margin-bottom:12px}
+.check{width:64px;height:64px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(135deg,#34c97c,#0f9f71);color:#fff;font-size:36px;font-weight:900;box-shadow:0 10px 22px rgba(28,166,112,.16)}
+.hero h1{font-size:28px;line-height:1.04;margin:0;font-weight:850;letter-spacing:-.03em}
+.hero p{font-size:14px;margin:8px 0 0;color:#4f5b67}
+.orderbox{border:1px solid #dfe7eb;border-radius:16px;background:linear-gradient(180deg,#fbfcfd,#f1f5f7);padding:14px 16px;box-shadow:inset 0 1px 0 rgba(255,255,255,.9);display:grid;grid-template-columns:1.45fr .75fr;gap:16px;align-items:end}
+.orderbox .label{font-size:11px;color:var(--muted)}
+.orderbox .value{font-size:16px;font-weight:900;margin-top:2px;overflow-wrap:anywhere}
+.orderbox .block+.block{margin-top:0;padding-left:16px;border-left:1px solid #dfe7eb}
+.info{display:grid;grid-template-columns:1.35fr .85fr;gap:10px;margin-bottom:10px;align-items:start}
+.card{border:1px solid #e1e7eb;border-radius:18px;overflow:hidden;background:linear-gradient(180deg,#ffffff,#fbfcfd);box-shadow:0 10px 24px rgba(23,37,49,.04)}
+.card-head{display:flex;align-items:center;padding:10px 14px;background:linear-gradient(180deg,#fbfcfd,#f4f7f9);font-size:14px;font-weight:800;letter-spacing:-.01em;border-bottom:1px solid #e9eef2;position:relative}.card-head:before{content:"";display:inline-block;width:4px;height:18px;border-radius:999px;background:linear-gradient(180deg,#79c9c1,#36a89d);margin-right:10px}
+.ico{width:27px;height:27px;border-radius:50%;display:grid;place-items:center;background:#dce4ea;font-size:15px}
+.rows{padding:8px 14px 10px}.customer-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 10px}.customer-grid .row{display:block;padding:8px 10px;border:1px solid #edf0f2;border-radius:10px;background:#fff;font-size:12px;min-width:0}.customer-grid .row span{display:block;color:#66727d;font-size:10px;margin-bottom:3px}.customer-grid .row strong{display:block;font-weight:650;overflow-wrap:anywhere;white-space:pre-line;line-height:1.25}.customer-grid .row.address-row{grid-column:1/-1}.customer-grid .row:last-child{border-bottom:1px solid #edf0f2}
+.order-details{display:grid;grid-template-columns:1fr 1fr;gap:0}.order-detail{padding:8px 10px;border-top:1px solid #e7ecef}.order-detail:nth-child(-n+2){border-top:0}.order-detail:nth-child(even){border-left:1px solid #e7ecef}.order-detail span{display:block;color:#66727d;font-size:9.5px;margin-bottom:2px}.order-detail strong{display:block;font-size:11.5px;font-weight:700;overflow-wrap:anywhere}
+.status{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:8px;background:var(--green-soft);color:#11944f;font-weight:900;width:max-content}
+.status:before{content:"";width:8px;height:8px;border-radius:50%;background:#17b25d}
+.table-wrap{border:1px solid #dfe5e9;border-radius:16px;overflow:hidden;margin-bottom:10px;box-shadow:0 8px 20px rgba(23,37,49,.035);background:#fff}
+.table-head,.item-row{display:grid;grid-template-columns:1.34fr 1fr .72fr .56fr .7fr .78fr;gap:12px;align-items:center}
+.table-head{background:linear-gradient(180deg,#f8fafb,#eef3f6);color:#243543;padding:10px 12px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-bottom:1px solid #e4eaee}
+.item-row{padding:7px 12px;border-bottom:1px solid #edf0f2;min-height:58px;background:#fff}
+.item-row:last-child{border-bottom:0}.item-row:nth-child(even){background:#fbfcfd}
+.product-cell{display:grid;grid-template-columns:58px 1fr;gap:8px;align-items:center}
+.product-cell img{width:52px;height:52px;object-fit:contain;background:linear-gradient(180deg,#ffffff,#f4f7f9);border:1px solid #e3e8ec;border-radius:10px;padding:4px}
+.product-cell strong{display:block;font-size:12.5px;font-weight:800;letter-spacing:-.01em}.product-cell em{display:block;margin-top:3px;font-size:10px;font-style:normal;font-weight:700;color:#66717d}.product-cell small{display:none}
+.cell{font-size:11.5px;line-height:1.2}.positions div+div{margin-top:2px}.positions div{white-space:normal}
+.motif{font-weight:900;color:#efc300;font-size:17px;overflow:hidden;text-overflow:ellipsis}
+.money{font-size:11.5px}.money.total{font-weight:900}
+.bottom{display:grid;grid-template-columns:1.15fr 1fr;gap:10px}
+.contact{border:1px solid #e1e7eb;border-radius:16px;background:linear-gradient(180deg,#fbfcfd,#f4f8f9);padding:13px 16px;display:grid;grid-template-columns:minmax(0,1fr) 126px;gap:10px;align-items:center;box-shadow:0 8px 20px rgba(23,37,49,.03)}
+.contact-copy{min-width:0}.contact h3{margin:0 0 5px;font-size:16px}.contact p{margin:0 0 10px;font-size:12px;color:#586470}.contact-lines{display:grid;gap:9px}
+.contact-line{display:flex;align-items:center;gap:10px;font-size:12px;margin-top:0}.contact-ico{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#172532;color:#fff;font-size:12px;flex:0 0 24px}.contact-ico svg{width:13px;height:13px;display:block}.contact-ico.whatsapp-ico{background:#25D366}.contact-ico.mail-ico{background:#172532}
+.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;align-self:center}.thanks-note:after{display:none}.thanks-note img{display:block;width:160px;max-width:100%;height:auto;object-fit:contain}.totalbox{border:1px solid #dfe6ea;border-radius:16px;background:linear-gradient(180deg,#fcfefe,#f3f7f8);color:var(--ink);padding:14px 18px;box-shadow:0 8px 20px rgba(23,37,49,.03)}
+.totalbox h3{font-size:16px;margin:0 0 10px}
+.total-line{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-top:1px solid #d9e0e5;font-size:13px}
+.total-line:first-of-type{border-top:0}.grand{align-items:flex-end}.grand strong{font-size:32px;line-height:1;font-weight:950}
+.totalbox small{display:block;color:var(--muted);font-size:11px;margin-top:4px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.btn{min-height:48px;border-radius:14px;border:1px solid #d5dde3;background:#fff;color:var(--ink);font:inherit;font-size:12.5px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;transition:.18s ease;box-shadow:0 8px 18px rgba(23,37,49,.04)}
+.btn.primary{background:linear-gradient(180deg,#edf9f6,#d8efe9);border-color:#abd4cc;color:#18483f;box-shadow:0 8px 18px rgba(48,143,127,.12)}
+.footer{display:grid;grid-template-columns:1fr;gap:24px;align-items:end;border-top:1px solid #e4e9ed;margin-top:26px;padding-top:20px}
+.trust{display:flex;align-items:flex-start;gap:8px;color:#52606c;font-size:10px;line-height:1.25}
+.trust i{font-style:normal;font-size:20px}.trust b{display:block;color:var(--ink);font-size:10px}
+ .footer-brand{text-align:right;font-weight:950;letter-spacing:.13em;color:#111821;text-transform:uppercase;display:flex;flex-direction:column;align-items:flex-end;line-height:1;font-style:italic;transform:skewX(-10deg)}.footer-brand span{display:block;font-size:8.4px;color:#8f7740;font-weight:850;letter-spacing:.21em;margin-top:6px;transform:skewX(10deg)}.footer-signature{display:flex;flex-direction:column;align-items:flex-start}.footer-line{width:52px;height:3px;background:#9ccfc6;border-radius:999px;margin-bottom:10px}.footer-signature strong{font-family:"Trebuchet MS","Segoe UI",Roboto,Arial,sans-serif;font-size:17px;line-height:1.1;font-weight:800;letter-spacing:.01em;color:#121b24;font-style:italic}
+.compact-card .rows{padding-bottom:8px}.compact-card .row{padding:8px 0}
+body[data-show-prices="false"] .table-head span:nth-child(n+5),body[data-show-prices="false"] .item-row>.money{display:none!important}
+body[data-show-prices="false"] .table-head,body[data-show-prices="false"] .item-row{grid-template-columns:1.5fr 1fr .72fr .56fr!important}
+body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] .totalbox>small{display:none!important}
+@media(max-width:760px){
+ .page{width:100%;margin:0}.sheet{border-radius:0;padding:18px 14px}
+ .top{display:block;margin-bottom:18px}
+ .brand{min-width:0}.brand-logo{width:auto}
+ .brand-text .main{font-size:21px}.brand-text .sub{font-size:10px}
+ .brand-note{display:block;font-size:8px;letter-spacing:.08em;line-height:1.25;margin-top:6px;white-space:normal;max-width:185px}
+ .hero{grid-template-columns:54px 1fr;gap:12px}.check{width:52px;height:52px;font-size:30px}.hero h1{font-size:24px}.order-details{grid-template-columns:1fr 1fr}.order-detail{padding:8px 10px}.order-detail strong{font-size:11.5px}
+ .info,.bottom{grid-template-columns:1fr}.customer-grid{grid-template-columns:1fr 1fr}.customer-grid .row{padding:7px 8px}.customer-grid .row.address-row{grid-column:1/-1}.contact{grid-template-columns:minmax(0,1fr) 138px;gap:10px;padding:16px 14px;align-items:center}.contact h3{font-size:15px}.contact p{font-size:11.5px;margin-bottom:8px}.contact-lines{gap:8px}.contact-line{font-size:11.5px}.thanks-note{display:flex;justify-content:flex-end;align-items:center;margin:0;min-width:0;align-self:center}.thanks-note img{width:138px}
+ .table-head{display:none}.item-row{grid-template-columns:1fr 1fr;gap:8px;padding:10px}
+ .product-cell{grid-column:1/-1}.footer{grid-template-columns:1fr}
+ .actions{grid-template-columns:1fr}
+}
+@media print{
+ @page{size:A4 portrait;margin:5mm}
+ html,body{background:#fff!important;width:auto!important;height:auto!important;min-height:0!important;margin:0!important;padding:0!important;overflow:visible!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+ .page{width:200mm!important;height:auto!important;min-height:0!important;margin:0 auto!important;break-after:auto!important;page-break-after:auto!important}
+ .sheet{width:100%!important;height:auto!important;min-height:0!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;zoom:.82;break-after:auto!important;page-break-after:auto!important}
+ .top{display:flex!important;justify-content:flex-start!important;align-items:flex-start!important;margin-bottom:8px!important;padding-bottom:6px!important;gap:14px!important}
+ .brand-logo{min-height:50px!important;width:205px!important}.brand-logo-image{width:220px!important}.brand-mark{width:100%!important;max-height:70px!important;height:auto!important}
+ .hero{grid-template-columns:54px 1fr!important;gap:10px!important;margin-bottom:8px!important}
+ .check{width:50px!important;height:50px!important;border-radius:15px!important;font-size:29px!important;box-shadow:none!important}
+ .hero h1{font-size:24px!important}.hero p{font-size:11px!important;margin-top:4px!important}
+ .orderbox{padding:8px 11px!important;border-radius:10px!important;grid-template-columns:1.45fr .75fr!important;gap:10px!important}.orderbox .label{font-size:8.5px!important}.orderbox .value{font-size:12px!important}.orderbox .block+.block{margin-top:0!important;padding-left:10px!important}
+ .info{grid-template-columns:1.35fr .85fr!important;gap:8px!important;margin-bottom:8px!important}.order-details{grid-template-columns:1fr 1.2fr!important}.order-detail{padding:6px 8px!important}.order-detail span{font-size:8.2px!important;margin-bottom:1px!important}.order-detail strong{font-size:9.8px!important}
+ .card{border-radius:10px!important;box-shadow:none!important}.card-head{padding:8px 12px!important;font-size:12px!important}.card-head:before{height:12px!important;margin-right:7px!important}
+ .rows{padding:4px 8px 6px!important}.customer-grid{grid-template-columns:1fr 1fr!important;gap:5px 6px!important}.customer-grid .row{padding:5px 7px!important;border-radius:6px!important;font-size:9.6px!important}.customer-grid .row span{font-size:7.8px!important;margin-bottom:1px!important}.customer-grid .row strong{font-size:9.4px!important;line-height:1.15!important}.customer-grid .row.address-row{grid-column:1/-1!important}
+ .table-wrap{border-radius:10px!important;box-shadow:none!important;margin-bottom:7px!important}.table-head{display:grid!important;grid-template-columns:1.34fr 1fr .72fr .56fr .7fr .78fr!important;padding:6px 8px!important;font-size:7.8px!important;gap:6px!important}.item-row{display:grid!important;grid-template-columns:1.34fr 1fr .72fr .56fr .7fr .78fr!important;padding:5px 8px!important;min-height:48px!important;gap:6px!important}
+ .product-cell{grid-column:auto!important;grid-template-columns:38px 1fr!important;gap:6px!important}.product-cell img{width:36px!important;height:36px!important;border-radius:7px!important;padding:3px!important}.product-cell strong{font-size:9.8px!important}.cell,.money{font-size:9px!important}.positions div+div{margin-top:1px!important}
+ .bottom{grid-template-columns:1.15fr 1fr!important;gap:8px!important;margin-bottom:6px!important}.contact{padding:8px 10px!important;border-radius:10px!important;box-shadow:none!important;grid-template-columns:minmax(0,1fr) 108px!important;gap:7px!important}.contact h3{font-size:11.5px!important;margin-bottom:2px!important}.contact p{font-size:8.5px!important;margin-bottom:4px!important}.contact-lines{gap:4px!important}.contact-line{font-size:8.8px!important}.contact-ico{width:17px!important;height:17px!important;flex-basis:17px!important}.contact-ico svg{width:9px!important;height:9px!important}.thanks-note img{width:108px!important}
+ .totalbox{padding:10px 12px!important;border-radius:10px!important;box-shadow:none!important}.totalbox h3{font-size:12px!important;margin-bottom:5px!important}.total-line{padding:5px 0!important;font-size:10px!important}.grand strong{font-size:21px!important}.totalbox small{font-size:8px!important}
+ .actions{display:none!important}.footer{margin-top:8px!important;padding-top:7px!important;gap:12px!important}.footer-line{margin-bottom:5px!important}.footer-signature strong{font-size:11px!important}
+ .card,.table-wrap,.contact,.totalbox,.footer{break-inside:avoid;page-break-inside:avoid}
+}
+
+.paypal-confirmation-note{margin:7px 12px 11px;padding:9px 11px;border:1px solid #e4d69e;border-radius:9px;background:#fffaf0;color:#30343a;font-size:12px;line-height:1.45}
+.paypal-confirmation-note[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<main class="page">
+<section class="sheet">
+
+<header class="top" hidden>
+  <div class="brand">
+    <div class="brand-logo brand-logo-image">
+      <img id="thanksLogo" class="brand-mark" src="/nexaro-logo-compact-v2.jpg?v=30.3.17" alt="NEXARO SPORTS">
+    </div>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="check">✓</div>
+  <div>
+    <h1>Vielen Dank für deine Bestellung!</h1>
+    <p>Deine Bestellung ist erfolgreich bei uns eingegangen.</p>
+  </div>
+
+</section>
+
+<section class="info">
+  <div class="card">
+    <div class="card-head">Kundendaten</div>
+    <div class="rows customer-grid" id="customerRows"></div>
+  </div>
+
+  <div class="card compact-card">
+    <div class="card-head">Bestellung & Zahlung</div>
+    <div class="order-details">
+      <div class="order-detail"><span>Bestellart</span><strong id="deliveryType">Abholung</strong></div>
+      <div class="order-detail"><span>Zahlung</span><strong id="paymentMethod">Bar bei Abholung</strong></div>
+      <div class="order-detail"><span>Bestellnummer</span><strong id="orderNumber">–</strong></div>
+      <div class="order-detail"><span>Datum</span><strong id="orderDate">–</strong></div>
+    </div>
+    <p id="paypalConfirmationNote" class="paypal-confirmation-note" hidden></p>
+  </div>
+</section>
+
+<section class="table-wrap" id="confirmationSummary" hidden>
+  <div class="table-head">
+    <span>Artikel</span>
+    <span>Farbe</span>
+    <span>Größe</span>
+    <span>Menge</span>
+    <span>Preis</span>
+    <span>Gesamt</span>
+  </div>
+  <div id="confirmationItems"></div>
+</section>
+
+<section class="bottom">
+  <div class="contact">
+    <div class="contact-copy">
+      <h3>Fragen zu deiner Bestellung?</h3>
+      <p>Wir sind gerne für dich da – schnell, unkompliziert und auch per WhatsApp.</p>
+      <div class="contact-lines">
+        <div class="contact-line" id="contactPhone"><span class="contact-ico whatsapp-ico" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 11.8C20.5 16.4 16.8 20 12.2 20c-1.4 0-2.7-.3-3.8-.9L4 20l1-4.2c-.7-1.2-1-2.6-1-4 0-4.6 3.7-8.2 8.2-8.2 4.6 0 8.3 3.6 8.3 8.2Z" fill="currentColor" opacity=".22"/><path d="M12.2 3.6C7.7 3.6 4 7.2 4 11.8c0 1.4.4 2.8 1.1 4L4 20l4.1-1.1c1.1.6 2.4.9 3.7.9 4.6 0 8.3-3.6 8.3-8.2 0-4.8-3.7-8-7.9-8Zm0 14.8c-1.2 0-2.4-.3-3.4-.9l-.2-.1-2.4.6.6-2.3-.1-.2c-.7-1-.9-2.2-.9-3.4 0-3.6 2.9-6.6 6.4-6.6 3.6 0 6.4 2.9 6.4 6.5 0 3.7-2.9 6.4-6.4 6.4Zm3.5-4.8c-.2-.1-1.1-.5-1.3-.6-.2-.1-.3-.1-.4.1-.1.2-.5.6-.6.7-.1.1-.2.2-.4.1-1.1-.6-1.8-1.2-2.5-2.2-.2-.2 0-.4.1-.5.1-.1.2-.2.3-.4.1-.1.1-.2.2-.3.1-.1 0-.3 0-.4 0-.1-.4-1-.6-1.4-.2-.4-.4-.3-.6-.3h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 1.9s.8 2.2.9 2.3c.1.1 1.5 2.3 3.7 3.2.5.2 1 .4 1.3.5.6.2 1.1.1 1.5.1.5-.1 1.5-.6 1.7-1.1.2-.5.2-1 .2-1.1-.1-.1-.2-.1-.4-.2Z" fill="white"/></svg></span><strong id="contactPhoneValue">+49 160 26 55 220</strong></div>
+              <div class="contact-line"><span class="contact-ico mail-ico">✉</span><strong id="thanksEmail">shirtzentrale@gmail.com</strong></div>
+      </div>
+    </div>
+    <div class="thanks-note"><img src="/danke-clean-v2.png?v=30.3.17" alt="Vielen Dank für dein Vertrauen!"></div>
+  </div>
+
+  <div class="totalbox">
+    <h3>Gesamtübersicht</h3>
+    <div class="total-line"><span>Artikel gesamt</span><strong id="totalQty">0</strong></div>
+    <div class="total-line grand"><span>Gesamtpreis</span><strong id="grandTotal">0,00 €</strong></div>
+    <small>Alle Preise inkl. MwSt.</small>
+  </div>
+</section>
+
+<div class="actions">
+  <button class="btn primary" type="button" onclick="window.print()">🖨 Bestellschein drucken / PDF</button>
+  <a class="btn" id="newOrderLink" href="/">↻ Neue Bestellung</a>
+</div>
+
+</section>
+</main>
+
+<script src="/central-config.js?v=30.3.221"></script>
+<script src="/__/firebase/8.10.1/firebase-app.js"></script>
+<script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="/shop-loader.js?v=30.3.221"></script>
+<script>
+loadShopConfig(function(cfg){
+  const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
+  const text=v=>String(v??"").trim();
+  const storageKey=`shirtOrderConfirmation:${cfg.customerId||window.SHOP_SLUG||"shop"}`;
+  const showPrices=cfg.features?.showPrices!==false;
+  const showNexaroBranding=cfg.features?.showNexaroBranding!==false;
+  document.body.dataset.showPrices=showPrices?"true":"false";
+  const enforceConfirmationPrices=()=>{
+    if(showPrices)return;
+    document.querySelectorAll(".item-row>.money,.total-line.grand,.totalbox>small").forEach(element=>element.style.setProperty("display","none","important"));
+  };
+
+  document.getElementById("newOrderLink").href=`/?shop=${encodeURIComponent(cfg.customerId||window.SHOP_SLUG||"")}`;
+
+  // Logo oben links entfernt
+  const logo=document.getElementById("thanksLogo");
+  const top=document.querySelector(".top");
+  if(top) top.hidden=!showNexaroBranding;
+  if(logo && showNexaroBranding){
+    logo.src="/nexaro-logo-compact-v2.jpg?v=30.3.17";
+  }
+  if(cfg.orderEmail){
+    document.getElementById("thanksEmail").textContent=cfg.orderEmail;
+  }
+
+  try{
+    const raw=sessionStorage.getItem(storageKey) || localStorage.getItem(storageKey);
+    if(!raw)return;
+    const data=JSON.parse(raw);
+
+    document.getElementById("orderNumber").textContent=text(data.orderNumber)||"–";
+    document.getElementById("orderDate").textContent=new Intl.DateTimeFormat("de-DE",{day:"2-digit",month:"2-digit",year:"numeric"}).format(new Date());
+
+    const customerRows=document.getElementById("customerRows");
+    const addRow=(label,value,extraClass="")=>{
+      const row=document.createElement("div");
+      row.className=`row${extraClass?` ${extraClass}`:""}`;
+      const a=document.createElement("span");
+      a.textContent=label;
+      const b=document.createElement("strong");
+      b.textContent=text(value)||"–";
+      row.append(a,b);
+      customerRows.appendChild(row);
+    };
+
+    const formatAddress=(value)=>{
+      const clean=text(value);
+      if(!clean) return clean;
+      if(clean.includes("\n")) return clean;
+      const parts=clean.split(",").map(v=>v.trim()).filter(Boolean);
+      if(parts.length >= 4) return `${parts[0]}, ${parts[1]}\n${parts.slice(2).join(", ")}`;
+      if(parts.length === 3) return `${parts[0]}, ${parts[1]}\n${parts[2]}`;
+      return clean;
+    };
+
+    addRow("Vor- und Nachname",data.name);
+    addRow("Verein / Firma",data.customerClass);
+    addRow("E-Mail",data.email);
+    addRow("WhatsApp",data.whatsapp||data.phone);
+    addRow("Adresse",formatAddress(data.address),"address-row");
+
+    if(data.deliveryType)document.getElementById("deliveryType").textContent=data.deliveryType;
+    if(data.paymentMethod)document.getElementById("paymentMethod").textContent=data.paymentMethod;
+    const paypalNote=document.getElementById("paypalConfirmationNote");
+    if(data.paymentMethod==="PayPal"){
+      paypalNote.hidden=false;
+      paypalNote.textContent=data.paypalRecipient
+        ?`Bitte ${euro(data.totalPrice)} per PayPal an ${data.paypalRecipient} senden. Die Zahlung wurde nicht automatisch ausgeführt. Gib dabei die Bestellnummer ${data.orderNumber||""} an.`
+        :`Du erhältst die PayPal-Zahlungsdaten für ${euro(data.totalPrice)} nach der Bestellung. Es wurde noch keine Zahlung ausgeführt.`;
+    }
+    document.getElementById("contactPhoneValue").textContent="+49 160 26 55 220";
+
+    const totalQty=Number(data.totalQuantity)||0;
+    document.getElementById("totalQty").textContent=totalQty;
+    document.getElementById("grandTotal").textContent=euro(data.totalPrice);
+
+    const items=document.getElementById("confirmationItems");
+    const imageFor=id=>id==="hoodie"?"/hoodie-front-template.png":id==="polo"?"/polo-front-template.png":id==="bcwu01w"?"/sweatshirt-front-template.png":"/shirt-front-template.png";
+
+    if(Array.isArray(data.items)){
+      data.items.forEach(item=>{
+        const qty=Number(item.quantity)||1;
+        const unit=Number(item.unitPrice)||Number(cfg.shirtPrice)||15;
+        const linePrice=Number(item.linePrice)||qty*unit;
+        const product=item.productName||(item.productId==="polo"?"Polo-Shirt":item.productId==="hoodie"?"Hoodie":"T-Shirt");
+
+        const row=document.createElement("div");
+        row.className="item-row";
+
+        const prod=document.createElement("div");
+        prod.className="product-cell";
+
+        const img=document.createElement("img");
+        img.src=imageFor(item.productId);
+        img.alt=product;
+
+        const copy=document.createElement("div");
+        const strong=document.createElement("strong");
+        strong.textContent=product;
+        copy.append(strong);
+        if(item.initials){
+          const initials=document.createElement("em");
+          initials.textContent=`Initialen: ${text(item.initials)}${item.initialsColor?` (${text(item.initialsColor)})`:""}`;
+          copy.append(initials);
+        }
+        prod.append(img,copy);
+
+        const color=document.createElement("div");
+        color.className="cell";
+        color.textContent=text(item.shirtColor)||"–";
+
+        const size=document.createElement("div");
+        size.className="cell";
+        size.textContent=text(item.size)||"–";
+
+        const q=document.createElement("div");
+        q.className="cell";
+        q.textContent=qty;
+
+        const price=document.createElement("div");
+        price.className="money";
+        price.textContent=euro(unit);
+
+        const total=document.createElement("div");
+        total.className="money total";
+        total.textContent=euro(linePrice);
+
+        row.append(prod,color,size,q,price,total);
+        items.appendChild(row);
+      });
+    }
+
+    document.getElementById("confirmationSummary").hidden=false;
+    enforceConfirmationPrices();
+    /* Bestelldaten bleiben für Reload/PDF erhalten; nächste Bestellung überschreibt sie. */
+  }catch(err){
+    console.error(err);
+  }
+});
+</script>
+</body>
+</html>

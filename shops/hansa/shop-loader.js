@@ -1,0 +1,223 @@
+// MASTER-v27 – Shopkonfiguration zuerst aus Firestore, Datei nur als Fallback.
+(function(){
+  const central = window.CENTRAL_CONFIG || {};
+  const params = new URLSearchParams(window.location.search);
+  const fromQuery = (params.get("shop") || "").trim();
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const ignored = new Set(["admin.html", "danke.html", "index.html"]);
+  const fromPath = parts.length && !ignored.has(parts[0]) ? parts[0] : "";
+  const slug = fromQuery || fromPath || central.defaultShop || "_master";
+  window.SHOP_SLUG = slug;
+
+  const templateDemos = {
+    _master: { customerName:"Master Shop", pageTitle:"Master Shop – Gesamtsortiment", brandTitle:"DEIN VEREINSSHOP", brandSubtitle:"Komplettes Textilsortiment", shopType:"simple", motifs:[{id:"motiv1",name:"Vereinslogo",category:"club",file:"/shops/_designer/demo-motiv-1.png?v=30.3.19"}] },
+    _simple: { customerName:"Vorlage Simple", pageTitle:"Vorlage Simple – T-Shirt Shop", brandTitle:"Vorlage Simple", brandSubtitle:"Einfach auswählen und bestellen", shopType:"simple", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] },
+    _motifs: { customerName:"Vorlage Motive", pageTitle:"Vorlage Motive – T-Shirt Shop", brandTitle:"Vorlage Motive", brandSubtitle:"Mehrere Motive zur Auswahl", shopType:"motifs", fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"}, motifs:[{id:"motiv1",name:"NOVA Wappen",file:"demo-motiv-1.png?v=30.1.87"},{id:"motiv2",name:"NOVA Dynamik",file:"demo-motiv-2.png?v=30.1.87"}] },
+    _designer: { customerName:"Vorlage Designer", pageTitle:"Vorlage Designer – T-Shirt Shop", brandTitle:"Vorlage Designer", brandSubtitle:"Dein Textil frei gestalten", shopType:"designer", motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}] }
+  };
+  function mergeMasterProductData(config){
+    const master=new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
+    const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product,...(product.id==="s279"?{name:"Girlie"}:{}),...(product.id==="jh050"?{name:"Sweatjacke",...(slug!=="hansa"?{printSide:"both"}:{})}:{})}));
+    return {...(config||{}),products};
+  }
+  function normalizeTemplateDemo(config){
+    config=mergeMasterProductData(window.normalizeHansaShopConfig?.(config)||config);
+    const template = templateDemos[slug];
+    if (!template) return config;
+    // Der Master darf gespeicherte Logos und Sichtbarkeit nicht mit dem
+    // Demo-Motiv überschreiben: Admin-Uploads sind hier maßgeblich.
+    if(slug==="_master") return {
+      ...template,...config,
+      motifs:(Array.isArray(config.motifs)?config.motifs:template.motifs).map(motif=>
+        motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")
+          ? {...motif,name:"Vereinslogo",category:"club"} : motif),
+      features:{...(config.features||{})},
+      products:(config.products||[]).map(product=>product.id==="jh050"?{...product,printSide:"both"}:product)
+    };
+    const features = { ...(config.features || {}) };
+    const brandSubtitle = typeof config.brandSubtitle === "string" ? config.brandSubtitle : template.brandSubtitle;
+    return { ...template, ...config, brandSubtitle, features, customerId:slug, logoFile:config.logoFile||"/dein-logo.svg?v=30.1.87", logoHeight:config.logoHeight||90 };
+  }
+
+  window.shopAssetUrl = function(file){
+    if (!file) return "";
+    if (/^(https?:)?\/\//i.test(file) || /^(data|blob):/i.test(file) || file.startsWith("/")) return file;
+    return `/shops/${encodeURIComponent(slug)}/${file}`;
+  };
+
+  function loadFileFallback(callback){
+    const script = document.createElement("script");
+    script.src = `/shops/${encodeURIComponent(slug)}/shop-config.js?v=30.3.19`;
+    script.onload = () => {
+      window.SHOP_CONFIG = window.ensureHansaNewProducts(normalizeTemplateDemo(window.SHOP_CONFIG || {}));
+      callback && callback(window.SHOP_CONFIG);
+    };
+    script.onerror = () => {
+      console.error(`Shop-Konfiguration nicht gefunden: ${slug}`);
+      document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop nicht gefunden</h1><p>Für <strong>${slug}</strong> wurde noch keine Kundenkonfiguration angelegt.</p></main>`;
+    };
+    document.head.appendChild(script);
+  }
+
+  window.loadShopConfig = async function(callback){
+    try{
+      if (window.firebase && firebase.firestore) {
+        const snap = await firebase.firestore().collection("shops").doc(slug).get();
+        if (snap.exists) {
+          const data = snap.data() || {};
+          const seed = (central.seedShops && central.seedShops[slug]) || {};
+          const seedProducts = Array.isArray(seed.products) ? seed.products : [];
+          const dataProducts = Array.isArray(data.products) ? data.products : [];
+          const masterProducts = new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
+          const productMap = new Map(seedProducts.map(p => [p.id, {...(masterProducts.get(p.id)||{}), ...p}]));
+          dataProducts.forEach(p => productMap.set(p.id, {...(masterProducts.get(p.id)||{}), ...(productMap.get(p.id)||{}), ...p}));
+          const merged = {
+            ...seed,
+            ...data,
+            products: [...productMap.values()],
+            features: { ...(seed.features || {}), ...(data.features || {}) },
+            productPrint: {
+              ...(seed.productPrint || {}), ...(data.productPrint || {}),
+              tshirt: { ...((seed.productPrint||{}).tshirt||{}), ...((data.productPrint||{}).tshirt||{}) },
+              polo: { ...((seed.productPrint||{}).polo||{}), ...((data.productPrint||{}).polo||{}) },
+              hoodie: { ...((seed.productPrint||{}).hoodie||{}), ...((data.productPrint||{}).hoodie||{}) }
+            },
+            printData: {
+              ...(seed.printData || {}), ...(data.printData || {}),
+              tshirt: { ...((seed.printData||{}).tshirt||{}), ...((data.printData||{}).tshirt||{}) },
+              polo: { ...((seed.printData||{}).polo||{}), ...((data.printData||{}).polo||{}) },
+              hoodie: { ...((seed.printData||{}).hoodie||{}), ...((data.printData||{}).hoodie||{}) }
+            },
+            fixedPrint: {
+              ...(seed.fixedPrint || {}),
+              ...(data.fixedPrint || {}),
+              front: { ...((seed.fixedPrint || {}).front || {}), ...((data.fixedPrint || {}).front || {}) },
+              back: { ...((seed.fixedPrint || {}).back || {}), ...((data.fixedPrint || {}).back || {}) }
+            }
+          };
+          // Alle Shops starten als reine Bestellseite ohne sichtbare Preise.
+          // Nach dieser einmaligen Umstellung kann der Admin-Schalter je Shop frei genutzt werden.
+          if ((data.priceVisibilityVersion || 0) < 1) {
+            merged.features={...(merged.features||{}),showPrices:false};
+            merged.priceVisibilityVersion=1;
+          }
+          // TG Solingen: feste Artikelnummern sowie aktuelle VK-/EK-Preise.
+          // Diese Werte haben bewusst Vorrang vor älteren Firestore-Produktpreisen.
+          if (slug === "tg-solingen") {
+            // v28.5.2: Einmalige Migration der bisherigen Hoodie-Standardgröße.
+            // Danach kann die Größe im Admin frei über den Regler gespeichert werden.
+            if ((data.hoodieSizingVersion || 0) < 5) {
+              merged.productPrint = merged.productPrint || {};
+              merged.productPrint.hoodie = merged.productPrint.hoodie || {};
+              merged.productPrint.hoodie.front = { ...(merged.productPrint.hoodie.front || {}), widthPct: 36 };
+              merged.productPrint.hoodie.back = { ...(merged.productPrint.hoodie.back || {}), widthPct: 78 };
+              merged.hoodieSizingVersion = 5;
+            }
+            const commercial = {
+              tshirt: { articleNo: "F140", price: 15, purchasePrice: 2.60 },
+              polo: { articleNo: "F502", price: 25, purchasePrice: 5.61 },
+              hoodie: { articleNo: "F421", price: 30, purchasePrice: 9.90 }
+            };
+            merged.products = (merged.products || []).map(product => ({
+              ...product,
+              ...(commercial[product.id] || {})
+            }));
+          } else if (slug === "hansa") {
+            // Hansa nutzt bewusst denselben kompakten Grundaufbau wie Solingen,
+            // behält aber seine eigene Farb- und Motivauswahl.
+            merged.features = { ...(merged.features || {}), layout: "simple", showResetButton: false };
+            const order={hoodie:0,tshirt:1,bcwu01w:2,polo:3};
+            merged.products=(merged.products||[]).sort((a,b)=>(order[a.id]??99)-(order[b.id]??99));
+            merged.motifs=(merged.motifs||[]).map(motif=>
+              motif.id==="script"||/^script$/i.test(String(motif.name||""))?{...motif,name:"Allstar"}:motif
+            );
+            if ((data.hansaSubtitleVersion || 0) < 1) {
+              merged.brandSubtitle="Wir sind Hansa!";
+              merged.hansaSubtitleVersion=1;
+            }
+            if ((data.hansaDefaultsVersion || 0) < 1) {
+              merged.fixedShirtColor={id:"black",name:"Black||default=black",color:"#111015"};
+              merged.fixedMotifColor={name:"Yellow",color:"#ffe600"};
+              merged.defaultMotifId="college";
+              merged.hansaDefaultsVersion=1;
+            }
+            if ((data.hansaPriceVisibilityVersion || 0) < 2) {
+              merged.features={...(merged.features||{}),showPrices:false};
+              merged.hansaPriceVisibilityVersion=2;
+            }
+            merged.productPrint={...(merged.productPrint||{}),bcwu01w:{front:{xPct:50,yPct:31,widthPct:72},back:{xPct:50,yPct:36,widthPct:50}},...((data.productPrint||{}).bcwu01w?{bcwu01w:{...(merged.productPrint||{}).bcwu01w,...data.productPrint.bcwu01w}}:{})};
+            merged.productMotifModes={...(merged.productMotifModes||{}),bcwu01w:(data.productMotifModes||{}).bcwu01w||"normal"};
+            merged.hansaSweatshirtVersion=1;
+          } else if (slug === "tus-hemmerde" && (data.tusColorPairsVersion || 0) < 1) {
+            merged.shirtPrice=10;
+            merged.products=(merged.products||[]).map(product=>product.id==="tshirt"?{...product,price:10,enabled:true}:{...product,enabled:false});
+            merged.fixedShirtColor={id:"white",name:"White||default=white||allowed=white,red,heather-grey",color:"#ffffff"};
+            merged.fixedMotifColor={name:"Red||default=Red||allowed=%5B%22Red%22%5D",color:"#B62820"};
+            merged.shirtMotifColors={white:{name:"Red",color:"#B62820"},red:{name:"White",color:"#FFFFFF"},"heather-grey":{name:"Red",color:"#B62820"}};
+            merged.tusColorPairsVersion=1;
+          }
+          if (slug === "tus-hemmerde" && (data.tusInitialsVersion || 0) < 5) {
+            merged.features={...(merged.features||{}),allowInitials:true};
+            merged.initialsConfig={label:"Initialen (optional)",placeholder:"z. B. TS",maxLength:3,stageXPct:29,stageYPct:90,fontSize:24,fontFamily:"Arial"};
+            merged.tusInitialsVersion=5;
+          }
+          if (slug === "tus-hemmerde" && (data.tusJc001Version || 0) < 4) {
+            merged.products=(merged.products||[]).map(product=>product.id==="tshirt"
+              ?{...product,price:10,enabled:true,allowedShirtColorIds:["white","heather-grey","red"],defaultShirtColorId:"white",sizes:["S","M","L","XL","2XL","3XL"]}
+              :product).filter(product=>product.id!=="jc001");
+            merged.products.splice(1,0,{id:"jc001",name:"Sport",articleNo:"JC001",price:12,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",enabled:true,allowedShirtColorIds:["red","heather-grey"],defaultShirtColorId:"red",shirtColorLabels:{red:"Fire Red","heather-grey":"Heather Grey"},sizesByColor:{red:["S","M","L","XL","2XL","3XL"],"heather-grey":["S","M","L","XL","2XL"]}});
+            merged.productPrint={...(merged.productPrint||{}),jc001:{front:{xPct:78,yPct:0,widthPct:28},back:{xPct:50,yPct:36,widthPct:50}}};
+            merged.tusJc001Version=4;
+          }
+          if (slug === "tus-hemmerde" && (data.tusProductMotifVersion || 0) < 1) {
+            const motifs=Array.isArray(merged.motifs)?merged.motifs:[];
+            if(!motifs.some(motif=>motif.id==="tus-3d-patch")) motifs.push({id:"tus-3d-patch",name:"TuS 3D-Patch",file:"/tus-3d-patch.png?v=30.3.19",preserveColors:true});
+            merged.motifs=motifs;
+            merged.productMotifModes={tshirt:"normal",polo:"normal",hoodie:"normal",...(merged.productMotifModes||{}),jc001:"both"};
+            merged.tusProductMotifVersion=1;
+          }
+          if (slug === "tus-hemmerde" && (data.tusOrderPageVersion || 0) < 2) {
+            merged.features={...(merged.features||{}),showPrices:false,showNexaroBranding:false};
+            merged.tusOrderPageVersion=2;
+          }
+
+          // Hansa folgt dem zuletzt gespeicherten aktiven Master Shop bzw. der Vorlage.
+          // Eigene Artikelauswahl, Textilfarben und Motive bleiben erhalten.
+          let finalConfig = window.ensureHansaNewProducts(normalizeTemplateDemo(merged));
+          finalConfig.products=(finalConfig.products||[]).map(product=>product.id==="s279"?{...product,name:"Girlie"}:product);
+          if (slug === "hansa" || data.followMasterTemplate === true) {
+            try {
+              const [activeSnap,templateSnap] = await Promise.all([
+                firebase.firestore().collection("shops").doc("master").get(),
+                firebase.firestore().collection("shops").doc("_master").get()
+              ]);
+              const source=window.chooseMasterPricingConfig(
+                activeSnap.exists?activeSnap.data():null,
+                templateSnap.exists?templateSnap.data():null
+              );
+              if(source){
+                finalConfig=window.inheritMasterPrices(finalConfig,source);
+                if(slug==="hansa" && (source.features?.allowBackDesign===true || activeSnap.exists && activeSnap.data()?.features?.allowBackDesign===true || templateSnap.exists && templateSnap.data()?.features?.allowBackDesign===true)){
+                  finalConfig.features={...(finalConfig.features||{}),allowBackDesign:true};
+                }
+              }
+            } catch (error) {
+              console.warn("Master-Preise konnten nicht geladen werden.",error);
+            }
+          }
+          if (slug === "hansa") finalConfig.features={...(finalConfig.features||{}),previewMode:"single"};
+          if (finalConfig.active === false) {
+            document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
+            return;
+          }
+          window.SHOP_CONFIG = finalConfig;
+          callback && callback(finalConfig);
+          return;
+        }
+      }
+    } catch(err) {
+      console.warn("Firestore-Shopkonfiguration konnte nicht geladen werden – Dateifallback wird verwendet.", err);
+    }
+    loadFileFallback(callback);
+  };
+})();

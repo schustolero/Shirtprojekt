@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title id="pageTitle">T-Shirt Designer</title>
+  <script>
+    // Vor dem ersten Paint den Shop aus der URL markieren. TG Solingen hat
+    // feste Shirt-/Motivfarben, daher werden die Farbauswahlen dort niemals
+    // sichtbar gerendert – auch nicht für einen kurzen Lade-Moment.
+    (function(){
+      try{
+        var shop=(new URLSearchParams(location.search).get("shop")||"").toLowerCase();
+        if(shop) document.documentElement.setAttribute("data-initial-shop",shop);
+      }catch(e){}
+    })();
+  </script>
+  <style id="critical-shop-fixed-colors">
+    html[data-initial-shop="tg-solingen"] .color-section,
+    html[data-initial-shop="tg-solingen"] .motif-color-section{display:none!important}
+  </style>
+  <style id="critical-shop-loading">
+    /* Sofortiger Schutz gegen FOUC/Farbflash noch vor dem externen CSS */
+    body.shop-loading .sidebar .tool-section,
+    body.shop-loading .sidebar-bottom,
+    body.shop-loading .workspace,
+    body.shop-loading .designer-header,
+    body.shop-loading .designer-footer{visibility:hidden!important;opacity:0!important}
+    .color-section[hidden],.motif-color-section[hidden]{display:none!important}
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bevan&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Dosis:wght@700&family=Lobster&family=Lora:wght@700&family=Nunito:wght@800&family=Oswald:wght@700&family=Pacifico&family=Permanent+Marker&family=Roboto+Slab:wght@900&family=Rubik+Wet+Paint&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css?v=30.3.221">
+  <script>
+    (function(){
+      try{
+        document.documentElement.dataset.theme="light";
+      }catch(e){document.documentElement.dataset.theme="light"}
+    })();
+  </script>
+
+<style id="v3-centering-fix">
+@media (max-width:760px){
+  .workspace{display:flex!important;justify-content:center!important;width:100%!important;padding-left:0!important;padding-right:0!important;}
+  .mockup-stage{margin-left:auto!important;margin-right:auto!important;left:auto!important;right:auto!important;max-width:none!important;}
+  #shirtMockup,.shirt-mockup{display:block!important;margin:0 auto!important;object-position:center center!important;}
+}
+</style>
+
+<style id="v30138-mobile-order-fix">
+@media (max-width:760px){
+  .order-modal{
+    padding:max(6px,env(safe-area-inset-top)) 6px max(6px,env(safe-area-inset-bottom))!important;
+    align-items:flex-start!important;
+    overflow:hidden!important;
+  }
+  .order-modal-card{
+    display:block!important;
+    width:100%!important;
+    max-width:none!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:calc(100dvh - 12px)!important;
+    overflow-y:auto!important;
+    overflow-x:hidden!important;
+    -webkit-overflow-scrolling:touch!important;
+    overscroll-behavior:contain!important;
+    padding-bottom:calc(18px + env(safe-area-inset-bottom))!important;
+  }
+  .contact-form{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:visible!important;
+    position:static!important;
+  }
+  .contact-field,
+  .contact-field.address-field{
+    display:block!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0 0 12px!important;
+    position:static!important;
+  }
+  .address-lines{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:10px!important;
+  }
+  .order-modal-note,
+  #sendOrderMessage,
+  .send-order-btn{
+    position:static!important;
+    inset:auto!important;
+    transform:none!important;
+    width:100%!important;
+    max-width:none!important;
+    float:none!important;
+  }
+  .order-modal-note{
+    margin:10px 0 8px!important;
+  }
+  .send-order-btn{
+    display:flex!important;
+    visibility:visible!important;
+    opacity:1!important;
+    z-index:auto!important;
+    margin:0!important;
+  }
+  /* Auf Mobil gibt es oben bereits das X zum Schließen. Der alte Zurück-Button
+     wird ausgeblendet, damit er den Absende-Button niemals überdecken kann. */
+  .order-back-btn{
+    display:none!important;
+    position:static!important;
+    inset:auto!important;
+  }
+}
+</style>
+
+<style id="preview-rail-layout">
+html body .workspace #previewLeftRail{grid-column:1!important;grid-row:1!important;display:grid!important;grid-template-columns:52px 52px!important;align-items:start!important;gap:8px!important;width:112px!important;align-self:start!important;}
+html body #previewLeftRail .textile-icon-rail{display:grid!important;grid-column:1!important;grid-row:1!important;grid-template-columns:52px!important;grid-auto-rows:58px!important;gap:7px!important;width:52px!important;flex:0 0 52px!important;}
+html body #previewLeftRail .textile-icon-button{box-sizing:border-box!important;display:grid!important;grid-template-rows:32px 12px!important;align-content:center!important;justify-items:center!important;gap:3px!important;width:52px!important;min-width:52px!important;max-width:52px!important;height:58px!important;min-height:58px!important;max-height:58px!important;padding:4px!important;margin:0!important;border:1px solid #dbe1e8!important;border-radius:10px!important;background:#fff!important;color:#485563!important;cursor:pointer!important;touch-action:manipulation!important;}
+html body #previewLeftRail .textile-icon-button svg{display:block!important;width:32px!important;height:32px!important;min-width:32px!important;max-width:32px!important;fill:#eef1f4!important;stroke:currentColor!important;stroke-width:1.5!important;stroke-linejoin:round!important;}
+html body #previewLeftRail .textile-icon-button span{display:block!important;font:700 9px/12px system-ui,sans-serif!important;white-space:nowrap!important;}
+html body #previewLeftRail .textile-icon-button.active{border-color:#bf9824!important;background:#fff8e4!important;color:#806316!important;box-shadow:0 0 0 1px #bf9824!important;}
+html body #previewLeftRail .color-section{grid-column:2!important;grid-row:1!important;flex:0 0 52px!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-self:flex-start!important;max-height:none!important;height:auto!important;padding:0!important;margin:0!important;}
+html body #previewLeftRail .color-section[hidden]{display:none!important;}
+html body #previewLeftRail .shirt-colors{display:flex!important;flex-direction:column!important;width:52px!important;min-width:52px!important;max-width:52px!important;align-items:center!important;gap:5px!important;padding:3px 4px!important;max-height:min(68vh,650px)!important;overflow-x:hidden!important;overflow-y:auto!important;mask-image:none!important;-webkit-mask-image:none!important;scrollbar-gutter:auto!important;}
+html body #previewLeftRail .shirt-color{box-sizing:border-box!important;display:block!important;flex:0 0 36px!important;width:36px!important;height:36px!important;min-width:36px!important;min-height:36px!important;max-width:36px!important;max-height:36px!important;aspect-ratio:1!important;padding:0!important;margin:0!important;border:0!important;background:transparent!important;box-shadow:none!important;transform:none!important;border-radius:0!important;cursor:pointer!important;}
+html body #previewLeftRail .shirt-color::before,html body #previewLeftRail .shirt-color::after,html body #previewLeftRail .shirt-colors::after{display:none!important;content:none!important;}
+html body #previewLeftRail .shirt-color>*{display:none!important;}
+html body #previewLeftRail .shirt-color>.rail-color-svg{display:block!important;width:36px!important;height:36px!important;min-width:36px!important;max-width:36px!important;min-height:36px!important;max-height:36px!important;}
+html body #previewLeftRail .selection-ring{visibility:hidden!important;}
+html body #previewLeftRail .shirt-color.active .selection-ring{visibility:visible!important;}
+html body #previewLeftRail .shirt-color[hidden]{display:none!important;}
+html body .workspace>.view-section{box-sizing:border-box!important;display:block!important;grid-column:2!important;grid-row:2!important;justify-self:center!important;align-self:start!important;width:min(240px,100%)!important;min-width:0!important;padding:0!important;margin:8px 0 0!important;border:0!important;background:transparent!important;}
+html body .workspace>.view-section[hidden]{display:none!important;}
+html body .workspace>.view-section h3{display:none!important;}
+html body .workspace>.view-section .view-switch{display:grid!important;grid-template-columns:1fr 1fr!important;gap:2px!important;width:100%!important;padding:2px!important;margin:0!important;border:1px solid #dfe3e8!important;border-radius:10px!important;background:#f3f4f6!important;}
+html body .workspace>.view-section .view-btn{box-sizing:border-box!important;min-height:38px!important;height:38px!important;width:auto!important;padding:0 6px!important;border:0!important;border-radius:8px!important;background:transparent!important;color:#525d69!important;font-size:12px!important;font-weight:700!important;cursor:pointer!important;}
+html body .workspace>.view-section .view-btn.active{background:#fff!important;color:#161a20!important;box-shadow:0 1px 3px #16202b20!important;}
+@media(min-width:901px){html body .workspace,html body .workspace.has-color-rail{grid-template-columns:112px minmax(0,1fr) 154px!important;}}
+@media(max-width:900px){
+html body .workspace,html body .workspace.has-color-rail{grid-template-rows:auto auto auto auto!important;}
+html body .workspace #previewLeftRail{display:contents!important;}
+html body #previewLeftRail .textile-icon-rail{grid-column:1/-1!important;grid-row:1!important;grid-template-columns:repeat(5,52px)!important;grid-auto-rows:58px!important;width:100%!important;justify-content:center!important;gap:5px!important;margin-bottom:10px!important;}
+html body .workspace>.view-section{grid-column:1/-1!important;grid-row:3!important;width:min(240px,100%)!important;margin:8px 0 0!important;}
+html body #previewLeftRail .color-section{grid-column:1!important;grid-row:2!important;width:48px!important;min-width:48px!important;max-width:48px!important;}
+html body #previewLeftRail .shirt-colors{width:48px!important;min-width:48px!important;max-width:48px!important;max-height:46vh!important;}
+html body .workspace .mockup-stage,html body .workspace.has-color-rail .mockup-stage{grid-row:2!important;}
+html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .editor-dnd-rail{grid-row:4!important;}
+}
+</style>
+</head>
+<body class="shop-loading">
+
+<div class="app">
+
+  <aside class="sidebar">
+
+    <div class="brand">
+      <div class="brand-copy">
+        <div class="brand-title" id="brandTitle">ShirtDesigner</div>
+        <div class="brand-subtitle" id="brandSubtitle">Logo-Konfigurator</div>
+      </div>
+      <button type="button" class="theme-toggle" id="themeToggle" aria-label="Darstellung umschalten">Dunkel</button>
+    </div>
+
+
+    <section class="tool-section color-section">
+      <h3>Textilfarbe</h3>
+
+      <div class="shirt-colors">
+        <button type="button" class="shirt-color active" data-color="#ffffff" data-id="white" data-name="White" aria-label="White" title="White" style="--swatch:#ffffff"><span class="color-swatch"></span><span class="color-label">White</span></button>
+        <button type="button" class="shirt-color" data-color="#111015" data-id="black" data-name="Black" aria-label="Black" title="Black" style="--swatch:#111015"><span class="color-swatch"></span><span class="color-label">Black</span></button>
+        <button type="button" class="shirt-color" data-color="#147fae" data-id="azure-blue" data-name="Azure Blue" aria-label="Azure Blue" title="Azure Blue" style="--swatch:#147fae"><span class="color-swatch"></span><span class="color-label">Azure Blue</span></button>
+        <button type="button" class="shirt-color" data-color="#174d2c" data-id="bottle-green" data-name="Bottle Green" aria-label="Bottle Green" title="Bottle Green" style="--swatch:#174d2c"><span class="color-swatch"></span><span class="color-label">Bottle Green</span></button>
+        <button type="button" class="shirt-color" data-color="#8e151f" data-id="brick-red" data-name="Brick Red" aria-label="Brick Red" title="Brick Red" style="--swatch:#8e151f"><span class="color-swatch"></span><span class="color-label">Brick Red</span></button>
+        <button type="button" class="shirt-color" data-color="#83002f" data-id="burgundy" data-name="Burgundy" aria-label="Burgundy" title="Burgundy" style="--swatch:#83002f"><span class="color-swatch"></span><span class="color-label">Burgundy</span></button>
+        <button type="button" class="shirt-color" data-color="#65462f" data-id="chocolate" data-name="Chocolate" aria-label="Chocolate" title="Chocolate" style="--swatch:#65462f"><span class="color-swatch"></span><span class="color-label">Chocolate</span></button>
+        <button type="button" class="shirt-color" data-color="#687043" data-id="classic-olive" data-name="Classic Olive" aria-label="Classic Olive" title="Classic Olive" style="--swatch:#687043"><span class="color-swatch"></span><span class="color-label">Classic Olive</span></button>
+        <button type="button" class="shirt-color" data-color="#4f5054" data-id="dark-grey-heather" data-name="Dark Grey Heather" data-pattern="heather" aria-label="Dark Grey Heather" title="Dark Grey Heather" style="--swatch:#4f5054"><span class="color-swatch"></span><span class="color-label">Dark Grey Heather</span></button>
+        <button type="button" class="shirt-color" data-color="#001536" data-id="deep-navy" data-name="Deep Navy" aria-label="Deep Navy" title="Deep Navy" style="--swatch:#001536"><span class="color-swatch"></span><span class="color-label">Deep Navy</span></button>
+        <button type="button" class="shirt-color" data-color="#ed0078" data-id="fuchsia" data-name="Fuchsia" aria-label="Fuchsia" title="Fuchsia" style="--swatch:#ed0078"><span class="color-swatch"></span><span class="color-label">Fuchsia</span></button>
+        <button type="button" class="shirt-color" data-color="#963b69" data-id="heather-burgundy" data-name="Heather Burgundy" data-pattern="heather" aria-label="Heather Burgundy" title="Heather Burgundy" style="--swatch:#963b69"><span class="color-swatch"></span><span class="color-label">Heather Burgundy</span></button>
+        <button type="button" class="shirt-color" data-color="#cfd0d2" data-id="heather-grey" data-name="Heather Grey" data-pattern="heather" aria-label="Heather Grey" title="Heather Grey" style="--swatch:#cfd0d2"><span class="color-swatch"></span><span class="color-label">Heather Grey</span></button>
+        <button type="button" class="shirt-color" data-color="#583078" data-id="heather-purple" data-name="Heather Purple" data-pattern="heather" aria-label="Heather Purple" title="Heather Purple" style="--swatch:#583078"><span class="color-swatch"></span><span class="color-label">Heather Purple</span></button>
+        <button type="button" class="shirt-color" data-color="#00a651" data-id="kelly-green" data-name="Kelly Green" aria-label="Kelly Green" title="Kelly Green" style="--swatch:#00a651"><span class="color-swatch"></span><span class="color-label">Kelly Green</span></button>
+        <button type="button" class="shirt-color" data-color="#8a7017" data-id="khaki" data-name="Khaki" aria-label="Khaki" title="Khaki" style="--swatch:#8a7017"><span class="color-swatch"></span><span class="color-label">Khaki</span></button>
+        <button type="button" class="shirt-color" data-color="#625754" data-id="light-graphite" data-name="Light Graphite (Solid)" aria-label="Light Graphite (Solid)" title="Light Graphite (Solid)" style="--swatch:#625754"><span class="color-swatch"></span><span class="color-label">Light Graphite (Solid)</span></button>
+        <button type="button" class="shirt-color" data-color="#e8a0c4" data-id="light-pink" data-name="Light Pink" aria-label="Light Pink" title="Light Pink" style="--swatch:#e8a0c4"><span class="color-swatch"></span><span class="color-label">Light Pink</span></button>
+        <button type="button" class="shirt-color" data-color="#8cc152" data-id="lime" data-name="Lime" aria-label="Lime" title="Lime" style="--swatch:#8cc152"><span class="color-swatch"></span><span class="color-label">Lime</span></button>
+        <button type="button" class="shirt-color" data-color="#fff7d7" data-id="natural" data-name="Natural" aria-label="Natural" title="Natural" style="--swatch:#fff7d7"><span class="color-swatch"></span><span class="color-label">Natural</span></button>
+        <button type="button" class="shirt-color" data-color="#001b3f" data-id="navy" data-name="Navy" aria-label="Navy" title="Navy" style="--swatch:#001b3f"><span class="color-swatch"></span><span class="color-label">Navy</span></button>
+        <button type="button" class="shirt-color" data-color="#ed4b00" data-id="orange" data-name="Orange" aria-label="Orange" title="Orange" style="--swatch:#ed4b00"><span class="color-swatch"></span><span class="color-label">Orange</span></button>
+        <button type="button" class="shirt-color" data-color="#4d1688" data-id="purple" data-name="Purple" aria-label="Purple" title="Purple" style="--swatch:#4d1688"><span class="color-swatch"></span><span class="color-label">Purple</span></button>
+        <button type="button" class="shirt-color" data-color="#f20d09" data-id="red" data-name="Red" aria-label="Red" title="Red" style="--swatch:#f20d09"><span class="color-swatch"></span><span class="color-label">Red</span></button>
+        <button type="button" class="shirt-color" data-color="#5d9d7b" data-id="retro-heather-green" data-name="Retro Heather Green" data-pattern="heather" aria-label="Retro Heather Green" title="Retro Heather Green" style="--swatch:#5d9d7b"><span class="color-swatch"></span><span class="color-label">Retro Heather Green</span></button>
+        <button type="button" class="shirt-color" data-color="#5166a8" data-id="retro-heather-royal" data-name="Retro Heather Royal" data-pattern="heather" aria-label="Retro Heather Royal" title="Retro Heather Royal" style="--swatch:#5166a8"><span class="color-swatch"></span><span class="color-label">Retro Heather Royal</span></button>
+        <button type="button" class="shirt-color" data-color="#0758b2" data-id="royal-blue" data-name="Royal Blue" aria-label="Royal Blue" title="Royal Blue" style="--swatch:#0758b2"><span class="color-swatch"></span><span class="color-label">Royal Blue</span></button>
+        <button type="button" class="shirt-color" data-color="#72c2e6" data-id="sky-blue" data-name="Sky Blue" aria-label="Sky Blue" title="Sky Blue" style="--swatch:#72c2e6"><span class="color-swatch"></span><span class="color-label">Sky Blue</span></button>
+        <button type="button" class="shirt-color" data-color="#ffb511" data-id="sunflower" data-name="Sunflower" aria-label="Sunflower" title="Sunflower" style="--swatch:#ffb511"><span class="color-swatch"></span><span class="color-label">Sunflower</span></button>
+        <button type="button" class="shirt-color" data-color="#626a86" data-id="vintage-heather-navy" data-name="Vintage Heather Navy" data-pattern="vintage" aria-label="Vintage Heather Navy" title="Vintage Heather Navy" style="--swatch:#626a86"><span class="color-swatch"></span><span class="color-label">Vintage Heather Navy</span></button>
+        <button type="button" class="shirt-color" data-color="#a64b64" data-id="vintage-heather-red" data-name="Vintage Heather Red" data-pattern="vintage" aria-label="Vintage Heather Red" title="Vintage Heather Red" style="--swatch:#a64b64"><span class="color-swatch"></span><span class="color-label">Vintage Heather Red</span></button>
+        <button type="button" class="shirt-color" data-color="#ffe600" data-id="yellow" data-name="Yellow" aria-label="Yellow" title="Yellow" style="--swatch:#ffe600"><span class="color-swatch"></span><span class="color-label">Yellow</span></button>
+      </div>
+
+      <p class="current-color">
+        Ausgewählt: <strong id="currentColorName">White</strong>
+      </p>
+    </section>
+
+    <section class="tool-section motif-section">
+      <h3>Logo</h3>
+      <p class="motif-help">Logo wählen oder ausschalten.</p>
+      <div class="motif-grid" id="motifGrid"></div>
+    </section>
+
+    <section class="tool-section motif-color-section" hidden>
+      <h3>Druckfarbe</h3>
+      <div class="motif-colors">
+        <button type="button" class="motif-color" data-color="#474946" data-name="Anthracite" title="Anthracite – ca. Pantone 6217C" style="--motif-swatch:#474946"><span class="motif-color-swatch"></span><span class="motif-color-label">Anthracite</span></button>
+        <button type="button" class="motif-color" data-color="#A5D542" data-name="Apple Green" title="Apple Green – ca. Pantone 375C" style="--motif-swatch:#A5D542"><span class="motif-color-swatch"></span><span class="motif-color-label">Apple Green</span></button>
+        <button type="button" class="motif-color" data-color="#317176" data-name="Aqua Green" title="Aqua Green – ca. Pantone 322C" style="--motif-swatch:#317176"><span class="motif-color-swatch"></span><span class="motif-color-label">Aqua Green</span></button>
+        <button type="button" class="motif-color" data-color="#ECA7BC" data-name="Baby Pink" title="Baby Pink – ca. Pantone 189C" style="--motif-swatch:#ECA7BC"><span class="motif-color-swatch"></span><span class="motif-color-label">Baby Pink</span></button>
+        <button type="button" class="motif-color" data-color="#F0E4C1" data-name="Beige" title="Beige – ca. Pantone 7401C" style="--motif-swatch:#F0E4C1"><span class="motif-color-swatch"></span><span class="motif-color-label">Beige</span></button>
+        <button type="button" class="motif-color active" data-color="#000000" data-name="Black" title="Black – ca. Pantone Black 3C" style="--motif-swatch:#000000"><span class="motif-color-swatch"></span><span class="motif-color-label">Black</span></button>
+        <button type="button" class="motif-color" data-color="#642C32" data-name="Bordeaux" title="Bordeaux – ca. Pantone 19-1930TCX" style="--motif-swatch:#642C32"><span class="motif-color-swatch"></span><span class="motif-color-label">Bordeaux</span></button>
+        <button type="button" class="motif-color" data-color="#93ACD1" data-name="Bright Blue" title="Bright Blue – ca. Pantone 2156C" style="--motif-swatch:#93ACD1"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Blue</span></button>
+        <button type="button" class="motif-color" data-color="#955D42" data-name="Bright Copper" title="Bright Copper – ca. Pantone 39-6C" style="--motif-swatch:#955D42"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Copper</span></button>
+        <button type="button" class="motif-color" data-color="#DDBE68" data-name="Bright Gold" title="Bright Gold – ca. Pantone 15-1050TCX" style="--motif-swatch:#DDBE68"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Gold</span></button>
+        <button type="button" class="motif-color" data-color="#9D86B3" data-name="Bright Lavender" title="Bright Lavender – ca. Pantone 4121C" style="--motif-swatch:#9D86B3"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Lavender</span></button>
+        <button type="button" class="motif-color" data-color="#B3DB88" data-name="Bright Lime" title="Bright Lime – ca. Pantone 366U" style="--motif-swatch:#B3DB88"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Lime</span></button>
+        <button type="button" class="motif-color" data-color="#A03271" data-name="Bright Pink" title="Bright Pink – ca. Pantone 675C" style="--motif-swatch:#A03271"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Pink</span></button>
+        <button type="button" class="motif-color" data-color="#8E3128" data-name="Bright Red" title="Bright Red – ca. Pantone 7620C" style="--motif-swatch:#8E3128"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Red</span></button>
+        <button type="button" class="motif-color" data-color="#A6A9AA" data-name="Bright Silver" title="Bright Silver – ca. Pantone 10077C" style="--motif-swatch:#A6A9AA"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Silver</span></button>
+        <button type="button" class="motif-color" data-color="#C7AFCE" data-name="Bright Violet" title="Bright Violet – ca. Pantone 7437C" style="--motif-swatch:#C7AFCE"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Violet</span></button>
+        <button type="button" class="motif-color" data-color="#F7D35E" data-name="Bright Yellow" title="Bright Yellow – ca. Pantone 122C" style="--motif-swatch:#F7D35E"><span class="motif-color-swatch"></span><span class="motif-color-label">Bright Yellow</span></button>
+        <button type="button" class="motif-color" data-color="#C18D45" data-name="Bronze" title="Bronze – ca. Pantone 19-1435TCX" style="--motif-swatch:#C18D45"><span class="motif-color-swatch"></span><span class="motif-color-label">Bronze</span></button>
+        <button type="button" class="motif-color" data-color="#44382B" data-name="Brown" title="Brown – ca. Pantone 7533C" style="--motif-swatch:#44382B"><span class="motif-color-swatch"></span><span class="motif-color-label">Brown</span></button>
+        <button type="button" class="motif-color" data-color="#DDD29A" data-name="Champagne" title="Champagne – ca. Pantone 7499C" style="--motif-swatch:#DDD29A"><span class="motif-color-swatch"></span><span class="motif-color-label">Champagne</span></button>
+        <button type="button" class="motif-color" data-color="#8F6E5B" data-name="Coffee" title="Coffee – ca. Pantone 4715C" style="--motif-swatch:#8F6E5B"><span class="motif-color-swatch"></span><span class="motif-color-label">Coffee</span></button>
+        <button type="button" class="motif-color" data-color="#ED7157" data-name="Coral" title="Coral – ca. Pantone 172U" style="--motif-swatch:#ED7157"><span class="motif-color-swatch"></span><span class="motif-color-label">Coral</span></button>
+        <button type="button" class="motif-color" data-color="#DC4647" data-name="Flame Red" title="Flame Red – ca. Pantone 032C" style="--motif-swatch:#DC4647"><span class="motif-color-swatch"></span><span class="motif-color-label">Flame Red</span></button>
+        <button type="button" class="motif-color" data-color="#B36966" data-name="Flamingo" title="Flamingo – ca. Pantone 18-1629TCX" style="--motif-swatch:#B36966"><span class="motif-color-swatch"></span><span class="motif-color-label">Flamingo</span></button>
+        <button type="button" class="motif-color" data-color="#4FAE4F" data-name="Frog Green" title="Frog Green – ca. Pantone 354C" style="--motif-swatch:#4FAE4F"><span class="motif-color-swatch"></span><span class="motif-color-label">Frog Green</span></button>
+        <button type="button" class="motif-color" data-color="#9E2759" data-name="Fuchsia" title="Fuchsia – ca. Pantone 215C" style="--motif-swatch:#9E2759"><span class="motif-color-swatch"></span><span class="motif-color-label">Fuchsia</span></button>
+        <button type="button" class="motif-color" data-color="#000000" data-name="Glossy Black" title="Glossy Black" style="--motif-swatch:#000000"><span class="motif-color-swatch"></span><span class="motif-color-label">Glossy Black</span></button>
+        <button type="button" class="motif-color" data-color="#A13126" data-name="Glossy Red" title="Glossy Red" style="--motif-swatch:#A13126"><span class="motif-color-swatch"></span><span class="motif-color-label">Glossy Red</span></button>
+        <button type="button" class="motif-color" data-color="#FFFFFF" data-name="Glossy White" title="Glossy White" style="--motif-swatch:#FFFFFF"><span class="motif-color-swatch"></span><span class="motif-color-label">Glossy White</span></button>
+        <button type="button" class="motif-color" data-color="#857451" data-name="Gold Metallic" title="Gold Metallic – ca. Pantone 872C" style="--motif-swatch:#857451"><span class="motif-color-swatch"></span><span class="motif-color-label">Gold Metallic</span></button>
+        <button type="button" class="motif-color" data-color="#2D683D" data-name="Green" title="Green – ca. Pantone 349C" style="--motif-swatch:#2D683D"><span class="motif-color-swatch"></span><span class="motif-color-label">Green</span></button>
+        <button type="button" class="motif-color" data-color="#7E878D" data-name="Grey" title="Grey – ca. Pantone 430C" style="--motif-swatch:#7E878D"><span class="motif-color-swatch"></span><span class="motif-color-label">Grey</span></button>
+        <button type="button" class="motif-color" data-color="#A5CAE8" data-name="Ice Blue" title="Ice Blue – ca. Pantone 291C" style="--motif-swatch:#A5CAE8"><span class="motif-color-swatch"></span><span class="motif-color-label">Ice Blue</span></button>
+        <button type="button" class="motif-color" data-color="#FAF077" data-name="Lemon Yellow" title="Lemon Yellow – ca. Pantone 3945U" style="--motif-swatch:#FAF077"><span class="motif-color-swatch"></span><span class="motif-color-label">Lemon Yellow</span></button>
+        <button type="button" class="motif-color" data-color="#EDD0B7" data-name="Light Apricot" title="Light Apricot – ca. Pantone 475C" style="--motif-swatch:#EDD0B7"><span class="motif-color-swatch"></span><span class="motif-color-label">Light Apricot</span></button>
+        <button type="button" class="motif-color" data-color="#AF6D9E" data-name="Light Berry" title="Light Berry – ca. Pantone 17-3020TCX" style="--motif-swatch:#AF6D9E"><span class="motif-color-swatch"></span><span class="motif-color-label">Light Berry</span></button>
+        <button type="button" class="motif-color" data-color="#CDCDCD" data-name="Light Grey" title="Light Grey – ca. Pantone 179-3C" style="--motif-swatch:#CDCDCD"><span class="motif-color-swatch"></span><span class="motif-color-label">Light Grey</span></button>
+        <button type="button" class="motif-color" data-color="#F6C951" data-name="Medium Yellow" title="Medium Yellow – ca. Pantone 123C" style="--motif-swatch:#F6C951"><span class="motif-color-swatch"></span><span class="motif-color-label">Medium Yellow</span></button>
+        <button type="button" class="motif-color" data-color="#9FD4BE" data-name="Mint" title="Mint – ca. Pantone 337C" style="--motif-swatch:#9FD4BE"><span class="motif-color-swatch"></span><span class="motif-color-label">Mint</span></button>
+        <button type="button" class="motif-color" data-color="#0B1B2B" data-name="Navy Blue" title="Navy Blue – ca. Pantone 296C" style="--motif-swatch:#0B1B2B"><span class="motif-color-swatch"></span><span class="motif-color-label">Navy Blue</span></button>
+        <button type="button" class="motif-color" data-color="#7C2398" data-name="Neon Berry" title="Neon Berry – ca. Pantone 2602C" style="--motif-swatch:#7C2398"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Berry</span></button>
+        <button type="button" class="motif-color" data-color="#459AD8" data-name="Neon Blue" title="Neon Blue – ca. Pantone 2925C" style="--motif-swatch:#459AD8"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Blue</span></button>
+        <button type="button" class="motif-color" data-color="#B5257B" data-name="Neon Dark Pink" title="Neon Dark Pink – ca. Pantone 233C" style="--motif-swatch:#B5257B"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Dark Pink</span></button>
+        <button type="button" class="motif-color" data-color="#72D34C" data-name="Neon Green" title="Neon Green – ca. Pantone 802C" style="--motif-swatch:#72D34C"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Green</span></button>
+        <button type="button" class="motif-color" data-color="#F3AE5F" data-name="Neon Orange" title="Neon Orange – ca. Pantone 804C" style="--motif-swatch:#F3AE5F"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Orange</span></button>
+        <button type="button" class="motif-color" data-color="#EB50B1" data-name="Neon Pink" title="Neon Pink – ca. Pantone 806C" style="--motif-swatch:#EB50B1"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Pink</span></button>
+        <button type="button" class="motif-color" data-color="#EE7A7A" data-name="Neon Red" title="Neon Red – ca. Pantone 805C" style="--motif-swatch:#EE7A7A"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Red</span></button>
+        <button type="button" class="motif-color" data-color="#E4E855" data-name="Neon Yellow" title="Neon Yellow – ca. Pantone 809C" style="--motif-swatch:#E4E855"><span class="motif-color-swatch"></span><span class="motif-color-label">Neon Yellow</span></button>
+        <button type="button" class="motif-color" data-color="#9AB37F" data-name="Olive" title="Olive – ca. Pantone 577U" style="--motif-swatch:#9AB37F"><span class="motif-color-swatch"></span><span class="motif-color-label">Olive</span></button>
+        <button type="button" class="motif-color" data-color="#CF743E" data-name="Orange" title="Orange – ca. Pantone 30-8C" style="--motif-swatch:#CF743E"><span class="motif-color-swatch"></span><span class="motif-color-label">Orange</span></button>
+        <button type="button" class="motif-color" data-color="#F6E591" data-name="Pastel Yellow" title="Pastel Yellow – ca. Pantone 4-5C" style="--motif-swatch:#F6E591"><span class="motif-color-swatch"></span><span class="motif-color-label">Pastel Yellow</span></button>
+        <button type="button" class="motif-color" data-color="#F5C19E" data-name="Peach Fuzz" title="Peach Fuzz – ca. Pantone 13-1023TCX" style="--motif-swatch:#F5C19E"><span class="motif-color-swatch"></span><span class="motif-color-label">Peach Fuzz</span></button>
+        <button type="button" class="motif-color" data-color="#696AA8" data-name="Peri" title="Peri – ca. Pantone 17-3938TPG" style="--motif-swatch:#696AA8"><span class="motif-color-swatch"></span><span class="motif-color-label">Peri</span></button>
+        <button type="button" class="motif-color" data-color="#21135B" data-name="Purple" title="Purple – ca. Pantone 273C" style="--motif-swatch:#21135B"><span class="motif-color-swatch"></span><span class="motif-color-label">Purple</span></button>
+        <button type="button" class="motif-color" data-color="#A0312B" data-name="Red" title="Red – ca. Pantone 49-8C" style="--motif-swatch:#A0312B"><span class="motif-color-swatch"></span><span class="motif-color-label">Red</span></button>
+        <button type="button" class="motif-color" data-color="#AC7D6F" data-name="Rose Gold" title="Rose Gold – ca. Pantone 54-12C" style="--motif-swatch:#AC7D6F"><span class="motif-color-swatch"></span><span class="motif-color-label">Rose Gold</span></button>
+        <button type="button" class="motif-color" data-color="#35608E" data-name="Royal Blue" title="Royal Blue – ca. Pantone 647C" style="--motif-swatch:#35608E"><span class="motif-color-swatch"></span><span class="motif-color-label">Royal Blue</span></button>
+        <button type="button" class="motif-color" data-color="#B5C1A7" data-name="Sage Green" title="Sage Green – ca. Pantone 2404C" style="--motif-swatch:#B5C1A7"><span class="motif-color-swatch"></span><span class="motif-color-label">Sage Green</span></button>
+        <button type="button" class="motif-color" data-color="#D1BA9A" data-name="Sand Beige" title="Sand Beige – ca. Pantone 22-2C" style="--motif-swatch:#D1BA9A"><span class="motif-color-swatch"></span><span class="motif-color-label">Sand Beige</span></button>
+        <button type="button" class="motif-color" data-color="#8D9093" data-name="Silver Metallic" title="Silver Metallic – ca. Pantone 877C" style="--motif-swatch:#8D9093"><span class="motif-color-swatch"></span><span class="motif-color-label">Silver Metallic</span></button>
+        <button type="button" class="motif-color" data-color="#85C3E4" data-name="Sky Blue" title="Sky Blue – ca. Pantone 297C" style="--motif-swatch:#85C3E4"><span class="motif-color-swatch"></span><span class="motif-color-label">Sky Blue</span></button>
+        <button type="button" class="motif-color" data-color="#BCA1D6" data-name="Violet" title="Violet – ca. Pantone 2567C" style="--motif-swatch:#BCA1D6"><span class="motif-color-swatch"></span><span class="motif-color-label">Violet</span></button>
+        <button type="button" class="motif-color" data-color="#AF3F56" data-name="Viva Magenta" title="Viva Magenta – ca. Pantone 18-1750TPG" style="--motif-swatch:#AF3F56"><span class="motif-color-swatch"></span><span class="motif-color-label">Viva Magenta</span></button>
+        <button type="button" class="motif-color" data-color="#FFFFFF" data-name="White" title="White" style="--motif-swatch:#FFFFFF"><span class="motif-color-swatch"></span><span class="motif-color-label">White</span></button>
+        <button type="button" class="motif-color" data-color="#FCB91D" data-name="Yellow" title="Yellow" style="--motif-swatch:#FCB91D"><span class="motif-color-swatch"></span><span class="motif-color-label">Yellow</span></button>
+      </div>
+      <p class="current-color">Motiv: <strong id="currentMotifColorName">Black</strong></p>
+    </section>
+
+
+    <section class="tool-section initials-section" id="initialsPop">
+      <h3>Initialen</h3>
+      <div class="initials-controls">
+        <div class="initials-field-wrap">
+          <input id="initialsInput" class="feature-input" type="text" maxlength="3" minlength="0" value="" placeholder="ABC" autocomplete="off" autocapitalize="characters" spellcheck="false" inputmode="text" pattern="[A-Za-zÄÖÜäöü0-9]{0,3}" aria-label="Initialen" aria-describedby="initialsHint initialsError">
+        </div>
+        <p class="hint" id="initialsHint">1–3 Zeichen · A–Z und 0–9 · optional</p>
+      </div>
+      <p class="field-error" id="initialsError" hidden></p>
+    </section>
+
+    <section class="tool-section view-section">
+      <h3>Ansicht</h3>
+
+      <div class="view-switch" role="group" aria-label="Textilansicht">
+        <button type="button" class="view-btn active" data-view="front" aria-label="Vorderseite">
+          Vorne
+        </button>
+
+        <button type="button" class="view-btn" data-view="back" aria-label="Rückseite">
+          Hinten
+        </button>
+      </div>
+    </section>
+
+    <section class="tool-section product-section" id="productSection" hidden>
+      <h3>Textil</h3>
+      <div class="product-switch" id="productSwitch"></div>
+    </section>
+
+    <section class="tool-section order-section">
+      <h3>Größe & Menge</h3>
+      <div class="order-price-info"><span>Aktuelles Textil</span><strong id="currentProductPrice">15,00 € pro T-Shirt</strong></div>
+      <div class="order-fields">
+        <label class="order-field size-field">
+          <span>Größe</span>
+          <select id="shirtSize" class="size-select-fallback">
+            <option value="">Bitte wählen</option>
+            <option>XS</option><option>S</option><option>M</option><option>L</option>
+            <option>XL</option><option>2XL</option><option>3XL</option><option>4XL</option><option>5XL</option>
+          </select>
+          <div class="size-pills" id="sizePills" role="listbox" aria-label="Größe"></div>
+        </label>
+        <label class="order-field qty-field">
+          <span>Menge</span>
+          <input id="shirtQuantity" type="number" min="1" max="99" value="1" inputmode="numeric">
+        </label>
+      </div>
+      <button type="button" id="addToOrderBtn" class="primary-btn"><span id="addToOrderLabel">T-Shirt hinzufügen</span><strong id="addToOrderPrice">15,00 €</strong></button>
+      <p id="orderMessage" class="order-message" aria-live="polite"></p>
+      <div id="cartBox" class="cart-box" hidden>
+        <div class="cart-head">
+          <div>
+            <strong>Deine Auswahl</strong>
+          </div>
+          <b id="cartTotal">0,00 €</b>
+        </div>
+        <div id="cartItems" class="cart-items"></div>
+        <div class="cart-foot-count"><span>Gesamtzahl</span><strong id="cartCount">0 Textilien</strong></div>
+        <button type="button" id="orderBtn" class="primary-btn checkout-btn">
+          <span>Weiter zur Bestellung</span>
+          <strong id="checkoutTotal">0,00 €</strong>
+        </button>
+      </div>
+    </section>
+
+    <div class="sidebar-bottom">
+      <button type="button" id="resetBtn" class="secondary-btn">
+        Design zurücksetzen
+      </button>
+    </div>
+
+  </aside>
+
+
+  <main class="designer-area">
+
+    <header class="designer-header">
+      <div>
+        <h1 id="designerHeading">T-Shirt gestalten</h1>
+        <p id="designerIntro">Logo hochladen, positionieren, skalieren und drehen.</p>
+      </div>
+
+      <div class="designer-status" id="designerStatus">
+        Vorderseite
+      </div>
+    </header>
+
+
+    <div class="workspace">
+
+
+      <div class="mockup-stage">
+
+        <img
+          id="shirtMockup"
+          class="shirt-mockup"
+          src="shirt-front-template.png"
+          alt="T-Shirt Vorderseite"
+        >
+        <div id="shirtColorLayer" class="shirt-color-overlay" aria-hidden="true" style="display:none"></div>
+
+        <div class="print-zone" id="printZone">
+          <canvas id="designCanvas" width="320" height="500"></canvas>
+        </div>
+        <aside class="price-patch" id="pricePatch" hidden></aside>
+      </div>
+      <aside class="editor-dnd-rail" aria-label="Gestaltungswerkzeuge">
+        <button type="button" data-design-tool="product"><span aria-hidden="true">▣</span><strong>Textil</strong><small>Modell wählen</small></button>
+        <button type="button" data-design-tool="logo" draggable="true"><span aria-hidden="true">◇</span><strong>Vereinslogo</strong><small>Auf das Shirt ziehen</small></button>
+        <button type="button" data-design-tool="photo" draggable="true"><span aria-hidden="true">▧</span><strong>Foto</strong></button>
+        <button type="button" data-design-tool="text" draggable="true"><span aria-hidden="true">T</span><strong>Text</strong></button>
+        <button type="button" data-design-tool="initials"><span aria-hidden="true">AB</span><strong>Initialen</strong></button>
+        <button type="button" data-design-tool="printColor" aria-label="Druckfarbe ändern" aria-haspopup="true"><span class="print-color-indicator" aria-hidden="true"></span><strong>Druckfarbe</strong><i class="print-color-chevron" aria-hidden="true"></i></button>
+      </aside>
+    </div>
+
+    <div class="dual-workspace" id="dualWorkspace" hidden>
+      <div class="dual-composite-shell">
+        <div class="dual-label dual-label-front">Vorderseite</div>
+        <div class="dual-label dual-label-back">Rückseite</div>
+        <div class="dual-composite-stage">
+          <img id="dualCompositeShirt" class="dual-composite-shirt" alt="T-Shirt Vorder- und Rückseite">
+          <div class="dual-half dual-half-front" aria-hidden="true">
+            <img id="dualFrontMotif" class="dual-motif" alt="Vorderdruck">
+          </div>
+          <div class="dual-half dual-half-back" aria-hidden="true">
+            <img id="dualBackMotif" class="dual-motif" alt="Rückendruck">
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <footer class="designer-footer">
+      Das gewählte Motiv wird automatisch fest auf der Vorderseite platziert.
+    </footer>
+
+  </main>
+
+</div>
+
+<div id="orderModal" class="order-modal" hidden>
+  <div class="order-modal-backdrop" data-close-order></div>
+  <div class="order-modal-card" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle">
+    <button type="button" class="order-modal-close" data-close-order aria-label="Schließen">×</button>
+    <div class="order-modal-title"><span>Bestellabschluss</span><h2 id="orderModalTitle">Bestellung prüfen</h2></div>
+    <div id="orderSummary" class="order-summary"></div>
+
+    <form id="orderForm" class="contact-form" action="https://formsubmit.co/shirtzentrale@gmail.com" method="POST">
+      <input type="hidden" name="_subject" id="formSubject" value="Neue T-Shirt Bestellung">
+      <input type="hidden" name="_captcha" value="false">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="_next" id="formNext" value="./danke.html">
+      <input type="hidden" name="Bestellung" id="formOrderItems">
+      <input type="hidden" name="Gesamtmenge" id="formTotalQuantity">
+      <input type="hidden" name="Bestellnummer" id="formOrderNumber">
+      <input type="hidden" name="Gesamtpreis" id="formTotalPrice">
+      <input type="hidden" name="Adresse" id="formAddress">
+
+      <label class="contact-field">
+        <span>Vor- und Nachname *</span>
+        <input type="text" name="Vor- und Nachname" id="customerName" required autocomplete="name">
+      </label>
+      <label class="contact-field">
+        <span id="customerExtraFieldLabel">Verein / Firma *</span>
+        <input type="text" name="Verein / Firma" id="customerClass" required>
+      </label>
+      <label class="contact-field">
+        <span>E-Mail *</span>
+        <input type="email" name="E-Mail" id="customerEmail" required autocomplete="email">
+      </label>
+      <label class="contact-field">
+        <span>WhatsApp <small>(optional)</small></span>
+        <input type="tel" name="WhatsApp" id="customerPhone" autocomplete="tel" inputmode="tel" placeholder="+49 …">
+      </label>
+      <label class="contact-field address-field">
+        <span>Adresse *</span>
+        <div class="address-lines">
+          <input type="text" name="Straße / Hausnummer" id="customerStreet" required autocomplete="address-line1" placeholder="Straße, Hausnummer">
+          <input type="text" name="PLZ / Ort" id="customerCity" required autocomplete="address-line2" placeholder="PLZ, Ort">
+        </div>
+      </label>
+      <label class="contact-field">
+        <span>Bestellart *</span>
+        <select name="Bestellart" id="customerDeliveryType" required>
+          <option value="Abholung" selected>Abholung</option>
+          <option value="Versand">Versand</option>
+          <option id="customerHandoverOption" value="" hidden></option>
+        </select>
+      </label>
+      <label class="contact-field">
+        <span>Zahlung *</span>
+        <select name="Zahlung" id="customerPaymentMethod" required>
+          <option value="Bar bei Abholung" selected>Bar bei Abholung</option>
+          <option value="Bar bei Übergabe" hidden>Bar bei Übergabe</option>
+          <option value="Überweisung">Überweisung</option>
+          <option value="PayPal" hidden>PayPal</option>
+        </select>
+      </label>
+      <p id="paypalPaymentNote" class="paypal-payment-note" hidden></p>
+
+      <p class="order-modal-note">Die Bestellung wird an <strong id="orderEmailDisplay">shirtzentrale@gmail.com</strong> gesendet.</p>
+      <button type="button" class="primary-btn send-order-btn" id="sendOrderBtn"><span>Bestellung verbindlich absenden</span></button>
+      <p id="sendOrderMessage" class="send-order-message" aria-live="polite"></p>
+    </form>
+
+    <button type="button" class="secondary-btn order-back-btn" data-close-order>Zurück zum Designer</button>
+  </div>
+</div>
+
+<script src="/central-config.js?v=30.3.221"></script>
+<dialog id="photoDialog" class="photo-dialog" aria-labelledby="photoDialogTitle">
+  <header class="photo-dialog-header"><h2 id="photoDialogTitle">Ein Bild hinzufügen</h2><button type="button" class="photo-dialog-close" aria-label="Schließen">×</button></header>
+  <div class="photo-dialog-tabs" role="tablist" aria-label="Bildquelle">
+    <button type="button" id="photoUploadTab" role="tab" aria-controls="photoUploadPanel" aria-selected="true">HOCHLADEN</button>
+    <button type="button" id="photoLibraryTab" role="tab" aria-controls="photoLibraryPanel" aria-selected="false">MEINE BILDER</button>
+  </div>
+  <section id="photoUploadPanel" role="tabpanel" aria-labelledby="photoUploadTab">
+    <div id="photoUploadDrop" class="photo-upload-drop">
+      <p>Lade deine Datei hoch oder ziehe sie hierher</p>
+      <button type="button" id="photoUploadButton" class="photo-upload-button"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 22V4m-7 7 7-7 7 7M5 21v6h22v-6"/></svg> HOCHLADEN</button>
+      <small>PNG, JPG, WEBP oder SVG · max. <span id="photoMaxUpload">8</span> MB</small>
+    </div>
+    <div class="photo-requirements"><h3>Anforderungen an das Bild:</h3><ul><li>Dateiformat PNG, JPG, WEBP oder SVG</li><li>Verwende eine scharfe Datei in möglichst hoher Auflösung.</li><li>Für freigestellte Logos: PNG oder SVG mit transparentem Hintergrund.</li></ul><p>Mit dem Hochladen bestätigst du, dass du die Rechte zur Nutzung und zum Druck der Grafik hast.</p></div>
+  </section>
+  <section id="photoLibraryPanel" role="tabpanel" aria-labelledby="photoLibraryTab" hidden><p class="photo-library-hint">Deine in dieser Sitzung hochgeladenen Bilder.</p><div id="photoImageLibrary" class="photo-image-library"></div></section>
+  <details id="photoEditDetails" class="photo-edit-details" hidden><summary>Bild bearbeiten</summary><div id="photoEditTools" class="editor-tool-menu photo-edit-tools"></div></details>
+</dialog>
+<dialog id="textDialog" class="text-dialog" aria-labelledby="textDialogTitle">
+  <header class="text-dialog-header"><h2 id="textDialogTitle">Text hinzufügen</h2><button type="button" id="textDialogClose" aria-label="Schließen">×</button></header>
+  <label class="text-dialog-label" for="textDialogInput">Dein Text</label>
+  <div class="text-dialog-entry"><input id="textDialogInput" type="text" maxlength="80" placeholder="Text eingeben"><button type="button" id="textDialogAdd">Text hinzufügen</button></div>
+  <div class="text-font-heading"><strong>Schriftarten</strong><small>Schrift wählen und Text hinzufügen</small></div>
+  <div id="fontGallery" class="text-font-gallery" aria-label="Schriftarten in vier Reihen"></div>
+</dialog>
+<script src="/__/firebase/8.10.1/firebase-app.js"></script>
+<script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="/shop-loader.js?v=30.3.221"></script>
+<script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+<script>
+  (function(){
+    var loaded=false;
+    function boot(){
+      if(loaded) return;
+      loaded=true;
+      document.body.classList.remove("shop-loading");
+      var app=document.createElement("script");
+      app.src="/script.js?v=30.3.221";
+      app.onerror=function(){ document.body.classList.remove("shop-loading"); };
+      document.body.appendChild(app);
+    }
+    try{
+      if(typeof loadShopConfig==="function") loadShopConfig(boot);
+      else boot();
+    }catch(e){ boot(); }
+    setTimeout(function(){ document.body.classList.remove("shop-loading"); if(!loaded) boot(); }, 2500);
+  })();
+</script>
+
+</body>
+</html>

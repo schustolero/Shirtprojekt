@@ -1,0 +1,1658 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#ffffff">
+  <title>Shirtprojekt – Zentrale</title>
+  <link rel="stylesheet" href="admin.css?v=30.3.221">
+
+<style id="v2849-critical">
+/* v29.1.4 clean fallback: Grunddaten garantiert zusammengefasst */
+.v2849-version{position:fixed;right:12px;bottom:10px;z-index:9999;font:700 10px/1.2 system-ui,sans-serif;color:#8a6b00;background:#fff7cf;border:1px solid #f0d66b;border-radius:999px;padding:5px 8px;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.v284-card[data-card="display"],.v284-card[data-card="colors"],.v284-card[data-card="logo"]{display:none!important}
+.v284-card[data-card="basic"] .v284-card-body{padding:14px 18px 18px!important}
+.v284-card[data-card="basic"] .v284-basic-combined{display:block!important}
+.v284-card[data-card="basic"] .v284-basic-subsection{display:block!important;margin-top:12px!important;padding-top:12px!important;border-top:1px solid #edf0f3!important}
+.v284-card[data-card="basic"] .v284-basic-subsection>h3{display:block!important;font-size:12px!important;text-transform:uppercase!important;letter-spacing:.05em!important;color:#777f8a!important;margin:0 0 10px!important}
+.v284-card[data-card="basic"] .shop-logo-inline{grid-column:1/-1!important;margin-top:4px!important;padding:10px 12px!important;border:1px solid #eceef2!important;border-radius:12px!important;background:#fbfcfd!important}
+@media(max-width:720px){.v2849-version{bottom:8px;right:8px}.v284-card[data-card="basic"] .v284-card-body{padding:10px!important}}
+</style>
+
+<style id="v2926-mobile-compact-final">
+@media (max-width:720px){
+  /* FINAL OVERRIDE: Grunddaten sichtbar kompakter */
+  .v2853-basic-card{margin-bottom:8px!important}
+  .v2853-basic-card .v2853-card-head{min-height:36px!important;height:36px!important;padding:0 9px!important}
+  .v2853-basic-card .v2853-card-head h3{font-size:13px!important}
+  .v2853-basic-card .v2853-card-body{padding:6px 7px 7px!important}
+  .v2853-basic-card .v2854-name-logo-row{display:grid!important;grid-template-columns:minmax(0,1fr) 118px!important;gap:6px!important;margin:0 0 6px!important;align-items:end!important}
+  .v2853-basic-card .v2854-name-logo-row .v2853-name{margin:0!important}
+  .v2853-basic-card .v2854-name-logo-row input{height:30px!important;min-height:30px!important;padding:4px 6px!important;font-size:10.5px!important}
+  .v2853-basic-card .v2853-basic-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:5px 6px!important}
+  .v2853-basic-card .v2853-basic-grid>label{margin:0!important;min-width:0!important}
+  .v2853-basic-card .v2853-basic-grid label>span{font-size:8.5px!important;margin:0 0 1px!important;line-height:1.1!important}
+  .v2853-basic-card .v2853-basic-grid input,.v2853-basic-card .v2853-basic-grid select{height:29px!important;min-height:29px!important;padding:3px 6px!important;font-size:10px!important;border-radius:6px!important}
+  .v2853-basic-card .v2850-active-field{grid-column:1/-1!important;min-height:28px!important;height:28px!important;padding:3px 7px!important;margin:0!important;border-radius:7px!important}
+  .v2853-basic-card .v2850-active-field span{font-size:9px!important;margin:0!important}
+  .v2853-basic-card .v2853-products{margin-top:6px!important;padding-top:6px!important}
+  .v2853-basic-card .v2850-subtitle{font-size:9px!important;margin:0 0 4px!important}
+  .v2853-basic-card .v2850-product-grid{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important}
+  .v2853-basic-card .v2850-product{min-height:46px!important;padding:5px 6px!important;border-radius:7px!important}
+  .v2853-basic-card .v2850-product strong{font-size:9px!important}
+  .v2853-basic-card .v2850-product span,.v2853-basic-card .v2850-product small{font-size:7.5px!important}
+  .v2853-basic-card .v2850-product b{font-size:11px!important}
+  .v2853-basic-card .v2854-basic-logo{display:grid!important;grid-template-columns:34px 1fr!important;gap:4px!important;padding:4px!important;margin:0!important;min-height:44px!important;border-radius:7px!important}
+  .v2853-basic-card .v2854-basic-logo .shop-logo-mini-preview{width:32px!important;height:32px!important}
+  .v2853-basic-card .v2854-basic-logo .shop-logo-inline-controls{gap:2px!important}
+  .v2853-basic-card .v2854-basic-logo .shop-logo-inline-controls strong{font-size:8px!important}
+  .v2853-basic-card .v2854-basic-logo .shop-logo-height{display:none!important}
+  .v2853-basic-card .v2854-basic-logo .shop-logo-file,.v2853-basic-card .v2854-basic-logo .shop-logo-reset{min-height:22px!important;height:22px!important;padding:2px 5px!important;font-size:7.5px!important}
+
+  /* Darstellung & Shirtfarben kompakter */
+  .v2853-appearance-card .v2853-card-head{min-height:36px!important;height:36px!important;padding:0 9px!important}
+  .v2853-appearance-card .v2853-card-head h3{font-size:13px!important}
+  .v2853-appearance-card .v2853-card-body{padding:6px 7px 7px!important}
+  .v2919-color-settings{gap:6px!important}
+  .v2919-color-head{gap:4px!important}
+  .v2919-color-head h3{font-size:10.5px!important}
+  .v2919-color-head p{font-size:8px!important;line-height:1.15!important;margin:0!important}
+  .v2919-inline-toggle{min-height:26px!important;padding:4px 6px!important;font-size:8.5px!important;border-radius:7px!important}
+  .v2919-shirt-palette-card{padding:6px!important;border-radius:8px!important}
+  .v2919-card-top{margin-bottom:4px!important}
+  .v2919-card-top strong{font-size:9.5px!important}
+  .v2919-card-top span{font-size:7.5px!important}
+  .v2920-quick-actions{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:4px!important;margin:0 0 5px!important}
+  .v2920-quick-btn{grid-column:auto!important;min-height:24px!important;padding:3px 4px!important;font-size:7.5px!important;border-radius:6px!important;white-space:nowrap!important}
+  .v2919-f140-grid{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important}
+  .v2919-f140-option{min-height:27px!important;padding:4px 4px!important;gap:3px!important;border-radius:7px!important}
+  .v2919-f140-option input{width:11px!important;height:11px!important;flex:0 0 11px!important}
+  .v2919-swatch{width:12px!important;height:12px!important;flex:0 0 12px!important}
+  .v2919-name{font-size:7.5px!important;line-height:1!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+  .v2919-shirt-default-row{grid-template-columns:1fr!important;gap:4px!important;margin-top:5px!important}
+  .v2919-shirt-default-row label span{font-size:8px!important}
+  .v2919-shirt-default-row select{height:27px!important;min-height:27px!important;font-size:9px!important}
+  .v2919-hint{font-size:7.5px!important;line-height:1.1!important;margin:0!important}
+}
+</style>
+
+
+<style id="v2927-mobile-color-fix">
+@media(max-width:720px){
+  /* Farbverwaltung bleibt vollständig innerhalb der Karte */
+  .v2853-appearance-card,
+  .v2853-appearance-card .v2853-card-body,
+  .v2853-appearance-card .compact-colors-section,
+  .v2853-appearance-card .v2919-color-settings,
+  .v2853-appearance-card .v2919-color-head,
+  .v2853-appearance-card .v2919-shirt-palette-card,
+  .v2853-appearance-card .v2919-shirt-default-row,
+  .v2853-appearance-card .v2919-motif-row{
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  .v2853-appearance-card .v2853-card-body,
+  .v2853-appearance-card .compact-colors-section{overflow:hidden!important}
+
+  .v2919-color-head{display:grid!important;grid-template-columns:1fr!important;gap:6px!important}
+  .v2919-color-head>div{min-width:0!important}
+  .v2919-color-head h3{margin:0!important}
+  .v2919-color-head p{max-width:100%!important;white-space:normal!important;overflow-wrap:anywhere!important}
+
+  /* Der Ein/Aus-Schalter war durch die globale input{width:100%}-Regel aufgeblasen. */
+  .v2919-inline-toggle{
+    display:flex!important;
+    width:100%!important;
+    max-width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:7px 9px!important;
+    gap:8px!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    overflow:hidden!important;
+  }
+  .v2919-inline-toggle input[type="checkbox"]{
+    width:18px!important;
+    min-width:18px!important;
+    max-width:18px!important;
+    height:18px!important;
+    min-height:18px!important;
+    padding:0!important;
+    margin:0!important;
+    flex:0 0 18px!important;
+  }
+  .v2919-inline-toggle span{
+    display:block!important;
+    min-width:0!important;
+    margin:0!important;
+    font-size:10px!important;
+    line-height:1.2!important;
+    white-space:normal!important;
+  }
+
+  .v2919-shirt-palette-card{padding:8px!important}
+  .v2920-quick-actions{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+    width:100%!important;
+  }
+  .v2920-quick-btn{
+    grid-column:auto!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:28px!important;
+    padding:4px 5px!important;
+    font-size:8px!important;
+    white-space:normal!important;
+    line-height:1.05!important;
+  }
+
+  .v2919-f140-grid{
+    display:grid!important;
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:5px!important;
+    width:100%!important;
+    min-width:0!important;
+  }
+  .v2919-f140-option{
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+    padding:5px!important;
+    gap:4px!important;
+    overflow:hidden!important;
+  }
+  .v2919-f140-option input[type="checkbox"]{
+    width:13px!important;
+    min-width:13px!important;
+    max-width:13px!important;
+    height:13px!important;
+    min-height:13px!important;
+    padding:0!important;
+    margin:0!important;
+    flex:0 0 13px!important;
+  }
+  .v2919-swatch{width:13px!important;height:13px!important;flex:0 0 13px!important}
+  .v2919-name{
+    min-width:0!important;
+    font-size:8px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+
+  .v2919-shirt-default-row{display:grid!important;grid-template-columns:1fr!important;gap:5px!important}
+  .v2919-shirt-default-row label{margin:0!important;min-width:0!important}
+  .v2919-shirt-default-row select{width:100%!important;min-width:0!important}
+  .v2919-hint{white-space:normal!important;overflow-wrap:anywhere!important}
+
+  .v2919-motif-row{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) 48px!important;
+    gap:6px!important;
+  }
+  .v2919-motif-row label{margin:0!important;min-width:0!important}
+  .v2919-motif-row input[type="text"]{width:100%!important;min-width:0!important}
+  .v2919-motif-row input[type="color"]{width:48px!important;min-width:48px!important;max-width:48px!important}
+}
+</style>
+
+<style id="v2928-mobile-colors">
+@media(max-width:760px){
+  .v2919-f140-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important}
+  .v2919-f140-option{min-height:44px!important;padding:8px 10px!important;gap:8px!important;overflow:hidden!important}
+  .v2919-f140-option input{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important}
+  .v2919-swatch{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important}
+  .v2919-name{font-size:10.5px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;line-height:1.15!important;display:block!important;min-width:0!important}
+  .v2920-quick-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:7px!important}
+  .v2920-quick-btn{width:100%!important;padding:7px 6px!important;font-size:9.8px!important;white-space:normal!important;line-height:1.15!important}
+  .v2919-shirt-default-row{grid-template-columns:1fr!important;gap:6px!important}
+  .v2919-shirt-default-row select{width:100%!important}
+  .v2919-motif-row{display:grid!important;grid-template-columns:minmax(0,1.3fr) 70px 70px!important;gap:8px!important;align-items:end!important}
+  .v2919-motif-row label{min-width:0!important}
+  .v2919-motif-row input[type=text]{width:100%!important;min-width:0!important}
+  .v2919-motif-row input[type=color]{width:58px!important;height:46px!important;min-width:58px!important}
+}
+</style>
+
+<style id="v2929-mobile-appearance-final">
+@media(max-width:760px){
+  /* v29.2.9 – gesamte Darstellung mobil wirklich kompakt */
+  .v2853-appearance-card .v2853-card-body{
+    padding:5px 7px 7px!important;
+    gap:5px!important;
+  }
+  .v2853-appearance-card .v2853-display{
+    padding:0!important;
+    margin:0!important;
+  }
+  .v2853-appearance-card .v2853-display .display-grid{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:5px!important;
+    margin:0!important;
+  }
+  .v2853-appearance-card .v2853-display .display-grid label{
+    margin:0!important;
+    gap:2px!important;
+    min-width:0!important;
+  }
+  .v2853-appearance-card .v2853-display .display-grid label span{
+    margin:0!important;
+    font-size:9px!important;
+    line-height:1.1!important;
+  }
+  .v2853-appearance-card .v2853-display .display-grid input,
+  .v2853-appearance-card .v2853-display .display-grid select{
+    min-height:31px!important;
+    height:31px!important;
+    padding:4px 8px!important;
+    font-size:10px!important;
+    border-radius:7px!important;
+  }
+  .v2853-appearance-card .v2869-inline-colors{
+    padding-top:5px!important;
+    margin-top:0!important;
+  }
+
+  /* F140 Farben: weiterhin 2 Spalten, aber deutlich kleiner */
+  .v2919-shirt-palette-card{padding:6px!important}
+  .v2919-card-top{margin-bottom:4px!important}
+  .v2919-card-top strong{font-size:9px!important}
+  .v2919-card-top span{font-size:7.5px!important}
+  .v2920-quick-actions{gap:4px!important;margin-bottom:5px!important}
+  .v2920-quick-btn{
+    min-height:25px!important;
+    height:25px!important;
+    padding:3px 4px!important;
+    font-size:7.8px!important;
+    line-height:1!important;
+  }
+  .v2919-f140-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:5px!important;
+  }
+  .v2919-f140-option{
+    min-height:34px!important;
+    height:34px!important;
+    padding:4px 6px!important;
+    gap:5px!important;
+    border-radius:8px!important;
+  }
+  .v2919-f140-option input[type="checkbox"]{
+    width:14px!important;
+    min-width:14px!important;
+    max-width:14px!important;
+    height:14px!important;
+    min-height:14px!important;
+    flex:0 0 14px!important;
+  }
+  .v2919-swatch{
+    width:14px!important;
+    min-width:14px!important;
+    height:14px!important;
+    flex:0 0 14px!important;
+  }
+  .v2919-name{
+    font-size:9px!important;
+    line-height:1.05!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .v2919-shirt-default-row{margin-top:5px!important;gap:3px!important}
+  .v2919-shirt-default-row label span{font-size:8px!important}
+  .v2919-shirt-default-row select{height:29px!important;min-height:29px!important;font-size:9px!important}
+  .v2919-hint{font-size:7.5px!important;line-height:1.1!important}
+
+  /* Motivfarbe + Farbfelder kompakter */
+  .v2919-motif-row{
+    grid-template-columns:minmax(0,1fr) 46px 46px!important;
+    gap:5px!important;
+    margin-top:2px!important;
+  }
+  .v2919-motif-row label span{font-size:8px!important}
+  .v2919-motif-row input[type="text"]{height:30px!important;min-height:30px!important;font-size:9.5px!important;padding:4px 7px!important}
+  .v2919-motif-row input[type="color"]{width:42px!important;min-width:42px!important;height:30px!important;min-height:30px!important;padding:2px!important}
+}
+</style>
+
+<style id="v2930-mobile-final">
+@media(max-width:760px){
+  /* v29.3.0 – Grunddaten breiter + Farben in 3 Spalten */
+  .v2853-basic-card,
+  .v2853-basic-card .v2853-card-body,
+  .v2853-basic-card .v284-basic-combined,
+  .v2853-basic-card .v284-basic-subsection,
+  .v2853-basic-card .v2853-basic-grid,
+  .v2853-basic-card .v2853-products,
+  .v2853-basic-card .v2854-name-logo-row{
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    box-sizing:border-box!important;
+  }
+  .v2853-basic-card{align-self:stretch!important;justify-self:stretch!important}
+  .v2853-basic-card .v2853-card-body{padding:8px 10px 10px!important}
+  .v2853-basic-card .v2854-name-logo-row{grid-template-columns:minmax(0,1fr) 140px!important;gap:8px!important}
+  .v2853-basic-card .v2853-products{margin-top:8px!important;padding-top:8px!important}
+  .v2853-basic-card .v2850-product-grid{gap:6px!important}
+
+  .v2919-f140-grid{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:4px!important;
+  }
+  .v2919-f140-option{
+    min-height:31px!important;
+    height:31px!important;
+    padding:4px 5px!important;
+    gap:4px!important;
+    border-radius:7px!important;
+  }
+  .v2919-f140-option input[type="checkbox"]{
+    width:13px!important;
+    min-width:13px!important;
+    max-width:13px!important;
+    height:13px!important;
+    min-height:13px!important;
+    flex:0 0 13px!important;
+  }
+  .v2919-swatch{
+    width:13px!important;
+    min-width:13px!important;
+    height:13px!important;
+    flex:0 0 13px!important;
+  }
+  .v2919-name{
+    font-size:8.1px!important;
+    line-height:1!important;
+    white-space:nowrap!important;
+    overflow:hidden!important;
+    text-overflow:ellipsis!important;
+  }
+  .v2920-quick-actions{gap:4px!important}
+  .v2920-quick-btn{
+    min-height:24px!important;
+    height:24px!important;
+    padding:3px 4px!important;
+    font-size:7.6px!important;
+  }
+}
+</style>
+
+
+<style id="v2931-mobile-basic-fix">
+@media(max-width:760px){
+  /* v29.3.1 – Grunddaten mobil ohne abgeschnittenes Shop-Logo */
+  .v2853-basic-card .v2854-name-logo-row{
+    display:grid!important;
+    grid-template-columns:1fr!important;
+    gap:8px!important;
+    align-items:stretch!important;
+  }
+  .v2853-basic-card .v2854-name-logo-row .v2853-name,
+  .v2853-basic-card .v2854-name-logo-row .v2854-basic-logo{
+    grid-column:1/-1!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+  }
+  .v2853-basic-card .v2854-basic-logo{
+    grid-template-columns:48px minmax(0,1fr)!important;
+    gap:8px!important;
+    padding:8px!important;
+    min-height:auto!important;
+    align-items:start!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-mini-preview{
+    width:42px!important;
+    height:42px!important;
+    grid-row:1 / span 2!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-inline-controls{
+    display:grid!important;
+    grid-template-columns:auto auto!important;
+    gap:6px!important;
+    justify-content:start!important;
+    align-items:center!important;
+    min-width:0!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-inline-controls strong{
+    grid-column:1/-1!important;
+    font-size:10px!important;
+    margin:0!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-file{
+    min-width:88px!important;
+    height:30px!important;
+    padding:0 8px!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-file span,
+  .v2853-basic-card .v2854-basic-logo .shop-logo-reset{
+    font-size:9px!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-reset{
+    padding:5px 8px!important;
+    min-width:92px!important;
+  }
+  .v2853-basic-card .v2854-basic-logo .shop-logo-height{
+    display:none!important;
+  }
+  .v2853-basic-card .v2853-basic-grid{
+    grid-template-columns:1fr 1fr!important;
+    gap:6px!important;
+  }
+  .v2853-basic-card .v2850-active-field{
+    grid-column:1/-1!important;
+    max-width:100%!important;
+  }
+
+  /* Standardfarbe direkt auf Royal Blue, wenn möglich */
+  #f140DefaultColor{
+    color:#202329!important;
+  }
+}
+</style>
+
+
+<style id="v2933-motif-style">
+.v2933-inline-toggles{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.v2933-motif-preset-field .v2933-preset-control{display:flex;align-items:center;gap:8px}.v2933-color-swatch{width:24px;height:24px;border-radius:8px;border:1px solid #d8dce2;background:#FCB91D;flex:0 0 24px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}@media(max-width:760px){.v2933-inline-toggles{width:100%;justify-content:flex-start}.v2933-inline-toggles .v2919-inline-toggle{margin:0!important}.v2933-motif-preset-field .v2933-preset-control{gap:6px}.v2933-color-swatch{width:22px;height:22px;border-radius:7px}}
+</style>
+
+
+<style id="v2934-choice-preview">
+.v2934-current-choice{display:flex;align-items:center;gap:8px;margin-top:7px;padding:8px 10px;border:1px solid #e2e6eb;border-radius:12px;background:#fbfbfc}.v2934-current-swatch{width:18px;height:18px;border-radius:999px;border:1px solid rgba(0,0,0,.08);background:#0758b2;flex:0 0 18px}.v2934-current-label{font-size:14px;line-height:1.2;color:#202329}.v2933-preset-control select option{font-weight:500}@media(max-width:760px){.v2934-current-choice{padding:7px 9px;border-radius:10px;margin-top:6px}.v2934-current-swatch{width:16px;height:16px;flex-basis:16px}.v2934-current-label{font-size:13px}}
+</style>
+
+
+<style id="v2935-print-color-cleanup">
+.v2935-print-color-block{display:grid;gap:8px;width:100%}
+.v2935-print-color-toggle{width:100%!important;margin:0!important}
+.v2935-print-color-block .v2933-motif-preset-field{margin:0!important}
+.v2935-print-color-block .v2933-preset-control{width:100%}
+@media(max-width:760px){
+  .v2935-print-color-block{gap:6px}
+  .v2935-print-color-toggle{padding:7px 9px!important}
+}
+</style>
+
+
+<style id="v2936-cleanup">
+#f140DefaultColor[hidden]{display:none!important}#fixedMotifName[type="hidden"]{display:none!important}.v2934-current-choice{margin-top:8px}.v2919-motif-row{grid-template-columns:auto!important;justify-content:start!important}.v2919-motif-row .v2850-color-picker{max-width:92px!important}.v2935-print-color-block{margin-top:2px}.v2935-print-color-block .v2935-print-color-toggle{margin-bottom:2px!important}@media(max-width:760px){.v2934-current-choice{margin-top:6px}.v2919-motif-row{gap:8px!important}}
+</style>
+
+
+<style id="v2937-motif-compact">
+@media (max-width:760px){
+  .v2853-print-card .accordion-body{padding:8px 8px 10px!important;}
+  .v2853-print-card .panel-head.compact.accordion-panel-head{margin-bottom:6px!important;}
+  .v2853-print-card .section-note{font-size:10px!important;line-height:1.3!important;margin:0 0 8px!important;}
+  .v2853-print-card .v2862-shared-motif{padding:7px 8px!important;margin-bottom:6px!important;border-radius:10px!important;gap:8px!important;}
+  .v2853-print-card .v2862-shared-motif strong{font-size:11px!important;line-height:1.2!important;}
+  .v2853-print-card .v2862-shared-motif span:not(.v2861-motif-preview){font-size:9px!important;line-height:1.25!important;}
+  .v2853-print-card .v2861-motif-preview{width:52px!important;height:38px!important;padding:3px 5px!important;border-radius:8px!important;}
+  .v2853-print-card .v2861-motif-preview img{max-width:44px!important;max-height:26px!important;}
+  .v2853-print-card .v2917-mm-summary{gap:6px!important;margin-top:4px!important;flex-wrap:wrap!important;}
+  .v2853-print-card .v2917-size-chip{padding:5px 8px!important;border-radius:8px!important;font-size:10px!important;line-height:1.2!important;}
+  .v2853-print-card .v2862-product-groups{gap:5px!important;}
+  .v2853-print-card .v2862-product-group{border-radius:10px!important;}
+  .v2853-print-card .v2862-product-head{padding:5px 8px!important;min-height:28px!important;}
+  .v2853-print-card .v2862-product-head strong{font-size:11px!important;}
+  .v2853-print-card .v2862-product-head span{font-size:9px!important;}
+  .v2853-print-card .v2862-side-row{padding:5px 6px!important;gap:5px!important;min-height:auto!important;}
+  .v2853-print-card .v2862-side-row>span:first-child{font-size:10px!important;line-height:1.15!important;}
+  .v2853-print-card .v2862-side-row .v2856-size-select,
+  .v2853-print-card .v2862-side-row select{min-height:32px!important;height:32px!important;font-size:11px!important;padding:4px 8px!important;border-radius:8px!important;}
+  .v2853-print-card .v2862-side-row .v2921-inline-size{min-height:32px!important;height:32px!important;font-size:10px!important;padding:5px 8px!important;border-radius:8px!important;}
+  .v2853-print-card .v2862-side-row .v284-edit-print{min-width:90px!important;width:90px!important;height:32px!important;min-height:32px!important;padding:4px 8px!important;font-size:10px!important;border-radius:8px!important;}
+  .v2853-print-card .v2917-size-badge{font-size:9px!important;padding:3px 6px!important;border-radius:999px!important;}
+  .v2853-print-card .v2855-production-divider{margin-top:8px!important;padding-top:8px!important;}
+  .v2853-print-card .v2855-production-divider strong{font-size:12px!important;}
+  .v2853-print-card .v2855-production-divider span{font-size:10px!important;}
+  .v2853-print-card .v2911-production-compact .v2863-production-file-row{margin-bottom:7px!important;}
+  .v2853-print-card .v2911-production-compact #productionFileUrl{height:32px!important;min-height:32px!important;font-size:10.5px!important;border-radius:8px!important;}
+  .v2853-print-card .v2911-production-compact .global-print-data-grid{gap:6px!important;}
+  .v2853-print-card .v2911-production-compact .print-data-card{padding:8px!important;border-radius:9px!important;}
+  .v2853-print-card .v2911-production-compact .print-data-card h4{margin:0 0 5px!important;font-size:11px!important;}
+  .v2853-print-card .v2911-production-compact .simplified-print-data-fields{gap:5px!important;}
+  .v2853-print-card .v2911-production-compact label span{font-size:9px!important;}
+  .v2853-print-card .v2911-production-compact select,
+  .v2853-print-card .v2911-production-compact input{height:32px!important;min-height:32px!important;font-size:10.5px!important;padding:5px 8px!important;border-radius:8px!important;}
+}
+</style>
+
+
+<style id="v2938-print-grid-style">
+.v2938-print-head{margin:6px 0 8px!important}
+.v2938-print-grid{margin-top:0!important}
+.v2938-print-grid .v2919-f140-option input[type="radio"]{margin:0!important;flex:0 0 auto!important}
+.v2938-print-grid .v2919-f140-option.is-active{border-color:#e0be36!important;background:#fff9df!important;box-shadow:inset 0 0 0 1px rgba(224,190,54,.18)!important}
+.v2938-print-grid .v2919-f140-option{user-select:none!important}
+.v2938-print-grid .v2919-f140-option input{accent-color:#2f6a9b!important}
+@media (max-width:760px){
+  .v2938-print-head{margin:4px 0 7px!important}
+}
+@media (max-width:760px){
+  .v2853-print-card .v2862-side-row{display:flex!important;align-items:center!important;flex-wrap:nowrap!important;gap:4px!important;overflow-x:auto!important;padding:5px 4px!important}
+  .v2853-print-card .v2862-side-row>span:first-child{flex:0 0 72px!important;width:72px!important;white-space:nowrap!important;font-size:9.5px!important;line-height:1.1!important}
+  .v2853-print-card .v2862-side-row .v2856-size-select,
+  .v2853-print-card .v2862-side-row select{flex:1 0 86px!important;min-width:86px!important;height:30px!important;min-height:30px!important;padding:4px 7px!important;font-size:10px!important}
+  .v2853-print-card .v2862-side-row .v2921-inline-size{flex:0 0 86px!important;min-width:86px!important;height:30px!important;min-height:30px!important;padding:4px 7px!important;font-size:9.5px!important;display:flex!important;align-items:center!important;justify-content:center!important;white-space:nowrap!important}
+  .v2853-print-card .v2862-side-row .v284-edit-print{flex:0 0 84px!important;width:84px!important;min-width:84px!important;height:30px!important;min-height:30px!important;padding:4px 6px!important;font-size:9.5px!important;border-radius:8px!important}
+}
+</style>
+
+
+<style id="v2939-hide-farbe">
+.v2919-motif-row[hidden]{display:none!important}
+</style>
+
+<style id="v2940-print-grid-style">
+.v2940-print-default-row{margin-top:8px!important}
+.v2940-print-default-row .v2934-current-choice{margin-top:5px!important}
+.v2940-print-default-row select{min-width:0;flex:1;border:0!important;background:transparent!important;padding:2px 28px 2px 2px!important;font-weight:800;color:#202329;box-shadow:none!important}
+.v2938-print-grid .v2919-f140-option input[type="checkbox"]{margin:0!important;flex:0 0 auto!important}
+.v2938-print-grid .v2919-f140-option.is-active{border-color:#e0be36!important;background:#fff9df!important;box-shadow:inset 0 0 0 1px rgba(224,190,54,.18)!important}
+@media(max-width:760px){
+  .v2940-print-default-row{margin-top:6px!important}
+  /* Motiv/Druckversion: Vorder- und Rückseite wirklich komplett in einer Zeile */
+  .v2853-print-card .v2862-side-row{
+    display:grid!important;
+    grid-template-columns:72px minmax(78px,1fr) 88px 84px!important;
+    grid-template-areas:none!important;
+    align-items:center!important;
+    column-gap:4px!important;
+    row-gap:0!important;
+    padding:4px 5px!important;
+    overflow:visible!important;
+  }
+  .v2853-print-card .v2862-side-row>span:first-child{grid-area:auto!important;width:auto!important;min-width:0!important;white-space:nowrap!important;font-size:9.5px!important}
+  .v2853-print-card .v2862-side-row .v2856-size-select{grid-area:auto!important;width:100%!important;min-width:0!important;height:30px!important;min-height:30px!important;font-size:10px!important;padding:3px 6px!important}
+  .v2853-print-card .v2862-side-row .v2921-inline-size{grid-area:auto!important;width:88px!important;min-width:88px!important;height:30px!important;min-height:30px!important;padding:3px 5px!important;font-size:9px!important;white-space:nowrap!important;justify-content:center!important}
+  .v2853-print-card .v2862-side-row .v284-edit-print{grid-area:auto!important;width:84px!important;min-width:84px!important;height:30px!important;min-height:30px!important;padding:3px 5px!important;font-size:9px!important}
+}
+</style>
+
+
+<style id="v2942-hide-production">
+.print-data-accordion[hidden]{display:none!important}
+</style>
+
+<style id="v2943-hint-style">
+.v2943-hint-red{color:#b42318!important;font-weight:700!important}.v2943-hint-red strong{font-weight:800!important;color:#b42318!important}
+</style>
+
+<style id="v2944-functions-compact">
+/* Funktionen kompakter – ohne Logikänderung */
+.v284-card[data-card="functions"] .v284-card-body{padding:12px 14px 14px!important}
+.v284-card[data-card="functions"] .feature-grid{gap:8px!important}
+.v284-card[data-card="functions"] .feature-grid label{min-height:46px!important;padding:8px 10px!important;gap:8px!important;border-radius:11px!important}
+.v284-card[data-card="functions"] .feature-grid label span{font-size:11px!important;line-height:1.15!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]{width:40px!important;height:22px!important;min-width:40px!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:before{top:3px!important;left:3px!important;width:16px!important;height:16px!important}
+.v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:checked:before{transform:translateX(18px)!important}
+.v284-card[data-card="functions"] #designerFeatureTools{margin-top:8px!important;padding-top:8px!important}
+.v284-card[data-card="functions"] .designer-feature-title{font-size:10px!important;letter-spacing:.03em!important}
+@media(max-width:760px){
+  .v284-card[data-card="functions"] .v284-card-body{padding:10px 10px 12px!important}
+  .v284-card[data-card="functions"] .feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+  .v284-card[data-card="functions"] .feature-grid label{min-height:42px!important;padding:7px 8px!important;gap:6px!important;border-radius:10px!important}
+  .v284-card[data-card="functions"] .feature-grid label span{font-size:10px!important}
+  .v284-card[data-card="functions"] .feature-grid input[type="checkbox"]{width:36px!important;height:20px!important;min-width:36px!important}
+  .v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:before{width:14px!important;height:14px!important}
+  .v284-card[data-card="functions"] .feature-grid input[type="checkbox"]:checked:before{transform:translateX(16px)!important}
+}
+@media(max-width:360px){
+  .v284-card[data-card="functions"] .feature-grid{grid-template-columns:1fr!important}
+}
+</style>
+
+
+<style id="v2945-functions-tight">
+#poliFlexTurboPreset[hidden]{display:none!important}
+.v2853-functions-card>summary{padding:10px 12px!important}
+.v2853-functions-card .v284-card-body{padding:8px 10px 10px!important}
+.v2853-functions-card .accordion-body{padding:0!important}
+.v2853-functions-card .feature-grid,
+.v2853-functions-card .compact-feature-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:5px!important}
+.v2853-functions-card .feature-grid label,
+.v2853-functions-card .compact-feature-grid label{min-height:36px!important;padding:5px 7px!important;gap:5px!important;border-radius:8px!important;font-size:9.5px!important;line-height:1.05!important}
+.v2853-functions-card .feature-grid label span,
+.v2853-functions-card .compact-feature-grid label span{font-size:9.5px!important;line-height:1.05!important;margin:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.v2853-functions-card input[type=checkbox]{width:32px!important;height:18px!important;min-width:32px!important;flex:0 0 32px!important}
+.v2853-functions-card input[type=checkbox]::after{width:12px!important;height:12px!important;left:3px!important;top:3px!important}
+.v2853-functions-card input[type=checkbox]:checked::after{transform:translateX(14px)!important}
+.v2853-functions-card .designer-feature-tools{margin-top:6px!important;padding-top:6px!important}
+.v2853-functions-card .designer-feature-title{font-size:8.5px!important;margin-bottom:4px!important}
+@media(max-width:760px){
+  .v2853-functions-card>summary{padding:9px 10px!important}
+  .v2853-functions-card .v284-card-body{padding:6px 8px 8px!important}
+  .v2853-functions-card .feature-grid,
+  .v2853-functions-card .compact-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:4px!important}
+  .v2853-functions-card .feature-grid label,
+  .v2853-functions-card .compact-feature-grid label{min-height:33px!important;padding:4px 6px!important;gap:4px!important;border-radius:8px!important}
+  .v2853-functions-card .feature-grid label span,
+  .v2853-functions-card .compact-feature-grid label span{font-size:9px!important}
+  .v2853-functions-card input[type=checkbox]{width:30px!important;height:17px!important;min-width:30px!important;flex-basis:30px!important}
+  .v2853-functions-card input[type=checkbox]::after{width:11px!important;height:11px!important;top:3px!important;left:3px!important}
+  .v2853-functions-card input[type=checkbox]:checked::after{transform:translateX(13px)!important}
+}
+</style>
+
+
+<style id="v2946-functions-tighter">
+/* Funktionen mobil sichtbar schmaler / enger */
+.v2853-functions-card>summary{padding:8px 10px!important}
+.v2853-functions-card .v284-card-body,.v2853-functions-card .accordion-body{padding:6px 8px 8px!important}
+.v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:6px!important}
+.v2853-functions-card .feature-grid label,.v2853-functions-card .compact-feature-grid label{display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important;min-height:38px!important;padding:6px 8px!important;gap:6px!important;border-radius:10px!important;margin:0!important}
+.v2853-functions-card .feature-grid label span,.v2853-functions-card .compact-feature-grid label span{font-size:10px!important;line-height:1.05!important;font-weight:800!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.v2853-functions-card input[type=checkbox]{width:36px!important;height:20px!important;min-width:36px!important;flex:0 0 36px!important}
+.v2853-functions-card input[type=checkbox]::after{width:14px!important;height:14px!important;left:3px!important;top:3px!important}
+.v2853-functions-card input[type=checkbox]:checked::after{transform:translateX(16px)!important}
+.v2853-functions-card .designer-feature-tools{margin-top:4px!important;padding-top:4px!important}
+.v2853-functions-card .designer-feature-title{font-size:8px!important;margin-bottom:3px!important}
+@media (max-width:760px){
+  .v2853-functions-card{margin-top:10px!important}
+  .v2853-functions-card>summary{padding:7px 9px!important}
+  .v2853-functions-card .v284-card-body,.v2853-functions-card .accordion-body{padding:5px 7px 7px!important}
+  .v2853-functions-card .feature-grid,.v2853-functions-card .compact-feature-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:5px!important}
+  .v2853-functions-card .feature-grid label,.v2853-functions-card .compact-feature-grid label{min-height:34px!important;padding:5px 7px!important;gap:5px!important;border-radius:9px!important}
+  .v2853-functions-card .feature-grid label span,.v2853-functions-card .compact-feature-grid label span{font-size:9px!important}
+  .v2853-functions-card input[type=checkbox]{width:32px!important;height:18px!important;min-width:32px!important;flex-basis:32px!important}
+  .v2853-functions-card input[type=checkbox]::after{width:12px!important;height:12px!important}
+  .v2853-functions-card input[type=checkbox]:checked::after{transform:translateX(14px)!important}
+}
+</style>
+
+
+<style id="v2953-color-section-layout">
+/* v29.5.4: Shirt- und Druckfarben klar getrennt, Schalter direkt neben der Überschrift */
+.v2919-shirt-palette-card,
+.v2935-print-color-block{
+  border:1px solid #e2e6eb!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  padding:10px!important;
+  box-sizing:border-box!important;
+}
+.v2935-print-color-block{margin-top:14px!important;}
+.v2953-color-title-row{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:10px!important;
+  width:100%!important;
+  margin-bottom:7px!important;
+}
+.v2953-color-title-copy{display:flex!important;flex-direction:column!important;gap:2px!important;min-width:0!important;}
+.v2953-color-title-copy strong{font-size:12px!important;line-height:1.2!important;}
+.v2953-color-title-copy span{font-size:9px!important;line-height:1.2!important;color:#727985!important;}
+.v2953-title-toggle{
+  width:auto!important;
+  min-width:0!important;
+  max-width:230px!important;
+  flex:0 0 auto!important;
+  padding:5px 7px!important;
+  border:1px solid #e1e5ea!important;
+  border-radius:8px!important;
+  background:#f8f9fb!important;
+}
+.v2953-title-toggle span{font-size:9px!important;white-space:nowrap!important;}
+.v2953-title-toggle input[type="checkbox"]{width:15px!important;min-width:15px!important;max-width:15px!important;height:15px!important;min-height:15px!important;flex-basis:15px!important;}
+@media(max-width:760px){
+  .v2919-shirt-palette-card,.v2935-print-color-block{padding:8px!important;border-radius:10px!important;}
+  .v2935-print-color-block{margin-top:10px!important;}
+  .v2953-color-title-row{align-items:flex-start!important;gap:6px!important;flex-wrap:wrap!important;}
+  .v2953-title-toggle{max-width:100%!important;}
+  .v2953-title-toggle span{white-space:normal!important;}
+}
+</style>
+
+<style id="v30140-production-compact-ui">
+  /* Produktion – kompakte Arbeitsansicht */
+  #productionTab .production-dashboard{display:grid;gap:10px}
+  #productionTab .production-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px!important}
+  #productionTab .production-head .eyebrow{display:none}
+  #productionTab .production-head h2{margin:0!important;font-size:18px!important;line-height:1.1}
+  #productionTab .production-head p{display:none}
+  #productionTab #productionRefreshBtn{min-height:34px!important;padding:7px 10px!important;font-size:11px!important}
+
+  #productionTab .production-stats{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:7px!important;margin:0!important}
+  #productionTab .production-stat{min-height:0!important;padding:9px 11px!important;border-radius:11px!important;display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important}
+  #productionTab .production-stat span{font-size:10px!important;line-height:1.1!important;color:#6b7680!important}
+  #productionTab .production-stat strong{font-size:17px!important;line-height:1!important;margin:0!important;color:#142430!important}
+
+  #productionTab .production-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:9px!important;margin:0!important}
+  #productionTab .production-block{padding:0!important;border-radius:12px!important;overflow:hidden!important}
+  #productionTab .production-block-head{padding:9px 11px!important;margin:0!important;border-bottom:1px solid #e9eef1!important;background:#f8fafb!important}
+  #productionTab .production-block-head h3{margin:0!important;font-size:12.5px!important;line-height:1.1!important}
+  #productionTab .production-block-head p{display:none!important}
+  #productionTab .production-list{padding:0 11px!important;max-height:170px!important;overflow:auto!important}
+  .v30140-list-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:center;padding:7px 0;border-bottom:1px solid #edf1f3;font-size:10.5px}
+  .v30140-list-row:last-child{border-bottom:0}.v30140-list-row span{color:#52606b;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v30140-list-row b{font-size:11px;color:#142430}
+
+  #productionTab .production-orders-block{margin-top:0!important}
+  #productionTab .production-order-list{padding:0!important}
+  .v30140-prod-table-head{display:grid;grid-template-columns:1.35fr 1.45fr .55fr .8fr 1.05fr auto;gap:8px;align-items:center;padding:7px 10px;background:#f5f8fa;border-bottom:1px solid #e7ecef;color:#77828b;font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.04em}
+  .v30140-prod-row{display:grid;grid-template-columns:1.35fr 1.45fr .55fr .8fr 1.05fr auto;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid #edf1f3;background:#fff;min-height:42px}
+  .v30140-prod-row:last-child{border-bottom:0}
+  .v30140-order{min-width:0}.v30140-order strong{display:block;font-size:11.5px;color:#152632;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.v30140-order span{display:block;margin-top:1px;font-size:9.5px;color:#7a858e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .v30140-customer{min-width:0;font-size:10.5px;color:#344550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .v30140-small{font-size:10.5px;color:#4e5e69;white-space:nowrap}
+  .v30140-badge{justify-self:start;white-space:nowrap;border-radius:999px;padding:4px 7px;font-size:9.5px;font-weight:800;background:#eef5f4;color:#24685f;border:1px solid #cee2df}
+  .v30140-actions{display:flex;gap:4px;justify-content:flex-end;align-items:center}
+  .v30140-actions button{height:28px!important;min-height:28px!important;border:1px solid #cfd9de;border-radius:7px;background:#fff;color:#334550;font-weight:800;font-size:9.5px;padding:4px 7px;cursor:pointer;white-space:nowrap}
+  .v30140-actions .v30140-next{background:linear-gradient(180deg,#e8f8f5,#cbeae4);border-color:#8ecdc2;color:#194d45}
+  .v30140-actions button:disabled{opacity:.45;cursor:default}
+  .v30140-empty{padding:12px;color:#77828b;font-size:10.5px}
+  .v30140-prod-error{padding:9px;border-radius:9px;background:#fff5f5;color:#a53939;border:1px solid #f0cece;font-size:10.5px}
+
+  @media(max-width:900px){
+    #productionTab .production-stats{grid-template-columns:1fr 1fr!important}
+    #productionTab .production-grid{grid-template-columns:1fr!important}
+    .v30140-prod-table-head{display:none}
+    .v30140-prod-row{grid-template-columns:minmax(0,1fr) auto auto;gap:6px 8px;padding:9px 10px}
+    .v30140-order{grid-column:1/2}.v30140-customer{grid-column:1/2}.v30140-small{font-size:9.5px}.v30140-badge{grid-column:2/3;grid-row:1/3;align-self:center}.v30140-actions{grid-column:3/4;grid-row:1/3;align-self:center}
+    .v30140-prod-row>.v30140-small:nth-of-type(1),.v30140-prod-row>.v30140-small:nth-of-type(2){display:none}
+  }
+  @media(max-width:560px){
+    #productionTab .production-head{padding:10px 11px!important}
+    #productionTab .production-head h2{font-size:16px!important}
+    #productionTab .production-stat{padding:8px 9px!important}.production-stat strong{font-size:15px!important}
+    .v30140-prod-row{grid-template-columns:minmax(0,1fr) auto;gap:5px 8px}
+    .v30140-badge{grid-column:2/3;grid-row:1/2}.v30140-actions{grid-column:2/3;grid-row:2/3}.v30140-actions button{padding:4px 6px}
+  }
+</style>
+
+
+
+
+
+
+
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-header" hidden style="display:none!important">
+      <div class="brand-row"><div class="admin-mark" aria-hidden="true">SP</div><div><h1>Shirtprojekt</h1><p>Zentrale Verwaltung</p></div></div>
+      <button id="logoutBtn" class="ghost-btn" type="button" hidden>Abmelden</button>
+    </header>
+
+    <section id="loginCard" class="panel login-card">
+      <h2>Admin-Login</h2>
+      <p>Melde dich mit deinem zentralen Firebase-Admin-Konto an.</p>
+      <form id="loginForm">
+        <label><span>E-Mail</span><input id="adminEmail" type="email" value="shirtzentrale@gmail.com" required autocomplete="username"></label>
+        <label><span>Passwort</span><input id="adminPassword" type="password" required autocomplete="current-password"></label>
+        <button class="primary-btn" type="submit">Anmelden</button>
+        <p id="loginMessage" class="message" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="dashboard" hidden>
+      <nav class="admin-tabs panel" aria-label="Adminbereiche">
+        <button type="button" class="tab-btn active" data-tab="orders">Bestellungen</button>
+        <button type="button" class="tab-btn" data-tab="shops">Shops verwalten</button>
+      </nav>
+      <details class="panel admin-backup-panel">
+        <summary>Datensicherung</summary>
+        <div class="admin-backup-content">
+          <span>Alle Shops und Bestellungen aus Firestore als JSON sichern.</span>
+          <button id="exportFirestoreBtn" class="ghost-btn" type="button">Backup herunterladen</button>
+          <span id="exportFirestoreStatus" role="status" aria-live="polite"></span>
+        </div>
+      </details>
+
+      <section id="ordersTab" class="tab-panel" hidden>
+        <div class="stats-grid">
+          <article class="stat-card"><span>Bestellungen</span><strong id="statOrders">0</strong></article>
+          <article class="stat-card"><span>Artikel</span><strong id="statShirts">0</strong></article>
+          <article class="stat-card"><span>Umsatz</span><strong id="statRevenue">0,00 €</strong></article>
+        </div>
+        <div class="toolbar panel orders-toolbar v2963-orders-toolbar">
+          <div class="orders-toolbar-title"><h2>Bestellübersicht</h2><p id="lastUpdate">Noch nicht geladen</p></div>
+          <label class="customer-filter-field v2965-customer"><span>Kunde</span><select id="buyerFilter"><option value="Alle">Alle Kunden</option></select></label>
+          <label class="search-field v2963-search"><span>Suche</span><input id="searchInput" type="search" placeholder="Bestellnummer, Name …" autocomplete="off"></label>
+          <label class="status-filter-field v2963-status"><span>Status</span><select id="statusFilter"><option value="Alle">Alle</option><option value="Neu">Neu</option><option value="In Bearbeitung">In Bearbeitung</option><option value="Fertig">Fertig</option><option value="Abgeholt">Abgeholt</option><option value="Versandt">Versandt</option></select></label>
+          <button id="refreshBtn" class="ghost-btn v2963-refresh" type="button">Aktualisieren</button>
+        </div>
+
+        <details id="productionPanel" class="panel production-integrated">
+          <summary class="production-integrated-summary">
+            <strong>Produktion</strong>
+            <span class="production-integrated-counts">
+              <b id="prodStatOrders">0</b> offen
+              <i>·</i>
+              <b id="prodStatItems">0</b> Artikel
+              <i>·</i>
+              <b id="prodStatVariants">0</b> Textilien
+              <i>·</i>
+              <b id="prodStatPrints">0</b> Drucke
+            </span>
+          </summary>
+          <div class="production-integrated-body">
+            <div class="production-material-title">
+              <strong>Materialbedarf</strong>
+              <small id="prodNeedsSummary">0 Artikel · 0 Drucke</small>
+            </div>
+            <div class="production-needs-inline-grid">
+              <section><strong>Textilien gesamt</strong><div id="productionTextiles" class="production-list"></div></section>
+              <section><strong>Drucke gesamt</strong><div id="productionPrints" class="production-list"></div></section>
+            </div>
+          </div>
+        </details>
+
+        <div id="ordersList" class="orders-list"></div>
+        <p id="ordersMessage" class="empty-message" hidden>Keine Bestellungen vorhanden.</p>
+      </section>
+
+      <section id="shopsTab" class="tab-panel">
+        <div class="shop-admin-grid">
+          <aside class="panel shop-list-panel">
+            <div class="panel-head"><div><h2>Shops</h2><p>Änderungen sind nach Speichern sofort live.</p></div><button id="newShopBtn" class="primary-btn small" type="button">+ Neuer Shop</button></div>
+            <div id="shopList" class="shop-list"></div>
+          </aside>
+
+          <section class="panel shop-editor-panel">
+            <div class="panel-head"><div><h2 id="shopEditorTitle">Shop auswählen</h2><p id="shopSaveState">Noch keine Änderungen.</p></div><div class="editor-actions"><a id="previewShopBtn" class="ghost-btn link-btn" href="#" target="_blank" hidden>Vorschau</a><button id="saveShopBtn" class="primary-btn" type="button" disabled>Speichern</button></div></div>
+
+            <form id="shopForm" class="shop-form" hidden>
+              <div class="top-editor-grid">
+  <div class="top-settings-column">
+    <div class="form-section editor-box" data-box="grunddaten"><h3>Grunddaten</h3><div class="form-grid v2850-main-fields">
+                <label class="wide v2850-name-field"><span>Name</span><input id="shopName" type="text" required></label>
+                <label><span>Shop-Typ</span><select id="shopType"><option value="simple">Simple</option><option value="motifs">Motiv</option><option value="designer">Designer</option></select></label>
+                <label><span>Bestell-E-Mail</span><input id="shopEmail" type="email" value="shirtzentrale@gmail.com"></label>
+                <details class="shop-checkout-settings wide"><summary>Bestellart &amp; Zahlung</summary>
+                  <div class="shop-checkout-grid">
+                    <label><span>Zusätzliche Bestellart</span><input id="shopHandoverLabel" type="text" maxlength="60" placeholder="z. B. Lehrerzimmer oder Sekretariat"><small>Zusätzlich zu Abholung und Versand. Leer lassen zum Ausblenden.</small></label>
+                    <label class="check-row"><input id="shopPaypalEnabled" type="checkbox"><span>PayPal anbieten</span></label>
+                    <label><span>PayPal-E-Mail (optional)</span><input id="shopPaypalEmail" type="email" autocomplete="off" placeholder="paypal@beispiel.de"><small>Ohne Adresse erhält der Kunde die Zahlungsdaten nach der Bestellung.</small></label>
+                  </div>
+                </details>
+                <div class="v2972-status-functions wide">
+                  <label class="check-row v2850-active-field"><input id="shopActive" type="checkbox" checked><span>Shop aktiv</span></label>
+                  <div class="template-sync-bar wide" id="templateSyncBar">
+                    <button type="button" id="applyMasterTemplateBtn" class="secondary-btn small">Von Vorlage übernehmen</button>
+                  </div>
+                  <div class="v2972-inline-functions shop-switch-grid" aria-label="Funktionen">
+                    <label class="check-row shop-switch"><span>Rückseite</span><input id="allowBack" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Textilfarben</span><input id="showShirtColors" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Allgemeine Logos</span><input id="showMotifs" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Vereinslogos</span><input id="showClubLogos" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Druckfarben</span><input id="showMotifColors" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Preise anzeigen</span><input id="showPrices" type="checkbox" checked></label>
+                    <label class="check-row shop-switch"><span>Nexaro</span><input id="showNexaroBranding" type="checkbox" title="Nexaro-Logo auf neuen Bestellscheinen anzeigen"></label>
+                    <label class="check-row shop-switch"><span>Kunden-Upload</span><input id="allowUpload" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Text</span><input id="allowText" type="checkbox"></label>
+                    <label class="check-row shop-switch"><span>Initialen</span><input id="allowInitials" type="checkbox"></label>
+                    <label class="check-row shop-switch" id="followMasterRow"><span>Folgen</span><input id="followMasterTemplate" type="checkbox" checked></label>
+                    <label class="check-row shop-switch" id="pushMasterRow"><span>Preise vererben</span><input id="pushMasterOnSave" type="checkbox" checked></label>
+                    <div id="designerFeatureTools" class="designer-feature-tools v2972-designer-tools shop-switch-grid">
+                      <label class="check-row shop-switch"><span>Verschieben</span><input id="allowMove" type="checkbox"></label>
+                      <label class="check-row shop-switch"><span>Skalieren</span><input id="allowResize" type="checkbox"></label>
+                      <label class="check-row shop-switch"><span>Drehen</span><input id="allowRotate" type="checkbox"></label>
+                    </div>
+                    <div id="hiddenDesignerFeatureInputs" hidden></div>
+                  </div>
+                </div>
+
+                <input id="shopId" type="hidden" required>
+                <input id="shopPrice" type="hidden" value="15">
+                <input id="shopPrefix" type="hidden" value="">
+
+                <div class="v2850-products wide editor-box" data-box="sortiment" aria-label="Sortiment und Preise">
+                  <div class="v2850-subtitle">Master-Sortiment &amp; Preise</div>
+                  <p class="v3042-catalog-hint">VK Verkauf · EK Einkauf · Druck pro Textil.</p>
+                  <div class="v3036-product-head" aria-hidden="true"><span>Textil</span><span>VK</span><span>EK</span><span>Druck</span><span></span></div>
+                  <div id="productPriceEditor" class="v3036-product-list"></div>
+                  <details class="v3040-variants editor-box" data-box="artikel">
+                    <summary>Artikel</summary>
+                    <div id="productVariantEditor"></div>
+                  </details>
+                  <div hidden>
+                    <input id="productTshirtEnabled" type="checkbox" checked>
+                    <input id="productPoloEnabled" type="checkbox" checked>
+                    <input id="productHoodieEnabled" type="checkbox" checked>
+                  </div>
+                </div>
+
+                <div class="v2850-design wide editor-box" data-box="darstellung">
+                  <div class="v2850-subtitle" hidden></div>
+                  <div class="shop-logo-inline wide">
+                    <div class="shop-logo-mini-preview"><img id="logoPreview" alt="Shop-Logo Vorschau"></div>
+                    <div class="shop-logo-inline-controls">
+                      <strong>Shop-Logo</strong>
+                      <label class="shop-logo-file"><span>Auswählen</span><input id="logoUpload" type="file" accept="image/*" aria-label="Shop-Logo auswählen"></label>
+                      <button id="removeLogoBtn" class="ghost-btn shop-logo-reset" type="button">Zurücksetzen</button>
+                    </div>
+                    <label class="shop-logo-height" hidden><span>Logo-Höhe</span><input id="logoHeight" type="number" min="30" max="200" value="90"></label>
+                  </div>
+                </div>
+              </div></div>
+    <div class="form-section compact-colors-section v2850-design-fragment editor-box" data-box="farben">
+              <div class="v2919-color-settings">
+                <div class="v2919-color-head">
+                  <div>
+                    <h3 hidden>Darstellung &amp; Farben</h3>
+                    <p hidden>Textilfarben je Artikel.</p>
+                  </div>
+
+                </div>
+
+                <input id="fixedShirtName" type="hidden" value="Royal Blue||default=royal-blue||allowed=royal-blue">
+                <input id="fixedShirtHex" type="hidden" value="#0758b2">
+
+                <div class="v2919-shirt-palette-card">
+                  <div class="v2919-card-top v2953-color-title-row">
+                    <div class="v2953-color-title-copy"><strong>Textilfarben</strong><span>Je Artikel festlegen. Die angeklickte Farbe ist die Standardfarbe.</span></div>
+                    <label class="v2919-inline-toggle v2953-title-toggle"><input id="shirtColorsToggleMirror" type="checkbox"><span>Im Shop zeigen</span></label>
+                  </div>
+                  <div id="shirtColorProductTabs" class="v3052-article-tabs" role="tablist">
+                    <button type="button" class="is-active" data-color-product="tshirt">T-Shirt</button>
+                    <button type="button" data-color-product="polo">Polo</button>
+                    <button type="button" data-color-product="hoodie">Hoodie</button>
+                    <button type="button" data-color-product="jc001">Sport</button>
+                    <button type="button" data-color-product="bcwu01w">Sweat</button>
+                  </div>
+                  <div class="v2920-quick-actions v3039-shirt-quick-actions" aria-label="Schnellauswahl Textilfarben">
+                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="all">Alle auswählen</button>
+                    <button type="button" class="ghost-btn v2920-quick-btn" data-f140-quick="none">Nur Standardfarbe</button>
+                  </div>
+                  <div id="f140ColorPicker" class="v2919-f140-grid" aria-label="F140 Shirtfarben Auswahl"></div>
+                  <div class="v2919-shirt-default-row" hidden>
+                    <label class="wide"><span>Standardfarbe</span><select id="f140DefaultColor" hidden aria-hidden="true"><option value="royal-blue" selected>Royal Blue</option></select><div id="f140DefaultColorPreview" class="v2934-current-choice" hidden><span class="v2934-current-swatch"></span><strong class="v2934-current-label">Royal Blue</strong></div></label>
+                  </div>
+                </div>
+
+                <div class="form-grid compact-color-row v2919-motif-row" hidden aria-hidden="true">
+                  <input id="fixedMotifName" type="hidden" value="Yellow">
+                  <input id="fixedMotifHex" type="hidden" value="#f6c951">
+                </div>
+                <div class="form-grid">
+                  <div class="wide v2935-print-color-block">
+                    <div class="v2919-card-top v2938-print-head v2953-color-title-row">
+                      <div class="v2953-color-title-copy"><strong>Druckfarben</strong><span>Anklicken setzt die Standard-Druckfarbe.</span></div>
+                      <label class="v2919-inline-toggle v2935-print-color-toggle v2953-title-toggle"><input id="motifColorsToggleMirror" type="checkbox"><span>Im Shop zeigen</span></label>
+                    </div>
+                    <div class="v2920-quick-actions" aria-label="Schnellauswahl Poli-Flex Turbo Druckfarben">
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="all">Alle auswählen</button>
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="none">Nur Standardfarbe</button>
+                      <button type="button" class="ghost-btn v2920-quick-btn" data-print-quick="yellow">Nur Yellow</button>
+                    </div>
+                    <div id="poliFlexTurboPicker" class="v2919-f140-grid v2938-print-grid" aria-label="Poli-Flex Turbo Druckfarben Auswahl"></div>
+                    <div class="v2919-shirt-default-row v2940-print-default-row">
+                      <label class="wide"><span>Standard-Druckfarbe</span><div id="poliFlexDefaultPreview" class="v2934-current-choice"><span class="v2934-current-swatch" style="background:#FCB91D"></span><select id="poliFlexTurboPreset" aria-label="Standard-Druckfarbe wählen"><option value="Yellow" selected>Yellow</option></select></div></label>
+                      <p class="v2919-hint v2943-hint-red"><strong>Druckfarben-Hinweis:</strong> Für Yellow wird eine andere Folie verwendet: <strong>Siser P.S. Film Yellow A0004</strong>.</p>
+                    </div>
+                  </div>
+                </div>
+                <datalist id="poliFlexTurboColorList"></datalist>
+              </div>
+            </div>
+<div class="form-section embedded-display-section v2850-design-fragment"><div class="form-grid display-grid">
+                <label><span>Shop-Vorschau</span><select id="previewMode"><option value="single">Einzelansicht mit Umschalter</option><option value="dual">Doppelansicht Front + Rücken</option></select></label>
+                <label class="wide"><span>Text unter dem Shopnamen</span><input id="brandSubtitle" type="text" maxlength="80" placeholder="z. B. Wir sind Hansa!"></label>
+                <label><span>Überschrift</span><input id="designerHeading" type="text"></label>
+                <label class="wide"><span>Hinweistext</span><input id="designerIntro" type="text"></label>
+              </div></div>
+  </div>
+  <div class="top-position-column">
+    <div class="form-section position-editor-section"><h3>Motiv direkt positionieren</h3><p class="section-note">Der gestrichelte Rahmen dient nur als Orientierung. Das Motiv kann darüber hinaus auf dem sinnvollen Textilbereich verschoben werden. Danach auf <strong>Position speichern</strong> klicken.</p>
+                <div class="position-editor-toolbar">
+                  <label><span>Textil</span><select id="positionProduct"><option value="tshirt">T-Shirt</option><option value="polo">Polo-Shirt</option><option value="hoodie">Hoodie</option></select></label>
+                  <label><span>Seite</span><select id="positionSide"><option value="front">Vorderseite</option><option value="back">Rückseite</option></select></label>
+                  <label class="position-size-control"><span>Motivgröße</span><input id="positionSize" type="range" min="12" max="110" step="1" value="36" aria-label="Motivgröße"><b id="positionSizeValue" class="v3051-size-pct">36 %</b><small class="size-scale"><span>Klein</span><span>Mittel</span><span>Groß</span></small></label>
+                  <label><span>Initialen X</span><input id="initialsPosX" type="number" min="10" max="90" step="0.5" value="34"></label>
+                  <label><span>Initialen Y</span><input id="initialsPosY" type="number" min="55" max="96" step="0.5" value="80"></label>
+                  <label><span>Initialengröße</span><input id="initialsSize" type="range" min="2" max="12" step="0.5" value="5" aria-label="Initialengröße für dieses Textil und diese Seite"><small id="initialsSizeValue">5 %</small></label>
+                </div>
+                <div class="position-editor-layout">
+                  <div class="position-stage" id="positionStage">
+                    <img id="positionShirt" class="position-shirt" src="shirt-front-template.png" alt="Shirt Vorschau">
+                    <div class="position-print-zone" id="positionPrintZone">
+                      <img id="positionMotif" class="position-motif" alt="Motiv – zum Verschieben ziehen">
+                    </div>
+                    <div id="positionInitials" class="position-initials" role="button" tabindex="0" aria-label="Initialenposition verschieben" title="Initialenposition ziehen">2W</div>
+                  </div>
+                  <div class="position-readout position-readout-clean">
+<button id="savePositionBtn" type="button" class="primary-btn position-save-btn">Position speichern</button>
+                    <p>Die Position und Motivgröße werden für das gewählte Textil und die gewählte Seite gespeichert.</p>
+                  </div>
+                </div>
+              </div>
+  </div>
+</div>
+
+              <div class="form-section position-values-section technical-position-values" aria-hidden="true"><h3>Position & Größe – direkt einstellbar</h3><p class="section-note">Hier stellst du die Druckposition direkt ein. Die Werte werden gespeichert und gelten identisch für Einzel- und Doppelansicht. X = links/rechts, Y = höher/tiefer, Größe = Motivbreite.</p>
+                <h4>T-Shirt</h4><div class="form-grid">
+                  <label><span>Vorne X</span><input id="tshirtFrontX" type="number" min="-20" max="120" step="0.5" value="68"></label>
+                  <label><span>Vorne Y</span><input id="tshirtFrontY" type="number" min="-20" max="120" step="0.5" value="20"></label>
+                  <label><span>Vorne Größe</span><input id="tshirtFrontW" type="number" min="5" max="110" step="0.5" value="20"></label>
+                  <label><span>Hinten X</span><input id="tshirtBackX" type="number" min="-20" max="120" step="0.5" value="50"><small>50 = exakt mittig.</small></label>
+                  <label><span>Hinten Y</span><input id="tshirtBackY" type="number" min="-20" max="120" step="0.5" value="36"></label>
+                  <label><span>Hinten Größe</span><input id="tshirtBackW" type="number" min="5" max="110" step="0.5" value="50"></label>
+                </div>
+                <h4>Polo-Shirt</h4><div class="form-grid">
+                  <label><span>Vorne X</span><input id="poloFrontX" type="number" min="-20" max="120" step="0.5" value="68"></label>
+                  <label><span>Vorne Y</span><input id="poloFrontY" type="number" min="-20" max="120" step="0.5" value="22"></label>
+                  <label><span>Vorne Größe</span><input id="poloFrontW" type="number" min="5" max="110" step="0.5" value="20"></label>
+                  <label><span>Hinten X</span><input id="poloBackX" type="number" min="-20" max="120" step="0.5" value="50"><small>50 = exakt mittig.</small></label>
+                  <label><span>Hinten Y</span><input id="poloBackY" type="number" min="-20" max="120" step="0.5" value="36"></label>
+                  <label><span>Hinten Größe</span><input id="poloBackW" type="number" min="5" max="110" step="0.5" value="50"></label>
+                </div>
+                <h4>Hoodie</h4><div class="form-grid">
+                  <label><span>Vorne X</span><input id="hoodieFrontX" type="number" min="-20" max="120" step="0.5" value="68"></label>
+                  <label><span>Vorne Y</span><input id="hoodieFrontY" type="number" min="-20" max="120" step="0.5" value="22"></label>
+                  <label><span>Vorne Größe</span><input id="hoodieFrontW" type="number" min="5" max="110" step="0.5" value="36"></label>
+                  <label><span>Hinten X</span><input id="hoodieBackX" type="number" min="-20" max="120" step="0.5" value="50"><small>50 = exakt mittig.</small></label>
+                  <label><span>Hinten Y</span><input id="hoodieBackY" type="number" min="-20" max="120" step="0.5" value="34"></label>
+                  <label><span>Hinten Größe</span><input id="hoodieBackW" type="number" min="5" max="110" step="0.5" value="50"></label>
+                </div>
+              </div></div>
+
+              <div class="accordion-grid">
+
+<details class="form-section compact-accordion fixed-print-accordion" hidden aria-hidden="true"><summary><span>Fester Druck vorne / hinten</span><small>Motivzuordnung</small></summary><div class="accordion-body"><p class="section-note">Für Simple-Shops können Vorder- und Rückendruck fest vorgegeben werden.</p><div class="form-grid fixed-print-grid">
+                <label class="check-row wide"><input id="fixedFrontEnabled" type="checkbox"><span>Vorderdruck fest aktiv</span></label>
+                <label><span>Vorne Motiv</span><select id="fixedFrontMotif"></select></label>
+                <label><span>Vorne Position</span><select id="fixedFrontPosition"><option value="left-chest">Linke Herzseite</option><option value="center">Mittig</option></select></label>
+                <label><span>Vorne Größe</span><select id="fixedFrontSize"><option value="small">Klein</option><option value="medium">Mittel</option><option value="large">Groß</option></select></label>
+                <label><span>Vorne Höhe</span><input id="fixedFrontTop" type="number" min="10" max="70" step="1" value="24"><small>Kleinerer Wert = höher.</small></label>
+                <label><span>Vorne seitliche Position</span><input id="fixedFrontSide" type="number" min="15" max="50" step="1" value="32"><small>Kleinerer Wert = weiter außen, größerer Wert = weiter zur Mitte.</small></label>
+                <label class="check-row wide"><input id="fixedBackEnabled" type="checkbox"><span>Rückendruck fest aktiv</span></label>
+                <label><span>Hinten Motiv</span><select id="fixedBackMotif"></select></label>
+                <label><span>Hinten Position</span><select id="fixedBackPosition"><option value="center">Mittig</option></select></label>
+                <label><span>Hinten Größe</span><select id="fixedBackSize"><option value="small">Klein</option><option value="medium">Mittel</option><option value="large">Groß</option></select></label>
+                <label><span>Hinten Höhe</span><input id="fixedBackTop" type="number" min="10" max="70" step="1" value="36"><small>Kleinerer Wert = höher.</small></label>
+              </div></div></details>
+
+
+              <details class="form-section compact-accordion print-data-accordion" hidden aria-hidden="true">
+                <summary><span>Druckvorgaben</span><small>Maße & Verfahren</small></summary>
+                <div class="accordion-body">
+                  <div class="production-help">
+                    <strong>Eine Druckvorgabe für T-Shirt, Polo und Hoodie</strong>
+                    <span>Die Werte gelten automatisch für alle Textilien im Shop.</span>
+                  </div>
+                  <div class="v2863-production-file-row">
+                    <label class="wide"><span>Produktionsdatei / Link</span><input id="productionFileUrl" type="text" placeholder="z. B. https://… oder Dateipfad"></label>
+                  </div>
+                  <div class="print-data-grid global-print-data-grid">
+                    <section class="print-data-card">
+                      <h4>Vorderseite</h4>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdGlobalFrontMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (mm)</span><input id="pdGlobalFrontWidth" type="number" min="0" step="0.1" inputmode="decimal" value="9"></label>
+                        <label><span>Druckhöhe (mm)</span><input id="pdGlobalFrontHeight" type="number" min="0" step="0.1" inputmode="decimal" value="7"></label>
+                      </div>
+                    </section>
+                    <section class="print-data-card">
+                      <h4>Rückseite</h4>
+                      <div class="print-data-fields simplified-print-data-fields">
+                        <label><span>Druckverfahren</span><select id="pdGlobalBackMethod"><option value="Flexdruck" selected>Flexdruck</option><option value="DTF">DTF</option><option value="Siebdruck">Siebdruck</option><option value="Stick">Stick</option><option value="Sonstiges">Sonstiges</option></select></label>
+                        <label><span>Druckbreite (mm)</span><input id="pdGlobalBackWidth" type="number" min="0" step="0.1" inputmode="decimal" value="28"></label>
+                        <label><span>Druckhöhe (mm)</span><input id="pdGlobalBackHeight" type="number" min="0" step="0.1" inputmode="decimal" value="21.8"></label>
+                      </div>
+                    </section>
+                  </div>
+                </div>
+              </details>
+
+              <details class="form-section compact-accordion legacy-motifs-accordion" hidden aria-hidden="true">
+                <summary><span>Motive</span><small>Bearbeiten / hinzufügen</small></summary>
+                <div class="accordion-body">
+                  <div class="motif-library" aria-label="Motiv-Bibliothek">
+                    <strong>Motiv-Bibliothek</strong>
+                    <div class="motif-library-item">
+            <img src="/tus-3d-patch.png?v=30.3.19" alt="TuS Hemmerde 3D-Patch">
+                      <span><b>TuS 3D-Patch</b><small>Originalfarben · TPU-Optik</small></span>
+                      <button id="addTusPatchBtn" class="ghost-btn small" type="button">Einsetzen</button>
+                    </div>
+                  </div>
+                  <div class="panel-head compact accordion-panel-head"><p class="section-note">Name und Bild direkt ändern.</p><button id="addMotifBtn" class="ghost-btn small" type="button">+ Motiv</button></div><div id="motifsEditor" class="motifs-editor compact-motifs-editor"></div>
+                </div>
+              </details>
+            
+</div>
+</form>
+          </section>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="/central-config.js?v=30.3.221"></script>
+  <script src="/__/firebase/8.10.1/firebase-app.js"></script>
+  <script src="/__/firebase/8.10.1/firebase-auth.js"></script>
+  <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
+  <script src="/admin.js?v=30.3.221"></script>
+
+<script id="v2849-fallback">
+(function(){
+  function combine(){
+    var form=document.getElementById('shopForm'); if(!form) return;
+    var top=form.querySelector('.top-settings-column'); if(!top) return;
+    var grund=top.querySelector('.form-section:not(.compact-colors-section):not(.embedded-display-section)');
+    var colors=form.querySelector('.compact-colors-section');
+    var display=form.querySelector('.embedded-display-section');
+    if(!grund) return;
+    grund.classList.add('v284-basic-combined');
+    if(colors && !document.querySelector('.v2853-appearance-card') && !grund.contains(colors)){ colors.classList.add('v284-basic-subsection','v284-basic-colors'); grund.appendChild(colors); }
+    if(display && !grund.contains(display)){ display.classList.add('v284-basic-subsection','v284-basic-display'); grund.appendChild(display); }
+    // Falls ein alter v28.4.7-JS-Lauf bereits separate Karten erzeugt hat, Inhalte zurückholen.
+    ['colors','display','logo'].forEach(function(key){
+      var card=document.querySelector('.v284-card[data-card="'+key+'"]');
+      if(!card) return;
+      var body=card.querySelector('.v284-card-body');
+      if(key==='colors' && body){ var el=body.querySelector('.compact-colors-section'); if(el&&!grund.contains(el)){el.classList.add('v284-basic-subsection','v284-basic-colors');grund.appendChild(el);} }
+      if(key==='display' && body){ var el2=body.querySelector('.embedded-display-section'); if(el2&&!grund.contains(el2)){el2.classList.add('v284-basic-subsection','v284-basic-display');grund.appendChild(el2);} }
+      if(key==='logo' && body){ var lg=body.querySelector('.shop-logo-inline'); var grid=grund.querySelector(':scope > .form-grid'); if(lg&&grid&&!grid.contains(lg)){grid.appendChild(lg);} }
+      card.style.display='none';
+    });
+    var basic=document.querySelector('.v284-card[data-card="basic"] .v284-card-body');
+    if(basic && !basic.contains(grund)) basic.appendChild(grund);
+  }
+  function badge(){ var b=document.querySelector('.v2849-version'); if(!b){ b=document.createElement('div');b.className='v2849-version';document.body.appendChild(b);} b.textContent='v30.3.221'; b.hidden=false; b.removeAttribute('hidden');}
+  document.addEventListener('DOMContentLoaded',function(){setTimeout(combine,50);setTimeout(combine,400);setTimeout(combine,1200);badge();});
+  new MutationObserver(function(){combine();}).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>
+
+<script id="v2917-mm-badges">
+(function(){
+  function parseNum(value){
+    if(value == null) return NaN;
+    var txt=String(value).trim().replace(/\s+/g,'').replace(',', '.');
+    return parseFloat(txt);
+  }
+  function formatMmFromCm(value){
+    var num=parseNum(value);
+    if(!isFinite(num)) return '–';
+    var mm=Math.round(num*10*10)/10;
+    var out=(Math.abs(mm-Math.round(mm))<0.001? String(Math.round(mm)) : mm.toFixed(1).replace('.',','));
+    return out+' mm';
+  }
+  function currentSizes(){
+    var fw=document.getElementById('pdGlobalFrontWidth');
+    var fh=document.getElementById('pdGlobalFrontHeight');
+    var bw=document.getElementById('pdGlobalBackWidth');
+    var bh=document.getElementById('pdGlobalBackHeight');
+    var front=(fw&&fh)? (formatMmFromCm(fw.value)+' ×TEMP× '+formatMmFromCm(fh.value)) : '90 mm × 70 mm';
+    var back=(bw&&bh)? (formatMmFromCm(bw.value)+' ×TEMP× '+formatMmFromCm(bh.value)) : '280 mm × 218 mm';
+    front=front.replace(/ mm ×TEMP× /,' × ');
+    back=back.replace(/ mm ×TEMP× /,' × ');
+    return {front: front, back: back};
+  }
+  function createEl(tag, cls, txt){
+    var el=document.createElement(tag);
+    if(cls) el.className=cls;
+    if(txt != null) el.textContent=txt;
+    return el;
+  }
+  function labelIsMmAware(){
+    return document.querySelector('.v2917-mm-note, .v2917-size-badge, .v2917-mm-summary');
+  }
+  function updateProductionHint(){
+    var grid=document.querySelector('.print-data-grid');
+    var acc=document.querySelector('.print-data-accordion .accordion-body') || document.querySelector('.v2911-production-compact') || (grid ? grid.parentElement : null);
+    if(!acc) return;
+    var note=acc.querySelector('.v2917-mm-note');
+    if(!note){
+      note=createEl('div','v2917-mm-note');
+      note.textContent='Alle Druckgrößen werden in mm angezeigt und eingegeben.';
+      var target=acc.querySelector('.production-help') || acc.firstElementChild;
+      if(target && target.parentNode===acc) acc.insertBefore(note, target.nextSibling);
+      else acc.insertBefore(note, acc.firstChild);
+    }
+  }
+  function updateSharedSummary(){
+    var sizes=currentSizes();
+    var shared=document.querySelector('.v2862-shared-motif');
+    if(!shared) return;
+    var info=shared.querySelector('div') || shared.firstElementChild;
+    if(!info) return;
+    var wrap=info.querySelector('.v2917-mm-summary');
+    if(!wrap){
+      wrap=createEl('div','v2917-mm-summary');
+      wrap.appendChild(createEl('span','v2917-size-chip v2917-front-chip'));
+      wrap.appendChild(createEl('span','v2917-size-chip v2917-back-chip'));
+      info.appendChild(wrap);
+    }
+    var frontChip=wrap.querySelector('.v2917-front-chip');
+    var backChip=wrap.querySelector('.v2917-back-chip');
+    if(frontChip) frontChip.textContent='Vorne '+sizes.front;
+    if(backChip) backChip.textContent='Hinten '+sizes.back;
+  }
+  function guessSide(row){
+    var text=(row.innerText || row.textContent || '').toLowerCase();
+    if(text.indexOf('rück')>-1) return 'back';
+    if(text.indexOf('vorder')>-1) return 'front';
+    return null;
+  }
+  function updateRowBadges(){
+    var sizes=currentSizes();
+    document.querySelectorAll('.v2862-side-row').forEach(function(row){
+      var side=guessSide(row);
+      if(!side) return;
+      var badge=row.querySelector('.v2917-size-badge');
+      if(!badge){
+        badge=createEl('span','v2917-size-badge');
+        row.appendChild(badge);
+      }
+      badge.textContent = side==='back' ? sizes.back : sizes.front;
+      badge.setAttribute('aria-label','Druckgröße '+badge.textContent);
+    });
+  }
+  function retitleButtons(){
+    // keep native file input intact; no-op for now
+  }
+  function setupMmInputs(){
+    var configs=[
+      ['pdGlobalFrontWidth',90],
+      ['pdGlobalFrontHeight',70],
+      ['pdGlobalBackWidth',280],
+      ['pdGlobalBackHeight',218]
+    ];
+    configs.forEach(function(cfg){
+      var id=cfg[0], fallback=cfg[1];
+      var original=document.getElementById(id);
+      if(!original || original.dataset.mmProxyReady==='1') return;
+      original.dataset.mmProxyReady='1';
+      original.classList.add('v2918-cm-source');
+      original.setAttribute('aria-hidden','true');
+      original.tabIndex=-1;
+      var proxy=document.createElement('input');
+      proxy.type='number';
+      proxy.className='v2918-mm-input';
+      proxy.min='0';
+      proxy.step='1';
+      proxy.inputMode='decimal';
+      proxy.dataset.sourceId=id;
+      var cm=parseNum(original.value);
+      proxy.value=isFinite(cm)? String(Math.round(cm*10*10)/10).replace('.0','') : String(fallback);
+      original.parentNode.insertBefore(proxy, original.nextSibling);
+      function pushToCm(){
+        var mm=parseNum(proxy.value);
+        if(!isFinite(mm)) return;
+        original.value=String(mm/10);
+        original.dispatchEvent(new Event('input',{bubbles:true}));
+        original.dispatchEvent(new Event('change',{bubbles:true}));
+      }
+      proxy.addEventListener('input',pushToCm);
+      proxy.addEventListener('change',pushToCm);
+    });
+  }
+  function refreshMmInputsFromSources(){
+    document.querySelectorAll('.v2918-mm-input').forEach(function(proxy){
+      if(document.activeElement===proxy) return;
+      var original=document.getElementById(proxy.dataset.sourceId);
+      if(!original) return;
+      var cm=parseNum(original.value);
+      if(!isFinite(cm)) return;
+      var mm=Math.round(cm*10*10)/10;
+      var txt=(Math.abs(mm-Math.round(mm))<0.001)?String(Math.round(mm)):String(mm).replace('.',',');
+      if(String(proxy.value)!==txt) proxy.value=txt;
+    });
+  }
+  function sync(){
+    setupMmInputs();
+    refreshMmInputsFromSources();
+    updateProductionHint();
+    updateSharedSummary();
+    updateRowBadges();
+    retitleButtons();
+  }
+  document.addEventListener('DOMContentLoaded', function(){
+    sync();
+    setTimeout(sync, 300);
+    setTimeout(sync, 1000);
+    var ids=['pdGlobalFrontWidth','pdGlobalFrontHeight','pdGlobalBackWidth','pdGlobalBackHeight'];
+    ids.forEach(function(id){
+      document.addEventListener('input', function(ev){ if(ev.target && ev.target.id===id) sync(); }, true);
+      document.addEventListener('change', function(ev){ if(ev.target && ev.target.id===id) sync(); }, true);
+    });
+  });
+  // v29.2.4: Kein globaler MutationObserver mehr. Der frühere Observer
+  // löste durch eigene DOM-Aktualisierungen eine Endlosschleife aus.
+  // Die initialen Delays sowie Input/Change-Events reichen für die Synchronisierung aus.
+  setTimeout(sync, 1800);
+})();
+</script>
+
+
+<script id="v2919-f140-colors">
+(function(){
+  var F140_COLORS = [
+    {id:'white', name:'White', hex:'#ffffff'},
+    {id:'black', name:'Black', hex:'#111015'},
+    {id:'azure-blue', name:'Azure Blue', hex:'#147fae'},
+    {id:'bottle-green', name:'Bottle Green', hex:'#174d2c'},
+    {id:'brick-red', name:'Brick Red', hex:'#8e151f'},
+    {id:'burgundy', name:'Burgundy', hex:'#83002f'},
+    {id:'chocolate', name:'Chocolate', hex:'#65462f'},
+    {id:'classic-olive', name:'Classic Olive', hex:'#687043'},
+    {id:'dark-grey-heather', name:'Dark Grey Heather', hex:'#4f5054'},
+    {id:'deep-navy', name:'Deep Navy', hex:'#001536'},
+    {id:'fuchsia', name:'Fuchsia', hex:'#ed0078'},
+    {id:'heather-burgundy', name:'Heather Burgundy', hex:'#963b69'},
+    {id:'heather-grey', name:'Heather Grey', hex:'#cfd0d2'},
+    {id:'heather-purple', name:'Heather Purple', hex:'#583078'},
+    {id:'kelly-green', name:'Kelly Green', hex:'#00a651'},
+    {id:'khaki', name:'Khaki', hex:'#8a7017'},
+    {id:'light-graphite', name:'Light Graphite (Solid)', hex:'#625754'},
+    {id:'light-pink', name:'Light Pink', hex:'#e8a0c4'},
+    {id:'lime', name:'Lime', hex:'#8cc152'},
+    {id:'natural', name:'Natural', hex:'#fff7d7'},
+    {id:'navy', name:'Navy', hex:'#001b3f'},
+    {id:'orange', name:'Orange', hex:'#ed4b00'},
+    {id:'purple', name:'Purple', hex:'#4d1688'},
+    {id:'red', name:'Red', hex:'#f20d09'},
+    {id:'retro-heather-green', name:'Retro Heather Green', hex:'#5d9d7b'},
+    {id:'retro-heather-royal', name:'Retro Heather Royal', hex:'#5166a8'},
+    {id:'royal-blue', name:'Royal Blue', hex:'#0758b2'},
+    {id:'sky-blue', name:'Sky Blue', hex:'#72c2e6'},
+    {id:'sunflower', name:'Sunflower', hex:'#ffb511'},
+    {id:'vintage-heather-navy', name:'Vintage Heather Navy', hex:'#626a86'},
+    {id:'vintage-heather-red', name:'Vintage Heather Red', hex:'#a64b64'},
+    {id:'yellow', name:'Yellow', hex:'#ffe600'}
+  ];
+  var lastSignature='';
+  var currentColorProduct='tshirt';
+  function byId(id){ return document.getElementById(id); }
+  function currentProduct(){
+    try{
+      if(typeof workingProducts!=='undefined' && Array.isArray(workingProducts)){
+        return workingProducts.find(function(p){ return p.id===currentColorProduct; }) || workingProducts[0] || null;
+      }
+    }catch(e){}
+    return null;
+  }
+  function colorById(id){ return F140_COLORS.find(function(c){ return c.id===id; }) || null; }
+  function metaFromFields(){
+    var nameField=byId('fixedShirtName');
+    var hexField=byId('fixedShirtHex');
+    var rawName=(nameField && nameField.value ? String(nameField.value) : '').trim();
+    var rawHex=(hexField && hexField.value ? String(hexField.value) : '#0758b2').trim();
+    var defaultName=rawName || 'Royal Blue';
+    var defaultId='';
+    var allowed=[];
+    if(rawName.indexOf('||')>-1){
+      var parts=rawName.split('||');
+      defaultName=(parts.shift() || defaultName).trim() || defaultName;
+      parts.forEach(function(part){
+        if(part.indexOf('default=')===0) defaultId=part.slice(8).trim();
+        if(part.indexOf('allowed=')===0){ allowed = part.slice(8).split(',').map(function(item){ return item.trim(); }).filter(Boolean); }
+      });
+    }
+    if(!defaultId){
+      var match=F140_COLORS.find(function(c){ return c.hex.toLowerCase()===rawHex.toLowerCase() || c.name===defaultName; });
+      defaultId=match ? match.id : 'royal-blue';
+    }
+    if(!allowed.length) allowed=F140_COLORS.map(function(c){ return c.id; });
+    allowed=allowed.filter(function(id, idx){ return !!colorById(id) && allowed.indexOf(id)===idx; });
+    if(!allowed.length) allowed=F140_COLORS.map(function(c){ return c.id; });
+    if(allowed.indexOf(defaultId)===-1) defaultId=allowed[0];
+    return {defaultId:defaultId, allowed:allowed, defaultHex:rawHex, defaultName:defaultName};
+  }
+  function ensureUI(){
+    var wrap=byId('f140ColorPicker');
+    if(!wrap || wrap.dataset.ready==='1') return;
+    F140_COLORS.forEach(function(color){
+      var label=document.createElement('label');
+      label.className='v2919-f140-option';
+      label.setAttribute('data-color-id', color.id);
+      label.innerHTML='<input type="checkbox" value="'+color.id+'"><span class="v2919-swatch" style="--sw:'+color.hex+'"></span><span class="v2919-name">'+color.name+'</span>';
+      wrap.appendChild(label);
+    });
+    wrap.dataset.ready='1';
+  }
+  function syncMirrorCheckbox(fromSource){
+    var main=byId('showShirtColors');
+    var mirror=byId('shirtColorsToggleMirror');
+    if(!mirror || !main) return;
+    if(fromSource) mirror.checked=!!main.checked;
+    else main.checked=!!mirror.checked;
+  }
+  function fillDefaultSelect(selectedIds, preferredId){
+    var select=byId('f140DefaultColor');
+    if(!select) return;
+    select.innerHTML='';
+    selectedIds=(selectedIds||[]).filter(Boolean);
+    if(!selectedIds.length) selectedIds=['royal-blue'];
+    selectedIds.forEach(function(id){
+      var color=colorById(id); if(!color) return;
+      var opt=document.createElement('option');
+      opt.value=id; opt.textContent=color.name;
+      select.appendChild(opt);
+    });
+    if(!preferredId || selectedIds.indexOf(preferredId)===-1){
+      preferredId = selectedIds.indexOf('royal-blue')>-1 ? 'royal-blue' : selectedIds[0];
+    }
+    select.value=preferredId;
+    if(!select.value && select.options.length){
+      select.selectedIndex = 0;
+    }
+    var chosen=colorById(select.value);
+    var preview=byId('f140DefaultColorPreview');
+    var swatch=preview && preview.querySelector('.v2934-current-swatch');
+    var label=preview && preview.querySelector('.v2934-current-label');
+    if(swatch && chosen) swatch.style.background=chosen.hex;
+    if(label && chosen) label.textContent=chosen.name;
+  }
+  function selectedIds(){
+    return Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker input[type="checkbox"]:checked')).map(function(el){ return el.value; });
+  }
+  function writeBack(){
+    var nameField=byId('fixedShirtName');
+    var hexField=byId('fixedShirtHex');
+    var select=byId('f140DefaultColor');
+    if(!nameField || !hexField || !select) return;
+    var ids=selectedIds();
+    if(!ids.length){ ids=['royal-blue']; var rescue=document.querySelector('#f140ColorPicker input[value="royal-blue"]'); if(rescue) rescue.checked=true; }
+    fillDefaultSelect(ids, select.value || ids[0]);
+    var chosenId=select.value || ids[0];
+    if(ids.indexOf(chosenId)===-1){ chosenId=ids[0]; select.value=chosenId; }
+    var chosen=colorById(chosenId) || colorById(ids[0]) || colorById('royal-blue');
+    var encoded=(chosen.name || 'Royal Blue')+'||default='+(chosen.id || 'royal-blue')+'||allowed='+ids.join(',');
+    nameField.value=encoded;
+    hexField.value=chosen.hex || '#0758b2';
+    nameField.dispatchEvent(new Event('change',{bubbles:true}));
+    hexField.dispatchEvent(new Event('change',{bubbles:true}));
+    Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker .v2919-f140-option')).forEach(function(el){
+      var checked=!!el.querySelector('input:checked');
+      el.classList.toggle('is-active', checked);
+      el.classList.toggle('is-default', el.getAttribute('data-color-id')===chosen.id);
+    });
+    var product=currentProduct();
+    if(product){
+      product.allowedShirtColorIds=ids.slice();
+      product.defaultShirtColorId=chosen.id;
+    }
+  }
+  function applyMeta(meta){
+    ensureUI();
+    Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker input[type="checkbox"]')).forEach(function(input){
+      input.checked = meta.allowed.indexOf(input.value)>-1;
+    });
+    fillDefaultSelect(meta.allowed, meta.defaultId);
+    writeBack();
+  }
+  function syncFromFields(force){
+    ensureUI();
+    syncMirrorCheckbox(true);
+    var meta=metaFromFields();
+    var signature=JSON.stringify(meta)+':'+(byId('showShirtColors') ? String(!!byId('showShirtColors').checked) : '');
+    if(!force && signature===lastSignature) return;
+    lastSignature=signature;
+    applyMeta(meta);
+  }
+  function bind(){
+    ensureUI();
+    if(bind.done) return; bind.done=true;
+    document.addEventListener('change', function(ev){
+      if(ev.target && ev.target.matches('#f140ColorPicker input[type="checkbox"]')){
+        if(ev.target.checked){
+          var selected=byId('f140DefaultColor');
+          if(selected) selected.value=ev.target.value;
+        }
+        writeBack();
+      }
+      if(ev.target && ev.target.id==='f140DefaultColor') writeBack();
+      if(ev.target && ev.target.id==='shirtColorsToggleMirror') syncMirrorCheckbox(false);
+      if(ev.target && ev.target.id==='showShirtColors') syncMirrorCheckbox(true);
+    }, true);
+    document.addEventListener('click', function(ev){
+      var tab=ev.target.closest('[data-color-product]');
+      if(tab){
+        currentColorProduct=tab.getAttribute('data-color-product');
+        Array.prototype.slice.call(document.querySelectorAll('#shirtColorProductTabs [data-color-product]')).forEach(function(btn){
+          btn.classList.toggle('is-active', btn===tab);
+        });
+        var product=currentProduct();
+        if(product){
+          var allowed=Array.isArray(product.allowedShirtColorIds)&&product.allowedShirtColorIds.length?product.allowedShirtColorIds.slice():[product.defaultShirtColorId||'white'];
+          applyMeta({allowed:allowed, defaultId:product.defaultShirtColorId||allowed[0]});
+        }
+        var previewProduct=byId('positionProduct');
+        if(previewProduct && Array.prototype.some.call(previewProduct.options,function(option){return option.value===currentColorProduct})){
+          previewProduct.value=currentColorProduct;
+          previewProduct.dispatchEvent(new Event('change',{bubbles:true}));
+        }
+        return;
+      }
+      var quick=ev.target.closest('[data-f140-quick]');
+      if(!quick) return;
+      var mode=quick.getAttribute('data-f140-quick');
+      var boxes=Array.prototype.slice.call(document.querySelectorAll('#f140ColorPicker input[type=\"checkbox\"]'));
+      if(mode==='all'){
+        boxes.forEach(function(box){ box.checked=true; });
+      } else if(mode==='none'){
+        var selected=byId('f140DefaultColor');
+        var keep=selected && selected.value || boxes.find(function(box){return box.checked;})?.value || 'royal-blue';
+        boxes.forEach(function(box){ box.checked=box.value===keep; });
+      }
+      writeBack();
+    });
+    document.addEventListener('shopconfigloaded',function(){
+      var preview=byId('positionProduct');
+      currentColorProduct=preview&&preview.value||'tshirt';
+      document.querySelectorAll('#shirtColorProductTabs [data-color-product]').forEach(function(button){
+        button.classList.toggle('is-active',button.getAttribute('data-color-product')===currentColorProduct);
+      });
+      var product=currentProduct();
+      if(product && Array.isArray(product.allowedShirtColorIds) && product.allowedShirtColorIds.length){
+        applyMeta({allowed:product.allowedShirtColorIds.slice(),defaultId:product.defaultShirtColorId||product.allowedShirtColorIds[0]});
+      }else syncFromFields(true);
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function(){ bind(); syncFromFields(true); });
+})();
+</script>
+<script id="v2940-print-colors">
+(function(){
+  var COLORS = [
+    {name:'Anthracite',hex:'#474946'},{name:'Apple Green',hex:'#A5D542'},{name:'Aqua Green',hex:'#317176'},{name:'Baby Pink',hex:'#ECA7BC'},{name:'Beige',hex:'#F0E4C1'},{name:'Black',hex:'#000000'},{name:'Bordeaux',hex:'#642C32'},{name:'Bright Blue',hex:'#93ACD1'},{name:'Bright Copper',hex:'#955D42'},{name:'Bright Gold',hex:'#DDBE68'},{name:'Bright Lavender',hex:'#9D86B3'},{name:'Bright Lime',hex:'#B3DB88'},{name:'Bright Pink',hex:'#A03271'},{name:'Bright Red',hex:'#8E3128'},{name:'Bright Silver',hex:'#A6A9AA'},{name:'Bright Violet',hex:'#C7AFCE'},{name:'Bright Yellow',hex:'#F7D35E'},{name:'Bronze',hex:'#C18D45'},{name:'Brown',hex:'#44382B'},{name:'Champagne',hex:'#DDD29A'},{name:'Coffee',hex:'#8F6E5B'},{name:'Coral',hex:'#ED7157'},{name:'Flame Red',hex:'#DC4647'},{name:'Flamingo',hex:'#B36966'},{name:'Frog Green',hex:'#4FAE4F'},{name:'Fuchsia',hex:'#9E2759'},{name:'Glossy Black',hex:'#000000'},{name:'Glossy Red',hex:'#A13126'},{name:'Glossy White',hex:'#FFFFFF'},{name:'Gold Metallic',hex:'#857451'},{name:'Green',hex:'#2D683D'},{name:'Grey',hex:'#85909A'},{name:'Ice Blue',hex:'#91BFDD'},{name:'Lemon Yellow',hex:'#FAF077'},{name:'Light Apricot',hex:'#EDD0B7'},{name:'Light Berry',hex:'#AF6D9E'},{name:'Light Grey',hex:'#CDCDCD'},{name:'Medium Yellow',hex:'#F6C951'},{name:'Mint',hex:'#9FD4BE'},{name:'Navy Blue',hex:'#0B1B2B'},{name:'Neon Berry',hex:'#7C2398'},{name:'Neon Blue',hex:'#459AD8'},{name:'Neon Dark Pink',hex:'#B5257B'},{name:'Neon Green',hex:'#72D34C'},{name:'Neon Orange',hex:'#F3AE5F'},{name:'Neon Pink',hex:'#EB50B1'},{name:'Neon Red',hex:'#EE7A7A'},{name:'Neon Yellow',hex:'#E4E855'},{name:'Olive',hex:'#9AB37F'},{name:'Orange',hex:'#CF743E'},{name:'Pastel Yellow',hex:'#E9D980'},{name:'Peach Fuzz',hex:'#EFB18A'},{name:'Peri',hex:'#7374B4'},{name:'Purple',hex:'#2D1C6F'},{name:'Red',hex:'#B62820'},{name:'Rose Gold',hex:'#B17D6D'},{name:'Royal Blue',hex:'#326C99'},{name:'Sage Green',hex:'#A9B99B'},{name:'Sand Beige',hex:'#D1B894'},{name:'Silver Metallic',hex:'#A6A8AD'},{name:'Sky Blue',hex:'#67B5DA'},{name:'Violet',hex:'#B59AD0'},{name:'Viva Magenta',hex:'#C62F58'},{name:'White',hex:'#FFFFFF'},{name:'Yellow',hex:'#FCB91D'}
+  ];
+  var FALLBACK='Yellow';
+  function byId(id){return document.getElementById(id)}
+  function norm(v){return String(v||'').trim().toLowerCase()}
+  function find(name){return COLORS.find(function(c){return norm(c.name)===norm(name)})||null}
+  function parseMeta(){
+    var f=byId('fixedMotifName');
+    var raw=f?String(f.value||''):'';
+    var parts=raw.split('||');
+    var name=(parts.shift()||FALLBACK).trim()||FALLBACK;
+    var defaultName=name;
+    var allowed=[];
+    parts.forEach(function(part){
+      if(part.indexOf('default=')===0){
+        try{defaultName=decodeURIComponent(part.slice(8))}catch(e){defaultName=part.slice(8)}
+      }
+      if(part.indexOf('allowed=')===0){
+        try{allowed=JSON.parse(decodeURIComponent(part.slice(8)))}catch(e){allowed=[]}
+      }
+    });
+    if(!allowed.length) allowed=[name||FALLBACK];
+    allowed=allowed.filter(function(n,i){return !!find(n)&&allowed.indexOf(n)===i});
+    if(!allowed.length) allowed=[FALLBACK];
+    if(allowed.indexOf(defaultName)<0) defaultName=allowed[0];
+    return {defaultName:defaultName,allowed:allowed};
+  }
+  function build(){
+    var wrap=byId('poliFlexTurboPicker');
+    if(!wrap||wrap.dataset.multiReady==='1')return;
+    wrap.innerHTML='';
+    COLORS.forEach(function(c){
+      var label=document.createElement('label');
+      label.className='v2919-f140-option';
+      label.innerHTML='<input type="checkbox" value="'+c.name+'"><span class="v2919-swatch" style="--sw:'+c.hex+'"></span><span class="v2919-name">'+c.name+'</span>' ;
+      wrap.appendChild(label);
+    });
+    wrap.dataset.multiReady='1';
+  }
+  function selected(){return Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input:checked')).map(function(i){return i.value})}
+  function renderActive(){document.querySelectorAll('#poliFlexTurboPicker .v2919-f140-option').forEach(function(el){el.classList.toggle('is-active',!!el.querySelector('input:checked'))})}
+  function fillDefaultSelect(allowed,defaultName){
+    var select=byId('poliFlexTurboPreset');if(!select)return;
+    var current=defaultName||select.value||allowed[0]||FALLBACK;
+    select.innerHTML='';
+    allowed.forEach(function(name){var option=document.createElement('option');option.value=name;option.textContent=name;select.appendChild(option)});
+    select.value=allowed.indexOf(current)>-1?current:(allowed[0]||FALLBACK);
+    var color=find(select.value),preview=byId('poliFlexDefaultPreview'),swatch=preview&&preview.querySelector('.v2934-current-swatch');
+    if(swatch&&color)swatch.style.background=color.hex;
+  }
+  function writeBack(){
+    var nameField=byId('fixedMotifName'),hexField=byId('fixedMotifHex'),select=byId('poliFlexTurboPreset');
+    if(!nameField||!hexField)return;
+    var ids=selected();
+    if(!ids.length){ids=[FALLBACK];var rescue=document.querySelector('#poliFlexTurboPicker input[value="'+FALLBACK+'"]');if(rescue)rescue.checked=true}
+    var defaultName=select&&ids.indexOf(select.value)>-1?select.value:ids[0];
+    var d=find(defaultName)||find(FALLBACK);
+    nameField.value=defaultName+'||default='+encodeURIComponent(defaultName)+'||allowed='+encodeURIComponent(JSON.stringify(ids));
+    hexField.value=d.hex;
+    fillDefaultSelect(ids,defaultName);
+    nameField.dispatchEvent(new Event('change',{bubbles:true}));
+    hexField.dispatchEvent(new Event('change',{bubbles:true}));
+    renderActive();
+  }
+  function apply(){
+    build();var m=parseMeta();
+    document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]').forEach(function(i){i.checked=m.allowed.indexOf(i.value)>-1});
+    fillDefaultSelect(m.allowed,m.defaultName);
+    renderActive();
+  }
+  function bind(){
+    build();if(bind.done)return;bind.done=true;
+    document.addEventListener('change',function(ev){if(ev.target&&(ev.target.matches('#poliFlexTurboPicker input[type="checkbox"]')||ev.target.id==='poliFlexTurboPreset'))writeBack()},true);
+    document.addEventListener('click',function(ev){
+      var b=ev.target.closest('[data-print-quick]');if(!b)return;
+      var mode=b.getAttribute('data-print-quick');var boxes=Array.prototype.slice.call(document.querySelectorAll('#poliFlexTurboPicker input[type="checkbox"]'));
+      if(mode==='all')boxes.forEach(function(x){x.checked=true});
+      else if(mode==='none'){
+        var select=byId('poliFlexTurboPreset'),keep=select&&select.value||FALLBACK;
+        boxes.forEach(function(x){x.checked=x.value===keep});
+      }
+      else boxes.forEach(function(x){x.checked=(x.value===FALLBACK)});
+      writeBack();
+    });
+  }
+  document.addEventListener('DOMContentLoaded',function(){bind();apply()});
+  document.addEventListener('shopconfigloaded',apply);
+})();
+</script>
+
+
+
+</body>
+</html>
