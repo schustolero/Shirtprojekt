@@ -817,12 +817,12 @@ function renderTextileIconRail(){
     const label=document.createElement("span");label.textContent=name;
     if(TOP_PRODUCT_PICKER){
       const thumb=document.createElement("span");thumb.className="product-picker-thumb";
-      const preview=document.createElement("img");preview.alt="";preview.loading="lazy";
       const raw=product.frontTemplate||"shirt-front-template.png";
-      preview.src=/^(https?:)?\/\//i.test(raw)||/^(data|blob):/i.test(raw)||raw.startsWith("/")?raw:`/${raw.replace(/^\.\//,"")}`;
+      const src=/^(https?:)?\/\//i.test(raw)||/^(data|blob):/i.test(raw)||raw.startsWith("/")?raw:`/${raw.replace(/^\.\//,"")}`;
       icon.hidden=true;
-      preview.onerror=()=>{preview.remove();icon.hidden=false};
-      thumb.append(preview,icon);
+      thumb.style.backgroundImage=`url(${JSON.stringify(src)})`;
+      const preview=new Image();preview.onerror=()=>{thumb.style.backgroundImage="none";icon.hidden=false};preview.src=src;
+      thumb.append(icon);
       button.append(thumb,label);
     }else button.append(icon,label);
     if(TOP_PRODUCT_PICKER && FEATURES.showPrices!==false && Number(product.price)>0){
@@ -833,8 +833,6 @@ function renderTextileIconRail(){
   });
   if(!TOP_PRODUCT_PICKER)return;
   const selected=productSwitch?.querySelector('.product-btn.active .product-btn-name');
-  const selectedLabel=document.getElementById("selectedProductLabel");
-  if(selectedLabel) selectedLabel.textContent=selected?.textContent||getCurrentProduct().name||"Textil";
   const selectedLabelHigh=document.getElementById("selectedProductLabelHigh");
   if(selectedLabelHigh) selectedLabelHigh.textContent=selected?.textContent||getCurrentProduct().name||"Textil";
   const query=document.getElementById("productPickerSearch")?.value.trim().toLocaleLowerCase("de")||"";
@@ -846,13 +844,9 @@ function renderTextileIconRail(){
   const empty=document.getElementById("productPickerEmpty");if(empty)empty.hidden=visible!==0;
 }
 const pickerDialog=document.getElementById("productPickerDialog");
-const pickerTrigger=document.getElementById("productPickerTrigger");
 const pickerTriggerHigh=document.getElementById("productPickerTriggerHigh");
-const pickerBar=document.getElementById("productPickerBar");
-if(pickerBar) pickerBar.hidden=!TOP_PRODUCT_PICKER||PRODUCTS.length<=1;
 if(pickerTriggerHigh) pickerTriggerHigh.hidden=!TOP_PRODUCT_PICKER||PRODUCTS.length<=1;
 const openProductPicker=()=>{if(pickerDialog&&!pickerDialog.open){pickerDialog.showModal();renderTextileIconRail()}};
-pickerTrigger?.addEventListener("click",openProductPicker);
 pickerTriggerHigh?.addEventListener("click",openProductPicker);
 document.getElementById("productPickerClose")?.addEventListener("click",()=>pickerDialog?.close());
 pickerDialog?.addEventListener("click",event=>{if(event.target===pickerDialog)pickerDialog.close()});
@@ -2100,6 +2094,46 @@ designTools.forEach(button=>{
   if(tool==="logo") button.querySelector("strong").textContent="Logos";
   button.hidden=isDesignToolHidden(tool);
 });
+const mobileActionDock=document.getElementById("mobileActionDock");
+const mobileActionTools=document.getElementById("mobileActionTools");
+const mobileAddTools=document.getElementById("mobileAddTools");
+if(mobileActionDock){
+  mobileActionDock.hidden=!TOP_PRODUCT_PICKER;
+  mobileActionDock.querySelectorAll("[data-mobile-tool]").forEach(button=>{
+    const tool=button.dataset.mobileTool;
+    button.hidden=isDesignToolHidden(tool);
+    button.addEventListener("click",()=>{
+      mobileActionTools.hidden=true;
+      mobileAddTools.setAttribute("aria-expanded","false");
+      if(tool==="photo"||tool==="text"){
+        designRail?.querySelector(`[data-design-tool="${tool}"]`)?.click();
+      }else if(tool==="initials"){
+        const field=document.getElementById("initialsInput");
+        field?.scrollIntoView({behavior:"smooth",block:"center"});field?.focus({preventScroll:true});
+      }else{
+        const section=tool==="logo"?document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])"):document.querySelector(".motif-color-section:not([hidden])");
+        section?.scrollIntoView({behavior:"smooth",block:"center"});
+      }
+    });
+  });
+  mobileAddTools?.addEventListener("click",event=>event.stopPropagation());
+  mobileAddTools?.addEventListener("click",()=>{
+    mobileActionTools.hidden=!mobileActionTools.hidden;
+    mobileAddTools.setAttribute("aria-expanded",String(!mobileActionTools.hidden));
+  });
+  document.getElementById("mobileAddCart")?.addEventListener("click",()=>{
+    const size=document.getElementById("shirtSize");
+    if(size && !size.value){
+      document.querySelector(".order-section")?.scrollIntoView({behavior:"smooth",block:"center"});
+      size.focus({preventScroll:true});
+      return;
+    }
+    document.getElementById("addToOrderBtn")?.click();
+    const message=document.getElementById("mobileDockMessage");
+    const source=document.getElementById("orderMessage");
+    if(message){message.textContent=source?.textContent||"";message.hidden=!message.textContent;}
+  });
+}
 function printPointAt(clientX,clientY){
   const rect=printDropZone.getBoundingClientRect();
   return {
@@ -2466,6 +2500,8 @@ function renderCart() {
   const totalPrice = orderItems.reduce((sum, item) => sum + item.quantity * (Number(item.unitPrice) || SHIRT_PRICE), 0);
   cartBox.hidden = orderItems.length === 0;
   cartCount.textContent = `${total} ${total === 1 ? "Textil" : "Textilien"}`;
+  const mobileCount=document.getElementById("mobileCartCount");
+  if(mobileCount){mobileCount.hidden=!total;mobileCount.textContent=String(total)}
   if (cartTotal) cartTotal.textContent = formatEuro(totalPrice);
   if (checkoutTotal) checkoutTotal.textContent = formatEuro(totalPrice);
   cartItems.replaceChildren();
