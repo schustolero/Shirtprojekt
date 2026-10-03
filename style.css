@@ -5777,6 +5777,7 @@ html body .mockup-stage .print-zone canvas{
   height:100%!important;
 }
 
+
 /* v30.3.149: Bild und Druckfläche teilen auf jedem Viewport denselben
    Koordinatenraum. Die Farbleiste darf die Shirt-Proportionen nicht ändern. */
 html body .workspace .mockup-stage,
@@ -6195,3 +6196,47 @@ html body #previewLeftRail .shirt-color-scroll-hint[hidden]{display:none!importa
 
 .paypal-payment-note{box-sizing:border-box;grid-column:1/-1;margin:0;padding:9px 11px;border:1px solid #e4d69e;border-radius:9px;background:#fffaf0;color:#3b3524;font-size:12px;line-height:1.4}
 .paypal-payment-note[hidden]{display:none!important}
+
+/* Produktauswahl als kompakter Einstieg über der Vorschau. */
+html body[data-top-product-picker="true"] #productSection{display:none!important}
+html body #productPickerBar[hidden],html body .product-picker-empty[hidden]{display:none!important}
+html body .product-picker-bar{display:flex;justify-content:center;padding:12px 18px 4px;background:#f4f5f7}
+html body .product-picker-trigger{display:flex;align-items:center;gap:10px;box-sizing:border-box;min-width:180px;max-width:280px;min-height:50px;padding:7px 12px;border:1px solid #dce1e7;border-radius:14px;background:#fff;color:#1b2530;box-shadow:0 2px 8px #17202b0d;cursor:pointer;text-align:left}
+html body .product-picker-trigger:hover,html body .product-picker-trigger:focus-visible{border-color:#cba633;outline:2px solid transparent;box-shadow:0 0 0 3px #e8d79080}
+html body .product-picker-trigger svg{width:29px;height:29px;flex:none;fill:#f6f2e4;stroke:#586575;stroke-width:1.7;stroke-linejoin:round}
+html body .product-picker-trigger-copy{display:flex;flex:1;min-width:0;flex-direction:column;gap:1px}
+html body .product-picker-trigger-copy strong{font-size:14px;line-height:1.2;font-weight:800}
+html body .product-picker-trigger-copy small{font-size:11px;line-height:1.2;color:#677380;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+html body .product-picker-trigger-arrow{font-size:22px;color:#7d671e;line-height:1;transform:translateY(-4px)}
+html body .product-picker-dialog{box-sizing:border-box;width:min(760px,calc(100vw - 24px));max-height:min(760px,calc(100dvh - 32px));padding:0;border:1px solid #dce2e8;border-radius:20px;background:#fff;color:#1b2530;box-shadow:0 25px 80px #1019234d;overflow:auto;overscroll-behavior:contain}
+html body .product-picker-dialog:not([open]){display:none!important}
+html body .product-picker-dialog::backdrop{background:#10192399;backdrop-filter:blur(3px)}
+html body .product-picker-head{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 20px 12px;background:#fff}
+html body .product-picker-head small{display:block;color:#9b7b1c;font-size:10px;font-weight:850;letter-spacing:.12em}
+html body .product-picker-head h2{margin:2px 0 0;font-size:21px;line-height:1.15;letter-spacing:-.025em}
+html body .product-picker-close{width:38px;height:38px;flex:none;border:1px solid #e2e6ea;border-radius:11px;background:#f8f9fa;color:#33404d;font-size:27px;line-height:1;cursor:pointer}
+html body .product-picker-search{position:sticky;top:69px;z-index:2;display:flex;align-items:center;gap:8px;margin:0 20px 14px;padding:0 12px;min-height:44px;border:1px solid #d8dee5;border-radius:11px;background:#fff}
+html body .product-picker-search span{font-size:24px;color:#697581;line-height:1}
+html body .product-picker-search input{width:100%;height:40px;min-width:0;border:0;outline:0;background:transparent;color:#1b2530;font-size:14px}
+html body #productPickerGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;padding:0 20px 20px;width:100%;align-items:stretch}
+html body #productPickerGrid .textile-icon-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;box-sizing:border-box;min-width:0;min-height:172px;padding:9px 8px 12px;border:1px solid #dfe4e9;border-radius:14px;background:#fafbfc;color:#263341;cursor:pointer;touch-action:manipulation}
+html body #productPickerGrid .textile-icon-button[hidden]{display:none!important}
+html body #productPickerGrid .textile-icon-button:hover,html body #productPickerGrid .textile-icon-button:focus-visible{border-color:#b9962e;background:#fffaf0;outline:2px solid transparent}
+html body #productPickerGrid .textile-icon-button.active{border-color:#b9962e;background:#fff9e9;box-shadow:inset 0 0 0 1px #b9962e}
+html body #productPickerGrid .product-picker-thumb{display:grid;place-items:center;width:100%;height:105px;border-radius:9px;background:#f0f2f4;overflow:hidden}
+html body #productPickerGrid .product-picker-thumb img{display:block;width:100%;height:100%;object-fit:contain;mix-blend-mode:multiply}
+html body #productPickerGrid .textile-icon-button svg{width:55px;height:49px;fill:#eef1f4;stroke:#46566a;stroke-width:1.5;stroke-linejoin:round}
+html body #productPickerGrid .textile-icon-button svg[hidden]{display:none!important}
+html body #productPickerGrid .textile-icon-button.active svg{fill:#f4e8c3;stroke:#897020}
+html body #productPickerGrid .textile-icon-button span{max-width:100%;font-size:13px;font-weight:800;line-height:1.15;text-align:center;overflow-wrap:anywhere}
+html body #productPickerGrid .textile-icon-button small{font-size:11px;font-weight:650;color:#66727d}
+html body .product-picker-empty{margin:0;padding:15px 20px 28px;color:#697581;text-align:center;font-size:14px}
+@media(max-width:600px){
+  html body .product-picker-bar{padding:9px 12px 0}
+  html body .product-picker-trigger{min-height:44px;min-width:160px;padding:5px 10px}
+  html body .product-picker-dialog{width:100vw;max-width:none;max-height:min(86dvh,850px);margin:auto 0 0;border-radius:20px 20px 0 0;border-bottom:0}
+  html body .product-picker-head{padding:16px 16px 12px}
+  html body .product-picker-search{margin:0 16px 14px;top:65px}
+  html body #productPickerGrid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:0 16px 22px}
+  html body #productPickerGrid .textile-icon-button{min-height:164px}
+}

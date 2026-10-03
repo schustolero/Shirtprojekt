@@ -6,6 +6,8 @@
   document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
+const TOP_PRODUCT_PICKER = ["master","_master"].includes(String(SHOP.customerId||window.SHOP_SLUG||""));
+if(TOP_PRODUCT_PICKER) document.body.dataset.topProductPicker="true";
 // Hansa hat ausdrücklich nur Rückendruck; in Master- und Demo-Shops sind beide Seiten gestaltbar.
 const ZOODIE_BOTH_SIDES = SHOP.customerId !== "hansa";
 const zoodieBackOnly = (productId) => productId === "jh050" && !ZOODIE_BOTH_SIDES;
@@ -794,7 +796,7 @@ function renderProductSelector() {
   renderTextileIconRail();
 }
 function renderTextileIconRail(){
-  const host=document.querySelector(".textile-icon-rail");if(!host)return;
+  const host=TOP_PRODUCT_PICKER?document.getElementById("productPickerGrid"):document.querySelector("#previewLeftRail .textile-icon-rail");if(!host)return;
   host.replaceChildren();
   const basic='<path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-4c-1 5-9 5-10 0Z"/>';
   const long='<path d="m10 7-6 4 1 18 5 1 2-14v15h16V16l2 14 5-1 1-18-6-4-5-4c-1 5-9 5-10 0Z"/>';
@@ -813,11 +815,42 @@ function renderTextileIconRail(){
     button.classList.toggle("active",id===currentProductId);button.setAttribute("aria-pressed",String(id===currentProductId));
     const icon=document.createElementNS("http://www.w3.org/2000/svg","svg");icon.setAttribute("viewBox","0 0 40 36");icon.setAttribute("aria-hidden","true");icon.innerHTML=shape;
     const label=document.createElement("span");label.textContent=name;
-    button.append(icon,label);
-    button.addEventListener("click",()=>{source?.click();renderTextileIconRail()});
+    if(TOP_PRODUCT_PICKER){
+      const thumb=document.createElement("span");thumb.className="product-picker-thumb";
+      const preview=document.createElement("img");preview.alt="";preview.loading="lazy";
+      const raw=product.frontTemplate||"shirt-front-template.png";
+      preview.src=/^(https?:)?\/\//i.test(raw)||/^(data|blob):/i.test(raw)||raw.startsWith("/")?raw:`/${raw.replace(/^\.\//,"")}`;
+      icon.hidden=true;
+      preview.onerror=()=>{preview.remove();icon.hidden=false};
+      thumb.append(preview,icon);
+      button.append(thumb,label);
+    }else button.append(icon,label);
+    if(TOP_PRODUCT_PICKER && FEATURES.showPrices!==false && Number(product.price)>0){
+      const price=document.createElement("small");price.textContent=formatEuro(Number(product.price));button.appendChild(price);
+    }
+    button.addEventListener("click",()=>{source?.click();if(TOP_PRODUCT_PICKER)document.getElementById("productPickerDialog")?.close();renderTextileIconRail()});
     host.appendChild(button);
   });
+  if(!TOP_PRODUCT_PICKER)return;
+  const selected=productSwitch?.querySelector('.product-btn.active .product-btn-name');
+  const selectedLabel=document.getElementById("selectedProductLabel");
+  if(selectedLabel) selectedLabel.textContent=selected?.textContent||getCurrentProduct().name||"Textil";
+  const query=document.getElementById("productPickerSearch")?.value.trim().toLocaleLowerCase("de")||"";
+  let visible=0;
+  host.querySelectorAll(".textile-icon-button").forEach(button=>{
+    button.hidden=!!query && !button.textContent.toLocaleLowerCase("de").includes(query);
+    if(!button.hidden) visible++;
+  });
+  const empty=document.getElementById("productPickerEmpty");if(empty)empty.hidden=visible!==0;
 }
+const pickerDialog=document.getElementById("productPickerDialog");
+const pickerTrigger=document.getElementById("productPickerTrigger");
+const pickerBar=document.getElementById("productPickerBar");
+if(pickerBar) pickerBar.hidden=!TOP_PRODUCT_PICKER||PRODUCTS.length<=1;
+pickerTrigger?.addEventListener("click",()=>{if(pickerDialog&&!pickerDialog.open){pickerDialog.showModal();renderTextileIconRail()}});
+document.getElementById("productPickerClose")?.addEventListener("click",()=>pickerDialog?.close());
+pickerDialog?.addEventListener("click",event=>{if(event.target===pickerDialog)pickerDialog.close()});
+document.getElementById("productPickerSearch")?.addEventListener("input",renderTextileIconRail);
 let productSelectionRequest=0;
 // Ein gemeinsamer Handler bleibt auch nach einem Neuaufbau der Schaltflächen aktiv.
 productSwitch?.addEventListener("click", async event => {
@@ -2915,8 +2948,11 @@ window.dockShirtColorRail=function(){
   let leftRail=workspace.querySelector(".preview-left-rail");
   if(!leftRail){
     leftRail=document.createElement("aside");leftRail.id="previewLeftRail";leftRail.className="preview-left-rail";leftRail.setAttribute("aria-label","Textilien und Textilfarben");
-    const icons=document.createElement("nav");icons.className="textile-icon-rail";icons.setAttribute("aria-label","Textil wählen");
-    leftRail.appendChild(icons);workspace.insertBefore(leftRail,workspace.firstChild);
+    if(!TOP_PRODUCT_PICKER){
+      const icons=document.createElement("nav");icons.className="textile-icon-rail";icons.setAttribute("aria-label","Textil wählen");
+      leftRail.appendChild(icons);
+    }
+    workspace.insertBefore(leftRail,workspace.firstChild);
   }
   if(section.parentElement!==leftRail)leftRail.appendChild(section);
   if(view&&view.parentElement!==workspace){
