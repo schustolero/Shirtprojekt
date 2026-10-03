@@ -18,7 +18,7 @@
   function mergeMasterProductData(config){
     const master=new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
     const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product,...(product.id==="s279"?{name:"Girlie"}:{}),...(product.id==="jh050"?{name:"Sweatjacke",...(slug!=="hansa"?{printSide:"both"}:{})}:{})}));
-    return window.normalizeGirlieInitialsPosition({...config,customerId:config.customerId||slug,products});
+    return window.normalizeMasterClubLogoPosition(window.normalizeGirlieInitialsPosition({...config,customerId:config.customerId||slug,products}));
   }
   function normalizeTemplateDemo(config){
     config=mergeMasterProductData(window.normalizeHansaShopConfig?.(config)||config);

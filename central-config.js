@@ -278,6 +278,26 @@ window.normalizeGirlieInitialsPosition = function(config){
   return {...config,girlieInitialsPositionVersion:1};
 };
 
+// Vereinslogos im Master und Demo auf Hoodie und Sweatjacke etwas tiefer setzen.
+// Die Versionsmarke verhindert, dass ein späteres Nachladen die Position erneut verschiebt.
+window.normalizeMasterClubLogoPosition = function(config){
+  if(!config || !["master","_master"].includes(config.customerId) || Number(config.clubLogoVerticalVersion||0)>=1) return config;
+  const moved=placement=>({...placement,yPct:Math.min(100,(Number(placement?.yPct)||0)+4)});
+  const motifs=(config.motifs||[]).map(motif=>{
+    const club=motif.category==="club" || (motif.category!=="general" && /vereinslogo|vereinswappen/i.test(motif.name||""));
+    if(!club) return motif;
+    const positions=motif.placementsByProduct||{};
+    const hoodie=positions.hoodie
+      ? moved(positions.hoodie)
+      : moved({...(motif.placement||{side:"front",xPct:68,yPct:19,widthPct:22})});
+    const jacket=positions.jh050||{};
+    const front=jacket.front || (jacket.side==="front"?jacket:null) || config.productPrint?.jh050?.front || {xPct:68,yPct:24,widthPct:28};
+    const back=jacket.back || (jacket.side==="back"?jacket:null) || config.productPrint?.jh050?.back || {xPct:50,yPct:32,widthPct:55};
+    return {...motif,placementsByProduct:{...positions,hoodie,jh050:{front:moved({side:"front",...front}),back:moved({side:"back",...back})}}};
+  });
+  return {...config,motifs,clubLogoVerticalVersion:1};
+};
+
 // Hansa: identische Logo-Zuordnung und Initialen-Standardposition in Admin und Shop.
 window.normalizeHansaShopConfig = function(config){
   if(config?.customerId!=="hansa") return config;
