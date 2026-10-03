@@ -2103,19 +2103,14 @@ if(mobileActionDock){
   mobileActionDock.hidden=!TOP_PRODUCT_PICKER;
   mobileActionTools?.querySelectorAll("[data-mobile-tool]").forEach(button=>{
     const tool=button.dataset.mobileTool;
-    button.hidden=isDesignToolHidden(tool);
+    button.hidden=isDesignToolHidden(({uploads:"photo",templates:"logo",images:"photo"})[tool]||tool);
     button.addEventListener("click",()=>{
       mobileActionTools.hidden=true;
       mobileAddTools.setAttribute("aria-expanded","false");
-      if(tool==="photo"||tool==="text"){
-        designRail?.querySelector(`[data-design-tool="${tool}"]`)?.click();
-      }else if(tool==="initials"){
-        const field=document.getElementById("initialsInput");
-        field?.scrollIntoView({behavior:"smooth",block:"center"});field?.focus({preventScroll:true});
-      }else{
-        const section=tool==="logo"?document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])"):document.querySelector(".motif-color-section:not([hidden])");
-        section?.scrollIntoView({behavior:"smooth",block:"center"});
-      }
+      if(tool==="uploads") openPhotoDialog();
+      if(tool==="images"){openPhotoDialog();if(photoDialog?.open)setPhotoTab(true)}
+      if(tool==="text") openTextDialog();
+      if(tool==="templates") document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])")?.scrollIntoView({behavior:"smooth",block:"center"});
     });
   });
   mobileAddTools?.addEventListener("click",event=>{

@@ -6357,3 +6357,30 @@ html body .header-actions .mobile-action-tools button>span{color:#8c711b;font-si
   html body .header-actions .product-picker-trigger-high{min-width:136px}
   html body .header-add-trigger{padding-inline:7px;font-size:11px}
 }
+
+/* v30.3.228 – Freie Aktionszeile statt überdeckter Schaltfläche im Shop-Kopf. */
+html body[data-top-product-picker="true"] .designer-area{grid-template-rows:auto auto minmax(0,1fr)!important}
+html body[data-top-product-picker="true"] .designer-header{grid-template-areas:"logo copy status"!important;z-index:auto}
+html body[data-top-product-picker="true"] #headerActions{
+  position:relative;z-index:40;display:flex;flex-direction:row;
+  align-items:center;justify-content:flex-end;gap:8px;
+  box-sizing:border-box;width:100%;min-height:47px;padding:5px 16px;
+  background:#f4f5f7;
+}
+html body #headerActions[hidden]{display:none!important}
+html body #headerActions .product-picker-trigger-high{
+  box-sizing:border-box;flex:0 1 170px;min-width:0;min-height:37px;margin:0;
+}
+html body #headerActions .header-add-trigger{
+  box-sizing:border-box;flex:0 1 138px;min-width:0;min-height:37px;margin:0;
+}
+html body #headerActions .mobile-action-tools{
+  grid-template-columns:repeat(4,minmax(0,1fr));top:calc(100% + 5px);
+}
+@media(max-width:900px){
+  html body[data-top-product-picker="true"] .designer-header{grid-template-areas:"logo copy"!important}
+  html body[data-top-product-picker="true"] .designer-header:not(:has(.shop-brand-logo)){grid-template-areas:"copy"!important}
+  html body[data-top-product-picker="true"] #headerActions{justify-content:center;padding:5px 12px}
+  html body #headerActions .product-picker-trigger-high{flex:1 1 0;max-width:180px}
+  html body #headerActions .header-add-trigger{flex:1 1 0;max-width:180px}
+}
