@@ -137,7 +137,7 @@ window.ensureHansaNewProducts = function(shop){
     if(!base) continue;
     const index=products.findIndex(product=>product.id===id);
     if(index<0) products.push({...base,enabled:true});
-    else products[index]={...base,...products[index],enabled:true,...(id==="jh050"?{name:"Sweatjacke",printSide:"back"}:{name:"Girlie"})};
+    else products[index]={...base,...products[index],enabled:true,...(id==="jh050"?{name:"Sweatjacke",printSide:"both"}:{name:"Girlie"})};
   }
   const girlie=products.find(product=>product.id==="s279");
   if(girlie && Number(shop.hansaGirlieColorsVersion||0)<1){
@@ -145,10 +145,10 @@ window.ensureHansaNewProducts = function(shop){
       name:"Girlie",sizesByColor:masterSizesByColor("S279")
     });
   }
-  const productPrint={...(shop.productPrint||{}),jh050:{...(shop.productPrint?.jh050||{}),back:shop.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55}}};
-  delete productPrint.jh050.front;
+  const productPrint={...(shop.productPrint||{}),jh050:{...(shop.productPrint?.jh050||{}),front:shop.productPrint?.jh050?.front||{xPct:68,yPct:24,widthPct:28},back:shop.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55}}};
   productPrint.s279={front:{xPct:50,yPct:27,widthPct:52},back:{xPct:50,yPct:30,widthPct:55},...(productPrint.s279||{})};
-  return {...shop,products,productPrint,hansaGirlieColorsVersion:1};
+  const features=Number(shop.hansaSweatjacketBothSidesVersion||0)<1?{...(shop.features||{}),allowBackDesign:true}:shop.features;
+  return {...shop,products,productPrint,features,hansaGirlieColorsVersion:1,hansaSweatjacketBothSidesVersion:1};
 };
 
 window.CENTRAL_CONFIG = {

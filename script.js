@@ -6,10 +6,11 @@
   document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
+document.body.dataset.shopId=String(SHOP.customerId||window.SHOP_SLUG||"");
 const TOP_PRODUCT_PICKER = ["master","_master"].includes(String(SHOP.customerId||window.SHOP_SLUG||""));
 if(TOP_PRODUCT_PICKER) document.body.dataset.topProductPicker="true";
-// Hansa hat ausdrücklich nur Rückendruck; in Master- und Demo-Shops sind beide Seiten gestaltbar.
-const ZOODIE_BOTH_SIDES = SHOP.customerId !== "hansa";
+// Die Sweatjacke bietet in allen Shops Vorder- und Rückansicht.
+const ZOODIE_BOTH_SIDES = true;
 const zoodieBackOnly = (productId) => productId === "jh050" && !ZOODIE_BOTH_SIDES;
 const INITIALS_POSITIONS = {
   tshirt:{front:{x:30,y:84},back:{x:30,y:90}},
@@ -2088,6 +2089,7 @@ document.addEventListener("click",event=>{if(openDesignTool&&!designRail?.contai
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&openDesignTool)closeDesignMenu()});
 function isDesignToolHidden(tool,features=FEATURES){
   if(tool==="product") return true; // Textilwahl sitzt bereits in der linken Leiste.
+  if(tool==="logo" && SHOP.customerId==="hansa") return true; // Hansa wählt Logos direkt in der Logoauswahl.
   if(tool==="logo") return features.showClubLogos===false && features.showMotifPicker===false;
   if(tool==="photo") return !features.allowCustomerUpload;
   if(tool==="text") return !features.allowText;
