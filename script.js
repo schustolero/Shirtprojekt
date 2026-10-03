@@ -835,6 +835,8 @@ function renderTextileIconRail(){
   const selected=productSwitch?.querySelector('.product-btn.active .product-btn-name');
   const selectedLabel=document.getElementById("selectedProductLabel");
   if(selectedLabel) selectedLabel.textContent=selected?.textContent||getCurrentProduct().name||"Textil";
+  const selectedLabelHigh=document.getElementById("selectedProductLabelHigh");
+  if(selectedLabelHigh) selectedLabelHigh.textContent=selected?.textContent||getCurrentProduct().name||"Textil";
   const query=document.getElementById("productPickerSearch")?.value.trim().toLocaleLowerCase("de")||"";
   let visible=0;
   host.querySelectorAll(".textile-icon-button").forEach(button=>{
@@ -845,9 +847,13 @@ function renderTextileIconRail(){
 }
 const pickerDialog=document.getElementById("productPickerDialog");
 const pickerTrigger=document.getElementById("productPickerTrigger");
+const pickerTriggerHigh=document.getElementById("productPickerTriggerHigh");
 const pickerBar=document.getElementById("productPickerBar");
 if(pickerBar) pickerBar.hidden=!TOP_PRODUCT_PICKER||PRODUCTS.length<=1;
-pickerTrigger?.addEventListener("click",()=>{if(pickerDialog&&!pickerDialog.open){pickerDialog.showModal();renderTextileIconRail()}});
+if(pickerTriggerHigh) pickerTriggerHigh.hidden=!TOP_PRODUCT_PICKER||PRODUCTS.length<=1;
+const openProductPicker=()=>{if(pickerDialog&&!pickerDialog.open){pickerDialog.showModal();renderTextileIconRail()}};
+pickerTrigger?.addEventListener("click",openProductPicker);
+pickerTriggerHigh?.addEventListener("click",openProductPicker);
 document.getElementById("productPickerClose")?.addEventListener("click",()=>pickerDialog?.close());
 pickerDialog?.addEventListener("click",event=>{if(event.target===pickerDialog)pickerDialog.close()});
 document.getElementById("productPickerSearch")?.addEventListener("input",renderTextileIconRail);
