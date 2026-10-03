@@ -6389,40 +6389,31 @@ html body #headerActions .mobile-action-tools{
 html body[data-top-product-picker="true"] .photo-dialog-tabs{display:none!important}
 html body[data-top-product-picker="true"] .photo-dialog-header{margin-bottom:16px}
 
-/* v30.3.230 – Initialen stehen im Werkzeugmenü direkt unter Vorlagen. */
-html body #headerActions .mobile-action-tools [data-mobile-tool="initials"]{
-  grid-column:3;grid-row:2;
-}
-
-/* v30.3.231 – Eigene Auswahl für Vereinslogos und Initialen. */
-html body .template-dialog,
-html body .initials-dialog{
-  box-sizing:border-box;width:min(540px,calc(100vw - 24px));max-height:calc(100dvh - 32px);
-  margin:auto;padding:20px;border:1px solid #dfe4e9;border-radius:17px;
+/* v30.3.232 – Kompakte Vorlagen und Initialen in einer Auswahl. */
+html body .template-dialog{
+  box-sizing:border-box;width:min(390px,calc(100vw - 28px));max-height:calc(100dvh - 40px);
+  margin:auto;padding:14px;border:1px solid #dfe4e9;border-radius:15px;
   background:#fff;color:#202932;box-shadow:0 20px 65px #15202e40;overflow-y:auto;
 }
-html body .template-dialog:not([open]),html body .initials-dialog:not([open]){display:none!important}
-html body .template-dialog::backdrop,html body .initials-dialog::backdrop{background:#10192399;backdrop-filter:blur(3px)}
+html body .template-dialog:not([open]){display:none!important}
+html body .template-dialog::backdrop{background:#10192399;backdrop-filter:blur(3px)}
 html body .template-dialog-header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:7px}
-html body .template-dialog-header h2{margin:0;font-size:20px;line-height:1.2}
-html body .template-dialog-header button{display:grid;place-items:center;flex:none;width:36px;height:36px;border:1px solid #e0e5e9;border-radius:10px;background:#f8f9fa;color:#28333e;font-size:27px;line-height:1;cursor:pointer}
-html body .template-dialog>p,html body .initials-dialog>p{margin:0 0 15px;color:#687480;font-size:13px}
-html body .template-logo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}
-html body .template-logo-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;min-width:0;min-height:130px;padding:12px;border:1px solid #dce2e8;border-radius:12px;background:#fafbfc;color:#25313d;cursor:pointer}
+html body .template-dialog-header h2{margin:0;font-size:18px;line-height:1.2}
+html body .template-dialog-header button{display:grid;place-items:center;flex:none;width:32px;height:32px;border:1px solid #e0e5e9;border-radius:9px;background:#f8f9fa;color:#28333e;font-size:23px;line-height:1;cursor:pointer}
+html body .template-dialog>p{margin:0 0 9px;color:#687480;font-size:12px}
+html body .template-logo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+html body .template-logo-card{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:88px;padding:7px;border:1px solid #dce2e8;border-radius:10px;background:#fafbfc;color:#25313d;cursor:pointer}
 html body .template-logo-card:hover,html body .template-logo-card:focus-visible,html body .template-logo-card.selected{border-color:#bc982a;background:#fff9e9;outline:none;box-shadow:inset 0 0 0 1px #bc982a}
-html body .template-logo-card img{display:block;max-width:100%;width:auto;height:82px;object-fit:contain}
-html body .template-logo-card strong{font-size:13px;line-height:1.2;text-align:center;overflow-wrap:anywhere}
-html body .template-logo-placeholder{display:grid;place-items:center;width:82px;height:82px;border:1px dashed #c7cdd4;border-radius:9px;color:#9b7b1c;font-size:27px}
-html body .template-logo-empty{grid-column:1/-1;margin:0;padding:18px 10px;color:#687480;text-align:center;font-size:13px}
-html body .initials-dialog label{display:block;margin:14px 0 7px;color:#394653;font-size:13px;font-weight:750}
-html body .initials-dialog input{box-sizing:border-box;width:100%;height:48px;padding:0 13px;border:1px solid #cfd6dd;border-radius:10px;background:#fff;color:#192631;font-size:20px;font-weight:800;text-transform:uppercase}
-html body .initials-dialog input:focus{outline:2px solid #d5b746;outline-offset:1px}
-html body .initials-dialog>p{margin:8px 0 18px}
-html body .initials-dialog-actions{display:flex;justify-content:flex-end;gap:8px}
-html body .initials-dialog-actions button{min-height:40px;padding:8px 15px;border:1px solid #d5dce3;border-radius:10px;background:#fff;color:#27333d;font:750 13px/1.1 system-ui,sans-serif;cursor:pointer}
-html body #initialsDialogDone{border-color:#c7a129;background:#f5d157;color:#282311}
-@media(max-width:600px){html body .template-dialog,html body .initials-dialog{padding:16px;width:calc(100vw - 20px)}}
+html body .template-logo-card img{display:block;max-width:100%;width:auto;height:54px;object-fit:contain}
+html body .template-logo-card strong{font-size:11px;line-height:1.2;text-align:center;overflow-wrap:anywhere}
+html body .template-logo-empty{grid-column:1/-1;margin:0;padding:12px 7px;color:#687480;text-align:center;font-size:12px}
+html body .template-initials-field{margin-top:12px;padding-top:10px;border-top:1px solid #e2e6eb}
+html body .template-initials-field[hidden]{display:none!important}
+html body .template-initials-field label{display:block;margin-bottom:6px;color:#293440;font-size:12px;font-weight:800}
+html body .template-initials-field input{box-sizing:border-box;width:100%;height:38px;padding:0 10px;border:1px solid #cfd6dd;border-radius:9px;background:#fff;color:#192631;font-size:16px;font-weight:800;text-transform:uppercase}
+html body .template-initials-field input:focus{outline:2px solid #d5b746;outline-offset:1px}
+html body .template-initials-field small{display:block;margin-top:5px;color:#687480;font-size:10px}
 
 /* Eine Logoauswahl für alle Shops; die Quelldaten bleiben für die Auswahl im DOM. */
 html body .app .motif-section{display:none!important}
-html body .template-logo-grid .template-group-title{grid-column:1/-1;margin:8px 0 0;padding-top:10px;border-top:1px solid #e2e6eb;color:#25313c;font-size:13px;font-weight:850;letter-spacing:.02em}
+html body .template-logo-grid .template-group-title{grid-column:1/-1;margin:4px 0 0;padding-top:6px;border-top:1px solid #e2e6eb;color:#25313c;font-size:11px;font-weight:850;letter-spacing:.02em}

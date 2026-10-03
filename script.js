@@ -2045,7 +2045,7 @@ function toggleDesignMenu(tool){
   if(tool==="photo"){closeDesignMenu();openPhotoDialog();return;}
   if(tool==="text"){closeDesignMenu();openTextDialog();return;}
   if(tool==="logo"){closeDesignMenu();openTemplateDialog();return;}
-  if(tool==="initials"){closeDesignMenu();openInitialsDialog();return;}
+  if(tool==="initials"){closeDesignMenu();openTemplateDialog(true);return;}
   if(openDesignTool===tool){closeDesignMenu();return;}
   openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
   designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
@@ -2107,19 +2107,16 @@ const mobileActionTools=document.getElementById("mobileActionTools");
 const mobileAddTools=document.getElementById("mobileAddTools");
 const templateDialog=document.getElementById("templateDialog");
 const templateLogoGrid=document.getElementById("templateLogoGrid");
-function openTemplateDialog(){
+const templateInitialsField=document.getElementById("templateInitialsField");
+const templateInitialsInput=document.getElementById("templateInitialsInput");
+function openTemplateDialog(focusInitials=false){
   if(!templateDialog||!templateLogoGrid)return;
   templateLogoGrid.replaceChildren();
+  if(templateInitialsField)templateInitialsField.hidden=!FEATURES.allowInitials;
+  if(templateInitialsInput)templateInitialsInput.value=document.getElementById("initialsInput")?.value||"";
   const isClub=motif=>motif.category==="club"||(motif.category!=="general"&&/vereinslogo|vereinswappen/i.test(motif.name||""));
   const available=(SHOP.motifs||[]).filter(m=>m?.id&&m.file&&m.customerSelectable!==false &&
     (isClub(m)?FEATURES.showClubLogos!==false:FEATURES.showMotifPicker!==false));
-  const none=document.querySelector('.motif-btn[data-motif="none"]');
-  if(none){
-    const emptyButton=document.createElement("button");emptyButton.type="button";emptyButton.className="template-logo-card";
-    emptyButton.innerHTML='<span class="template-logo-placeholder" aria-hidden="true">◇</span><strong>Kein Logo</strong>';
-    emptyButton.addEventListener("click",()=>{none.click();templateDialog.close()});
-    templateLogoGrid.appendChild(emptyButton);
-  }
   const addCards=motifs=>motifs.forEach(motif=>{
     const source=Array.from(document.querySelectorAll(".motif-btn[data-motif]")).find(button=>button.dataset.motif===motif.id);
     if(!source)return;
@@ -2142,29 +2139,18 @@ function openTemplateDialog(){
     templateLogoGrid.appendChild(hint);
   }
   if(!templateDialog.open)templateDialog.showModal();
+  if(focusInitials&&!templateInitialsField?.hidden)templateInitialsInput?.focus();
 }
 document.getElementById("templateDialogClose")?.addEventListener("click",()=>templateDialog.close());
 templateDialog?.addEventListener("click",event=>{if(event.target===templateDialog)templateDialog.close()});
-const initialsDialog=document.getElementById("initialsDialog");
-const initialsDialogInput=document.getElementById("initialsDialogInput");
-function syncInitialsDialogValue(value){
+function syncTemplateInitialsValue(value){
   const field=document.getElementById("initialsInput");if(!field)return;
   const clean=String(value||"").toUpperCase().replace(/[^A-ZÄÖÜ0-9]/g,"").slice(0,3);
-  if(initialsDialogInput)initialsDialogInput.value=clean;
+  if(templateInitialsInput)templateInitialsInput.value=clean;
   field.value=clean;field.dispatchEvent(new Event("input",{bubbles:true}));
 }
-function openInitialsDialog(){
-  if(!initialsDialog||!initialsDialogInput)return;
-  initialsDialogInput.value=document.getElementById("initialsInput")?.value||"";
-  if(!initialsDialog.open)initialsDialog.showModal();
-  initialsDialogInput.focus();
-}
-initialsDialogInput?.addEventListener("input",()=>syncInitialsDialogValue(initialsDialogInput.value));
-initialsDialogInput?.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();initialsDialog.close()}});
-document.getElementById("initialsDialogClose")?.addEventListener("click",()=>initialsDialog.close());
-document.getElementById("initialsDialogDone")?.addEventListener("click",()=>initialsDialog.close());
-document.getElementById("initialsDialogRemove")?.addEventListener("click",()=>{syncInitialsDialogValue("");initialsDialog.close()});
-initialsDialog?.addEventListener("click",event=>{if(event.target===initialsDialog)initialsDialog.close()});
+templateInitialsInput?.addEventListener("input",()=>syncTemplateInitialsValue(templateInitialsInput.value));
+templateInitialsInput?.addEventListener("keydown",event=>{if(event.key==="Enter"){event.preventDefault();templateDialog.close()}});
 if(mobileActionDock){
   mobileActionDock.hidden=!TOP_PRODUCT_PICKER;
   mobileActionTools?.querySelectorAll("[data-mobile-tool]").forEach(button=>{
@@ -2177,7 +2163,6 @@ if(mobileActionDock){
       if(tool==="images"){openPhotoDialog();if(photoDialog?.open)setPhotoTab(true)}
       if(tool==="text") openTextDialog();
       if(tool==="templates") openTemplateDialog();
-      if(tool==="initials") openInitialsDialog();
     });
   });
   mobileAddTools?.addEventListener("click",event=>{
