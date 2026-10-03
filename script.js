@@ -819,10 +819,8 @@ function renderTextileIconRail(){
       const thumb=document.createElement("span");thumb.className="product-picker-thumb";
       const raw=product.frontTemplate||"shirt-front-template.png";
       const src=/^(https?:)?\/\//i.test(raw)||/^(data|blob):/i.test(raw)||raw.startsWith("/")?raw:`/${raw.replace(/^\.\//,"")}`;
-      icon.hidden=true;
       thumb.style.backgroundImage=`url(${JSON.stringify(src)})`;
-      const preview=new Image();preview.onerror=()=>{thumb.style.backgroundImage="none";icon.hidden=false};preview.src=src;
-      thumb.append(icon);
+      const preview=new Image();preview.onerror=()=>{thumb.style.backgroundImage="none";thumb.textContent="Vorschau fehlt"};preview.src=src;
       button.append(thumb,label);
     }else button.append(icon,label);
     if(TOP_PRODUCT_PICKER && FEATURES.showPrices!==false && Number(product.price)>0){
