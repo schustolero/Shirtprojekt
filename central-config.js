@@ -100,7 +100,7 @@ const MASTER_PRODUCT_CATALOG = [
   {id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("F421"),...masterColorSettings("F421","white")},
   {id:"jc001",name:"Sport",articleNo:"JC001",price:12,purchasePrice:7.62,purchasePriceBySize:{S:7.62,M:7.62,L:7.62,XL:7.62,"2XL":7.62,"3XL":7.62,"4XL":9.55,"5XL":9.55},printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JC001"),...masterColorSettings("JC001","red")},
   {id:"bcwu01w",name:"Sweatshirt",articleNo:"BCWU01W",price:23,purchasePrice:8.20,printCost:1.50,frontTemplate:"/sweatshirt-front-template.png",backTemplate:"/sweatshirt-back-template.png",sizes:["XS","S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("BCWU01W"),...masterColorSettings("BCWU01W","black")},
-  {id:"jh050",name:"Zoodie",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,printSide:"back",frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")},
+  {id:"jh050",name:"Sweatjacke",articleNo:"JH050",brand:"Just Hoods",price:0,purchasePrice:null,printCost:1.50,enabled:false,printSide:"both",frontTemplate:"/zoodie-front-template.png",backTemplate:"/zoodie-back-template.png",sizes:["S","M","L","XL","2XL","3XL","4XL","5XL"],sizesByColor:masterSizesByColor("JH050"),...masterColorSettings("JH050","deep-black")},
   {id:"s279",name:"Girlie",articleNo:"S279",manufacturerNo:"ST2700",brand:"Stedman",price:0,purchasePrice:null,printCost:1.50,enabled:false,frontTemplate:"/damen-v-shirt-front-template.png",backTemplate:"/damen-v-shirt-back-template.png",sizes:["XS","S","M","L","XL","2XL"],sizesByColor:masterSizesByColor("S279"),...masterColorSettings("S279","white")}
 ];
 // Nur kaufmännische Werte vererben; die Artikelauswahl und Farbvarianten des Shops bleiben erhalten.
@@ -137,7 +137,7 @@ window.ensureHansaNewProducts = function(shop){
     if(!base) continue;
     const index=products.findIndex(product=>product.id===id);
     if(index<0) products.push({...base,enabled:true});
-    else products[index]={...base,...products[index],enabled:true,...(id==="jh050"?{printSide:"back"}:{name:"Girlie"})};
+    else products[index]={...base,...products[index],enabled:true,...(id==="jh050"?{name:"Sweatjacke",printSide:"back"}:{name:"Girlie"})};
   }
   const girlie=products.find(product=>product.id==="s279");
   if(girlie && Number(shop.hansaGirlieColorsVersion||0)<1){
@@ -265,6 +265,17 @@ window.CENTRAL_CONFIG = {
     "_motifs": {customerId:"_motifs",customerName:"Vorlage Motive",pageTitle:"Vorlage Motive – T-Shirt Shop",brandTitle:"Vorlage Motive",brandSubtitle:"Mehrere Motive zur Auswahl",designerHeading:"Motiv auswählen",designerIntro:"Motiv, Textilfarbe, Größe und Menge auswählen.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Team / Abteilung",customerExtraFieldName:"Team / Abteilung",orderPrefix:"MOT",shopType:"motifs",active:true,fixedShirtColor:{id:"azure-blue",name:"Azure Blue||default=azure-blue",color:"#147fae"},products:[{id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},{id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},{id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}],features:{layout:"compact",motifMode:"multiple",allowCustomerUpload:false,allowText:false,allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:true,showMotifColorPicker:true,autoSelectSingleMotif:false,maxUploadMB:8,previewMode:"single"},motifs:[{id:"motiv1",name:"NOVA Wappen",file:"demo-motiv-1.png?v=30.1.87"},{id:"motiv2",name:"NOVA Dynamik",file:"demo-motiv-2.png?v=30.1.87"}]},
     "_designer": {customerId:"_designer",customerName:"Vorlage Designer",pageTitle:"Vorlage Designer – T-Shirt Shop",brandTitle:"Vorlage Designer",brandSubtitle:"Dein Textil frei gestalten",designerHeading:"Shirt frei gestalten",designerIntro:"Eigenes Logo hochladen, Text ergänzen und frei gestalten.",accentColor:"#c99a1b",logoFile:"/dein-logo.svg?v=30.1.87",logoHeight:90,shirtPrice:15,currency:"EUR",orderEmail:"shirtzentrale@gmail.com",orderSubject:"Neue Bestellung",customerExtraFieldLabel:"Firma / Team",customerExtraFieldName:"Firma / Team",orderPrefix:"DES",shopType:"designer",active:true,products:[{id:"tshirt",name:"T-Shirt",articleNo:"F140",price:15,purchasePrice:2.60,printCost:1.50,frontTemplate:"shirt-front-template.png",backTemplate:"shirt-back-template.png"},{id:"polo",name:"Polo-Shirt",articleNo:"F502",price:25,purchasePrice:5.61,printCost:1.50,frontTemplate:"polo-front-template.png",backTemplate:"polo-back-template.png"},{id:"hoodie",name:"Hoodie",articleNo:"F421",price:30,purchasePrice:9.90,printCost:1.50,frontTemplate:"hoodie-front-template.png",backTemplate:"hoodie-back-template.png"}],features:{layout:"designer",motifMode:"mixed",allowCustomerUpload:true,allowText:true,allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,allowBackDesign:true,allowMotifColor:true,showShirtColorPicker:true,showMotifPicker:true,showMotifColorPicker:true,autoSelectSingleMotif:false,maxUploadMB:8,previewMode:"single"},motifs:[{id:"motiv1",name:"NOVA Athletic",file:"demo-motiv-1.png?v=30.1.87"}]}
   }
+};
+
+// Alte Girlie-Standardposition nur in Master- und Demo-Shops einmalig verschieben.
+window.normalizeGirlieInitialsPosition = function(config){
+  if(!config || !(config.customerId==="master" || String(config.customerId||"").startsWith("_"))) return config;
+  if(Number(config.girlieInitialsPositionVersion||0)>=1) return config;
+  const saved=config.initialsByProduct?.s279?.front;
+  if(!saved || (Number(saved.x)===30 && Number(saved.y)===84) || (Number(saved.x)===24 && Number(saved.y)===84)){
+    return {...config,girlieInitialsPositionVersion:1,initialsByProduct:{...(config.initialsByProduct||{}),s279:{...(config.initialsByProduct?.s279||{}),front:{...(saved||{}),x:35,y:87,sizePct:saved?.sizePct??5}}}};
+  }
+  return {...config,girlieInitialsPositionVersion:1};
 };
 
 // Hansa: identische Logo-Zuordnung und Initialen-Standardposition in Admin und Shop.

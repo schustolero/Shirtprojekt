@@ -6,8 +6,20 @@
   document.getElementById("themeToggle")?.remove();
 })();
 const SHOP = window.SHOP_CONFIG || {};
-const MASTER_ZOODIE_BOTH_SIDES = SHOP.customerId === "_master" || SHOP.isMasterTemplate === true;
-const zoodieBackOnly = (productId) => productId === "jh050" && !MASTER_ZOODIE_BOTH_SIDES;
+// Hansa hat ausdrücklich nur Rückendruck; in Master- und Demo-Shops sind beide Seiten gestaltbar.
+const ZOODIE_BOTH_SIDES = SHOP.customerId !== "hansa";
+const zoodieBackOnly = (productId) => productId === "jh050" && !ZOODIE_BOTH_SIDES;
+const INITIALS_POSITIONS = {
+  tshirt:{front:{x:30,y:84},back:{x:30,y:90}},
+  polo:{front:{x:30,y:86},back:{x:30,y:88}},
+  hoodie:{front:{x:30,y:86},back:{x:30,y:89}},
+  jc001:{front:{x:30,y:84},back:{x:30,y:89}},
+  bcwu01w:{front:{x:30,y:86},back:{x:30,y:90}},
+  jh050:{front:{x:30,y:86},back:{x:30,y:89}},
+  s279:{front:{x:35,y:87},back:{x:30,y:90}},
+  sport:{front:{x:30,y:84},back:{x:30,y:89}},
+  sweatshirt:{front:{x:30,y:86},back:{x:30,y:90}}
+};
 const MASTER_FIXED_CHEST_LOGO = typeof SHOP.features?.fixedFrontChestLogo === "boolean"
   ? SHOP.features.fixedFrontChestLogo
   : SHOP.isMasterTemplate === true || SHOP.customerId === "_master" || SHOP.templateSource === "_master";
@@ -604,7 +616,7 @@ const selectedLogoByProduct = {};
 let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function syncProductPrintSideControls(){
-  const backOnly=zoodieBackOnly(currentProductId) || (getCurrentProduct().printSide==="back" && !MASTER_ZOODIE_BOTH_SIDES);
+  const backOnly=zoodieBackOnly(currentProductId) || (getCurrentProduct().printSide==="back" && currentProductId!=="jh050");
   const frontButton=document.querySelector('.view-btn[data-view="front"]');
   if(frontButton) frontButton.hidden=backOnly;
   if(backOnly && currentView!=="back") switchView("back");
@@ -763,7 +775,7 @@ function renderProductSelector() {
     btn.dataset.product = product.id;
     const productName = document.createElement("span");
     productName.className = "product-btn-name";
-    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Zoodie",s279:"Girlie"};
+    const shortNames={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",sport:"Sport",bcwu01w:"Sweat",sweatshirt:"Sweat",jh050:"Sweatjacke",s279:"Girlie"};
     productName.textContent = shortNames[product.id] || product.name || product.id;
     const pricePending=["jh050","s279"].includes(product.id) && !(Number(product.price)>0);
     const priceText = pricePending
@@ -982,7 +994,7 @@ async function renderShirt() {
 function getMotifPlacement(motif, productId=currentProductId, view=currentView) {
   if(productId==="jh050"){
     const saved=motif?.placementsByProduct?.jh050;
-    if(MASTER_ZOODIE_BOTH_SIDES){
+    if(ZOODIE_BOTH_SIDES){
       if(saved?.[view]) return saved[view];
       if(saved?.side===view) return saved;
       return {side:view,...(SHOP.productPrint?.jh050?.[view]||(view==="front"?{xPct:68,yPct:24,widthPct:28}:{xPct:50,yPct:32,widthPct:55}))};
@@ -1001,6 +1013,7 @@ function getConfiguredMotif(view) {
   if ((!cfg || !cfg.enabled) && !selectedId) return null;
   const available=(SHOP.motifs||[]).filter(m=>{
     if(!m.file || m.customerSelectable===false) return false;
+    if(m.id===cfg?.motifId && cfg?.enabled) return true;
     const club=m.category==="club" || (m.category!=="general" && /vereinslogo|vereinswappen/i.test(m.name||""));
     return club ? FEATURES.showClubLogos!==false : FEATURES.showMotifPicker!==false;
   });
@@ -1146,7 +1159,7 @@ function updateDualInitials(){
     }
     mark.hidden=side!=="front"||!value||!FEATURES.allowInitials;
     mark.textContent=value;
-    const defaults=side==="front"?{x:24,y:90}:{x:24,y:90};
+    const defaults=INITIALS_POSITIONS[currentProductId]?.[side]||INITIALS_POSITIONS.tshirt[side];
     const saved=SHOP.initialsByProduct?.[currentProductId]?.[side]||{};
     mark.style.left=`${index*50+Number(saved.x??defaults.x)/2}%`;
     mark.style.top=`${Number(saved.y??defaults.y)}%`;
@@ -1427,7 +1440,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
-  const side=MASTER_ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back" ? "back" : "front";
+  const side=ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back" ? "back" : "front";
   await addMotifToView(side, motifId, motifSrc, true);
   motifButtons.forEach(button=>button.classList.toggle("active",button.dataset.motif===motifId));
   if(FEATURES.previewMode==="dual") await renderDualPreview();
@@ -1466,7 +1479,7 @@ document.addEventListener("click",(event)=>{
   }
   if(button.dataset.src){
     const motif=(SHOP.motifs||[]).find(item=>item.id===button.dataset.motif);
-    const side=MASTER_ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back"?"back":"front";
+    const side=ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back"?"back":"front";
     const selections=selectedLogoByProduct[currentProductId];
     selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[side]:button.dataset.motif};
     productMotifSelections[currentProductId]=button.dataset.motif==="tus-3d-patch"?"patch":"normal";
@@ -1730,15 +1743,8 @@ function updateInitialsOnCanvas() {
   overlay.hidden = currentView !== "front" || !value || !FEATURES.allowInitials;
   const productId = (typeof currentProductId === "string" && currentProductId) || "tshirt";
   const view = (typeof currentView === "string" && currentView) || "front";
-  const defaults = {
-    tshirt:{front:{x:24,y:84},back:{x:24,y:90}},
-    polo:{front:{x:24,y:88},back:{x:24,y:88}},
-    hoodie:{front:{x:23,y:91},back:{x:23,y:89}},
-    sport:{front:{x:24,y:89},back:{x:24,y:89}},
-    sweatshirt:{front:{x:24,y:91},back:{x:24,y:90}}
-  };
   const custom = SHOP.initialsByProduct?.[productId]?.[view] || {};
-  const fallback = defaults[productId]?.[view] || defaults.tshirt.front;
+  const fallback = INITIALS_POSITIONS[productId]?.[view] || INITIALS_POSITIONS.tshirt.front;
   const x = Number(custom.x ?? fallback.x);
   const y = Number(custom.y ?? fallback.y);
   applyInitialsOnShirt(overlay, x, y);
@@ -2041,13 +2047,19 @@ function toggleDesignMenu(tool){
 }
 document.addEventListener("click",event=>{if(openDesignTool&&!designRail?.contains(event.target))closeDesignMenu()});
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&openDesignTool)closeDesignMenu()});
+function isDesignToolHidden(tool,features=FEATURES){
+  if(tool==="product") return true; // Textilwahl sitzt bereits in der linken Leiste.
+  if(tool==="logo") return features.showClubLogos===false && features.showMotifPicker===false;
+  if(tool==="photo") return !features.allowCustomerUpload;
+  if(tool==="text") return !features.allowText;
+  if(tool==="initials") return !features.allowInitials;
+  if(tool==="printColor") return !features.allowMotifColor || features.showMotifColorPicker===false;
+  return false;
+}
 designTools.forEach(button=>{
   const tool=button.dataset.designTool;
   if(tool==="logo") button.querySelector("strong").textContent="Logos";
-  button.hidden=(tool==="photo"&&!FEATURES.allowCustomerUpload) || (tool==="text"&&!FEATURES.allowText)
-    || (tool==="logo" && FEATURES.showClubLogos===false && FEATURES.showMotifPicker===false) || (tool==="initials"&&!FEATURES.allowInitials)
-    || (tool==="printColor"&&!FEATURES.allowText&&!FEATURES.allowInitials&&(!FEATURES.allowMotifColor||FEATURES.showMotifColorPicker===false))
-    || tool==="product" || tool==="logo";
+  button.hidden=isDesignToolHidden(tool);
 });
 function printPointAt(clientX,clientY){
   const rect=printDropZone.getBoundingClientRect();
@@ -2844,6 +2856,14 @@ async function initializeFixedPrints() {
   if (typeof clearShirtLogos === "function") clearShirtLogos();
   if (currentView !== "front") switchView("front");
   applyPreviewMode();
+  const frontPrint=SHOP.fixedPrint?.front;
+  const automaticMotif=FEATURES.autoSelectSingleMotif && frontPrint?.enabled
+    ? (SHOP.motifs||[]).find(motif=>motif.id===frontPrint.motifId && motif.file && motif.customerSelectable!==false)
+    : null;
+  if(automaticMotif){
+    const src=window.shopAssetUrl ? window.shopAssetUrl(automaticMotif.file) : automaticMotif.file;
+    await addSelectedMotif(automaticMotif.id,src);
+  }
   if (FEATURES.previewMode === "dual") await renderDualPreview();
 }
 applyPreviewMode();

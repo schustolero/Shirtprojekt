@@ -764,11 +764,15 @@ let workingProducts = [];
 let workingLogo = "";
 let workingInitials = {};
 const INITIALS_DEFAULTS = {
-  tshirt:{front:{x:24,y:84,sizePct:5},back:{x:24,y:90,sizePct:5}},
-  polo:{front:{x:24,y:88,sizePct:5},back:{x:24,y:88,sizePct:5}},
-  hoodie:{front:{x:23,y:91,sizePct:5},back:{x:23,y:89,sizePct:5}},
-  sport:{front:{x:24,y:89,sizePct:5},back:{x:24,y:89,sizePct:5}},
-  sweatshirt:{front:{x:24,y:91,sizePct:5},back:{x:24,y:90,sizePct:5}}
+  tshirt:{front:{x:30,y:84,sizePct:5},back:{x:30,y:90,sizePct:5}},
+  polo:{front:{x:30,y:86,sizePct:5},back:{x:30,y:88,sizePct:5}},
+  hoodie:{front:{x:30,y:86,sizePct:5},back:{x:30,y:89,sizePct:5}},
+  jc001:{front:{x:30,y:84,sizePct:5},back:{x:30,y:89,sizePct:5}},
+  bcwu01w:{front:{x:30,y:86,sizePct:5},back:{x:30,y:90,sizePct:5}},
+  jh050:{front:{x:30,y:86,sizePct:5},back:{x:30,y:89,sizePct:5}},
+  s279:{front:{x:35,y:87,sizePct:5},back:{x:30,y:90,sizePct:5}},
+  sport:{front:{x:30,y:84,sizePct:5},back:{x:30,y:89,sizePct:5}},
+  sweatshirt:{front:{x:30,y:86,sizePct:5},back:{x:30,y:90,sizePct:5}}
 };
 function currentInitialsPos(){
   const product=positionProduct?.value||"tshirt";
@@ -1020,7 +1024,7 @@ function renderAdminColorRail(){
 }
 function refreshPositionEditor(){
   if(!positionStage || !positionMotif || !positionShirt) return;
-  const backOnly=positionProduct?.value==="jh050" && selectedShopId!=="_master";
+  const backOnly=positionProduct?.value==="jh050" && selectedShopId==="hansa";
   if(positionSide){
     const frontOption=positionSide.querySelector('option[value="front"]');
     if(frontOption) frontOption.disabled=backOnly;
@@ -1032,7 +1036,7 @@ function refreshPositionEditor(){
   const editingLogo=workingMotifs.find(m=>m.id===activeLogoPlacementId);
   const motif=selectedPositionMotif();
   const productPlacement=motif?.placementsByProduct?.[product];
-  const savedPlacement=selectedShopId==="_master" && product==="jh050"
+  const savedPlacement=selectedShopId!=="hansa" && product==="jh050"
     ? productPlacement?.[side] || (productPlacement?.side===side?productPlacement:null)
     : productPlacement || motif?.placement;
   const placement=savedPlacement && (savedPlacement.side||"front")===side ? savedPlacement : null;
@@ -1129,12 +1133,12 @@ function writePositionValues(x, y, w){
     const product=positionProduct?.value||"tshirt";
     const side=positionSide?.value||"front";
     const existing=editing.placementsByProduct?.[product];
-    const preferred=selectedShopId==="_master" && product==="jh050" ? existing?.[side] || (existing?.side===side?existing:null) : existing || editing.placement;
+    const preferred=selectedShopId!=="hansa" && product==="jh050" ? existing?.[side] || (existing?.side===side?existing:null) : existing || editing.placement;
     const placement={...(preferred || {side,xPct:side==="front"?68:50,yPct:side==="front"?24:32,widthPct:side==="front"?28:55}),side};
     if(Number.isFinite(x)) placement.xPct=Math.round(x*2)/2;
     if(Number.isFinite(y)) placement.yPct=Math.round(y*2)/2;
     if(Number.isFinite(w)) placement.widthPct=Math.round(w*2)/2;
-    editing.placementsByProduct={...editing.placementsByProduct,[product]:selectedShopId==="_master" && product==="jh050"?{...(existing?.front||existing?.back?existing:existing?.side?{[existing.side]:existing}:{}),[side]:placement}:placement};
+    editing.placementsByProduct={...editing.placementsByProduct,[product]:selectedShopId!=="hansa" && product==="jh050"?{...(existing?.front||existing?.back?existing:existing?.side?{[existing.side]:existing}:{}),[side]:placement}:placement};
     if(selectedShopId==="hansa" && ["hoodie","polo"].includes(product)){
       workingMotifs.forEach(motif=>{
         const motifSide=(motif.placementsByProduct?.[product]||motif.placement)?.side||"front";
@@ -1159,7 +1163,7 @@ function bindPositionEditor(){
     const editing=workingMotifs.find(m=>m.id===activeLogoPlacementId);
     if(editing){
       const product=positionProduct?.value||"tshirt";
-      if(selectedShopId==="_master" && product==="jh050"){
+      if(selectedShopId!=="hansa" && product==="jh050"){
         refreshPositionEditor();
         return;
       }
@@ -1247,6 +1251,7 @@ function mergeProductsWithMasterCatalog(products){
       ?{...deepClone(base),...deepClone(saved),enabled:saved.enabled!==false}
       :{...deepClone(base),enabled:false};
     if(base.id==="s279") next.name="Girlie";
+    if(base.id==="jh050") next.name="Sweatjacke";
     const masterAllowed=Array.isArray(base.allowedShirtColorIds)?base.allowedShirtColorIds.slice():[];
     const savedAllowed=Array.isArray(next.allowedShirtColorIds)?next.allowedShirtColorIds.filter(Boolean):[];
     if(masterAllowed.length > 5 && savedAllowed.length <= 1){
@@ -1670,7 +1675,13 @@ function configurePositionProducts(cfg){
 function selectShop(id){
   activeLogoPlacementId=null;
   expandedLogoIds.clear();
-  const cfg=deepClone(window.ensureHansaNewProducts(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{})); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
+  const cfg=deepClone(window.normalizeGirlieInitialsPosition(window.ensureHansaNewProducts(window.normalizeHansaShopConfig?.(shopConfigs.get(id)||{})||shopConfigs.get(id)||{}))); selectedShopId=id; selectedShopOriginal=cfg; workingMotifs=deepClone(cfg.motifs||[]); workingProductMotifModes=deepClone(cfg.productMotifModes||{}); workingProductPrint=deepClone(cfg.productPrint||{}); workingLogo=cfg.logoFile||""; workingInitials=deepClone(cfg.initialsByProduct||{});
+  if(id==="_master" && shopConfigs.has("master")){
+    const demo=window.normalizeGirlieInitialsPosition({...shopConfigs.get("master"),customerId:"master"});
+    cfg.initialsByProduct=deepClone(demo.initialsByProduct||{});
+    cfg.initialsConfig=deepClone(demo.initialsConfig||cfg.initialsConfig||{});
+    workingInitials=deepClone(cfg.initialsByProduct);
+  }
   if(id==="_master") workingMotifs.forEach(motif=>{
     if(motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")){
       motif.name="Vereinslogo";motif.category="club";
@@ -1686,7 +1697,7 @@ function selectShop(id){
   shopFields.fixedShirtName.value=cfg.fixedShirtColor?.name||cfg.fixedShirtColor?.id||""; shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
   shopFields.showShirtColors.checked=featureValue(cfg,"showShirtColorPicker",true); shopFields.showMotifs.checked=featureValue(cfg,"showMotifPicker",cfg.shopType!=="simple"); shopFields.showClubLogos.checked=featureValue(cfg,"showClubLogos",true); shopFields.showMotifColors.checked=featureValue(cfg,"showMotifColorPicker",true);
   shopFields.showPrices.checked=featureValue(cfg,"showPrices",true); shopFields.showNexaroBranding.checked=featureValue(cfg,"showNexaroBranding",true);
-  shopFields.allowUpload.checked=id==="_master" && Number(cfg.customerUploadVersion||0)<1 ? true : featureValue(cfg,"allowCustomerUpload",cfg.shopType==="designer"); shopFields.allowUpload.disabled=false; shopFields.allowText.checked=featureValue(cfg,"allowText",cfg.shopType==="designer"); if(shopFields.allowInitials) shopFields.allowInitials.checked=featureValue(cfg,"allowInitials",true); shopFields.allowBack.checked=featureValue(cfg,"allowBackDesign",true); shopFields.allowMove.checked=featureValue(cfg,"allowMoveMotif",cfg.shopType==="designer"); shopFields.allowResize.checked=featureValue(cfg,"allowResizeMotif",cfg.shopType==="designer"); shopFields.allowRotate.checked=featureValue(cfg,"allowRotateMotif",cfg.shopType==="designer");
+  shopFields.allowUpload.checked=featureValue(cfg,"allowCustomerUpload",cfg.shopType==="designer"); shopFields.allowUpload.disabled=false; shopFields.allowText.checked=featureValue(cfg,"allowText",cfg.shopType==="designer"); if(shopFields.allowInitials) shopFields.allowInitials.checked=featureValue(cfg,"allowInitials",true); shopFields.allowBack.checked=featureValue(cfg,"allowBackDesign",true); shopFields.allowMove.checked=featureValue(cfg,"allowMoveMotif",cfg.shopType==="designer"); shopFields.allowResize.checked=featureValue(cfg,"allowResizeMotif",cfg.shopType==="designer"); shopFields.allowRotate.checked=featureValue(cfg,"allowRotateMotif",cfg.shopType==="designer");
   syncFixedChestEditingControls();
   const fp=cfg.fixedPrint||{}; refreshFixedPrintMotifOptions(fp.front?.motifId||"",fp.back?.motifId||"");
   shopFields.fixedFrontEnabled.checked=!!fp.front?.enabled; shopFields.fixedFrontPosition.value=fp.front?.position||"left-chest"; shopFields.fixedFrontSize.value=fp.front?.size||"small"; shopFields.fixedFrontTop.value=Number(fp.front?.topPct ?? 24); shopFields.fixedFrontSide.value=Number(fp.front?.sidePct ?? 32);
@@ -2023,7 +2034,7 @@ function buildShopConfig(){
     polo:{front:{xPct:clamp(shopFields.poloFrontX.value,-20,120,68),yPct:clamp(shopFields.poloFrontY.value,-20,120,22),widthPct:clamp(shopFields.poloFrontW.value,5,110,28)},back:{xPct:clamp(shopFields.poloBackX.value,-20,120,50),yPct:clamp(shopFields.poloBackY.value,-20,120,36),widthPct:clamp(shopFields.poloBackW.value,5,110,50)}},
     hoodie:{front:{xPct:clamp(shopFields.hoodieFrontX.value,-20,120,68),yPct:clamp(shopFields.hoodieFrontY.value,-20,120,22),widthPct:clamp(shopFields.hoodieFrontW.value,5,110,36)},back:{xPct:clamp(shopFields.hoodieBackX.value,-20,120,50),yPct:clamp(shopFields.hoodieBackY.value,-20,120,34),widthPct:clamp(shopFields.hoodieBackW.value,5,110,78)}}
   };
-  if(cfg.productPrint.jh050 && id!=="_master"){
+  if(cfg.productPrint.jh050 && id==="hansa"){
     cfg.productPrint.jh050={...cfg.productPrint.jh050,back:cfg.productPrint.jh050.back||{xPct:50,yPct:32,widthPct:55}};
     delete cfg.productPrint.jh050.front;
   }
@@ -2044,7 +2055,7 @@ function buildShopConfig(){
   if(id!=="hansa" && sourceProducts.some(product=>["jh050","s279"].includes(product.id) && product.enabled!==false && !(Number(product.price)>0))){
     throw new Error("Bitte für neue Artikel vor dem Aktivieren einen Verkaufspreis eintragen.");
   }
-  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false,...(id==="_master"&&product.id==="jh050"?{printSide:"both"}:{})}));
+  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false,...(product.id==="jh050"?{name:"Sweatjacke",printSide:id==="hansa"?"back":"both"}:{})}));
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;
@@ -2060,7 +2071,10 @@ saveShopBtn.addEventListener("click",async()=>{
     let synced=0;
     if((cfg.customerId==="_master" || cfg.customerId==="master") && (cfg.customerId==="master" || shopFields.pushMasterOnSave?.checked)){
       cfg.templateVersion=Math.max(1,Number(cfg.templateVersion)||1)+1;
-      await db.collection("shops").doc("_master").set({templateVersion:cfg.templateVersion},{merge:true});
+      await db.collection("shops").doc("_master").set({templateVersion:cfg.templateVersion,...(cfg.customerId==="master"?{initialsByProduct:cfg.initialsByProduct,initialsConfig:cfg.initialsConfig,girlieInitialsPositionVersion:cfg.girlieInitialsPositionVersion||1}:{})},{merge:true});
+      if(cfg.customerId==="master" && shopConfigs.has("_master")){
+        shopConfigs.set("_master",{...shopConfigs.get("_master"),initialsByProduct:deepClone(cfg.initialsByProduct),initialsConfig:deepClone(cfg.initialsConfig),girlieInitialsPositionVersion:cfg.girlieInitialsPositionVersion||1});
+      }
       for(const [id,shop] of shopConfigs.entries()){
         if(id===cfg.customerId || id==="_master" || id.startsWith("_") || (id!=="hansa" && shop.followMasterTemplate!==true)) continue;
         const next={...window.inheritMasterPrices(shop,cfg),templateSource:"_master",masterTemplateVersion:cfg.templateVersion};

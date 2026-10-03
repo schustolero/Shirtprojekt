@@ -17,8 +17,8 @@
   };
   function mergeMasterProductData(config){
     const master=new Map((Array.isArray(central.productCatalog)?central.productCatalog:[]).map(product=>[product.id,product]));
-    const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product,...(product.id==="s279"?{name:"Girlie"}:{})}));
-    return {...(config||{}),products};
+    const products=(Array.isArray(config?.products)?config.products:[]).map(product=>({...((master.get(product.id))||{}),...product,...(product.id==="s279"?{name:"Girlie"}:{}),...(product.id==="jh050"?{name:"Sweatjacke",...(slug!=="hansa"?{printSide:"both"}:{})}:{})}));
+    return window.normalizeGirlieInitialsPosition({...config,customerId:config.customerId||slug,products});
   }
   function normalizeTemplateDemo(config){
     config=mergeMasterProductData(window.normalizeHansaShopConfig?.(config)||config);
@@ -31,12 +31,12 @@
       motifs:(Array.isArray(config.motifs)?config.motifs:template.motifs).map(motif=>
         motif.id==="motiv1" && motif.name==="NOVA Athletic" && /demo-motiv-1/.test(motif.file||"")
           ? {...motif,name:"Vereinslogo",category:"club"} : motif),
-      features:{...(config.features||{}),allowCustomerUpload:Number(config.customerUploadVersion||0)<1?true:config.features?.allowCustomerUpload===true},
+      features:{...(config.features||{})},
       products:(config.products||[]).map(product=>product.id==="jh050"?{...product,printSide:"both"}:product)
     };
-    const features = { ...(config.features || {}), allowMoveMotif:true, allowResizeMotif:true, allowRotateMotif:true };
+    const features = { ...(config.features || {}) };
     const brandSubtitle = typeof config.brandSubtitle === "string" ? config.brandSubtitle : template.brandSubtitle;
-    return { ...config, ...template, brandSubtitle, features, customerId:slug, logoFile:"/dein-logo.svg?v=30.1.87", logoHeight:90, active:true };
+    return { ...template, ...config, brandSubtitle, features, customerId:slug, logoFile:config.logoFile||"/dein-logo.svg?v=30.1.87", logoHeight:config.logoHeight||90 };
   }
 
   window.shopAssetUrl = function(file){
@@ -185,6 +185,16 @@
           // Eigene Artikelauswahl, Textilfarben und Motive bleiben erhalten.
           let finalConfig = window.ensureHansaNewProducts(normalizeTemplateDemo(merged));
           finalConfig.products=(finalConfig.products||[]).map(product=>product.id==="s279"?{...product,name:"Girlie"}:product);
+          // Der aktive Demo-Shop ist die Quelle für Initialen in der Master-Vorlage.
+          if(slug==="_master"){
+            try{
+              const demoSnap=await firebase.firestore().collection("shops").doc("master").get();
+              if(demoSnap.exists){
+                const demo=window.normalizeGirlieInitialsPosition({...demoSnap.data(),customerId:"master"});
+                finalConfig={...finalConfig,initialsByProduct:demo.initialsByProduct||{},initialsConfig:demo.initialsConfig||finalConfig.initialsConfig};
+              }
+            }catch(error){console.warn("Demo-Initialen konnten nicht geladen werden.",error)}
+          }
           if (slug === "hansa" || data.followMasterTemplate === true) {
             try {
               const [activeSnap,templateSnap] = await Promise.all([
@@ -206,10 +216,6 @@
             }
           }
           if (slug === "hansa") finalConfig.features={...(finalConfig.features||{}),previewMode:"single"};
-          if (slug === "_master") {
-            finalConfig.fixedPrint = finalConfig.fixedPrint || {};
-            finalConfig.fixedPrint.back = { ...(finalConfig.fixedPrint.back || {}), enabled: false };
-          }
           if (finalConfig.active === false) {
             document.body.innerHTML = `<main style="font-family:Arial,sans-serif;padding:40px"><h1>Shop derzeit nicht aktiv</h1><p>Dieser Shop ist momentan deaktiviert.</p></main>`;
             return;
