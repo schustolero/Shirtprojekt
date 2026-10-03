@@ -31,7 +31,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Bevan&family=Caveat:wght@700&family=Dancing+Script:wght@700&family=Dosis:wght@700&family=Lobster&family=Lora:wght@700&family=Nunito:wght@800&family=Oswald:wght@700&family=Pacifico&family=Permanent+Marker&family=Roboto+Slab:wght@900&family=Rubik+Wet+Paint&family=Ubuntu:wght@700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css?v=30.3.226">
+  <link rel="stylesheet" href="/style.css?v=30.3.227">
   <script>
     (function(){
       try{
@@ -384,11 +384,21 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       <div class="designer-status" id="designerStatus">
         Vorderseite
       </div>
-      <button type="button" class="product-picker-trigger product-picker-trigger-high" id="productPickerTriggerHigh" aria-haspopup="dialog" aria-controls="productPickerDialog" hidden>
-        <svg viewBox="0 0 40 36" aria-hidden="true"><path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-4c-1 5-9 5-10 0Z"/></svg>
-        <span class="product-picker-trigger-copy"><strong>Produkte</strong><small id="selectedProductLabelHigh">T-Shirt</small></span>
-        <span class="product-picker-trigger-arrow" aria-hidden="true">⌄</span>
-      </button>
+      <div class="header-actions" id="headerActions" hidden>
+        <button type="button" class="product-picker-trigger product-picker-trigger-high" id="productPickerTriggerHigh" aria-haspopup="dialog" aria-controls="productPickerDialog">
+          <svg viewBox="0 0 40 36" aria-hidden="true"><path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-4c-1 5-9 5-10 0Z"/></svg>
+          <span class="product-picker-trigger-copy"><strong>Produkte</strong><small id="selectedProductLabelHigh">T-Shirt</small></span>
+          <span class="product-picker-trigger-arrow" aria-hidden="true">⌄</span>
+        </button>
+        <button type="button" class="header-add-trigger" id="mobileAddTools" aria-controls="mobileActionTools" aria-expanded="false"><span aria-hidden="true">＋</span>Hinzufügen</button>
+        <div class="mobile-action-tools" id="mobileActionTools" hidden>
+          <button type="button" data-mobile-tool="photo"><span aria-hidden="true">▧</span>Foto</button>
+          <button type="button" data-mobile-tool="text"><span aria-hidden="true">T</span>Text</button>
+          <button type="button" data-mobile-tool="logo"><span aria-hidden="true">◇</span>Logos</button>
+          <button type="button" data-mobile-tool="initials"><span aria-hidden="true">AB</span>Initialen</button>
+          <button type="button" data-mobile-tool="printColor"><span aria-hidden="true">●</span>Druckfarbe</button>
+        </div>
+      </div>
     </header>
 
     <dialog class="product-picker-dialog" id="productPickerDialog" aria-labelledby="productPickerTitle">
@@ -444,15 +454,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
     </div>
 
     <div class="mobile-action-dock" id="mobileActionDock" hidden>
-      <div class="mobile-action-tools" id="mobileActionTools" hidden>
-        <button type="button" data-mobile-tool="photo"><span aria-hidden="true">▧</span>Foto</button>
-        <button type="button" data-mobile-tool="text"><span aria-hidden="true">T</span>Text</button>
-        <button type="button" data-mobile-tool="logo"><span aria-hidden="true">◇</span>Logos</button>
-        <button type="button" data-mobile-tool="initials"><span aria-hidden="true">AB</span>Initialen</button>
-        <button type="button" data-mobile-tool="printColor"><span aria-hidden="true">●</span>Druckfarbe</button>
-      </div>
       <div class="mobile-action-buttons">
-        <button type="button" id="mobileAddTools" aria-controls="mobileActionTools" aria-expanded="false"><span aria-hidden="true">＋</span>Hinzufügen</button>
         <button type="button" id="mobileAddCart"><span aria-hidden="true">▣</span>In den Warenkorb <small id="mobileCartCount" hidden></small></button>
       </div>
       <p id="mobileDockMessage" role="status" hidden></p>
@@ -536,7 +538,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
   </div>
 </div>
 
-<script src="/central-config.js?v=30.3.226"></script>
+<script src="/central-config.js?v=30.3.227"></script>
 <dialog id="photoDialog" class="photo-dialog" aria-labelledby="photoDialogTitle">
   <header class="photo-dialog-header"><h2 id="photoDialogTitle">Ein Bild hinzufügen</h2><button type="button" class="photo-dialog-close" aria-label="Schließen">×</button></header>
   <div class="photo-dialog-tabs" role="tablist" aria-label="Bildquelle">
@@ -564,7 +566,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.3.226"></script>
+<script src="/shop-loader.js?v=30.3.227"></script>
 <script src="https://cdn.jsdelivr.net/npm/fabric@5.3.0/dist/fabric.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/interactjs/dist/interact.min.js"></script>
 <script>
@@ -575,7 +577,7 @@ html body .workspace .editor-dnd-rail,html body .workspace.has-color-rail .edito
       loaded=true;
       document.body.classList.remove("shop-loading");
       var app=document.createElement("script");
-      app.src="/script.js?v=30.3.226";
+      app.src="/script.js?v=30.3.227";
       app.onerror=function(){ document.body.classList.remove("shop-loading"); };
       document.body.appendChild(app);
     }

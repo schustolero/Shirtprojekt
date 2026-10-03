@@ -845,6 +845,8 @@ function renderTextileIconRail(){
 }
 const pickerDialog=document.getElementById("productPickerDialog");
 const pickerTriggerHigh=document.getElementById("productPickerTriggerHigh");
+const headerActions=document.getElementById("headerActions");
+if(headerActions) headerActions.hidden=!TOP_PRODUCT_PICKER;
 if(pickerTriggerHigh) pickerTriggerHigh.hidden=!TOP_PRODUCT_PICKER||PRODUCTS.length<=1;
 const openProductPicker=()=>{if(pickerDialog&&!pickerDialog.open){pickerDialog.showModal();renderTextileIconRail()}};
 pickerTriggerHigh?.addEventListener("click",openProductPicker);
@@ -2099,7 +2101,7 @@ const mobileActionTools=document.getElementById("mobileActionTools");
 const mobileAddTools=document.getElementById("mobileAddTools");
 if(mobileActionDock){
   mobileActionDock.hidden=!TOP_PRODUCT_PICKER;
-  mobileActionDock.querySelectorAll("[data-mobile-tool]").forEach(button=>{
+  mobileActionTools?.querySelectorAll("[data-mobile-tool]").forEach(button=>{
     const tool=button.dataset.mobileTool;
     button.hidden=isDesignToolHidden(tool);
     button.addEventListener("click",()=>{
@@ -2116,10 +2118,23 @@ if(mobileActionDock){
       }
     });
   });
-  mobileAddTools?.addEventListener("click",event=>event.stopPropagation());
-  mobileAddTools?.addEventListener("click",()=>{
+  mobileAddTools?.addEventListener("click",event=>{
+    event.stopPropagation();
     mobileActionTools.hidden=!mobileActionTools.hidden;
     mobileAddTools.setAttribute("aria-expanded",String(!mobileActionTools.hidden));
+  });
+  document.addEventListener("click",event=>{
+    if(!mobileActionTools?.hidden && !headerActions?.contains(event.target)){
+      mobileActionTools.hidden=true;
+      mobileAddTools?.setAttribute("aria-expanded","false");
+    }
+  });
+  document.addEventListener("keydown",event=>{
+    if(event.key==="Escape" && mobileActionTools && !mobileActionTools.hidden){
+      mobileActionTools.hidden=true;
+      mobileAddTools?.setAttribute("aria-expanded","false");
+      mobileAddTools?.focus();
+    }
   });
   document.getElementById("mobileAddCart")?.addEventListener("click",()=>{
     const size=document.getElementById("shirtSize");
