@@ -6384,3 +6384,12 @@ html body #headerActions .mobile-action-tools{
   html body #headerActions .product-picker-trigger-high{flex:1 1 0;max-width:180px}
   html body #headerActions .header-add-trigger{flex:1 1 0;max-width:180px}
 }
+
+/* v30.3.229 – Uploads und Bilder werden über Hinzufügen geöffnet, ohne zweite Registerleiste. */
+html body[data-top-product-picker="true"] .photo-dialog-tabs{display:none!important}
+html body[data-top-product-picker="true"] .photo-dialog-header{margin-bottom:16px}
+
+/* v30.3.230 – Initialen stehen im Werkzeugmenü direkt unter Vorlagen. */
+html body #headerActions .mobile-action-tools [data-mobile-tool="initials"]{
+  grid-column:3;grid-row:2;
+}

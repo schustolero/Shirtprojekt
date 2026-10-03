@@ -1930,6 +1930,10 @@ function renderPhotoLibrary(){
 function setPhotoTab(library){
   document.getElementById("photoUploadTab")?.setAttribute("aria-selected",String(!library));
   document.getElementById("photoLibraryTab")?.setAttribute("aria-selected",String(library));
+  if(TOP_PRODUCT_PICKER){
+    const title=document.getElementById("photoDialogTitle");
+    if(title)title.textContent=library?"Bilder auswählen":"Ein Bild hinzufügen";
+  }
   document.getElementById("photoUploadPanel").hidden=library;
   document.getElementById("photoLibraryPanel").hidden=!library;
   if(library)renderPhotoLibrary();
@@ -2111,6 +2115,11 @@ if(mobileActionDock){
       if(tool==="images"){openPhotoDialog();if(photoDialog?.open)setPhotoTab(true)}
       if(tool==="text") openTextDialog();
       if(tool==="templates") document.querySelector(".club-logo-section:not([hidden]),.motif-section:not([hidden])")?.scrollIntoView({behavior:"smooth",block:"center"});
+      if(tool==="initials"){
+        const field=document.getElementById("initialsInput");
+        field?.scrollIntoView({behavior:"smooth",block:"center"});
+        field?.focus({preventScroll:true});
+      }
     });
   });
   mobileAddTools?.addEventListener("click",event=>{
