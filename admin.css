@@ -7680,3 +7680,6 @@ html body.v32-admin #shopForm .shop-checkout-grid input[type="text"],
 html body.v32-admin #shopForm .shop-checkout-grid input[type="email"]{box-sizing:border-box;width:100%;min-width:0;min-height:38px;padding:7px 9px;border:1px solid #dbe0e5;border-radius:8px;font-size:13px}
 html body.v32-admin #shopForm .shop-checkout-grid small{display:block;margin-top:4px;color:#65717d;font-size:10px;line-height:1.3}
 @media(max-width:760px){html body.v32-admin #shopForm .shop-checkout-grid{grid-template-columns:1fr;gap:9px}}
+
+/* Ein gemeinsamer Logoordner für alle vorhandenen Logos. */
+.v32-logo-library .motifs-editor{grid-template-columns:minmax(0,1fr)!important}

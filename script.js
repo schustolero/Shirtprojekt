@@ -358,7 +358,7 @@ function getAllowedMotifColorNames(){
       (m.category==="club" || (m.category!=="general" && /vereinslogo|vereinswappen/i.test(m.name||""))));
     const clubSection=document.createElement("section");
     clubSection.className="tool-section club-logo-section";
-    clubSection.innerHTML='<h3>Vereinslogos</h3><p class="hint">Vom Verein vorbereitete Logos für diesen Shop.</p><div class="motif-grid club-logo-grid"></div>';
+    clubSection.innerHTML='<h3>Logos</h3><p class="hint">Vorbereitete Logos für diesen Shop.</p><div class="motif-grid club-logo-grid"></div>';
     const clubGrid=clubSection.querySelector(".club-logo-grid");
     const none=motifGrid.querySelector('.motif-btn[data-motif="none"]');
     if(none && clubMotifs.length && FEATURES.showClubLogos!==false) clubGrid.appendChild(none);
@@ -368,7 +368,7 @@ function getAllowedMotifColorNames(){
     }
     if(!clubMotifs.length){
       const empty=document.createElement("p");empty.className="hint club-logo-empty";
-      empty.textContent="Hier erscheinen die im Admin freigegebenen Vereinslogos.";
+      empty.textContent="Hier erscheinen die im Admin freigegebenen Logos.";
       clubSection.appendChild(empty);
     }
     motifSection.insertAdjacentElement("beforebegin",clubSection);
@@ -644,7 +644,7 @@ function ensureProductMotifChoiceSection(){
   const section=document.createElement("section");
   section.className="tool-section product-motif-choice-section";
   section.hidden=true;
-  section.innerHTML=`<h3>Logoart</h3><div class="product-motif-choice"><button type="button" data-logo-kind="normal">Vereinslogo</button><button type="button" data-logo-kind="patch">3D-Patch</button></div><p class="hint">Wähle die gewünschte Logoausführung.</p>`;
+  section.innerHTML=`<h3>Logoart</h3><div class="product-motif-choice"><button type="button" data-logo-kind="normal">Logo</button><button type="button" data-logo-kind="patch">3D-Patch</button></div><p class="hint">Wähle die gewünschte Logoausführung.</p>`;
   productSection.insertAdjacentElement("afterend",section);
   section.querySelectorAll("[data-logo-kind]").forEach(button=>button.addEventListener("click",async()=>{
     productMotifSelections[currentProductId]=button.dataset.logoKind;
@@ -2099,7 +2099,7 @@ function isDesignToolHidden(tool,features=FEATURES){
 }
 designTools.forEach(button=>{
   const tool=button.dataset.designTool;
-  if(tool==="logo") button.querySelector("strong").textContent="Vorlagen";
+  if(tool==="logo") button.querySelector("strong").textContent="Logos";
   button.hidden=isDesignToolHidden(tool);
 });
 const mobileActionDock=document.getElementById("mobileActionDock");
@@ -2121,21 +2121,18 @@ function openTemplateDialog(focusInitials=false){
     const source=Array.from(document.querySelectorAll(".motif-btn[data-motif]")).find(button=>button.dataset.motif===motif.id);
     if(!source)return;
     const button=document.createElement("button");button.type="button";button.className="template-logo-card";
-    button.setAttribute("aria-label",motif.name||"Vereinslogo");
+    button.setAttribute("aria-label",motif.name||"Logo");
     button.classList.toggle("selected",source.classList.contains("active"));
     const img=document.createElement("img");img.src=source.dataset.src;img.alt="";img.loading="lazy";
-    const name=document.createElement("strong");name.textContent=motif.name||"Vereinslogo";
+    const name=document.createElement("strong");name.textContent=motif.name||"Logo";
     button.append(img,name);
     button.addEventListener("click",()=>{source.click();templateDialog.close()});
     templateLogoGrid.appendChild(button);
   });
-  const club=available.filter(isClub);
-  const general=available.filter(m=>!isClub(m));
-  if(club.length){const heading=document.createElement("h3");heading.className="template-group-title";heading.textContent="Vereinslogos";templateLogoGrid.appendChild(heading);addCards(club)}
-  if(general.length){const heading=document.createElement("h3");heading.className="template-group-title";heading.textContent="Weitere Logos";templateLogoGrid.appendChild(heading);addCards(general)}
+  addCards(available);
   if(!available.length){
     const hint=document.createElement("p");hint.className="template-logo-empty";
-    hint.textContent="Für diesen Shop sind noch keine Vereinslogos freigegeben.";
+    hint.textContent="Für diesen Shop sind noch keine Logos freigegeben.";
     templateLogoGrid.appendChild(hint);
   }
   if(!templateDialog.open)templateDialog.showModal();
