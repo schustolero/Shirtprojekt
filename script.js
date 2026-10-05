@@ -46,6 +46,12 @@ const FEATURES = Object.assign({
   showResetButton: true,
   maxUploadMB: 8
 }, SHOP.features || {});
+// Hansa hat eine gemeinsame Logoauswahl; beide bisherigen Schalter gelten dafür.
+if(SHOP.customerId==="hansa"){
+  const logosEnabled=FEATURES.showClubLogos!==false || FEATURES.showMotifPicker!==false;
+  FEATURES.showClubLogos=logosEnabled;
+  FEATURES.showMotifPicker=logosEnabled;
+}
 if(SHOP.features && Object.prototype.hasOwnProperty.call(SHOP.features,"allowInitials")){
   FEATURES.allowInitials=!!SHOP.features.allowInitials;
 }else if(String(SHOP.customerId||"")!=="tg-solingen"){
@@ -361,8 +367,8 @@ function getAllowedMotifColorNames(){
     clubSection.innerHTML='<h3>Logos</h3><p class="hint">Vorbereitete Logos für diesen Shop.</p><div class="motif-grid club-logo-grid"></div>';
     const clubGrid=clubSection.querySelector(".club-logo-grid");
     const none=motifGrid.querySelector('.motif-btn[data-motif="none"]');
-    if(none && clubMotifs.length && FEATURES.showClubLogos!==false) clubGrid.appendChild(none);
-    for(const motif of clubMotifs){
+    if(none && !isHansa && clubMotifs.length && FEATURES.showClubLogos!==false) clubGrid.appendChild(none);
+    for(const motif of (isHansa ? [] : clubMotifs)){
       const button=Array.from(motifGrid.querySelectorAll(".motif-btn")).find(item=>item.dataset.motif===motif.id);
       if(button) clubGrid.appendChild(button);
     }
@@ -372,8 +378,9 @@ function getAllowedMotifColorNames(){
       clubSection.appendChild(empty);
     }
     motifSection.insertAdjacentElement("beforebegin",clubSection);
-    clubSection.hidden=FEATURES.showClubLogos===false || !clubMotifs.length;
-    motifSection.hidden=!motifGrid.querySelector('.motif-btn[data-src]') || FEATURES.showMotifPicker===false;
+    clubSection.hidden=isHansa || FEATURES.showClubLogos===false || !clubMotifs.length;
+    const logosEnabled=isHansa ? FEATURES.showClubLogos!==false || FEATURES.showMotifPicker!==false : FEATURES.showMotifPicker!==false;
+    motifSection.hidden=!motifGrid.querySelector('.motif-btn[data-src]') || !logosEnabled;
     motifSection.querySelector("h3").textContent="Logos";
   }
 
