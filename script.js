@@ -2096,7 +2096,6 @@ document.addEventListener("click",event=>{if(openDesignTool&&!designRail?.contai
 document.addEventListener("keydown",event=>{if(event.key==="Escape"&&openDesignTool)closeDesignMenu()});
 function isDesignToolHidden(tool,features=FEATURES){
   if(tool==="product") return true; // Textilwahl sitzt bereits in der linken Leiste.
-  if(tool==="logo" && SHOP.customerId==="hansa") return true; // Hansa wählt Logos direkt in der Logoauswahl.
   if(tool==="logo") return features.showClubLogos===false && features.showMotifPicker===false;
   if(tool==="photo") return !features.allowCustomerUpload;
   if(tool==="text") return !features.allowText;
@@ -2118,6 +2117,8 @@ const templateInitialsField=document.getElementById("templateInitialsField");
 const templateInitialsInput=document.getElementById("templateInitialsInput");
 function openTemplateDialog(focusInitials=false){
   if(!templateDialog||!templateLogoGrid)return;
+  const title=document.getElementById("templateDialogTitle");
+  if(title) title.textContent=SHOP.customerId==="hansa"?"Logos":"Vorlagen";
   templateLogoGrid.replaceChildren();
   if(templateInitialsField)templateInitialsField.hidden=!FEATURES.allowInitials;
   if(templateInitialsInput)templateInitialsInput.value=document.getElementById("initialsInput")?.value||"";
