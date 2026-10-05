@@ -2113,6 +2113,39 @@ designTools.forEach(button=>{
   if(tool==="logo") button.querySelector("strong").textContent="Logos";
   button.hidden=isDesignToolHidden(tool);
 });
+function installHansaLogoChoices(){
+  if(SHOP.customerId!=="hansa" || !designRail || isDesignToolHidden("logo")) return;
+  const trigger=designRail.querySelector('[data-design-tool="logo"]');
+  const sources=Array.from(document.querySelectorAll('.motif-btn[data-motif]'));
+  const motifs=(SHOP.motifs||[]).filter(m=>m.file && m.customerSelectable!==false);
+  const group=document.createElement("section");group.className="hansa-logo-choices";
+  group.setAttribute("aria-label","Logo auswählen");
+  const heading=document.createElement("strong");heading.className="hansa-logo-heading";heading.textContent="Logos";
+  const options=document.createElement("div");options.className="hansa-logo-options";
+  const entries=[];
+  motifs.forEach(motif=>{
+    const source=sources.find(item=>item.dataset.motif===motif.id);
+    if(!source)return;
+    const button=document.createElement("button");button.type="button";button.className="hansa-logo-option";
+    button.setAttribute("aria-label",`${motif.name||"Logo"} auswählen`);
+    const image=document.createElement("img");image.src=source.dataset.src;image.alt="";
+    const name=document.createElement("span");name.textContent=motif.name||"Logo";
+    button.append(image,name);
+    button.addEventListener("click",()=>{closeDesignMenu();source.click();});
+    entries.push({source,button});options.appendChild(button);
+  });
+  if(!entries.length)return;
+  const sync=()=>entries.forEach(({source,button})=>{
+    const active=source.classList.contains("active");
+    button.classList.toggle("selected",active);button.setAttribute("aria-pressed",String(active));
+  });
+  group.append(heading,options);
+  if(trigger){trigger.hidden=true;trigger.insertAdjacentElement("afterend",group);}else designRail.prepend(group);
+  const observer=new MutationObserver(sync);
+  entries.forEach(({source})=>observer.observe(source,{attributes:true,attributeFilter:["class"]}));
+  sync();
+}
+installHansaLogoChoices();
 const mobileActionDock=document.getElementById("mobileActionDock");
 const mobileActionTools=document.getElementById("mobileActionTools");
 const mobileAddTools=document.getElementById("mobileAddTools");

@@ -6417,4 +6417,14 @@ html body .template-initials-field small{display:block;margin-top:5px;color:#687
 /* Eine Logoauswahl für alle Shops; die Quelldaten bleiben für die Auswahl im DOM. */
 html body .app .motif-section{display:none!important}
 /* Auch Hansa nutzt die sichtbare Logos-Schaltfläche mit einem gemeinsamen Dialog. */
+/* Hansa: beide Logos direkt auswählen; die bestehenden Motivbuttons bleiben als Quelle. */
+html body .editor-dnd-rail .hansa-logo-choices{min-width:0;margin:0;padding:0;width:100%;box-sizing:border-box}
+html body .editor-dnd-rail .hansa-logo-heading{display:block;margin:0 0 6px;font-size:11px;color:#293440}
+html body .editor-dnd-rail .hansa-logo-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px}
+html body .editor-dnd-rail .hansa-logo-option{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-sizing:border-box;min-width:0;width:100%;min-height:70px;padding:6px 4px;border:1px solid #dce2e8;border-radius:10px;background:#fff;color:#26313c;cursor:pointer}
+html body .editor-dnd-rail .hansa-logo-option img{display:block;width:100%;height:34px;object-fit:contain}
+html body .editor-dnd-rail .hansa-logo-option span{font-size:10px;font-weight:750;line-height:1.2}
+html body .editor-dnd-rail .hansa-logo-option.selected{border-color:#bc982a;background:#fff9e9;box-shadow:inset 0 0 0 1px #bc982a}
+html body .editor-dnd-rail .hansa-logo-option:focus-visible{outline:2px solid #bc982a;outline-offset:2px}
+@media(max-width:900px){html body .editor-dnd-rail .hansa-logo-choices{flex:1 1 150px;width:auto}html body .editor-dnd-rail .hansa-logo-heading{margin-bottom:4px}html body .editor-dnd-rail .hansa-logo-option{min-height:62px}html body .editor-dnd-rail .hansa-logo-option img{height:29px}}
 html body .template-logo-grid .template-group-title{grid-column:1/-1;margin:4px 0 0;padding-top:6px;border-top:1px solid #e2e6eb;color:#25313c;font-size:11px;font-weight:850;letter-spacing:.02em}
