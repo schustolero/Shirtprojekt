@@ -2042,7 +2042,7 @@ function buildShopConfig(){
   if(id!=="hansa" && sourceProducts.some(product=>["jh050","s279"].includes(product.id) && product.enabled!==false && !(Number(product.price)>0))){
     throw new Error("Bitte für neue Artikel vor dem Aktivieren einen Verkaufspreis eintragen.");
   }
-  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false,...(product.id==="jh050"?{name:"Sweatjacke",printSide:"both"}:{})}));
+  const productCatalog=sourceProducts.map(product=>({...product,price:Math.max(0,Number(product.price)||0),enabled:product.enabled!==false,...(product.id==="jh050"?{name:"Sweatjacke",printSide:id==="hansa"?"front":"both"}:{})}));
   if(!productCatalog.some(product=>product.enabled)) throw new Error("Bitte mindestens ein Textil für den Shop aktivieren.");
   cfg.products=productCatalog;
   if(id === "tg-solingen") cfg.hoodieSizingVersion = 5;

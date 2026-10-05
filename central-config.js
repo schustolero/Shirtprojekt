@@ -148,7 +148,17 @@ window.ensureHansaNewProducts = function(shop){
   const productPrint={...(shop.productPrint||{}),jh050:{...(shop.productPrint?.jh050||{}),front:shop.productPrint?.jh050?.front||{xPct:68,yPct:24,widthPct:28},back:shop.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55}}};
   productPrint.s279={front:{xPct:50,yPct:27,widthPct:52},back:{xPct:50,yPct:30,widthPct:55},...(productPrint.s279||{})};
   const features=Number(shop.hansaSweatjacketBothSidesVersion||0)<1?{...(shop.features||{}),allowBackDesign:true}:shop.features;
-  return {...shop,products,productPrint,features,hansaGirlieColorsVersion:1,hansaSweatjacketBothSidesVersion:1};
+  const jacket=products.find(product=>product.id==="jh050");
+  if(jacket) jacket.printSide="front";
+  const migrate=Number(shop.hansaSweatjacketFrontOnlyVersion||0)<1;
+  const front=migrate?{xPct:50,yPct:31,widthPct:72}:productPrint.jh050.front;
+  productPrint.jh050={front};
+  const motifs=(shop.motifs||[]).map(motif=>{
+    const saved=motif.placementsByProduct?.jh050;
+    const placement=!migrate && (saved?.front || (saved?.side==="front"?saved:null));
+    return {...motif,placementsByProduct:{...motif.placementsByProduct,jh050:{front:{...front,...(placement||{}),side:"front"}}}};
+  });
+  return {...shop,products,productPrint,motifs,features,hansaGirlieColorsVersion:1,hansaSweatjacketBothSidesVersion:1,hansaSweatjacketFrontOnlyVersion:1};
 };
 
 window.CENTRAL_CONFIG = {

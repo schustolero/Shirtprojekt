@@ -23,9 +23,9 @@ const INITIALS_POSITIONS = {
   sport:{front:{x:30,y:84},back:{x:30,y:89}},
   sweatshirt:{front:{x:30,y:86},back:{x:30,y:90}}
 };
-const MASTER_FIXED_CHEST_LOGO = typeof SHOP.features?.fixedFrontChestLogo === "boolean"
+const MASTER_FIXED_CHEST_LOGO = SHOP.customerId!=="hansa" && (typeof SHOP.features?.fixedFrontChestLogo === "boolean"
   ? SHOP.features.fixedFrontChestLogo
-  : SHOP.isMasterTemplate === true || SHOP.customerId === "_master" || SHOP.templateSource === "_master";
+  : SHOP.isMasterTemplate === true || SHOP.customerId === "_master" || SHOP.templateSource === "_master");
 const FEATURES = Object.assign({
   layout: "simple",
   motifMode: "single",          // single | multiple | upload | mixed
@@ -627,8 +627,12 @@ let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function syncProductPrintSideControls(){
   const backOnly=zoodieBackOnly(currentProductId) || (getCurrentProduct().printSide==="back" && currentProductId!=="jh050");
+  const frontOnly=getCurrentProduct().printSide==="front";
   const frontButton=document.querySelector('.view-btn[data-view="front"]');
+  const backButton=document.querySelector('.view-btn[data-view="back"]');
   if(frontButton) frontButton.hidden=backOnly;
+  if(backButton) backButton.hidden=frontOnly || !FEATURES.allowBackDesign;
+  if(frontOnly && currentView!=="front") switchView("front");
   if(backOnly && currentView!=="back") switchView("back");
 }
 function getCurrentUnitPrice() { return Number(getCurrentProduct().price ?? SHOP.shirtPrice) || 0; }
@@ -1247,6 +1251,7 @@ function loadView(view) {
 
 function switchView(view) {
   if (view !== "front" && view !== "back") return;
+  if(getCurrentProduct().printSide==="front" && view==="back") return;
   if (zoodieBackOnly(currentProductId) && view==="front") return;
   if (view === currentView) {
     renderShirt();
@@ -2471,7 +2476,7 @@ function getSelectedMotifName() {
     `${uploads.length>1?(side==="front"?"Vorne: ":"Hinten: "):""}Eigenes Logo (${image.motifName||"Upload"})`).join(" · ");
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
-    const names=(zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
+    const names=(getCurrentProduct().printSide==="front"?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections[side]);
       return motif ? [`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}`] : [];
     });
@@ -2485,7 +2490,7 @@ function getSelectedMotifName() {
 }
 
 function getCustomerUploads(){
-  return (zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
+  return (getCurrentProduct().printSide==="front"?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
     const objects=side===currentView ? canvas.getObjects() : viewStates[side]?.objects||[];
     const image=objects.find(object=>object?.motifKind==="upload");
     return image?[{side,image}]:[];
@@ -2999,10 +3004,17 @@ async function initializeFixedPrints() {
   if (currentView !== "front") switchView("front");
   applyPreviewMode();
   const frontPrint=SHOP.fixedPrint?.front;
-  const automaticMotif=FEATURES.autoSelectSingleMotif && frontPrint?.enabled
-    ? (SHOP.motifs||[]).find(motif=>motif.id===frontPrint.motifId && motif.file && motif.customerSelectable!==false)
+  const selectableMotifs=(SHOP.motifs||[]).filter(motif=>motif.file && motif.customerSelectable!==false);
+  const hansaDefault=SHOP.customerId==="hansa" && FEATURES.showMotifPicker!==false
+    ? selectableMotifs.find(motif=>motif.id==="college" || /^college$/i.test(String(motif.name||"").trim()))
+      || selectableMotifs.find(motif=>motif.id===SHOP.defaultMotifId)
+      || selectableMotifs[0]
     : null;
+  const automaticMotif=hansaDefault || (FEATURES.autoSelectSingleMotif && frontPrint?.enabled
+    ? selectableMotifs.find(motif=>motif.id===frontPrint.motifId)
+    : null);
   if(automaticMotif){
+    if(hansaDefault) selectedLogoByProduct[currentProductId]={front:automaticMotif.id};
     const src=window.shopAssetUrl ? window.shopAssetUrl(automaticMotif.file) : automaticMotif.file;
     await addSelectedMotif(automaticMotif.id,src);
   }
