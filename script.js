@@ -1297,6 +1297,7 @@ function switchView(view) {
   }
   renderShirt();
   loadView(view);
+  syncLogoSizeChoices();
   updateInitialsOnCanvas();
 }
 
@@ -1463,6 +1464,7 @@ function applyFixedMotifLayout(image, motifId) {
   });
   if (image.setControlsVisibility) image.setControlsVisibility({ mtr: rotatable });
   image.setCoords();
+  syncLogoSizeChoices();
 }
 
 function configureFabricImage(image, motifId, motifSrc, preserveColors = false) {
@@ -2178,9 +2180,19 @@ function installLogoSizeChoices(){
   small.querySelector("strong").textContent="Logo klein";
   small.dataset.logoSize="small";
   trigger.insertAdjacentElement("afterend",small);
+  for(const button of [trigger,small]){
+    button.classList.add("logo-size-card");
+    const icon=button.querySelector("span");
+    if(icon){
+      icon.className="logo-size-preview";
+      icon.innerHTML='<svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M17 7c1 4 13 4 14 0l11 7-5 10-6-3v20H17V21l-6 3-5-10 11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><rect x="'+(button.dataset.logoSize==="large"?'19':'26')+'" y="'+(button.dataset.logoSize==="large"?'20':'17')+'" width="'+(button.dataset.logoSize==="large"?'10':'4')+'" height="'+(button.dataset.logoSize==="large"?'12':'5')+'" rx="1.2" fill="currentColor" class="logo-size-print"/></svg>';
+    }
+    button.setAttribute("aria-label",button.dataset.logoSize==="large"?"Logo groß – mittiger Druck":"Logo klein – kompakter Druck");
+  }
   for(const button of [trigger,small]) button.addEventListener("click",event=>{
     event.preventDefault();event.stopImmediatePropagation();
     logoSizesByProduct[currentProductId]={...(logoSizesByProduct[currentProductId]||{}),[currentView]:button.dataset.logoSize};
+    syncLogoSizeChoices();
     const entry=getConfiguredMotif(currentView);
     const available=(SHOP.motifs||[]).filter(m=>m.file&&m.customerSelectable!==false && (m.category==="club"?FEATURES.showClubLogos!==false:FEATURES.showMotifPicker!==false));
     const motif=entry?.motif||(available.length===1?available[0]:null);
@@ -2190,6 +2202,16 @@ function installLogoSizeChoices(){
       void addSelectedMotif(motif.id,window.shopAssetUrl?window.shopAssetUrl(motif.file):motif.file);
     }else openTemplateDialog();
   },true);
+  syncLogoSizeChoices();
+}
+function syncLogoSizeChoices(){
+  const motif=canvas.getObjects().find(object=>object?.motifId && object.motifKind!=="upload");
+  const size=logoSizesByProduct[currentProductId]?.[currentView] || (motif ? (getFixedPrintLayout(motif.motifId).maxWidth>.35?"large":"small") : null);
+  document.querySelectorAll("[data-logo-size]").forEach(button=>{
+    const selected=button.dataset.logoSize===size;
+    button.classList.toggle("is-selected",selected);
+    button.setAttribute("aria-pressed",String(selected));
+  });
 }
 installLogoSizeChoices();
 const mobileActionDock=document.getElementById("mobileActionDock");

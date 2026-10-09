@@ -6431,3 +6431,28 @@ html body .template-logo-grid .template-group-title{grid-column:1/-1;margin:4px 
 
 /* Kundenupload eindeutig erkennbar, auch auf Mobilgeräten. */
 html body .editor-dnd-rail [data-design-tool="photo"] small{display:block;white-space:normal;line-height:1.2;font-size:10px}
+
+/* v30.3.250 – visuelle, kompakte Druckgrößen-Auswahl. */
+html body .editor-dnd-rail .logo-size-card{
+  position:relative;border:1px solid #e1e5ea;border-radius:14px;
+  background:#fff;transition:background .16s,border-color .16s,box-shadow .16s;
+}
+html body .editor-dnd-rail .logo-size-card>.logo-size-preview{
+  display:grid;place-items:center;width:38px;height:38px;min-width:38px;
+  border-radius:11px;background:#f4f5f6;color:#586472;
+}
+html body .editor-dnd-rail .logo-size-preview svg{width:34px;height:34px;display:block}
+html body .editor-dnd-rail .logo-size-preview .logo-size-print{fill:#b9952e}
+html body .editor-dnd-rail .logo-size-card.is-selected{
+  border-color:#bb9630;background:#fffaf0;box-shadow:inset 0 0 0 1px #bb963025;
+}
+html body .editor-dnd-rail .logo-size-card.is-selected>.logo-size-preview{background:#f7ebca}
+html body .editor-dnd-rail .logo-size-card.is-selected::after{
+  content:"✓";position:absolute;right:6px;top:5px;color:#9a7720;font-size:11px;font-weight:800;
+}
+html body .editor-dnd-rail .logo-size-card:focus-visible{outline:2px solid #b9952e;outline-offset:3px}
+@media(hover:hover){html body .editor-dnd-rail .logo-size-card:hover{border-color:#bb9630;background:#fffaf0}}
+@media(max-width:900px){
+  html body .editor-dnd-rail .logo-size-card{gap:3px;min-height:68px;padding:6px 3px}
+  html body .editor-dnd-rail .logo-size-card strong{font-size:10px;font-weight:750;letter-spacing:0}
+}
