@@ -7686,3 +7686,8 @@ html body.v32-admin #shopForm .shop-checkout-grid small{display:block;margin-top
 
 html body .v32-logo-library-actions #saveLogoLibraryBtn{flex:0 0 auto;min-height:34px;padding:7px 12px;font-size:12px}
 html body .v32-logo-library .logo-save-hint{display:block;margin-top:8px;color:#657080;font-size:11px;line-height:1.4}
+
+html body.v32-admin .admin-preview-side-switch{display:flex!important;gap:4px;padding:4px;margin:8px auto;max-width:260px;border:1px solid #dce2e8;border-radius:11px;background:#f3f4f6}
+html body.v32-admin .admin-preview-side-switch button{flex:1;border:0;border-radius:8px;padding:9px 14px;background:transparent;color:#586271;font-size:12px;font-weight:750;cursor:pointer}
+html body.v32-admin .admin-preview-side-switch button.active{background:#fff;color:#1c2630;box-shadow:0 1px 4px #00000014}
+html body.v32-admin .admin-preview-side-switch button:disabled{opacity:.4;cursor:default}

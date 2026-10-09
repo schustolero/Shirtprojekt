@@ -1046,7 +1046,8 @@ function getMotifPlacement(motif, productId=currentProductId, view=currentView) 
     }
     return saved?.side==="back" ? saved : {side:"back",...(SHOP.productPrint?.jh050?.back||{xPct:50,yPct:32,widthPct:55})};
   }
-  return motif?.placementsByProduct?.[productId] || motif?.placement;
+  const saved=motif?.placementsByProduct?.[productId];
+  return saved?.[view] || (saved?.front||saved?.back?null:saved) || motif?.placement;
 }
 
 function getConfiguredMotif(view) {
@@ -1055,7 +1056,10 @@ function getConfiguredMotif(view) {
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   const selections=selectedLogoByProduct[currentProductId];
   const selectedId=typeof selections==="string" ? (view==="front"?selections:null) : selections?.[view];
-  if ((!cfg || !cfg.enabled) && !selectedId) return null;
+  const frontId=typeof selections==="object"?selections?.front:selections;
+  const savedMotif=(SHOP.motifs||[]).find(m=>m.id===frontId && m.placementsByProduct?.[currentProductId]?.[view])
+    || (SHOP.motifs||[]).find(m=>m.placementsByProduct?.[currentProductId]?.[view]);
+  if ((!cfg || !cfg.enabled) && !selectedId && !savedMotif) return null;
   const available=(SHOP.motifs||[]).filter(m=>{
     if(!m.file || m.customerSelectable===false) return false;
     if(m.id===cfg?.motifId && cfg?.enabled) return true;
@@ -1063,6 +1067,7 @@ function getConfiguredMotif(view) {
     return club ? FEATURES.showClubLogos!==false : FEATURES.showMotifPicker!==false;
   });
   const motif = available.find(m => m.id === selectedId)
+    || available.find(m => m.id === savedMotif?.id)
     || available.find(m => m.id === cfg?.motifId)
     || available[0];
   if (!motif || (getMotifPlacement(motif,currentProductId,view)?.side && getMotifPlacement(motif,currentProductId,view).side!==view)) return null;
@@ -1246,7 +1251,17 @@ function loadView(view) {
     canvas.requestRenderAll();
     syncCustomerUploadControls();
   });
-  else {canvas.requestRenderAll();syncCustomerUploadControls();}
+  else {
+    canvas.requestRenderAll();syncCustomerUploadControls();
+    const configured=getConfiguredMotif(view);
+    if(configured){
+      const motif=configured.motif;
+      const selections=selectedLogoByProduct[currentProductId];
+      selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[view]:motif.id};
+      const src=window.shopAssetUrl?window.shopAssetUrl(motif.file):motif.file;
+      void addSelectedMotif(motif.id,src);
+    }
+  }
 }
 
 function switchView(view) {

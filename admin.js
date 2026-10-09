@@ -1034,9 +1034,7 @@ function refreshPositionEditor(){
   const editingLogo=workingMotifs.find(m=>m.id===activeLogoPlacementId);
   const motif=selectedPositionMotif();
   const productPlacement=motif?.placementsByProduct?.[product];
-  const savedPlacement=product==="jh050"
-    ? productPlacement?.[side] || (productPlacement?.side===side?productPlacement:null)
-    : productPlacement || motif?.placement;
+  const savedPlacement=productPlacement?.[side] || (productPlacement?.front||productPlacement?.back?null:productPlacement) || motif?.placement;
   const placement=savedPlacement && (savedPlacement.side||"front")===side ? savedPlacement : null;
   const fields = getPositionFieldSet(product, side);
   const x = placement ? Number(placement.xPct) : Number(fields.x?.value || (side === "front" ? 68 : 50));
@@ -1056,7 +1054,7 @@ function refreshPositionEditor(){
     const value=Number(productCfg.price ?? shopFields.price?.value ?? 15);
     priceEl.textContent=value.toFixed(2).replace(".",",")+" €";
   }
-  if(motif?.file && (!editingLogo || (placement?.side||"front")===side)){
+  if(motif?.file){
     positionMotif.onerror = () => {
       const fallback = `/shops/${encodeURIComponent(currentAssetSlug())}/motiv-1.png`;
       if(positionMotif.src !== new URL(fallback, location.href).href) positionMotif.src = fallback;
@@ -1095,6 +1093,11 @@ function refreshPositionEditor(){
   if(positionSize){ positionSize.value = String(w); positionSize.disabled = false; }
   const sizePct=document.getElementById("positionSizeValue")||positionSizeValue;
   if(sizePct) sizePct.textContent = friendlySizeLabel(w);
+  document.querySelectorAll(".admin-preview-side-switch [data-preview-side]").forEach(button=>{
+    const active=button.dataset.previewSide===side;
+    button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active));
+    button.disabled=button.dataset.previewSide==="back" && (workingProducts||[]).find(item=>item.id===product)?.printSide==="front";
+  });
   if(positionXValue) positionXValue.textContent = "";
   if(positionYValue) positionYValue.textContent = "";
   if(positionWValue) positionWValue.textContent = friendlySizeLabel(w);
@@ -1131,16 +1134,22 @@ function writePositionValues(x, y, w){
     const product=positionProduct?.value||"tshirt";
     const side=positionSide?.value||"front";
     const existing=editing.placementsByProduct?.[product];
-    const preferred=product==="jh050" ? existing?.[side] || (existing?.side===side?existing:null) : existing || editing.placement;
+    const preferred=existing?.[side] || (!(existing?.front||existing?.back) && (existing?.side||"front")===side?existing:null) || ((editing.placement?.side||"front")===side?editing.placement:null);
     const placement={...(preferred || {side,xPct:side==="front"?68:50,yPct:side==="front"?24:32,widthPct:side==="front"?28:55}),side};
     if(Number.isFinite(x)) placement.xPct=Math.round(x*2)/2;
     if(Number.isFinite(y)) placement.yPct=Math.round(y*2)/2;
     if(Number.isFinite(w)) placement.widthPct=Math.round(w*2)/2;
-    editing.placementsByProduct={...editing.placementsByProduct,[product]:product==="jh050"?{...(existing?.front||existing?.back?existing:existing?.side?{[existing.side]:existing}:{}),[side]:placement}:placement};
+    const sides=existing?.front||existing?.back?existing:existing?{[existing.side||"front"]:existing}:editing.placement?{[editing.placement.side||"front"]:editing.placement}:{};
+    editing.placementsByProduct={...editing.placementsByProduct,[product]:{...sides,[side]:placement}};
+    if(side==="back") shopFields.allowBack.checked=true;
     if(selectedShopId==="hansa" && ["hoodie","polo"].includes(product)){
       workingMotifs.forEach(motif=>{
         const motifSide=(motif.placementsByProduct?.[product]||motif.placement)?.side||"front";
-        if(motifSide===side) motif.placementsByProduct={...motif.placementsByProduct,[product]:{...placement}};
+        if(motifSide===side){
+          const old=motif.placementsByProduct?.[product];
+          const sides=old?.front||old?.back?old:old?{[old.side||"front"]:old}:{};
+          motif.placementsByProduct={...motif.placementsByProduct,[product]:{...sides,[side]:{...placement}}};
+        }
       });
     }
     refreshPositionEditor();
@@ -1157,21 +1166,7 @@ function writePositionValues(x, y, w){
 function bindPositionEditor(){
   if(!positionStage || !positionMotif || !positionPrintZone) return;
   positionProduct?.addEventListener("change", refreshPositionEditor);
-  positionSide?.addEventListener("change",()=>{
-    const editing=workingMotifs.find(m=>m.id===activeLogoPlacementId);
-    if(editing){
-      const product=positionProduct?.value||"tshirt";
-      if(product==="jh050"){
-        refreshPositionEditor();
-        return;
-      }
-      const placement=editing.placementsByProduct?.[product]||editing.placement||{xPct:68,yPct:19,widthPct:22};
-      editing.placementsByProduct={...editing.placementsByProduct,[product]:{...placement,side:positionSide.value}};
-      renderMotifsEditor();
-      setShopState("Logoseite geändert – oben Speichern klicken.");
-    }
-    refreshPositionEditor();
-  });
+  positionSide?.addEventListener("change",refreshPositionEditor);
   shopFields.fixedShirtHex?.addEventListener("input", refreshPositionEditor);
   shopFields.fixedMotifHex?.addEventListener("input", refreshPositionEditor);
   positionSize?.addEventListener("input", () => writePositionValues(NaN, NaN, Number(positionSize.value)));
@@ -2056,7 +2051,7 @@ function buildMasterLogoPatch(cfg){
     productPrint:deepClone(cfg.productPrint||{}),
     productMotifModes:deepClone(cfg.productMotifModes||{}),
     masterLogoRevision:cfg.masterLogoRevision,
-    features:{showClubLogos:cfg.features.showClubLogos,showMotifPicker:cfg.features.showMotifPicker,fixedFrontChestLogo:cfg.features.fixedFrontChestLogo}
+    features:{showClubLogos:cfg.features.showClubLogos,showMotifPicker:cfg.features.showMotifPicker,fixedFrontChestLogo:cfg.features.fixedFrontChestLogo,allowBackDesign:cfg.features.allowBackDesign}
   };
   for(const key of ["clubLogoVerticalVersion","sweatjacketInitialsVersion"]){
     if(cfg[key]!==undefined) patch[key]=cfg[key];
@@ -2692,6 +2687,19 @@ saveShopBtn.addEventListener("click",async()=>{
   previewShell.className='v2853-preview-shell';
   previewShell.innerHTML='<div class="v2853-preview-head"><strong id="v2853PreviewTitle">Vorschau – Vorderseite</strong><small>Motiv direkt auf dem Textil verschieben</small></div>';
   if(stage) previewShell.appendChild(stage);
+  const sideSwitch=document.createElement("div");sideSwitch.className="admin-preview-side-switch";
+  sideSwitch.setAttribute("role","group");sideSwitch.setAttribute("aria-label","Druckseite auswählen");
+  for(const [value,label] of [["front","Vorne"],["back","Hinten"]]){
+    const button=document.createElement("button");button.type="button";button.dataset.previewSide=value;button.textContent=label;
+    button.addEventListener("click",()=>{
+      positionSide.value=value;positionSide.dispatchEvent(new Event("change",{bubbles:true}));
+      const motif=selectedPositionMotif();
+      const saved=motif?.placementsByProduct?.[positionProduct?.value||"tshirt"];
+      if(value==="back" && motif && !saved?.back && saved?.side!=="back") writePositionValues(50,36,70);
+    });
+    sideSwitch.appendChild(button);
+  }
+  previewShell.appendChild(sideSwitch);
   (function placeInitialsOnPreview(){
     const host=stage||document.getElementById("positionStage");
     if(!host) return;
