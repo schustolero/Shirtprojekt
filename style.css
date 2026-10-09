@@ -6428,3 +6428,6 @@ html body .editor-dnd-rail .hansa-logo-option.selected{border-color:#bc982a;back
 html body .editor-dnd-rail .hansa-logo-option:focus-visible{outline:2px solid #bc982a;outline-offset:2px}
 @media(max-width:900px){html body .editor-dnd-rail .hansa-logo-choices{flex:1 1 150px;width:auto}html body .editor-dnd-rail .hansa-logo-heading{margin-bottom:4px}html body .editor-dnd-rail .hansa-logo-option{min-height:62px}html body .editor-dnd-rail .hansa-logo-option img{height:29px}}
 html body .template-logo-grid .template-group-title{grid-column:1/-1;margin:4px 0 0;padding-top:6px;border-top:1px solid #e2e6eb;color:#25313c;font-size:11px;font-weight:850;letter-spacing:.02em}
+
+/* Kundenupload eindeutig erkennbar, auch auf Mobilgeräten. */
+html body .editor-dnd-rail [data-design-tool="photo"] small{display:block;white-space:normal;line-height:1.2;font-size:10px}

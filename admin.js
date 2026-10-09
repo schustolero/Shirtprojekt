@@ -1405,7 +1405,7 @@ async function loadShopConfigs(){
       customerId:id,
       customerName:cfg.customerName||demo.customerName,
       logoFile:cfg.logoFile||demo.logoFile||"/dein-logo.svg?v=30.1.87",
-      motifs:Array.isArray(cfg.motifs)&&cfg.motifs.length?cfg.motifs:demo.motifs,
+      motifs:Array.isArray(cfg.motifs)?cfg.motifs:demo.motifs,
       features:{allowMoveMotif:true,allowResizeMotif:true,allowRotateMotif:true,...(cfg.features||{})}
     });
   });
@@ -2050,11 +2050,46 @@ function buildShopConfig(){
   return cfg;
 }
 
+function buildMasterLogoPatch(cfg){
+  const patch={
+    motifs:deepClone(cfg.motifs||[]).map(motif=>({...motif,file:motif.file && !/^(?:https?:\/\/|\/|data:|blob:)/i.test(motif.file)?`/shops/${encodeURIComponent(cfg.customerId)}/${motif.file}`:motif.file})),
+    productPrint:deepClone(cfg.productPrint||{}),
+    productMotifModes:deepClone(cfg.productMotifModes||{}),
+    masterLogoRevision:cfg.masterLogoRevision,
+    features:{showClubLogos:cfg.features.showClubLogos,showMotifPicker:cfg.features.showMotifPicker,fixedFrontChestLogo:cfg.features.fixedFrontChestLogo}
+  };
+  for(const key of ["clubLogoVerticalVersion","sweatjacketInitialsVersion"]){
+    if(cfg[key]!==undefined) patch[key]=cfg[key];
+  }
+  return patch;
+}
+function canonicalLogoValue(value){
+  if(Array.isArray(value)) return value.map(canonicalLogoValue);
+  if(value && typeof value==="object") return Object.fromEntries(Object.keys(value).sort().map(key=>[key,canonicalLogoValue(value[key])]));
+  return value;
+}
+async function persistShopWithLogoSync(cfg){
+  const partnerId=cfg.customerId==="master"?"_master":cfg.customerId==="_master"?"master":null;
+  const partner=partnerId && shopConfigs.get(partnerId);
+  cfg.masterLogoRevision=Date.now();
+  const patch=partner?buildMasterLogoPatch(cfg):null;
+  const mergedPartner=partner?{...partner,...patch,features:{...partner.features,...patch.features}}:null;
+  if(mergedPartner && new TextEncoder().encode(JSON.stringify(mergedPartner)).length>900000) throw new Error("Die Logoübernahme würde die Master-Vorlage zu groß machen. Es wurde nichts gespeichert.");
+  const reference=db.collection("shops").doc(cfg.customerId);
+  const batch=db.batch();batch.set(reference,cfg,{merge:false});
+  if(patch) batch.set(db.collection("shops").doc(partnerId),patch,{merge:true});
+  await batch.commit();
+  const saved=await reference.get({source:"server"});
+  if(!saved.exists || JSON.stringify(canonicalLogoValue(saved.data().motifs||[]))!==JSON.stringify(canonicalLogoValue(cfg.motifs||[]))) throw new Error("Die gespeicherten Logos konnten nicht bestätigt werden. Bitte erneut speichern.");
+  if(mergedPartner) shopConfigs.set(partnerId,mergedPartner);
+  return !!partner;
+}
+
 saveShopBtn.addEventListener("click",async()=>{
   try{
     const cfg=buildShopConfig(); saveShopBtn.disabled=true; setShopState("Wird gespeichert …");
     assertShopDocumentFits();
-    await db.collection("shops").doc(cfg.customerId).set(cfg,{merge:false});
+    const logosSynced=await persistShopWithLogoSync(cfg);
     let synced=0;
     if((cfg.customerId==="_master" || cfg.customerId==="master") && (cfg.customerId==="master" || shopFields.pushMasterOnSave?.checked)){
       cfg.templateVersion=Math.max(1,Number(cfg.templateVersion)||1)+1;
@@ -2072,6 +2107,9 @@ saveShopBtn.addEventListener("click",async()=>{
     }
     selectedShopId=cfg.customerId; selectedShopOriginal=deepClone(cfg); shopConfigs.set(cfg.customerId,deepClone(cfg)); shopFields.id.disabled=true; previewShopBtn.hidden=false; previewShopBtn.href=`/?shop=${encodeURIComponent(cfg.customerId)}`; shopEditorTitle.textContent=cfg.customerName; renderShopList(); setShopState(synced?`✓ Vorlage gespeichert und an ${synced} Shop${synced===1?"":"s"} übergeben.`:"✓ Gespeichert – Änderungen sind sofort live.","ok");
     flashSavedButton(saveShopBtn, "Speichern");
+    const librarySave=document.getElementById("saveLogoLibraryBtn");
+    if(librarySave) flashSavedButton(librarySave,"Logos speichern");
+    if(logosSynced) setShopState("✓ Gespeichert – Logos und Positionen in Master-Vorlage und Demo-Shop übernommen.","ok");
     if(positionSaveRequested) flashSavedButton(savePositionBtn, "Position speichern");
     positionSaveRequested = false;
   }catch(err){ positionSaveRequested = false; console.error(err); setShopState(err.message||"Speichern fehlgeschlagen.","error"); alert(err.message||"Shop konnte nicht gespeichert werden."); }
@@ -2721,7 +2759,12 @@ saveShopBtn.addEventListener("click",async()=>{
   const logoLibrary=document.createElement('section');
   logoLibrary.className='v32-logo-library';
   logoLibrary.innerHTML='<div class="v32-logo-library-head"><div><strong>Logoordner</strong><small>Logos für diesen Shop.</small></div></div><div class="v32-logo-library-actions"><label class="v32-logo-upload-btn">+ Logos<input class="v32-logo-upload-input" type="file" accept="image/*" multiple data-category="general" aria-label="Logos hochladen"></label></div>';
+  const librarySave=document.createElement("button");librarySave.type="button";librarySave.id="saveLogoLibraryBtn";librarySave.className="primary-btn small";librarySave.textContent="Logos speichern";
+  librarySave.addEventListener("click",()=>{if(!saveShopBtn.disabled)saveShopBtn.click();});
+  logoLibrary.querySelector(".v32-logo-library-actions").appendChild(librarySave);
+  const libraryHint=document.createElement("small");libraryHint.className="logo-save-hint";libraryHint.textContent="Logos und Positionen für den ausgewählten Shop speichern.";
   if(motifsEditor) logoLibrary.appendChild(motifsEditor);
+  logoLibrary.appendChild(libraryHint);
   print.body.appendChild(logoLibrary);
   print.body.appendChild(motifIntro);
   print.body.appendChild(chestSetting);

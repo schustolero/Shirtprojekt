@@ -7683,3 +7683,6 @@ html body.v32-admin #shopForm .shop-checkout-grid small{display:block;margin-top
 
 /* Ein gemeinsamer Logoordner für alle vorhandenen Logos. */
 .v32-logo-library .motifs-editor{grid-template-columns:minmax(0,1fr)!important}
+
+html body .v32-logo-library-actions #saveLogoLibraryBtn{flex:0 0 auto;min-height:34px;padding:7px 12px;font-size:12px}
+html body .v32-logo-library .logo-save-hint{display:block;margin-top:8px;color:#657080;font-size:11px;line-height:1.4}
