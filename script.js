@@ -623,6 +623,7 @@ shirtColorButtons=document.querySelectorAll(".shirt-color");
 let currentProductId = PRODUCTS[0].id;
 const productMotifSelections = {};
 const selectedLogoByProduct = {};
+const logoSizesByProduct = {};
 let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function syncProductPrintSideControls(){
@@ -1059,7 +1060,7 @@ function getConfiguredMotif(view) {
   const frontId=typeof selections==="object"?selections?.front:selections;
   const savedMotif=(SHOP.motifs||[]).find(m=>m.id===frontId && m.placementsByProduct?.[currentProductId]?.[view])
     || (SHOP.motifs||[]).find(m=>m.placementsByProduct?.[currentProductId]?.[view]);
-  if ((!cfg || !cfg.enabled) && !selectedId && !savedMotif) return null;
+  if (view!=="back" && (!cfg || !cfg.enabled) && !selectedId && !savedMotif && !frontId) return null;
   const available=(SHOP.motifs||[]).filter(m=>{
     if(!m.file || m.customerSelectable===false) return false;
     if(m.id===cfg?.motifId && cfg?.enabled) return true;
@@ -1067,10 +1068,11 @@ function getConfiguredMotif(view) {
     return club ? FEATURES.showClubLogos!==false : FEATURES.showMotifPicker!==false;
   });
   const motif = available.find(m => m.id === selectedId)
+    || available.find(m => m.id === frontId)
     || available.find(m => m.id === savedMotif?.id)
     || available.find(m => m.id === cfg?.motifId)
     || available[0];
-  if (!motif || (getMotifPlacement(motif,currentProductId,view)?.side && getMotifPlacement(motif,currentProductId,view).side!==view)) return null;
+  if (!motif) return null;
   return { cfg:cfg||{enabled:true}, motif };
 }
 
@@ -1174,7 +1176,7 @@ async function renderDualMotif(view, img) {
   if (!entry) { img.hidden = true; img.removeAttribute("src"); return; }
   try {
     const src = window.shopAssetUrl ? window.shopAssetUrl(entry.motif.file) : entry.motif.file;
-    img.src = entry.motif.preserveColors ? src : await recolorMotifSource(src, currentMotifColor);
+    img.src = await recolorMotifSource(src, currentMotifColor);
     img.hidden = false;
     applyDualMotifLayout(img, view, entry.cfg, entry.motif);
   } catch (err) {
@@ -1256,6 +1258,8 @@ function loadView(view) {
     const configured=getConfiguredMotif(view);
     if(configured){
       const motif=configured.motif;
+      if(view==="back" && getMotifPlacement(motif,currentProductId,view)?.side!=="back" && !SHOP.productPrint?.[currentProductId]?.back && !logoSizesByProduct[currentProductId]?.back)
+        logoSizesByProduct[currentProductId]={...(logoSizesByProduct[currentProductId]||{}),back:"large"};
       const selections=selectedLogoByProduct[currentProductId];
       selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[view]:motif.id};
       const src=window.shopAssetUrl?window.shopAssetUrl(motif.file):motif.file;
@@ -1389,6 +1393,10 @@ const FIXED_MOTIF_LAYOUTS = {
 };
 
 function getFixedPrintLayout(motifId) {
+  const chosenSize=logoSizesByProduct[currentProductId]?.[currentView];
+  if(chosenSize) return chosenSize==="large"
+    ? {left:0.50,top:currentView==="back"?0.36:0.34,maxWidth:0.72,maxHeight:0.58}
+    : {left:currentView==="front"?0.68:0.50,top:0.24,maxWidth:0.22,maxHeight:0.24};
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
   const saved=getMotifPlacement(motif);
   const club=motif?.category==="club" || (motif?.category!=="general" && /vereinslogo|vereinswappen/i.test(motif?.name||""));
@@ -1425,8 +1433,8 @@ function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
   // Kleine Korrektur der Herzseiten-Position, in derselben
   // 260 x 340-Druckfläche wie die Admin-Vorschau.
-  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? 0.07 : 0;
-  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? -0.035 : 0;
+  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" && !logoSizesByProduct[currentProductId]?.front ? 0.07 : 0;
+  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" && !logoSizesByProduct[currentProductId]?.front ? -0.035 : 0;
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
   const scale = MASTER_FIXED_CHEST_LOGO
@@ -1476,7 +1484,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
   await new Promise(resolve => requestAnimationFrame(resolve));
   try {
     const motif=(SHOP.motifs||[]).find(item=>item.id===motifId);
-    const preserveColors=!!motif?.preserveColors;
+    const preserveColors=false; // Vorlagenlogos übernehmen die gewählte Druckfarbe; Kundenfotos bleiben original.
     const dataUrl = preserveColors ? motifSrc : await recolorMotifSource(motifSrc, currentMotifColor);
     canvas.clear();
     canvas.backgroundColor = "transparent";
@@ -1501,7 +1509,7 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
-  const side=ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back" ? "back" : "front";
+  const side=currentView;
   await addMotifToView(side, motifId, motifSrc, true);
   motifButtons.forEach(button=>button.classList.toggle("active",button.dataset.motif===motifId));
   if(FEATURES.previewMode==="dual") await renderDualPreview();
@@ -1540,7 +1548,7 @@ document.addEventListener("click",(event)=>{
   }
   if(button.dataset.src){
     const motif=(SHOP.motifs||[]).find(item=>item.id===button.dataset.motif);
-    const side=ZOODIE_BOTH_SIDES && currentProductId==="jh050" ? currentView : getMotifPlacement(motif)?.side==="back"?"back":"front";
+    const side=currentView;
     const selections=selectedLogoByProduct[currentProductId];
     selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[side]:button.dataset.motif};
     productMotifSelections[currentProductId]=button.dataset.motif==="tus-3d-patch"?"patch":"normal";
@@ -1571,7 +1579,7 @@ async function recolorActiveMotif(color, label) {
   // Die Farbe gilt für das Motiv auf der gerade angezeigten Druckseite.
   const object = canvas.getObjects().find(obj => obj && obj.motifSrc && obj.type === "image" && obj.motifKind !== "upload");
   if (!object) return;
-  if (object.preserveColors) return;
+  object.preserveColors=false;
 
   const oldWidth = object.getScaledWidth();
   const oldHeight = object.getScaledHeight();
@@ -2160,7 +2168,30 @@ function installHansaLogoChoices(){
   entries.forEach(({source})=>observer.observe(source,{attributes:true,attributeFilter:["class"]}));
   sync();
 }
-installHansaLogoChoices();
+function installLogoSizeChoices(){
+  const trigger=document.querySelector('[data-design-tool="logo"]');
+  if(!trigger)return;
+  trigger.querySelector("strong").textContent="Logo groß";
+  trigger.querySelector("small")?.remove();
+  trigger.dataset.logoSize="large";
+  const small=trigger.cloneNode(true);
+  small.querySelector("strong").textContent="Logo klein";
+  small.dataset.logoSize="small";
+  trigger.insertAdjacentElement("afterend",small);
+  for(const button of [trigger,small]) button.addEventListener("click",event=>{
+    event.preventDefault();event.stopImmediatePropagation();
+    logoSizesByProduct[currentProductId]={...(logoSizesByProduct[currentProductId]||{}),[currentView]:button.dataset.logoSize};
+    const entry=getConfiguredMotif(currentView);
+    const available=(SHOP.motifs||[]).filter(m=>m.file&&m.customerSelectable!==false && (m.category==="club"?FEATURES.showClubLogos!==false:FEATURES.showMotifPicker!==false));
+    const motif=entry?.motif||(available.length===1?available[0]:null);
+    if(motif){
+      const selections=selectedLogoByProduct[currentProductId];
+      selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:{}),[currentView]:motif.id};
+      void addSelectedMotif(motif.id,window.shopAssetUrl?window.shopAssetUrl(motif.file):motif.file);
+    }else openTemplateDialog();
+  },true);
+}
+installLogoSizeChoices();
 const mobileActionDock=document.getElementById("mobileActionDock");
 const mobileActionTools=document.getElementById("mobileActionTools");
 const mobileAddTools=document.getElementById("mobileAddTools");
