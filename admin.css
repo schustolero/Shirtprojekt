@@ -7699,11 +7699,11 @@ html body.v32-admin .v2853-preview-shell .admin-textile-choices{
 }
 html body.v32-admin .admin-textile-choices button{
   display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
-  flex:0 0 66px;min-width:66px;min-height:62px;padding:6px 2px;border:1px solid #dde2e8;border-radius:12px;
-  background:#fff;color:#4d5865;font-size:10px;font-weight:750;cursor:pointer;
+  box-sizing:border-box;flex:0 0 66px;width:66px;min-width:66px;height:58px;min-height:58px;padding:4px;margin:0;border:1px solid #dbe1e8;border-radius:10px;
+  background:#fff;color:#485563;font:700 9px/12px system-ui,sans-serif;white-space:nowrap;cursor:pointer;scroll-snap-align:start;
 }
-html body.v32-admin .admin-textile-choices svg{width:30px;height:28px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
-html body.v32-admin .admin-textile-choices button.active{border-color:#bd972d;box-shadow:inset 0 0 0 1px #bd972d;background:#fff9e9;color:#856b21}
+html body.v32-admin .admin-textile-choices svg{width:32px;height:32px;fill:#eef1f4;stroke:currentColor;stroke-width:1.5;stroke-linejoin:round;flex:none}
+html body.v32-admin .admin-textile-choices button.active{border-color:#bf9824;box-shadow:0 0 0 1px #bf9824;background:#fff8e4;color:#806316}
 html body.v32-admin .admin-textile-choices button:focus-visible{outline:2px solid #bd972d;outline-offset:2px}
 html body.v32-admin .v2853-article-controls{display:none!important}
 html body.v32-admin .v2853-preview-shell .v2853-preview-head{display:none!important}

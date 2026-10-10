@@ -982,7 +982,8 @@ function renderAdminColorRail(){
   const host=rail.querySelector(".shirt-colors");
   const nameEl=rail.querySelector("#adminCurrentColorName");
   const product=(workingProducts||[]).find(item=>item.id===(positionProduct?.value||"tshirt"))||{};
-  const catalog=typeof MASTER_COLOR_VARIANTS==="object"?(MASTER_COLOR_VARIANTS[product.articleNo]||MASTER_COLOR_VARIANTS.F140||[]):[];
+  const article=product.articleNo||(CENTRAL.productCatalog||[]).find(item=>item.id===product.id)?.articleNo;
+  const catalog=typeof MASTER_COLOR_VARIANTS==="object"?(MASTER_COLOR_VARIANTS[article]||[]):[];
   const catalogMap=Object.fromEntries(catalog.map(v=>[v.id,v]));
   const ids=Array.isArray(product.allowedShirtColorIds)&&product.allowedShirtColorIds.length
     ?product.allowedShirtColorIds
@@ -992,7 +993,7 @@ function renderAdminColorRail(){
   const currentHex=String(shopFields.fixedShirtHex?.value||"").toLowerCase();
   host.replaceChildren();
   let selectedName="White";
-  ids.forEach(id=>{
+  ids.filter(id=>!catalog.length||catalogMap[id]).forEach(id=>{
     const hex=hexMap[id]||variants[id]||catalogMap[id]?.color||"#555555";
     const label=product.shirtColorLabels?.[id]||catalogMap[id]?.name||id;
     const btn=document.createElement("button");
@@ -1023,6 +1024,7 @@ function renderAdminColorRail(){
   }catch(err){ console.error("admin color rail", err); }
 }
 function refreshPositionEditor(){
+  renderAdminTextileChoices();
   if(!positionStage || !positionMotif || !positionShirt) return;
   if(positionSide){
     const frontOption=positionSide.querySelector('option[value="front"]');
@@ -1602,12 +1604,13 @@ function renderProductVariantEditor(){
     note.textContent="Dieser Artikel verwendet derzeit die allgemeinen Shopfarben. Artikelspezifische Varianten werden bei Markenartikeln hinterlegt.";
     host.appendChild(note); return;
   }
-  const articleColorCatalog=Array.isArray(product.colorVariants)&&product.colorVariants.length
-    ?product.colorVariants.map(variant=>[variant.id,variant.name||variant.id])
-    :PRODUCT_COLOR_CATALOG;
+  const article=product.articleNo||(CENTRAL.productCatalog||[]).find(item=>item.id===product.id)?.articleNo;
+  const catalog=typeof MASTER_COLOR_VARIANTS==="object"?MASTER_COLOR_VARIANTS[article]:null;
+  const articleColorCatalog=Array.isArray(catalog)&&catalog.length ? catalog.map(variant=>[variant.id,variant.name])
+    :Array.isArray(product.colorVariants)&&product.colorVariants.length ?product.colorVariants.map(variant=>[variant.id,variant.name||variant.id]):PRODUCT_COLOR_CATALOG;
   const allowed=new Set(product.allowedShirtColorIds);
   const hexMap=product.shirtColorHex||{};
-  const variantHex=Object.fromEntries((product.colorVariants||[]).map(v=>[v.id,v.color||v.hex||""]));
+  const variantHex=Object.fromEntries([...(catalog||[]),...(product.colorVariants||[])].map(v=>[v.id,v.color||v.hex||""]));
   const picker=document.createElement("div"); picker.className="v3040-color-picker";
   articleColorCatalog.forEach(([id,fallbackName])=>{
     const label=document.createElement("label");
@@ -1651,6 +1654,37 @@ function renderProductVariantEditor(){
   });
   extra.append(heads,rows);
   host.appendChild(extra);
+}
+function renderAdminTextileChoices(previewShell=null){
+  const shell=previewShell||document.querySelector(".v2853-preview-shell");
+  if(!shell||!positionProduct)return;
+  let row=shell.querySelector("#adminTextileChoices");
+  if(!row){row=document.createElement("div");row.id="adminTextileChoices";row.className="admin-textile-choices";row.setAttribute("role","group");row.setAttribute("aria-label","Textil auswählen");shell.prepend(row);}
+  row.replaceChildren();
+  const basic='<path d="M10 7 4 11l4 7 4-2v15h16V16l4 2 4-7-6-4-5-4c-1 5-9 5-10 0Z"/>';
+  const long='<path d="m10 7-6 4 1 18 5 1 2-14v15h16V16l2 14 5-1 1-18-6-4-5-4c-1 5-9 5-10 0Z"/>';
+  const hoodie=long+'<path d="M14 7c0-5 12-5 12 0l-6 5Z"/><path d="M15 24h10v5H15Z"/>';
+  const names={tshirt:"T-Shirt",polo:"Polo",hoodie:"Hoodie",jc001:"Sport",bcwu01w:"Sweat",jh050:"Sweatjacke",s279:"Girlie"};
+  const enabled=workingProducts.filter(product=>product.enabled!==false);
+  (enabled.length?enabled:workingProducts).forEach(product=>{
+    const id=product.id;
+    const shape=id==="jh050"?hoodie+'<path d="M20 11v20M18 15h4M15 23h3m4 0h3"/>':id==="s279"?basic+'<path d="m15 4 5 8 5-8"/>':id==="hoodie"?hoodie:id==="polo"?basic+'<path d="m14 5 6 6 6-6M20 11v8"/>':id==="jc001"?basic+'<path d="m10 9 5 7M30 9l-5 7"/>':id==="bcwu01w"?long:basic;
+    const button=document.createElement("button");button.type="button";button.dataset.product=id;
+    const active=id===positionProduct.value;button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active));
+    button.innerHTML='<svg viewBox="0 0 40 36" aria-hidden="true">'+shape+'</svg><span></span>';
+    button.querySelector("span").textContent=names[id]||product.name||id;
+    button.title=(product.name||id)+(product.articleNo?' · '+product.articleNo:'');
+    button.addEventListener("click",()=>{
+      positionProduct.value=id;currentVariantProductId=id;
+      if(product.printSide==="front") positionSide.value="front";
+      const colors=typeof MASTER_COLOR_VARIANTS==="object"?MASTER_COLOR_VARIANTS[product.articleNo]||[]:[];
+      const color=colors.find(item=>item.id===product.defaultShirtColorId);
+      if(color&&shopFields.fixedShirtHex) shopFields.fixedShirtHex.value=product.shirtColorHex?.[color.id]||color.color;
+      positionProduct.dispatchEvent(new Event("change",{bubbles:true}));
+      renderProductVariantEditor();
+    });
+    row.appendChild(button);
+  });
 }
 function configurePositionProducts(cfg){
   const configured=workingProducts.length?workingProducts:mergeProductsWithMasterCatalog(cfg.products);
@@ -2744,6 +2778,7 @@ saveShopBtn.addEventListener("click",async()=>{
   }
   if(readout) previewShell.appendChild(readout);
   article.body.appendChild(previewShell);
+  renderAdminTextileChoices(previewShell);
   right.appendChild(article.card);
   renderAdminColorRail();
 
