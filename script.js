@@ -599,7 +599,10 @@ function ensureProductColorButtons(products){
   const host=document.querySelector(".shirt-colors");
   if(!host) return;
   const existing=new Map(Array.from(host.querySelectorAll(".shirt-color")).map(button=>[button.dataset.id,button]));
-  products.forEach(product=>(product.colorVariants||[]).forEach(variant=>{
+  products.forEach(product=>{
+    const article=product.articleNo||({tshirt:"F140",polo:"F502",hoodie:"F421",jc001:"JC001",sport:"JC001",bcwu01w:"BCWU01W",jh050:"JH050",s279:"S279"})[product.id];
+    const catalog=typeof MASTER_COLOR_VARIANTS!=="undefined"?MASTER_COLOR_VARIANTS[article]||[]:[];
+    [...catalog,...(product.colorVariants||[])].forEach(variant=>{
     if(!variant?.id || existing.has(variant.id)) return;
     const button=document.createElement("button");
     button.type="button";
@@ -616,7 +619,8 @@ function ensureProductColorButtons(products){
     button.querySelector(".color-label").textContent=button.dataset.name;
     host.appendChild(button);
     existing.set(variant.id,button);
-  }));
+    });
+  });
 }
 ensureProductColorButtons(PRODUCTS);
 shirtColorButtons=document.querySelectorAll(".shirt-color");
@@ -668,6 +672,7 @@ function ensureProductMotifChoiceSection(){
 }
 
 async function applyProductMotifRule(force=false){
+  if(selectedLogoByProduct[currentProductId]?.[currentView]==="none") return;
   if(!logoEnabled) return;
   const mode=getProductMotifMode();
   const section=ensureProductMotifChoiceSection();
@@ -716,8 +721,9 @@ function applyProductColorRules(product, forceDefault = false) {
     ? product.allowedShirtColorIds
     : variants.map(variant=>variant.id);
   const catalogIds=new Set(catalog.map(variant=>variant.id));
-  // Die ältere globale F140-Farbliste darf das eigene Girlie-Sortiment nicht beschneiden.
-  const shopAllowed=product?.id==="s279"?null:getAllowedShirtColorIds();
+  // Artikelspezifische Farben sind maßgeblich: die alte globale Shirtliste
+  // enthält z. B. kein Electric Yellow und darf Sportfarben nicht ausblenden.
+  const shopAllowed=Array.isArray(product?.allowedShirtColorIds) && product.allowedShirtColorIds.length ? null : getAllowedShirtColorIds();
   const labels = product?.shirtColorLabels || {};
   shirtColorButtons.forEach(button => {
     if (!button.dataset.baseName) button.dataset.baseName = button.dataset.name || "";
@@ -1057,6 +1063,7 @@ function getConfiguredMotif(view) {
   const cfg = SHOP.fixedPrint && SHOP.fixedPrint[view];
   const selections=selectedLogoByProduct[currentProductId];
   const selectedId=typeof selections==="string" ? (view==="front"?selections:null) : selections?.[view];
+  if(selectedId==="none") return null;
   const frontId=typeof selections==="object"?selections?.front:selections;
   const savedMotif=(SHOP.motifs||[]).find(m=>m.id===frontId && m.placementsByProduct?.[currentProductId]?.[view])
     || (SHOP.motifs||[]).find(m=>m.placementsByProduct?.[currentProductId]?.[view]);
@@ -1488,10 +1495,12 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
     const motif=(SHOP.motifs||[]).find(item=>item.id===motifId);
     const preserveColors=false; // Vorlagenlogos übernehmen die gewählte Druckfarbe; Kundenfotos bleiben original.
     const dataUrl = preserveColors ? motifSrc : await recolorMotifSource(motifSrc, currentMotifColor);
+    if(selectedLogoByProduct[currentProductId]?.[view]==="none") return;
     canvas.clear();
     canvas.backgroundColor = "transparent";
     await new Promise((resolve) => {
       fabric.Image.fromURL(dataUrl, function(image) {
+        if(selectedLogoByProduct[currentProductId]?.[view]==="none"){resolve();return;}
         configureFabricImage(image, motifId, motifSrc, preserveColors);
         canvas.add(image);
         canvas.discardActiveObject();
@@ -1510,6 +1519,10 @@ async function addMotifToView(view, motifId, motifSrc, markActive = true) {
 
 async function addSelectedMotif(motifId, motifSrc) {
   logoEnabled = true;
+  if(selectedLogoByProduct[currentProductId]?.[currentView]==="none"){
+    selectedLogoByProduct[currentProductId][currentView]=motifId;
+  }
+  if(logoSizesByProduct[currentProductId]?.[currentView]==="none") delete logoSizesByProduct[currentProductId][currentView];
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
   const side=currentView;
   await addMotifToView(side, motifId, motifSrc, true);
@@ -2180,6 +2193,13 @@ function installLogoSizeChoices(){
   small.querySelector("strong").textContent="Logo klein";
   small.dataset.logoSize="small";
   trigger.insertAdjacentElement("afterend",small);
+  const none=small.cloneNode(true);none.dataset.logoSize="none";
+  none.querySelector("strong").textContent="Ohne Logo";
+  small.insertAdjacentElement("afterend",none);
+  none.classList.add("logo-size-card");none.setAttribute("aria-label","Ohne Logo auf dieser Seite");
+  const noneIcon=none.querySelector("span");
+  if(noneIcon){noneIcon.className="logo-size-preview";noneIcon.innerHTML='<svg viewBox="0 0 48 48" fill="none" aria-hidden="true"><path d="M17 7c1 4 13 4 14 0l11 7-5 10-6-3v20H17V21l-6 3-5-10 11-7Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg>';}
+  none.addEventListener("click",event=>{event.preventDefault();event.stopImmediatePropagation();removeLogoFromCurrentSide();},true);
   for(const button of [trigger,small]){
     button.classList.add("logo-size-card");
     const icon=button.querySelector("span");
@@ -2203,6 +2223,14 @@ function installLogoSizeChoices(){
     }else openTemplateDialog();
   },true);
   syncLogoSizeChoices();
+}
+function removeLogoFromCurrentSide(){
+  const selections=selectedLogoByProduct[currentProductId];
+  selectedLogoByProduct[currentProductId]={...(typeof selections==="object"?selections:selections?{front:selections}:{}),[currentView]:"none"};
+  logoSizesByProduct[currentProductId]={...(logoSizesByProduct[currentProductId]||{}),[currentView]:"none"};
+  canvas.getObjects().filter(object=>object?.motifId && object.motifKind!=="upload" && object.motifKind!=="text").forEach(object=>canvas.remove(object));
+  canvas.discardActiveObject();canvas.requestRenderAll();saveCurrentView();syncLogoSizeChoices();
+  if(FEATURES.previewMode==="dual") void renderDualPreview();
 }
 function syncLogoSizeChoices(){
   const motif=canvas.getObjects().find(object=>object?.motifId && object.motifKind!=="upload");
@@ -2403,6 +2431,7 @@ designTools.forEach(button=>{
 if (resetBtn) resetBtn.addEventListener("click", function() {
   viewStates.front = null; viewStates.back = null;
   Object.keys(selectedLogoByProduct).forEach(id=>delete selectedLogoByProduct[id]);
+  Object.keys(logoSizesByProduct).forEach(id=>delete logoSizesByProduct[id]);
   canvas.clear(); canvas.backgroundColor = "transparent";
   currentView = "front";
   designerStatus.textContent = "Vorderseite";
@@ -2578,6 +2607,7 @@ function getSelectedMotifName() {
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
     const names=(getCurrentProduct().printSide==="front"?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
+      if(selections[side]==="none") return [`${side==="front"?"Vorne":"Rücken"}: Ohne Logo`];
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections[side]);
       return motif ? [`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}`] : [];
     });
@@ -2623,18 +2653,24 @@ function getCurrentShirtSelection() {
     shirtSize.focus();
     return null;
   }
-  if (!activeMotif && !hasCustomDesign) {
+  if (!activeMotif && !hasCustomDesign && !Object.values(selectedLogoByProduct[currentProductId]||{}).includes("none")) {
     orderMessage.textContent = FEATURES.allowCustomerUpload ? "Bitte zuerst ein Motiv auswählen oder eigenes Logo hochladen." : "Bitte zuerst ein Motiv auswählen.";
     return null;
   }
 
   const fixedPrintParts = [];
-  if (MASTER_FIXED_CHEST_LOGO){
+  if (selectedLogoByProduct[currentProductId] && typeof selectedLogoByProduct[currentProductId]==="object"){
     const selections=selectedLogoByProduct[currentProductId];
     for(const side of (zoodieBackOnly(product.id)?["back"]:["front","back"])){
       if(uploads.some(upload=>upload.side===side))continue;
+      if(selections[side]==="none"){fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: Ohne Logo`);continue;}
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections?.[side]);
-      if(motif) fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${getMotifPlacement(motif)?.xPct??(side==="front"?68:50)} % / ${getMotifPlacement(motif)?.yPct??(side==="front"?19:32)} %, Breite ${getMotifPlacement(motif)?.widthPct??(side==="front"?22:40)} %`);
+      if(motif){
+        const choice=logoSizesByProduct[currentProductId]?.[side];
+        const saved=getMotifPlacement(motif,currentProductId,side);
+        const layout=choice==="large"?{xPct:50,yPct:side==="back"?36:34,widthPct:72}:choice==="small"?{xPct:side==="front"?68:50,yPct:24,widthPct:22}:saved?.side===side?saved:{xPct:side==="front"?68:50,yPct:side==="front"?19:36,widthPct:side==="front"?22:72};
+        fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${layout.xPct} % / ${layout.yPct} %, Breite ${layout.widthPct} %`);
+      }
     }
   }
   else {
