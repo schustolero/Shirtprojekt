@@ -6510,3 +6510,34 @@ html body .editor-dnd-rail .logo-size-card:focus-visible{outline:2px solid #b995
     text-align:center!important;
   }
 }
+
+
+/* v30.3.257 – Lange Bezeichnung „Sweatjacke“ passt auf allen Ansichten. */
+html body .product-btn[data-product="jh050"] .product-btn-name{
+  max-width:100%!important;
+  font-size:10px!important;
+  line-height:1.05!important;
+  letter-spacing:-.035em!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+html body #previewLeftRail .textile-icon-button[data-product="jh050"]>span{
+  max-width:100%!important;
+  font:700 7.5px/10px system-ui,sans-serif!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+}
+html body #productPickerGrid .textile-icon-button[data-product="jh050"]>span:not(.product-picker-thumb){
+  max-width:100%!important;
+  font-size:11px!important;
+  line-height:1.1!important;
+  letter-spacing:-.025em!important;
+  white-space:normal!important;
+  overflow-wrap:anywhere!important;
+}
+@media(max-width:900px){
+  html body #previewLeftRail .textile-icon-button[data-product="jh050"]>span{
+    font-size:8.5px!important;
+    letter-spacing:-.04em!important;
+  }
+}
