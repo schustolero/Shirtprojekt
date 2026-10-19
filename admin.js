@@ -1099,7 +1099,7 @@ function refreshPositionEditor(){
   document.querySelectorAll(".admin-preview-side-switch [data-preview-side]").forEach(button=>{
     const active=button.dataset.previewSide===side;
     button.classList.toggle("active",active);button.setAttribute("aria-pressed",String(active));
-    button.disabled=button.dataset.previewSide==="back" && (workingProducts||[]).find(item=>item.id===product)?.printSide==="front";
+    button.disabled=false;
   });
   if(positionXValue) positionXValue.textContent = "";
   if(positionYValue) positionYValue.textContent = "";
@@ -2826,7 +2826,7 @@ saveShopBtn.addEventListener("click",async()=>{
   if(stage) previewShell.appendChild(stage);
   const sideSwitch=document.createElement("div");sideSwitch.className="admin-preview-side-switch";
   sideSwitch.setAttribute("role","group");sideSwitch.setAttribute("aria-label","Druckseite auswählen");
-  for(const [value,label] of [["front","Vorne"],["back","Hinten"]]){
+  for(const [value,label] of [["front","Vorderseite"],["back","Rückseite"]]){
     const button=document.createElement("button");button.type="button";button.dataset.previewSide=value;button.textContent=label;
     button.addEventListener("click",()=>{
       positionSide.value=value;positionSide.dispatchEvent(new Event("change",{bubbles:true}));
@@ -3214,7 +3214,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.266");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.267");
   return true;
   }
   if(!boot()){
