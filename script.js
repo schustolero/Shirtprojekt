@@ -1917,7 +1917,7 @@ designMenu.hidden=true;
 designRail?.appendChild(designMenu);
 let openDesignTool=null;
 function closeDesignMenu(){
-  openDesignTool=null;designMenu.hidden=true;designMenu.replaceChildren();
+  openDesignTool=null;designMenu.hidden=true;designMenu.removeAttribute("data-tool");designMenu.replaceChildren();
   designTools.forEach(button=>button.setAttribute("aria-expanded","false"));
 }
 function menuOption(label,action,active=false){
@@ -2098,7 +2098,7 @@ function toggleDesignMenu(tool){
   if(tool==="logo"){closeDesignMenu();openTemplateDialog();return;}
   if(tool==="initials"){closeDesignMenu();openTemplateDialog(true);return;}
   if(openDesignTool===tool){closeDesignMenu();return;}
-  openDesignTool=tool;designMenu.replaceChildren();designMenu.hidden=false;
+  openDesignTool=tool;designMenu.dataset.tool=tool;designMenu.replaceChildren();designMenu.hidden=false;
   designTools.forEach(button=>button.setAttribute("aria-expanded",String(button.dataset.designTool===tool)));
   const title=document.createElement("strong");title.className="editor-menu-title";
   title.textContent=({product:"Textil wählen",logo:"Logos wählen",photo:"Eigenes Bild",text:"Text hinzufügen",initials:"Initialen",printColor:"Druckfarbe wählen"})[tool]||"Auswahl";
@@ -2187,6 +2187,11 @@ function installHansaLogoChoices(){
     const active=source.classList.contains("active");
     button.classList.toggle("selected",active);button.setAttribute("aria-pressed",String(active));
   });
+  const printColorTool=designRail.querySelector('[data-design-tool="printColor"]');
+  if(printColorTool && !printColorTool.hidden){
+    printColorTool.classList.add("hansa-print-color-option");
+    options.appendChild(printColorTool);
+  }
   group.append(heading,options);
   if(trigger){trigger.insertAdjacentElement("beforebegin",group);}else designRail.prepend(group);
   const observer=new MutationObserver(sync);
