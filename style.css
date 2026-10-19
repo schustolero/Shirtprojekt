@@ -6456,3 +6456,57 @@ html body .editor-dnd-rail .logo-size-card:focus-visible{outline:2px solid #b995
   html body .editor-dnd-rail .logo-size-card{gap:3px;min-height:68px;padding:6px 3px}
   html body .editor-dnd-rail .logo-size-card strong{font-size:10px;font-weight:750;letter-spacing:0}
 }
+
+
+/* v30.3.255 – Hansa: Logoauswahl mobil in zwei klaren Reihen. */
+@media(max-width:900px){
+  html body[data-shop-id="hansa"] .workspace .editor-dnd-rail,
+  html body[data-shop-id="hansa"] .workspace.has-color-rail .editor-dnd-rail{
+    display:grid!important;
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+    align-items:stretch!important;
+    gap:6px!important;
+    overflow:visible!important;
+    padding:7px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-choices{
+    grid-column:1/-1!important;
+    width:100%!important;
+    min-width:0!important;
+    margin:0!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options{
+    display:grid!important;
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+    gap:6px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-option{
+    min-height:58px!important;
+    padding:5px 6px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-option img{
+    width:100%!important;
+    height:28px!important;
+    object-fit:contain!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-option span{
+    font-size:10px!important;
+    line-height:1.1!important;
+    white-space:nowrap!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .logo-size-card,
+  html body[data-shop-id="hansa"] .editor-dnd-rail [data-design-tool="printColor"]{
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:64px!important;
+    margin:0!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .logo-size-card strong,
+  html body[data-shop-id="hansa"] .editor-dnd-rail [data-design-tool="printColor"] strong{
+    font-size:9.5px!important;
+    line-height:1.05!important;
+    white-space:normal!important;
+    text-align:center!important;
+  }
+}
