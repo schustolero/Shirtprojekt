@@ -2862,19 +2862,48 @@ if (orderBtn) orderBtn.addEventListener("click", openOrderSummary);
 
 const deliveryTypeSelect = document.getElementById("customerDeliveryType");
 const paymentMethodSelect = document.getElementById("customerPaymentMethod");
-const handoverOption=document.getElementById("customerHandoverOption");
 const handoverLabel=String(SHOP.handoverLabel||"").trim();
-if(handoverOption){
-  handoverOption.hidden=!handoverLabel;
-  handoverOption.disabled=!handoverLabel;
-  handoverOption.value=handoverLabel;
-  handoverOption.textContent=handoverLabel;
-}
-const paypalAvailable=SHOP.paypalEnabled===true;
+const deliveryOptions=SHOP.deliveryOptions||{};
+const paymentOptions=SHOP.paymentOptions||{};
+const pickupEnabled=deliveryOptions.pickup!==false;
+const shippingEnabled=deliveryOptions.shipping!==false;
+const handoverEnabled=(typeof deliveryOptions.handover==="boolean"?deliveryOptions.handover:!!handoverLabel)&&!!handoverLabel;
+const cashPickupEnabled=paymentOptions.cashPickup!==false;
+const cashHandoverEnabled=typeof paymentOptions.cashHandover==="boolean"?paymentOptions.cashHandover:handoverEnabled;
+const bankTransferEnabled=paymentOptions.bankTransfer!==false;
+const paypalEnabled=typeof paymentOptions.paypal==="boolean"?paymentOptions.paypal:SHOP.paypalEnabled===true;
+const paypalAvailable=paypalEnabled;
 const paypalRecipient=paypalAvailable && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(SHOP.paypalEmail||"").trim())
   ? String(SHOP.paypalEmail).trim() : "";
-const paypalPaymentOption=Array.from(paymentMethodSelect?.options||[]).find(option=>option.value==="PayPal");
-if(paypalPaymentOption){paypalPaymentOption.hidden=!paypalAvailable;paypalPaymentOption.disabled=!paypalAvailable;}
+const deliveryOptionElements={
+  pickup:document.getElementById("customerPickupOption"),
+  shipping:document.getElementById("customerShippingOption"),
+  handover:document.getElementById("customerHandoverOption")
+};
+const paymentOptionElements={
+  cashPickup:document.getElementById("customerCashPickupOption"),
+  cashHandover:document.getElementById("customerCashHandoverOption"),
+  bankTransfer:document.getElementById("customerBankTransferOption"),
+  paypal:document.getElementById("customerPaypalOption")
+};
+function setSelectOptionAvailability(option,enabled){
+  if(!option)return;
+  option.hidden=!enabled;
+  option.disabled=!enabled;
+}
+setSelectOptionAvailability(deliveryOptionElements.pickup,pickupEnabled);
+setSelectOptionAvailability(deliveryOptionElements.shipping,shippingEnabled);
+if(deliveryOptionElements.handover){
+  deliveryOptionElements.handover.value=handoverLabel;
+  deliveryOptionElements.handover.textContent=handoverLabel;
+  setSelectOptionAvailability(deliveryOptionElements.handover,handoverEnabled);
+}
+function selectFirstAvailable(select){
+  if(!select)return;
+  const first=Array.from(select.options).find(option=>!option.disabled&&!option.hidden);
+  if(first && (select.selectedOptions.length===0 || select.selectedOptions[0].disabled || select.selectedOptions[0].hidden)) select.value=first.value;
+}
+selectFirstAvailable(deliveryTypeSelect);
 const paypalPaymentNote=document.getElementById("paypalPaymentNote");
 function syncPaypalPaymentNote(){
   if(!paypalPaymentNote)return;
@@ -2884,20 +2913,18 @@ function syncPaypalPaymentNote(){
     :"Du erhältst die PayPal-Zahlungsdaten nach der Bestellung. Es wird jetzt noch keine Zahlung ausgeführt.";
 }
 function syncPaymentWithDelivery(){
-  if(!deliveryTypeSelect || !paymentMethodSelect) return;
-  const cashOption = Array.from(paymentMethodSelect.options).find(option => option.value === "Bar bei Abholung");
-  const handoverCashOption=Array.from(paymentMethodSelect.options).find(option => option.value === "Bar bei Übergabe");
-  const isShipping = deliveryTypeSelect.value === "Versand";
-  const isHandover=!!handoverLabel && deliveryTypeSelect.value===handoverLabel;
-  if(cashOption){cashOption.disabled=isShipping||isHandover;cashOption.hidden=isShipping||isHandover;}
-  if(handoverCashOption){handoverCashOption.disabled=!isHandover;handoverCashOption.hidden=!isHandover;}
-  if(paymentMethodSelect.value==="Bar bei Abholung" && isHandover)paymentMethodSelect.value="Bar bei Übergabe";
-  else if(paymentMethodSelect.value==="Bar bei Übergabe" && !isHandover)paymentMethodSelect.value=isShipping?"Überweisung":"Bar bei Abholung";
-  else if(isShipping && paymentMethodSelect.value==="Bar bei Abholung")paymentMethodSelect.value="Überweisung";
+  if(!deliveryTypeSelect || !paymentMethodSelect)return;
+  const isPickup=deliveryTypeSelect.value==="Abholung";
+  const isHandover=handoverEnabled && deliveryTypeSelect.value===handoverLabel;
+  setSelectOptionAvailability(paymentOptionElements.cashPickup,cashPickupEnabled&&isPickup);
+  setSelectOptionAvailability(paymentOptionElements.cashHandover,cashHandoverEnabled&&isHandover);
+  setSelectOptionAvailability(paymentOptionElements.bankTransfer,bankTransferEnabled);
+  setSelectOptionAvailability(paymentOptionElements.paypal,paypalEnabled);
+  selectFirstAvailable(paymentMethodSelect);
   syncPaypalPaymentNote();
 }
 if(deliveryTypeSelect){
-  deliveryTypeSelect.addEventListener("change", syncPaymentWithDelivery);
+  deliveryTypeSelect.addEventListener("change",syncPaymentWithDelivery);
   syncPaymentWithDelivery();
 }
 paymentMethodSelect?.addEventListener("change",syncPaypalPaymentNote);
