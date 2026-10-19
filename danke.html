@@ -180,19 +180,34 @@ body[data-show-prices="false"] .total-line.grand,body[data-show-prices="false"] 
 </section>
 
 <div class="actions">
-  <button class="btn primary" type="button" onclick="window.print()">🖨 Bestellschein drucken / PDF</button>
+  <button class="btn primary" id="printOrderBtn" type="button">🖨 Bestellschein drucken / PDF</button>
   <a class="btn" id="newOrderLink" href="/">↻ Neue Bestellung</a>
 </div>
 
 </section>
 </main>
 
-<script src="/central-config.js?v=30.3.263"></script>
+<script src="/central-config.js?v=30.3.265"></script>
 <script src="/__/firebase/8.10.1/firebase-app.js"></script>
 <script src="/__/firebase/8.10.1/firebase-firestore.js"></script>
 <script src="/__/firebase/init.js"></script>
-<script src="/shop-loader.js?v=30.3.263"></script>
+<script src="/shop-loader.js?v=30.3.265"></script>
 <script>
+(function(){
+  const printButton=document.getElementById("printOrderBtn");
+  if(!printButton)return;
+  printButton.addEventListener("click",function(){
+    printButton.blur();
+    try{
+      window.focus();
+      window.print();
+    }catch(error){
+      try{document.execCommand("print",false,null);}catch(fallbackError){
+        console.error("Drucken konnte nicht gestartet werden.",fallbackError);
+      }
+    }
+  });
+})();
 loadShopConfig(function(cfg){
   const euro=v=>new Intl.NumberFormat('de-DE',{style:'currency',currency:(cfg.currency||'EUR')}).format(Number(v)||0);
   const text=v=>String(v??"").trim();
