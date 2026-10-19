@@ -1404,7 +1404,7 @@ function getFixedPrintLayout(motifId) {
   const chosenSize=logoSizesByProduct[currentProductId]?.[currentView];
   if(chosenSize) return chosenSize==="large"
     ? {left:0.50,top:currentView==="back"?0.36:0.34,maxWidth:0.72,maxHeight:0.58}
-    : {left:currentView==="front"?0.68:0.50,top:0.24,maxWidth:0.22,maxHeight:0.24};
+    : {left:currentView==="front"?0.68:0.50,top:currentView==="front"?0.19:0.27,maxWidth:0.22,maxHeight:0.24};
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
   const saved=getMotifPlacement(motif);
   const club=motif?.category==="club" || (motif?.category!=="general" && /vereinslogo|vereinswappen/i.test(motif?.name||""));
@@ -2169,7 +2169,15 @@ function installHansaLogoChoices(){
     const image=document.createElement("img");image.src=source.dataset.src;image.alt="";
     const name=document.createElement("span");name.textContent=motif.name||"Logo";
     button.append(image,name);
-    button.addEventListener("click",()=>{closeDesignMenu();source.click();});
+    button.addEventListener("click",()=>{
+      const currentSizes=logoSizesByProduct[currentProductId];
+      if(currentSizes?.[currentView]==="none"){
+        logoSizesByProduct[currentProductId]={...(currentSizes||{}),[currentView]:"small"};
+      }
+      closeDesignMenu();
+      source.click();
+      syncLogoSizeChoices();
+    });
     entries.push({source,button});options.appendChild(button);
   });
   if(!entries.length)return;
