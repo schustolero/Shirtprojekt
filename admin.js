@@ -847,7 +847,8 @@ function hansaSweatshirtProduct(){
 const shopFields = {
   id: document.getElementById("shopId"), type: document.getElementById("shopType"), name: document.getElementById("shopName"),
   price: document.getElementById("shopPrice"), prefix: document.getElementById("shopPrefix"), email: document.getElementById("shopEmail"), active: document.getElementById("shopActive"),
-  handoverLabel:document.getElementById("shopHandoverLabel"), paypalEnabled:document.getElementById("shopPaypalEnabled"), paypalEmail:document.getElementById("shopPaypalEmail"),
+  pickupEnabled:document.getElementById("shopPickupEnabled"), shippingEnabled:document.getElementById("shopShippingEnabled"), handoverEnabled:document.getElementById("shopHandoverEnabled"), handoverLabel:document.getElementById("shopHandoverLabel"),
+  cashPickupEnabled:document.getElementById("shopCashPickupEnabled"), cashHandoverEnabled:document.getElementById("shopCashHandoverEnabled"), bankTransferEnabled:document.getElementById("shopBankTransferEnabled"), paypalEnabled:document.getElementById("shopPaypalEnabled"), paypalEmail:document.getElementById("shopPaypalEmail"),
   logoHeight: document.getElementById("logoHeight"), previewMode: document.getElementById("previewMode"), subtitle: document.getElementById("brandSubtitle"), heading: document.getElementById("designerHeading"), intro: document.getElementById("designerIntro"),
   fixedShirtName: document.getElementById("fixedShirtName"), fixedShirtHex: document.getElementById("fixedShirtHex"), fixedMotifName: document.getElementById("fixedMotifName"), fixedMotifHex: document.getElementById("fixedMotifHex"),
   productTshirtEnabled: document.getElementById("productTshirtEnabled"), productPoloEnabled: document.getElementById("productPoloEnabled"), productHoodieEnabled: document.getElementById("productHoodieEnabled"),
@@ -1761,7 +1762,20 @@ function selectShop(id){
   if(chestSetting) chestSetting.checked=fixedChestLogoDefault(cfg);
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent=id==="_master"?`${cfg.customerName||"Vorlage"} – zentrale Vorlage`:(cfg.customerName||id||"Neuer Shop");
   shopFields.id.value=id||""; shopFields.id.disabled=!!(id && shopConfigs.has(id)); shopFields.type.value=cfg.shopType||"simple"; shopFields.name.value=cfg.customerName||""; shopFields.price.value=Number(cfg.shirtPrice??15); shopFields.prefix.value=cfg.orderPrefix||""; shopFields.email.value=cfg.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=cfg.active!==false;
-  shopFields.handoverLabel.value=cfg.handoverLabel??(id==="hansa"?"Lehrerzimmer":"");shopFields.paypalEnabled.checked=cfg.paypalEnabled===true;shopFields.paypalEmail.value=cfg.paypalEmail||"";
+  {
+    const handoverLabel=String(cfg.handoverLabel??(id==="hansa"?"Lehrerzimmer":"")).trim();
+    const delivery=cfg.deliveryOptions||{};
+    const payment=cfg.paymentOptions||{};
+    shopFields.pickupEnabled.checked=delivery.pickup!==false;
+    shopFields.shippingEnabled.checked=delivery.shipping!==false;
+    shopFields.handoverEnabled.checked=typeof delivery.handover==="boolean"?delivery.handover:!!handoverLabel;
+    shopFields.handoverLabel.value=handoverLabel;
+    shopFields.cashPickupEnabled.checked=payment.cashPickup!==false;
+    shopFields.cashHandoverEnabled.checked=typeof payment.cashHandover==="boolean"?payment.cashHandover:!!handoverLabel;
+    shopFields.bankTransferEnabled.checked=payment.bankTransfer!==false;
+    shopFields.paypalEnabled.checked=typeof payment.paypal==="boolean"?payment.paypal:cfg.paypalEnabled===true;
+    shopFields.paypalEmail.value=cfg.paypalEmail||"";
+  }
   shopFields.logoHeight.value=Number(cfg.logoHeight||90); shopFields.previewMode.value=id==="hansa"?"single":cfg.features?.previewMode||"single"; shopFields.subtitle.value=cfg.brandSubtitle||""; shopFields.heading.value=cfg.designerHeading||""; shopFields.intro.value=cfg.designerIntro||"";
   fillProductToggles(cfg); configurePositionProducts(cfg);
   shopFields.fixedShirtName.value=cfg.fixedShirtColor?.name||cfg.fixedShirtColor?.id||""; shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedShirtColor?.color||"")?cfg.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=cfg.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(cfg.fixedMotifColor?.color||"")?cfg.fixedMotifColor.color:"#f6c951";
@@ -2030,7 +2044,20 @@ newShopBtn.addEventListener("click",()=>{
   selectedShopId=""; selectedShopOriginal=template; workingMotifs=deepClone(template.motifs||[{id:"motiv1",name:"Motiv 1",file:""}]); workingProductMotifModes=deepClone(template.productMotifModes||{}); workingProductPrint=deepClone(template.productPrint||{}); workingLogo=template.logoFile||""; workingInitials=deepClone(template.initialsByProduct||{});
   shopForm.hidden=false; saveShopBtn.disabled=false; setTimeout(removeInlineFunctionsTitle,0); shopEditorTitle.textContent="Neuer Shop aus Master"; shopFields.id.disabled=false;
   shopFields.id.value=""; shopFields.name.value=""; shopFields.type.value=template.shopType||"simple"; shopFields.price.value=Number(template.shirtPrice??15); shopFields.prefix.value=""; shopFields.email.value=template.orderEmail||CENTRAL.orderEmail||"shirtzentrale@gmail.com"; shopFields.active.checked=true;
-  shopFields.handoverLabel.value=template.handoverLabel||"";shopFields.paypalEnabled.checked=template.paypalEnabled===true;shopFields.paypalEmail.value=template.paypalEmail||"";
+  {
+    const handoverLabel=String(template.handoverLabel||"").trim();
+    const delivery=template.deliveryOptions||{};
+    const payment=template.paymentOptions||{};
+    shopFields.pickupEnabled.checked=delivery.pickup!==false;
+    shopFields.shippingEnabled.checked=delivery.shipping!==false;
+    shopFields.handoverEnabled.checked=typeof delivery.handover==="boolean"?delivery.handover:!!handoverLabel;
+    shopFields.handoverLabel.value=handoverLabel;
+    shopFields.cashPickupEnabled.checked=payment.cashPickup!==false;
+    shopFields.cashHandoverEnabled.checked=typeof payment.cashHandover==="boolean"?payment.cashHandover:!!handoverLabel;
+    shopFields.bankTransferEnabled.checked=payment.bankTransfer!==false;
+    shopFields.paypalEnabled.checked=typeof payment.paypal==="boolean"?payment.paypal:template.paypalEnabled===true;
+    shopFields.paypalEmail.value=template.paypalEmail||"";
+  }
   shopFields.logoHeight.value=Number(template.logoHeight||90); shopFields.previewMode.value=template.features?.previewMode||"single"; shopFields.subtitle.value=""; shopFields.heading.value=""; shopFields.intro.value="";
   fillProductToggles(template); configurePositionProducts(template);
   shopFields.fixedShirtName.value=template.fixedShirtColor?.name||template.fixedShirtColor?.id||""; shopFields.fixedShirtHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedShirtColor?.color||"")?template.fixedShirtColor.color:"#0758b2"; shopFields.fixedMotifName.value=template.fixedMotifColor?.name||""; shopFields.fixedMotifHex.value=/^#[0-9a-f]{6}$/i.test(template.fixedMotifColor?.color||"")?template.fixedMotifColor.color:"#f6c951";
@@ -2073,11 +2100,29 @@ function buildShopConfig(){
   const features={...(old.features||{}),layout:id==="hansa"?"simple":type==="designer"?"designer":type==="motifs"?"compact":"simple",motifMode:type==="designer"?"mixed":type==="motifs"?"multiple":"single",allowCustomerUpload:shopFields.allowUpload.checked,allowText:shopFields.allowText.checked,allowInitials:!!shopFields.allowInitials?.checked,allowMoveMotif:shopFields.allowMove.checked,allowResizeMotif:shopFields.allowResize.checked,allowRotateMotif:shopFields.allowRotate.checked,fixedFrontChestLogo:fixedChestLogoEnabled(),allowBackDesign:shopFields.allowBack.checked||workingMotifs.some(m=>m.file&&m.placement?.side==="back"),allowMotifColor:true,showShirtColorPicker:shopFields.showShirtColors.checked,showMotifPicker:shopFields.showClubLogos.checked,showClubLogos:shopFields.showClubLogos.checked,showSmallLogo:shopFields.showSmallLogo.checked,showMotifColorPicker:shopFields.showMotifColors.checked,showPrices:shopFields.showPrices.checked,showNexaroBranding:shopFields.showNexaroBranding.checked,autoSelectSingleMotif:type==="simple",maxUploadMB:8,previewMode:id==="hansa"?"single":shopFields.previewMode.value||"single"};
   const cfg={...old,customerId:id,customerName:name,pageTitle:old.pageTitle||`${name} – T-Shirt Shop`,brandTitle:old.brandTitle!==undefined?old.brandTitle:name,brandSubtitle:shopFields.subtitle.value.trim(),designerHeading:shopFields.heading.value.trim()||"Shirt gestalten",designerIntro:shopFields.intro.value.trim(),accentColor:old.accentColor||"#c99a1b",logoFile:workingLogo||old.logoFile||"shop-logo.png",logoHeight:Number(shopFields.logoHeight.value)||90,shirtPrice:Number(shopFields.price.value)||0,currency:"EUR",orderEmail:shopFields.email.value.trim()||CENTRAL.orderEmail||"shirtzentrale@gmail.com",orderSubject:`Neue ${name} T-Shirt Bestellung`,customerExtraFieldLabel:old.customerExtraFieldLabel||"Team / Abteilung",customerExtraFieldName:old.customerExtraFieldName||"Team / Abteilung",orderPrefix:(shopFields.prefix.value.trim()||id.slice(0,3)).toUpperCase(),shopType:type,active:shopFields.active.checked,features,motifs:workingMotifs.filter(m=>m.file).map((m,i)=>({id:m.id||`motiv${i+1}`,name:m.name||`Motiv ${i+1}`,file:m.file,category:/vereinslogo|vereinswappen/i.test(m.name||"")?"club":m.category==="general"?"general":"club",locked:!!m.locked,customerSelectable:m.customerSelectable!==false,preserveColors:!!m.preserveColors,placementsByProduct:m.placementsByProduct||{},placement:m.placement||{side:"front",xPct:68,yPct:19,widthPct:22}}))};
   cfg.handoverLabel=shopFields.handoverLabel.value.trim();
-  if(/^(abholung|versand)$/i.test(cfg.handoverLabel)) throw new Error("Die zusätzliche Bestellart braucht einen eigenen Namen.");
-  cfg.paypalEnabled=shopFields.paypalEnabled.checked;
+  cfg.deliveryOptions={
+    pickup:shopFields.pickupEnabled.checked,
+    shipping:shopFields.shippingEnabled.checked,
+    handover:shopFields.handoverEnabled.checked
+  };
+  cfg.paymentOptions={
+    cashPickup:shopFields.cashPickupEnabled.checked,
+    cashHandover:shopFields.cashHandoverEnabled.checked,
+    bankTransfer:shopFields.bankTransferEnabled.checked,
+    paypal:shopFields.paypalEnabled.checked
+  };
+  if(!Object.values(cfg.deliveryOptions).some(Boolean)) throw new Error("Bitte mindestens eine Bestellart aktivieren.");
+  if(!Object.values(cfg.paymentOptions).some(Boolean)) throw new Error("Bitte mindestens eine Zahlungsart aktivieren.");
+  if(cfg.deliveryOptions.handover && !cfg.handoverLabel) throw new Error("Bitte die individuelle Übergabe benennen.");
+  if(cfg.deliveryOptions.handover && /^(abholung|versand)$/i.test(cfg.handoverLabel)) throw new Error("Die individuelle Übergabe braucht einen eigenen Namen.");
+  const onlinePayment=cfg.paymentOptions.bankTransfer||cfg.paymentOptions.paypal;
+  if(cfg.deliveryOptions.pickup && !(cfg.paymentOptions.cashPickup||onlinePayment)) throw new Error("Für Abholung ist keine passende Zahlungsart aktiv.");
+  if(cfg.deliveryOptions.shipping && !onlinePayment) throw new Error("Für Versand bitte Überweisung oder PayPal aktivieren.");
+  if(cfg.deliveryOptions.handover && !(cfg.paymentOptions.cashHandover||onlinePayment)) throw new Error("Für die individuelle Übergabe ist keine passende Zahlungsart aktiv.");
+  cfg.paypalEnabled=cfg.paymentOptions.paypal;
   cfg.paypalEmail=shopFields.paypalEmail.value.trim();
   if(cfg.paypalEmail && !shopFields.paypalEmail.checkValidity()) throw new Error("Bitte eine gültige PayPal-E-Mail eintragen.");
-  cfg.paypalSetupVersion=1;
+  cfg.paypalSetupVersion=2;
   if(id==="master" || id==="_master") cfg.pricingUpdatedAt=Date.now();
   cfg.priceVisibilityVersion=1;
   if(id==="_master"){ cfg.isMasterTemplate=true; cfg.templateVersion=Math.max(1,Number(old.templateVersion)||1); cfg.customerUploadVersion=1; }
@@ -3169,7 +3214,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.262");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.264");
   return true;
   }
   if(!boot()){
