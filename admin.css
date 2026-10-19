@@ -7718,3 +7718,48 @@ html body.v32-admin .v2853-preview-shell .position-readout{grid-column:1/-1!impo
   html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .v2859-size-wrap{grid-row:4!important}
   html body.v32-admin .v32-mobile-preview-inline .v2853-preview-shell.has-color-rail .position-readout{grid-row:5!important}
 }
+
+
+/* v30.3.261: gemeinsame Shopliste und aufgeräumter Logo-/Druckbereich */
+html body.v32-admin .shop-list-panel{gap:10px!important}
+html body.v32-admin .admin-shop-filters{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:5px!important;padding:4px!important;margin:0!important;
+  border:1px solid #e3e7ed!important;border-radius:12px!important;background:#f4f6f8!important;
+}
+html body.v32-admin .admin-shop-filters button{
+  min-width:0!important;border:0!important;border-radius:9px!important;padding:8px 4px!important;
+  background:transparent!important;color:#606977!important;font:750 11px/1.1 system-ui,sans-serif!important;cursor:pointer!important;
+}
+html body.v32-admin .admin-shop-filters button span{
+  display:inline-grid!important;place-items:center!important;min-width:17px!important;height:17px!important;
+  margin-left:2px!important;border-radius:99px!important;background:#e3e7ec!important;color:#66707d!important;font-size:9px!important;
+}
+html body.v32-admin .admin-shop-filters button.active{background:#fff!important;color:#171b21!important;box-shadow:0 2px 7px rgba(23,31,42,.09)!important}
+html body.v32-admin .admin-shop-filters button.active span{background:#ffd21c!important;color:#312600!important}
+html body.v32-admin .shop-list button{padding:9px 10px!important;gap:3px!important}
+html body.v32-admin .admin-shop-list-top{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:7px!important;width:100%!important;min-width:0!important}
+html body.v32-admin .admin-shop-list-top strong{overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+html body.v32-admin .admin-shop-type{flex:0 0 auto!important;border-radius:99px!important;padding:3px 6px!important;font:750 9px/1 system-ui,sans-serif!important;font-style:normal!important}
+html body.v32-admin .admin-shop-type--simple{background:#fff1b8!important;color:#745800!important}
+html body.v32-admin .admin-shop-type--motifs{background:#e7f3ff!important;color:#155584!important}
+html body.v32-admin .admin-shop-type--designer{background:#f1eafd!important;color:#60418b!important}
+html body.v32-admin .admin-shop-list-meta{font-size:10px!important;color:#8a929e!important}
+html body.v32-admin .shop-list button.active .admin-shop-list-meta{color:#806300!important}
+html body.v32-admin .admin-shop-filter-empty{margin:4px 0!important;padding:14px 8px!important;text-align:center!important;color:#8a929e!important;font-size:11px!important}
+
+html body.v32-admin #shopForm .v3261-print-layout{display:grid!important;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)!important;gap:10px!important;align-items:start!important}
+html body.v32-admin #shopForm .v3261-print-group{min-width:0!important;border:1px solid #e3e7ed!important;border-radius:13px!important;background:#fff!important;padding:10px!important}
+html body.v32-admin #shopForm .v3261-print-group>header{display:grid!important;gap:2px!important;margin:0 0 9px!important;padding:0 0 8px!important;border-bottom:1px solid #edf0f3!important}
+html body.v32-admin #shopForm .v3261-print-group>header b{font-size:13px!important;color:#171b21!important}
+html body.v32-admin #shopForm .v3261-print-group>header span{font-size:10.5px!important;line-height:1.3!important;color:#7c8592!important}
+html body.v32-admin #shopForm .v3261-print-group .v32-logo-library{margin:0!important;padding:0!important;background:transparent!important}
+html body.v32-admin #shopForm .v3261-print-placement .v2855-motif-intro{margin-top:0!important}
+html body.v32-admin #shopForm .v3261-production-group{margin-top:12px!important;padding-top:12px!important;border-top:1px solid #e3e7ed!important}
+@media(max-width:900px){
+  html body.v32-admin #shopForm .v3261-print-layout{grid-template-columns:1fr!important}
+}
+@media(max-width:720px){
+  html body.v32-admin .admin-shop-filters{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  html body.v32-admin #shopForm .v3261-print-group{padding:8px!important}
+}
