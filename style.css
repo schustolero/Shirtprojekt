@@ -6541,3 +6541,43 @@ html body #productPickerGrid .textile-icon-button[data-product="jh050"]>span:not
     letter-spacing:-.04em!important;
   }
 }
+
+
+/* v30.3.260 – Hansa: Logos und Druckfarbe gemeinsam, Palette öffnet sichtbar nach oben. */
+@media(max-width:900px){
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    align-items:stretch!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]{
+    display:flex!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:center!important;
+    gap:4px!important;
+    min-width:0!important;
+    width:100%!important;
+    min-height:58px!important;
+    height:auto!important;
+    padding:5px 14px 5px 5px!important;
+    border-radius:10px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]>.print-color-indicator{
+    width:28px!important;
+    height:28px!important;
+    min-width:28px!important;
+    min-height:28px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]>.print-color-chevron{
+    top:9px!important;
+    right:8px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .editor-tool-menu[data-tool="printColor"]{
+    top:auto!important;
+    bottom:calc(100% + 8px)!important;
+    left:0!important;
+    right:0!important;
+    width:100%!important;
+    max-height:min(38vh,260px)!important;
+  }
+}
