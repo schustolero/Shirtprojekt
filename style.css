@@ -6581,3 +6581,34 @@ html body #productPickerGrid .textile-icon-button[data-product="jh050"]>span:not
     max-height:min(38vh,260px)!important;
   }
 }
+
+
+/* v30.3.263 – Desktop: Druckfarbe bündig über die gesamte Logoauswahl. */
+@media(min-width:901px){
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]{
+    grid-column:1/-1!important;
+    display:grid!important;
+    grid-template-columns:32px minmax(0,1fr) 14px!important;
+    align-items:center!important;
+    justify-content:stretch!important;
+    gap:9px!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    min-height:48px!important;
+    height:48px!important;
+    margin:0!important;
+    padding:7px 9px!important;
+    border:1px solid #dce2e8!important;
+    border-radius:10px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]>.print-color-indicator{
+    width:30px!important;height:30px!important;min-width:30px!important;min-height:30px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]>strong{
+    text-align:left!important;font-size:11px!important;
+  }
+  html body[data-shop-id="hansa"] .editor-dnd-rail .hansa-logo-options>[data-design-tool="printColor"]>.print-color-chevron{
+    position:static!important;justify-self:end!important;
+  }
+}
