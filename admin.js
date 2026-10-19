@@ -1441,14 +1441,57 @@ function adminShopDisplayName(id,cfg){
   return !id.startsWith("_") && !cfg?.isMasterTemplate && name.trim().toLowerCase()==="master shop"
     ? "Demo-Shop" : name;
 }
+let adminShopFilter="all";
+function adminShopType(cfg){
+  const type=String(cfg?.shopType||"simple").toLowerCase();
+  return type==="motif"?"motifs":type;
+}
+function adminShopTypeLabel(type){
+  return ({simple:"Simple",motifs:"Motive",designer:"Designer"})[type]||"Simple";
+}
 function renderShopList(){
-  shopList.replaceChildren();
-  [...shopConfigs.entries()].filter(([id,cfg])=>isVisibleAdminShop(id,cfg)).sort((a,b)=>adminShopDisplayName(...a).localeCompare(adminShopDisplayName(...b),"de")).forEach(([id,cfg])=>{
-    const btn=document.createElement("button"); btn.type="button"; btn.dataset.shopId=id; btn.classList.toggle("active",id===selectedShopId);
-    const strong=document.createElement("strong"); strong.textContent=adminShopDisplayName(id,cfg);
-    const span=document.createElement("span"); span.textContent=`${id} · ${cfg.shopType||"simple"}${cfg.active===false?" · deaktiviert":""}`;
-    btn.append(strong,span); btn.addEventListener("click",()=>selectShop(id)); shopList.appendChild(btn);
+  const all=[...shopConfigs.entries()]
+    .filter(([id,cfg])=>isVisibleAdminShop(id,cfg))
+    .sort((a,b)=>adminShopDisplayName(...a).localeCompare(adminShopDisplayName(...b),"de"));
+  const filters=document.getElementById("adminShopFilters");
+  if(filters && !filters.dataset.bound){
+    filters.dataset.bound="1";
+    filters.addEventListener("click",event=>{
+      const button=event.target.closest("button[data-shop-filter]");
+      if(!button)return;
+      adminShopFilter=button.dataset.shopFilter||"all";
+      renderShopList();
+    });
+  }
+  filters?.querySelectorAll("button[data-shop-filter]").forEach(button=>{
+    button.classList.toggle("active",button.dataset.shopFilter===adminShopFilter);
+    button.setAttribute("aria-pressed",String(button.dataset.shopFilter===adminShopFilter));
   });
+  ["all","simple","motifs","designer"].forEach(type=>{
+    const count=type==="all"?all.length:all.filter(([,cfg])=>adminShopType(cfg)===type).length;
+    const target=filters?.querySelector(`[data-shop-count="${type}"]`);
+    if(target)target.textContent=String(count);
+  });
+  const visible=adminShopFilter==="all"?all:all.filter(([,cfg])=>adminShopType(cfg)===adminShopFilter);
+  shopList.replaceChildren();
+  visible.forEach(([id,cfg])=>{
+    const type=adminShopType(cfg);
+    const btn=document.createElement("button");
+    btn.type="button";
+    btn.dataset.shopId=id;
+    btn.dataset.shopType=type;
+    btn.classList.toggle("active",id===selectedShopId);
+    const top=document.createElement("span"); top.className="admin-shop-list-top";
+    const strong=document.createElement("strong"); strong.textContent=adminShopDisplayName(id,cfg);
+    const badge=document.createElement("em"); badge.className=`admin-shop-type admin-shop-type--${type}`; badge.textContent=adminShopTypeLabel(type);
+    top.append(strong,badge);
+    const meta=document.createElement("span"); meta.className="admin-shop-list-meta"; meta.textContent=cfg.active===false?"Deaktiviert":"Aktiv";
+    btn.append(top,meta);
+    btn.addEventListener("click",()=>selectShop(id));
+    shopList.appendChild(btn);
+  });
+  const empty=document.getElementById("adminShopFilterEmpty");
+  if(empty)empty.hidden=visible.length>0;
   window.refreshV284ShopSelect?.();
 }
 
@@ -3074,6 +3117,28 @@ saveShopBtn.addEventListener("click",async()=>{
     el.classList.add("v32-view-print");
   });
 
+  const printBody=workspace.querySelector(".v2853-print-card > .v2853-card-body");
+  if(printBody && !printBody.querySelector(".v3261-print-layout")){
+    const library=printBody.querySelector(".v32-logo-library");
+    const intro=printBody.querySelector(".v2855-motif-intro");
+    const lock=printBody.querySelector(".fixed-chest-logo-setting");
+    const table=printBody.querySelector("#v2856PrintTable");
+    if(library && intro && table){
+      const layout=document.createElement("div"); layout.className="v3261-print-layout";
+      const logos=document.createElement("section"); logos.className="v3261-print-group v3261-print-logos";
+      const logosHead=document.createElement("header"); logosHead.innerHTML="<b>1. Logo auswählen</b><span>Hochladen, benennen und für den Shop freigeben.</span>";
+      const placement=document.createElement("section"); placement.className="v3261-print-group v3261-print-placement";
+      const placementHead=document.createElement("header"); placementHead.innerHTML="<b>2. Druck festlegen</b><span>Artikel, Seite, Größe und Position einstellen.</span>";
+      logos.append(logosHead,library);
+      placement.append(placementHead,intro);
+      if(lock)placement.appendChild(lock);
+      placement.appendChild(table);
+      layout.append(logos,placement);
+      printBody.prepend(layout);
+      printBody.querySelector(".v2855-production-divider")?.classList.add("v3261-production-group");
+    }
+  }
+
   const hints={
     shop:"Stammdaten, Funktionen und Preise. Logos im Logoordner verwalten.",
     design:"Logo, Texte, Shirtfarben und Druckfarben für diesen Shop.",
@@ -3090,7 +3155,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.146");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.261");
   return true;
   }
   if(!boot()){
