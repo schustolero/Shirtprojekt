@@ -2287,10 +2287,11 @@ saveShopBtn.addEventListener("click",async()=>{
       <button type="button" id="v2949ShopsToggle" class="v2949-shops-toggle" aria-expanded="true">
         <span class="v2949-folder-icon">▾</span><strong>Shops</strong><span id="v2949ShopCount" class="v2949-shop-count">0</span>
       </button>
-      <div id="v2959ShopTypes" class="v2959-shop-types" role="tablist" aria-label="Shop-Typen">
-        <button type="button" class="v2959-shop-type v2959-simple active" data-shop-type="simple" role="tab" aria-selected="true">Simple</button>
-        <button type="button" class="v2959-shop-type v2959-motifs" data-shop-type="motifs" role="tab" aria-selected="false">Motive</button>
-        <button type="button" class="v2959-shop-type v2959-designer" data-shop-type="designer" role="tab" aria-selected="false">Designer</button>
+      <div id="v2959ShopTypes" class="v2959-shop-types" role="tablist" aria-label="Shops filtern">
+        <button type="button" class="v2959-shop-type v2959-all active" data-shop-type="all" role="tab" aria-selected="true">Alle <span data-visible-count="all">0</span></button>
+        <button type="button" class="v2959-shop-type v2959-simple" data-shop-type="simple" role="tab" aria-selected="false">Simple <span data-visible-count="simple">0</span></button>
+        <button type="button" class="v2959-shop-type v2959-motifs" data-shop-type="motifs" role="tab" aria-selected="false">Motive <span data-visible-count="motifs">0</span></button>
+        <button type="button" class="v2959-shop-type v2959-designer" data-shop-type="designer" role="tab" aria-selected="false">Designer <span data-visible-count="designer">0</span></button>
       </div>
       <div id="v2949ShopsTree" class="v2949-shops-tree"></div>
     </section>
@@ -2334,8 +2335,9 @@ saveShopBtn.addEventListener("click",async()=>{
     }
   });
   window.matchMedia("(max-width:720px)").addEventListener("change",()=>setMobileMenuOpen(false));
-  let activeShopType="simple";
+  let activeShopType="all";
   const SHOP_TYPE_GROUPS=[
+    {key:"all",label:"ALLE SHOPS"},
     {key:"simple",label:"1 · SIMPLE"},
     {key:"motifs",label:"2 · MOTIVE"},
     {key:"designer",label:"3 · DESIGNER"}
@@ -2355,9 +2357,18 @@ saveShopBtn.addEventListener("click",async()=>{
       return true;
     }).sort((a,b)=>String(a[1].customerName||a[0]).localeCompare(String(b[1].customerName||b[0]),"de"));
     if(shopCount) shopCount.textContent=String(entries.length);
+    const typeOf=cfg=>{
+      const value=String(cfg?.shopType||"simple").toLowerCase();
+      return value==="motif"?"motifs":value;
+    };
+    ["all","simple","motifs","designer"].forEach(type=>{
+      const count=type==="all"?entries.length:entries.filter(([,cfg])=>typeOf(cfg)===type).length;
+      const badge=sidebar.querySelector(`[data-visible-count="${type}"]`);
+      if(badge)badge.textContent=String(count);
+    });
     const group=SHOP_TYPE_GROUPS.find(g=>g.key===activeShopType) || SHOP_TYPE_GROUPS[0];
     const matches=entries
-      .filter(([,cfg])=>(cfg.shopType||"simple")===group.key)
+      .filter(([,cfg])=>group.key==="all" || typeOf(cfg)===group.key)
       .sort((a,b)=>{
         const isTemplateA=a[0].startsWith("_") || String(a[1]?.customerName||"").trim().toLowerCase().startsWith("vorlage ");
         const isTemplateB=b[0].startsWith("_") || String(b[1]?.customerName||"").trim().toLowerCase().startsWith("vorlage ");
@@ -2376,10 +2387,13 @@ saveShopBtn.addEventListener("click",async()=>{
       name.className="v2949-shop-item-name";
       name.textContent=adminShopDisplayName(id,cfg);
       const meta=document.createElement("small");
+      meta.className="v3262-shop-meta";
       const normalizedName=String(cfg?.customerName||"").trim().toLowerCase();
       const isTemplate=id.startsWith("_") || normalizedName.startsWith("vorlage ") || cfg.isMasterTemplate;
-      meta.textContent=id==="_master"||cfg.isMasterTemplate?"Vorlage":(isTemplate?"":(cfg.active===false?"Inaktiv":"Aktiv"));
-      if(isTemplate) meta.setAttribute("aria-hidden","true");
+      const type=typeOf(cfg);
+      const typeLabel=({simple:"Simple",motifs:"Motive",designer:"Designer"})[type]||"Simple";
+      const state=id==="_master"||cfg.isMasterTemplate||isTemplate?"Vorlage":(cfg.active===false?"Inaktiv":"Aktiv");
+      meta.innerHTML=`<i class="v3262-type-dot v3262-type-dot--${type}" aria-hidden="true"></i><span>${typeLabel}</span><b>·</b><span>${state}</span>`;
       btn.append(name,meta);
       btn.addEventListener("click",()=>{
         const original=list?.querySelector(`button[data-shop-id="${CSS.escape(id)}"]`);
@@ -2422,7 +2436,7 @@ saveShopBtn.addEventListener("click",async()=>{
     renderV2949ShopTree();
   };
   shopTypeTabs.forEach(tab=>tab.addEventListener("click",()=>{
-    activeShopType=tab.dataset.shopType||"simple";
+    activeShopType=tab.dataset.shopType||"all";
     renderV2949ShopTree();
   }));
 
@@ -2474,7 +2488,7 @@ saveShopBtn.addEventListener("click",async()=>{
         v2959InitialMobileStartDone=true;
         switchAdminTab("shops");
         setNavActive("shops");
-        activeShopType="simple";
+        activeShopType="all";
         setMobileMenuOpen(false);
       } else {
         setNavActive(ordersTab.hidden?"shops":"orders");
@@ -3155,7 +3169,7 @@ saveShopBtn.addEventListener("click",async()=>{
     if(btn) setView(btn.dataset.v32);
   });
   setView("shop");
-  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.261");
+  document.querySelectorAll(".v2849-version").forEach(el=>el.textContent="v30.3.262");
   return true;
   }
   if(!boot()){
