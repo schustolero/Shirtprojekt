@@ -6612,3 +6612,30 @@ html body #productPickerGrid .textile-icon-button[data-product="jh050"]>span:not
     position:static!important;justify-self:end!important;
   }
 }
+
+
+/* v30.3.268 – Desktop: Seitenumschalter dauerhaft sichtbar über der Vorschau. */
+@media(min-width:901px){
+  html body .workspace{position:relative!important;}
+  html body .workspace>.view-section:not([hidden]){
+    position:absolute!important;
+    z-index:35!important;
+    top:12px!important;
+    left:50%!important;
+    right:auto!important;
+    bottom:auto!important;
+    transform:translateX(-50%)!important;
+    display:block!important;
+    grid-column:auto!important;
+    grid-row:auto!important;
+    width:240px!important;
+    min-width:240px!important;
+    margin:0!important;
+  }
+  html body .workspace>.view-section .view-switch{
+    box-shadow:0 5px 18px rgba(23,32,43,.12)!important;
+  }
+  html body .workspace>.view-section .view-btn:not([hidden]){
+    display:block!important;
+  }
+}
