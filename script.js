@@ -2683,6 +2683,7 @@ function getCurrentShirtSelection() {
   }
 
   const fixedPrintParts = [];
+  const logoPlacementParts = [];
   if (selectedLogoByProduct[currentProductId] && typeof selectedLogoByProduct[currentProductId]==="object"){
     const selections=selectedLogoByProduct[currentProductId];
     for(const side of (zoodieBackOnly(product.id)?["back"]:["front","back"])){
@@ -2694,18 +2695,27 @@ function getCurrentShirtSelection() {
         const saved=getMotifPlacement(motif,currentProductId,side);
         const layout=choice==="large"?{xPct:50,yPct:side==="back"?36:34,widthPct:72}:choice==="small"?{xPct:side==="front"?68:50,yPct:24,widthPct:22}:saved?.side===side?saved:{xPct:side==="front"?68:50,yPct:side==="front"?19:36,widthPct:side==="front"?22:72};
         fixedPrintParts.push(`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}, Position ${layout.xPct} % / ${layout.yPct} %, Breite ${layout.widthPct} %`);
+        const sizeLabel = choice==="large" || (!choice && Number(layout.widthPct)>35) ? "groß" : "klein";
+        logoPlacementParts.push(`Logo ${side==="front"?"vorne":"hinten"} ${sizeLabel}`);
       }
     }
   }
   else {
-    if (!zoodieBackOnly(product.id) && SHOP.fixedPrint?.front?.enabled) fixedPrintParts.push("Vorne: linke Herzseite klein");
-    if (SHOP.fixedPrint?.back?.enabled) fixedPrintParts.push("Hinten: groß mittig");
+    if (!zoodieBackOnly(product.id) && SHOP.fixedPrint?.front?.enabled) {
+      fixedPrintParts.push("Vorne: linke Herzseite klein");
+      logoPlacementParts.push("Logo vorne klein");
+    }
+    if (SHOP.fixedPrint?.back?.enabled) {
+      fixedPrintParts.push("Hinten: groß mittig");
+      logoPlacementParts.push("Logo hinten groß");
+    }
   }
   uploads.forEach(({side,image})=>{
     const x=Math.round((image.left-PRINT_SIDE_MARGIN)/PRINT_BASE_WIDTH*100);
     const y=Math.round((image.top-PRINT_HEADROOM)/PRINT_BASE_HEIGHT*100);
     const width=Math.round(image.width*image.scaleX/PRINT_BASE_WIDTH*100);
     fixedPrintParts.push(`${side==="front"?"Vorne":"Hinten"}: eigenes Motiv, X ${x} %, Y ${y} %, Breite ${width} %`);
+    logoPlacementParts.push(`Logo ${side==="front"?"vorne":"hinten"} ${width>35?"groß":"klein"}`);
   });
   return {
     id: Date.now() + Math.random(),
@@ -2723,6 +2733,7 @@ function getCurrentShirtSelection() {
     initials: initialsValue(),
     initialsColor: initialsValue() ? (currentMotifColorLabel || getInitialsColor()) : "",
     printLayout: fixedPrintParts.join(" · "),
+    logoPlacementSummary: logoPlacementParts.join(" · "),
     size,
     quantity
   };
@@ -2762,7 +2773,7 @@ function renderCart() {
     // Kundenseitig kompakt halten: Motiv-, Druckfarben- und Positionsdetails
     // werden weiterhin im Bestellobjekt gespeichert, aber nicht unter jedem
     // Shirt als langer Text angezeigt.
-    meta.textContent = `${item.shirtColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || item.motifColor || "Druckfarbe"})` : ""}`;
+    meta.textContent = `${item.shirtColor}${item.logoPlacementSummary ? ` · ${item.logoPlacementSummary}` : ""}${item.initials ? ` · Initialen: ${item.initials}` : ""}`;
     info.append(top, meta);
 
     const remove = document.createElement("button");
@@ -2836,7 +2847,7 @@ function openOrderSummary() {
     const visiblePrice = FEATURES.showPrices === false ? "" : ` · ${formatEuro(item.quantity * (Number(item.unitPrice) || SHIRT_PRICE))}`;
     orderSummary.appendChild(summaryRow(
       `Position ${i + 1}`,
-      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor} · ${item.motif} · ${item.motifColor}${item.initials ? ` · Initialen: ${item.initials} (${item.initialsColor || item.motifColor || "Druckfarbe"})` : ""}${item.printLayout ? ` · ${item.printLayout}` : ""}${visiblePrice}`
+      `${item.quantity}× ${item.productName || "T-Shirt"} · ${item.size} · ${item.shirtColor}${item.logoPlacementSummary ? ` · ${item.logoPlacementSummary}` : ""}${item.initials ? ` · Initialen: ${item.initials}` : ""}${visiblePrice}`
     ));
   });
   orderSummary.appendChild(summaryRow("Gesamtmenge", String(total)));
@@ -2941,7 +2952,6 @@ if (orderForm) {
 
     try {
       const nameEl = document.getElementById("customerName");
-      const classEl = document.getElementById("customerClass");
       const emailEl = document.getElementById("customerEmail");
       const streetEl = document.getElementById("customerStreet");
       const cityEl = document.getElementById("customerCity");
@@ -2956,10 +2966,10 @@ if (orderForm) {
       }
 
       // Pflichtfelder robust prüfen. Fehlende DOM-Elemente dürfen den Klick nicht mehr still abbrechen.
-      const baseFields = [nameEl, classEl, emailEl];
+      const baseFields = [nameEl, emailEl];
       const missingBase = baseFields.find(el => !el || !String(el.value || "").trim());
       if (missingBase || baseFields.some(el => !el)) {
-        if (sendOrderMessage) sendOrderMessage.textContent = "Bitte Vor- und Nachname, Verein / Firma und E-Mail vollständig ausfüllen.";
+        if (sendOrderMessage) sendOrderMessage.textContent = "Bitte Vor- und Nachname und E-Mail vollständig ausfüllen.";
         try { if (missingBase) missingBase.focus(); } catch (_) {}
         return;
       }
@@ -2995,7 +3005,7 @@ if (orderForm) {
       }
 
       const name = nameEl.value.trim();
-      const customerClass = classEl.value.trim();
+      const customerClass = "";
       const email = emailEl.value.trim();
       const address = [street, city].filter(Boolean).join("\n");
       const deliveryType = deliveryEl && String(deliveryEl.value || "").trim() ? deliveryEl.value : "Abholung";
@@ -3062,6 +3072,7 @@ if (orderForm) {
           initials: item.initials || "",
           initialsColor: item.initialsColor || "",
           printLayout: item.printLayout || "",
+          logoPlacementSummary: item.logoPlacementSummary || "",
           size: item.size || "",
           quantity: Number(item.quantity) || 1,
           linePrice: (Number(item.quantity) || 1) * (Number(item.unitPrice) || SHIRT_PRICE)
