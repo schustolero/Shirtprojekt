@@ -183,7 +183,7 @@ function getAllowedMotifColorNames(){
   const subject = document.getElementById("formSubject");
   if (subject && cfg.orderSubject) subject.value = cfg.orderSubject;
   const next = document.getElementById("formNext");
-  if (next) next.value = new URL(`/danke.html?shop=${encodeURIComponent(cfg.customerId || window.SHOP_SLUG || "")}`, window.location.origin).href;
+  if (next) next.value = new URL(`/danke.html?shop=${encodeURIComponent(cfg.customerId || window.SHOP_SLUG || "")}&v=30.3.265`, window.location.origin).href;
 
   document.querySelectorAll(".shop-brand-logo").forEach(el=>el.remove());
   if (cfg.logoFile) {
@@ -2872,55 +2872,47 @@ const cashPickupEnabled=paymentOptions.cashPickup!==false;
 const cashHandoverEnabled=typeof paymentOptions.cashHandover==="boolean"?paymentOptions.cashHandover:handoverEnabled;
 const bankTransferEnabled=paymentOptions.bankTransfer!==false;
 const paypalEnabled=typeof paymentOptions.paypal==="boolean"?paymentOptions.paypal:SHOP.paypalEnabled===true;
-const paypalAvailable=paypalEnabled;
-const paypalRecipient=paypalAvailable && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(SHOP.paypalEmail||"").trim())
+const paypalRecipient=paypalEnabled && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(String(SHOP.paypalEmail||"").trim())
   ? String(SHOP.paypalEmail).trim() : "";
-const deliveryOptionElements={
-  pickup:document.getElementById("customerPickupOption"),
-  shipping:document.getElementById("customerShippingOption"),
-  handover:document.getElementById("customerHandoverOption")
-};
-const paymentOptionElements={
-  cashPickup:document.getElementById("customerCashPickupOption"),
-  cashHandover:document.getElementById("customerCashHandoverOption"),
-  bankTransfer:document.getElementById("customerBankTransferOption"),
-  paypal:document.getElementById("customerPaypalOption")
-};
-function setSelectOptionAvailability(option,enabled){
-  if(!option)return;
-  option.hidden=!enabled;
-  option.disabled=!enabled;
-}
-setSelectOptionAvailability(deliveryOptionElements.pickup,pickupEnabled);
-setSelectOptionAvailability(deliveryOptionElements.shipping,shippingEnabled);
-if(deliveryOptionElements.handover){
-  deliveryOptionElements.handover.value=handoverLabel;
-  deliveryOptionElements.handover.textContent=handoverLabel;
-  setSelectOptionAvailability(deliveryOptionElements.handover,handoverEnabled);
-}
-function selectFirstAvailable(select){
+function rebuildSelect(select,choices,preferredValue){
   if(!select)return;
-  const first=Array.from(select.options).find(option=>!option.disabled&&!option.hidden);
-  if(first && (select.selectedOptions.length===0 || select.selectedOptions[0].disabled || select.selectedOptions[0].hidden)) select.value=first.value;
+  const enabledChoices=choices.filter(choice=>choice.enabled);
+  select.replaceChildren(...enabledChoices.map(choice=>{
+    const option=document.createElement("option");
+    option.id=choice.id;
+    option.value=choice.value;
+    option.textContent=choice.label;
+    return option;
+  }));
+  const preferred=enabledChoices.find(choice=>choice.value===preferredValue);
+  if(preferred)select.value=preferred.value;
+  else if(enabledChoices[0])select.value=enabledChoices[0].value;
 }
-selectFirstAvailable(deliveryTypeSelect);
+const previousDelivery=deliveryTypeSelect?.value||"";
+rebuildSelect(deliveryTypeSelect,[
+  {id:"customerPickupOption",value:"Abholung",label:"Abholung",enabled:pickupEnabled},
+  {id:"customerShippingOption",value:"Versand",label:"Versand",enabled:shippingEnabled},
+  {id:"customerHandoverOption",value:handoverLabel,label:handoverLabel,enabled:handoverEnabled}
+],previousDelivery);
 const paypalPaymentNote=document.getElementById("paypalPaymentNote");
 function syncPaypalPaymentNote(){
   if(!paypalPaymentNote)return;
-  paypalPaymentNote.hidden=paymentMethodSelect?.value!=="PayPal" || !paypalAvailable;
+  paypalPaymentNote.hidden=paymentMethodSelect?.value!=="PayPal"||!paypalEnabled;
   paypalPaymentNote.textContent=paypalPaymentNote.hidden?"":paypalRecipient
     ?`Nach der Bestellung den Betrag per PayPal an ${paypalRecipient} senden. Die Zahlung erfolgt nicht automatisch.`
     :"Du erhältst die PayPal-Zahlungsdaten nach der Bestellung. Es wird jetzt noch keine Zahlung ausgeführt.";
 }
 function syncPaymentWithDelivery(){
-  if(!deliveryTypeSelect || !paymentMethodSelect)return;
+  if(!deliveryTypeSelect||!paymentMethodSelect)return;
+  const previousPayment=paymentMethodSelect.value;
   const isPickup=deliveryTypeSelect.value==="Abholung";
-  const isHandover=handoverEnabled && deliveryTypeSelect.value===handoverLabel;
-  setSelectOptionAvailability(paymentOptionElements.cashPickup,cashPickupEnabled&&isPickup);
-  setSelectOptionAvailability(paymentOptionElements.cashHandover,cashHandoverEnabled&&isHandover);
-  setSelectOptionAvailability(paymentOptionElements.bankTransfer,bankTransferEnabled);
-  setSelectOptionAvailability(paymentOptionElements.paypal,paypalEnabled);
-  selectFirstAvailable(paymentMethodSelect);
+  const isHandover=handoverEnabled&&deliveryTypeSelect.value===handoverLabel;
+  rebuildSelect(paymentMethodSelect,[
+    {id:"customerCashPickupOption",value:"Bar bei Abholung",label:"Bar bei Abholung",enabled:cashPickupEnabled&&isPickup},
+    {id:"customerCashHandoverOption",value:"Bar bei Übergabe",label:"Bar bei Übergabe",enabled:cashHandoverEnabled&&isHandover},
+    {id:"customerBankTransferOption",value:"Überweisung",label:"Überweisung",enabled:bankTransferEnabled},
+    {id:"customerPaypalOption",value:"PayPal",label:"PayPal",enabled:paypalEnabled}
+  ],previousPayment);
   syncPaypalPaymentNote();
 }
 if(deliveryTypeSelect){
@@ -3130,6 +3122,7 @@ if (orderForm) {
 
       const thanksUrl = new URL("/danke.html", window.location.origin);
       thanksUrl.searchParams.set("shop", CUSTOMER_ID);
+      thanksUrl.searchParams.set("v","30.3.265");
       window.location.assign(thanksUrl.href);
     } catch (error) {
       console.error("Verbindliche Bestellung fehlgeschlagen:", error);
