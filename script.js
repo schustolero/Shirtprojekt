@@ -2202,9 +2202,12 @@ function installLogoSizeChoices(){
   const small=trigger.cloneNode(true);
   small.querySelector("strong").textContent="Logo klein";
   small.dataset.logoSize="small";
-  small.hidden=!smallLogoChoiceEnabled();
+  const smallEnabled=smallLogoChoiceEnabled();
+  small.hidden=!smallEnabled;
   trigger.insertAdjacentElement("afterend",small);
   const none=small.cloneNode(true);none.dataset.logoSize="none";
+  none.hidden=false;
+  if(SHOP.customerId==="hansa" && !smallEnabled) trigger.hidden=true;
   none.querySelector("strong").textContent="Ohne Logo";
   small.insertAdjacentElement("afterend",none);
   none.classList.add("logo-size-card");none.setAttribute("aria-label","Ohne Logo auf dieser Seite");
