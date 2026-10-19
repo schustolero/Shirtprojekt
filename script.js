@@ -2178,7 +2178,7 @@ function installHansaLogoChoices(){
     button.classList.toggle("selected",active);button.setAttribute("aria-pressed",String(active));
   });
   group.append(heading,options);
-  if(trigger){trigger.hidden=true;trigger.insertAdjacentElement("afterend",group);}else designRail.prepend(group);
+  if(trigger){trigger.insertAdjacentElement("beforebegin",group);}else designRail.prepend(group);
   const observer=new MutationObserver(sync);
   entries.forEach(({source})=>observer.observe(source,{attributes:true,attributeFilter:["class"]}));
   sync();
@@ -2242,6 +2242,7 @@ function syncLogoSizeChoices(){
   });
 }
 installLogoSizeChoices();
+installHansaLogoChoices();
 const mobileActionDock=document.getElementById("mobileActionDock");
 const mobileActionTools=document.getElementById("mobileActionTools");
 const mobileAddTools=document.getElementById("mobileAddTools");
