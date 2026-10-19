@@ -6639,3 +6639,27 @@ html body #productPickerGrid .textile-icon-button[data-product="jh050"]>span:not
     display:block!important;
   }
 }
+
+
+/* v30.3.269 – Dunkelgrauer Hinzufügen-Button. */
+html body #addToOrderBtn{
+  border-color:#3b3f44!important;
+  background:#3b3f44!important;
+  color:#fff!important;
+  box-shadow:0 5px 14px rgba(26,30,34,.22)!important;
+}
+html body #addToOrderBtn:hover{
+  border-color:#2e3236!important;
+  background:#2e3236!important;
+  box-shadow:0 7px 17px rgba(26,30,34,.27)!important;
+}
+html body #addToOrderBtn:focus-visible{
+  outline:3px solid rgba(59,63,68,.24)!important;
+  outline-offset:2px!important;
+}
+html body #addToOrderBtn #addToOrderPrice{
+  border-color:#62676d!important;
+  background:#51565c!important;
+  color:#fff!important;
+}
+html body #addToOrderBtn:disabled{opacity:.55!important;}
