@@ -1403,10 +1403,6 @@ const FIXED_MOTIF_LAYOUTS = {
 };
 
 function getFixedPrintLayout(motifId) {
-  const chosenSize=logoSizesByProduct[currentProductId]?.[currentView];
-  if(chosenSize) return chosenSize==="large"
-    ? {left:0.50,top:currentView==="back"?0.36:0.34,maxWidth:0.72,maxHeight:0.58}
-    : {left:currentView==="front"?0.68:0.50,top:currentView==="front"?0.19:0.27,maxWidth:0.22,maxHeight:0.24};
   const motif=(SHOP.motifs||[]).find(m=>m.id===motifId);
   const saved=getMotifPlacement(motif);
   const club=motif?.category==="club" || (motif?.category!=="general" && /vereinslogo|vereinswappen/i.test(motif?.name||""));
@@ -1418,6 +1414,13 @@ function getFixedPrintLayout(motifId) {
       maxHeight:club ? (currentView==="front"?0.24:0.60) : clampPrintValue(saved.widthPct,5,110,72)/100
     };
   }
+  // Eine im Admin gesetzte Position ist die verbindliche Quelle.
+  // Die optionale Größenwahl greift nur, wenn für dieses Motiv keine
+  // artikel- und seitenspezifische Position gespeichert wurde.
+  const chosenSize=logoSizesByProduct[currentProductId]?.[currentView];
+  if(chosenSize) return chosenSize==="large"
+    ? {left:0.50,top:currentView==="back"?0.36:0.34,maxWidth:0.72,maxHeight:0.58}
+    : {left:currentView==="front"?0.68:0.50,top:currentView==="front"?0.19:0.27,maxWidth:0.22,maxHeight:0.24};
   if (MASTER_FIXED_CHEST_LOGO) {
     return currentView==="front"
       ? { left: 0.68, top: 0.19, maxWidth: 0.22, maxHeight: 0.24 }
@@ -1443,8 +1446,8 @@ function applyFixedMotifLayout(image, motifId) {
   const layout = getFixedPrintLayout(motifId);
   // Kleine Korrektur der Herzseiten-Position, in derselben
   // 260 x 340-Druckfläche wie die Admin-Vorschau.
-  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" && !logoSizesByProduct[currentProductId]?.front ? 0.07 : 0;
-  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" && !logoSizesByProduct[currentProductId]?.front ? -0.035 : 0;
+  const chestX = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? 0.07 : 0;
+  const chestY = MASTER_FIXED_CHEST_LOGO && currentView === "front" ? -0.035 : 0;
   const maxWidth = PRINT_BASE_WIDTH * layout.maxWidth;
   const maxHeight = PRINT_BASE_HEIGHT * layout.maxHeight;
   const scale = MASTER_FIXED_CHEST_LOGO
