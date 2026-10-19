@@ -3395,3 +3395,22 @@ function dockPricePatch(){
 }
 setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); dockPricePatch(); updateInitialsOnCanvas(); },0);
 setTimeout(()=>{ window.dockShirtColorRail(); orderCustomerSidebar(); dockPricePatch(); updateInitialsOnCanvas(); },250);
+
+
+// v30.3.271 – Desktop: Ansichtsumschalter in die Kopfzeile setzen.
+function dockViewSwitchByViewport(){
+  if(!viewSection) return;
+  const desktop=window.matchMedia("(min-width:901px)").matches;
+  const header=document.querySelector(".designer-header");
+  if(desktop && header){
+    if(viewSection.parentElement!==header) header.appendChild(viewSection);
+    viewSection.dataset.desktopDocked="true";
+    return;
+  }
+  if(workspace && viewSection.parentElement!==workspace) workspace.appendChild(viewSection);
+  delete viewSection.dataset.desktopDocked;
+}
+window.matchMedia("(min-width:901px)").addEventListener?.("change",dockViewSwitchByViewport);
+window.addEventListener("resize",dockViewSwitchByViewport,{passive:true});
+setTimeout(dockViewSwitchByViewport,0);
+setTimeout(dockViewSwitchByViewport,300);
