@@ -634,7 +634,8 @@ let productMotifChoiceSection = null;
 function getCurrentProduct() { return PRODUCTS.find(p => p.id === currentProductId) || PRODUCTS[0]; }
 function syncProductPrintSideControls(){
   const backOnly=zoodieBackOnly(currentProductId) || (getCurrentProduct().printSide==="back" && currentProductId!=="jh050");
-  const frontOnly=getCurrentProduct().printSide==="front";
+  // Die Shop-Einstellung "Rückseite" hat Vorrang vor alten Artikelstammdaten.
+  const frontOnly=getCurrentProduct().printSide==="front" && !FEATURES.allowBackDesign;
   const frontButton=document.querySelector('.view-btn[data-view="front"]');
   const backButton=document.querySelector('.view-btn[data-view="back"]');
   if(frontButton) frontButton.hidden=backOnly;
@@ -1279,7 +1280,7 @@ function loadView(view) {
 
 function switchView(view) {
   if (view !== "front" && view !== "back") return;
-  if(getCurrentProduct().printSide==="front" && view==="back") return;
+  if(getCurrentProduct().printSide==="front" && !FEATURES.allowBackDesign && view==="back") return;
   if (zoodieBackOnly(currentProductId) && view==="front") return;
   if (view === currentView) {
     renderShirt();
@@ -2630,7 +2631,7 @@ function getSelectedMotifName() {
     `${uploads.length>1?(side==="front"?"Vorne: ":"Hinten: "):""}Eigenes Logo (${image.motifName||"Upload"})`).join(" · ");
   const selections=selectedLogoByProduct[currentProductId];
   if(selections && typeof selections==="object"){
-    const names=(getCurrentProduct().printSide==="front"?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
+    const names=(getCurrentProduct().printSide==="front" && !FEATURES.allowBackDesign?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
       if(selections[side]==="none") return [`${side==="front"?"Vorne":"Rücken"}: Ohne Logo`];
       const motif=(SHOP.motifs||[]).find(item=>item.id===selections[side]);
       return motif ? [`${side==="front"?"Vorne":"Rücken"}: ${motif.name||motif.id}`] : [];
@@ -2645,7 +2646,7 @@ function getSelectedMotifName() {
 }
 
 function getCustomerUploads(){
-  return (getCurrentProduct().printSide==="front"?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
+  return (getCurrentProduct().printSide==="front" && !FEATURES.allowBackDesign?["front"]:zoodieBackOnly(currentProductId)?["back"]:["front","back"]).flatMap(side=>{
     const objects=side===currentView ? canvas.getObjects() : viewStates[side]?.objects||[];
     const image=objects.find(object=>object?.motifKind==="upload");
     return image?[{side,image}]:[];
