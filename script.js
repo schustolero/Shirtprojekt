@@ -39,6 +39,7 @@ const FEATURES = Object.assign({
   allowMotifColor: true,
   showShirtColorPicker: true,
   showMotifPicker: true,
+  showSmallLogo: true,
   showMotifColorPicker: true,
   showPrices: false,
   showNexaroBranding: true,
@@ -59,6 +60,7 @@ if(SHOP.features && Object.prototype.hasOwnProperty.call(SHOP.features,"allowIni
 }
 
 function featureEnabled(name) { return FEATURES[name] !== false; }
+function smallLogoChoiceEnabled() { return FEATURES.showSmallLogo !== false; }
 
 function enforceCustomerPriceVisibility() {
   if (FEATURES.showPrices !== false) return;
@@ -2172,7 +2174,7 @@ function installHansaLogoChoices(){
     button.addEventListener("click",()=>{
       const currentSizes=logoSizesByProduct[currentProductId];
       if(currentSizes?.[currentView]==="none"){
-        logoSizesByProduct[currentProductId]={...(currentSizes||{}),[currentView]:"small"};
+        logoSizesByProduct[currentProductId]={...(currentSizes||{}),[currentView]:smallLogoChoiceEnabled()?"small":"large"};
       }
       closeDesignMenu();
       source.click();
@@ -2200,6 +2202,7 @@ function installLogoSizeChoices(){
   const small=trigger.cloneNode(true);
   small.querySelector("strong").textContent="Logo klein";
   small.dataset.logoSize="small";
+  small.hidden=!smallLogoChoiceEnabled();
   trigger.insertAdjacentElement("afterend",small);
   const none=small.cloneNode(true);none.dataset.logoSize="none";
   none.querySelector("strong").textContent="Ohne Logo";
